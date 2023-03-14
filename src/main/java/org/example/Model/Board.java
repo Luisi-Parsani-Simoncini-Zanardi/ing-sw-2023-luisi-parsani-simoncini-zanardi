@@ -34,4 +34,12 @@ public class Board{
     public void updateBoard(Tiles tile,int column,int row){
         board[row][column]=tile;
     }
+
+    public boolean isEndGame() {
+        return endGame;
+    }
+
+    public void setEndGame(boolean endGame) {
+        this.endGame = endGame;
+    }
 }
