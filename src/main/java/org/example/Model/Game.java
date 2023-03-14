@@ -1,8 +1,8 @@
 package org.example.Model;
 
 public class Game{
-    //manca notify
 
+    //costruttore
     public Game (){}
     private Player firstPlayer;
     private Player currentPlayer;
