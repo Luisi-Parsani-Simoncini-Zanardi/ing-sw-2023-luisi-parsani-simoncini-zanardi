@@ -1,6 +1,7 @@
 package org.example.Model;
 
 public class CommonGoal{
+
     private int goalCode;
     private int redeemedNumber;
 
