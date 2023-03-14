@@ -3,9 +3,11 @@
 Come gestire notify e observer?
 Lo shuffle e lo switch sono legit?
 Che casi di test creare per il model?
+Conviene mettere strategy nel controller?
 
 
-comandi utente: 
+
+Comandi utente: 
 
 prendo tessera/e e metto nella shelf:
 - board.getBoard
