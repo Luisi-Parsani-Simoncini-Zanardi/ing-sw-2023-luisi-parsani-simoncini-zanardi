@@ -51,4 +51,12 @@ public class Player {
         temporaryTiles.remove(num);
         return temp;
     }
+
+    public Shelf getShelf() {
+        return shelf;
+    }
+
+    public PersonalGoal getPersonalGoal() {
+        return personalGoal;
+    }
 }
