@@ -8,4 +8,5 @@ Creare test sul Model
 
 Iniziare ad abbozzare il Controller
 
-Aggiungere la chat nel Model
+Aggiungere la chat e i nickname nel Model
+
