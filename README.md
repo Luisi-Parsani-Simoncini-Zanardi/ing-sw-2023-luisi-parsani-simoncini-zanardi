@@ -1,10 +1,9 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
 
-Come gestire notify e observer?
-Che casi di test creare per il model?
-Conviene mettere strategy nel controller?
-
-
+Semplificare board
+Fare personalGoal con JSON
+Creare test sul Model
+Iniziare ad abbozzare il Controller
 
 Comandi utente: 
 
