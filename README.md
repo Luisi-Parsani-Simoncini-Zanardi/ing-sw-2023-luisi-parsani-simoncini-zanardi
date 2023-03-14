@@ -1,9 +1,9 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
 
-Semplificare board
-Fare personalGoal con JSON
-Creare test sul Model
-Iniziare ad abbozzare il Controller
+Semplificare board \n
+Fare personalGoal con JSON \n
+Creare test sul Model \n
+Iniziare ad abbozzare il Controller \n
 
 Comandi utente: 
 
