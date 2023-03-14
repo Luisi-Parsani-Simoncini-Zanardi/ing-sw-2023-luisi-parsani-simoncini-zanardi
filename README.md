@@ -1,7 +1,5 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
 
-Semplificare board -> work in progress
-
 Fare personalGoal con JSON
 
 Creare test sul Model
