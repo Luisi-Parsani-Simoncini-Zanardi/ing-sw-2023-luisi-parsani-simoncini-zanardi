@@ -2,7 +2,7 @@ package org.example.Model;
 
 public class CommonGoal{
 
-    private int goalCode;
+    private final int goalCode;
     private int redeemedNumber;
 
     //costruttore
