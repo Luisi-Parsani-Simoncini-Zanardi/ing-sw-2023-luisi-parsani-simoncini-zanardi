@@ -1,8 +1,9 @@
 package org.example.Model;
 
 public class Game{
-    //manca notify e costruttore
+    //manca notify
 
+    public Game (){}
     private Player firstPlayer;
     private Player currentPlayer;
     private Player[] players;
