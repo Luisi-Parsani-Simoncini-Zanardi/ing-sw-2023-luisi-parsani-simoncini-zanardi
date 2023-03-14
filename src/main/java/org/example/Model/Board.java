@@ -1,7 +1,5 @@
 package org.example.Model;
 
-import static org.example.Model.Tiles.EMPTY;
-
 public class Board{
     //manca costruttore normale
     private Tiles[][] board;

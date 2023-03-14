@@ -4,7 +4,7 @@ public class PersonalGoal {
     private int[][] personalGoal;
 
     public PersonalGoal(){
-        //da sistemare
+        //da implementare
     }
 
     public PersonalGoal(PersonalGoal personalGoal){
