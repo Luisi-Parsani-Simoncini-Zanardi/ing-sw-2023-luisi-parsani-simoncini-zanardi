@@ -1,6 +1,6 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
 
-Semplificare board
+Semplificare board -> work in progress
 
 Fare personalGoal con JSON
 
