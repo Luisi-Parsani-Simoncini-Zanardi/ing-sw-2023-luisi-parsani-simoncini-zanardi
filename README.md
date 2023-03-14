@@ -1,2 +1,8 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
-to do: little tweaks to code of the MVC model
+Bag: ok
+Board: ok
+CommonGoal: ok
+Game: costruttore e notify
+PersonalGoal: ragionare come funziona
+Player: ok
+Shelf: ok
