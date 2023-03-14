@@ -9,7 +9,7 @@ public class Player {
     public Player (int numero) {
         this.position=numero;
         this.points=0;
-        //shelf e personalGoal andranno settate con il loro rispettivo set
+        //shelf e personalGoal andranno settate con il loro rispettivo set dopo aver chiamato il costruttore
     }
 
     public void setPoints(int[] points){
