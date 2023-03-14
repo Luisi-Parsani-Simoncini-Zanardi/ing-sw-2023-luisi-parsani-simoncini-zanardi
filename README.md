@@ -9,7 +9,7 @@ Creare test sul Model
 Iniziare ad abbozzare il Controller
 
 
-Comandi utente: 
++ Comandi utente: 
 
 prendo tessera/e e metto nella shelf:
 - board.getBoard
