@@ -3,3 +3,4 @@
 Creare il costruttore e la notify del Game
 Ragionare come organizzare il personalGoal
 Valutare se serve un observer
+Verificare se lo shuffle è legit
