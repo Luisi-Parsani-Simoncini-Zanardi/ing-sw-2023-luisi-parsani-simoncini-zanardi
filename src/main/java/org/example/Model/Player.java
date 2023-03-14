@@ -7,10 +7,6 @@ public class Player {
     private Shelf shelf;
     private PersonalGoal personalGoal;
 
-    public void setPosition(int position) {
-        this.position=position;
-    }
-
     public void setPoints(int[] points){
         this.points=points;
     }
@@ -21,14 +17,6 @@ public class Player {
 
     public void setPersonalGoal(PersonalGoal personalGoal) {
         this.personalGoal=personalGoal;
-    }
-
-    public Shelf getShelf() {
-        return shelf;
-    }
-
-    public PersonalGoal getPersonalGoal() {
-        return personalGoal;
     }
 
     public int getPosition(){

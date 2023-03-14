@@ -1,7 +1,7 @@
 package org.example.Model;
 
 public class CommonGoal{
-    //manca il costruttore
+    //manca il costruttore, una volta fatto il costruttore mettere final a goalCode
     private int goalCode;
     private int redeemedNumber;
 

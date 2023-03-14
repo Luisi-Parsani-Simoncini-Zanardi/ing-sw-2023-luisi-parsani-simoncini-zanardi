@@ -1,7 +1,6 @@
 package org.example.Model;
 
 public class Board{
-    //manca costruttore normale
     private Tiles[][] board;
     private boolean endGame;
     private Bag bag;
