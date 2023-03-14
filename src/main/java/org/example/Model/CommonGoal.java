@@ -1,10 +1,16 @@
 package org.example.Model;
 
 public class CommonGoal{
-    //manca il costruttore, una volta fatto il costruttore mettere final a goalCode
+
     private int goalCode;
     private int redeemedNumber;
 
+    //costruttore
+    public CommonGoal(int code){
+
+        this.redeemedNumber = 0;
+        this.goalCode = code;
+    }
     public CommonGoal getCommonGoal(){
         return this;
     }
