@@ -7,3 +7,5 @@ Fare personalGoal con JSON
 Creare test sul Model
 
 Iniziare ad abbozzare il Controller
+
+Aggiungere la chat nel Model
