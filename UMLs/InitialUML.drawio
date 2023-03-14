@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-14T14:51:10.576Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="O4Hg99Sfa92JMPO8qTvf" version="21.0.6" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-14T15:34:12.001Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="o9mx5jOeEI3C8dBVM24E" version="21.0.6" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
     <mxGraphModel dx="1877" dy="591" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -112,7 +112,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-38" value="Player" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="350" y="335" width="180" height="260" as="geometry" />
+          <mxGeometry x="330" y="300" width="180" height="310" as="geometry" />
         </mxCell>
         <mxCell id="Z1P8TGeqZuuGpUr6qu0I-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="Mxky3zlpcd0uLPRcEJlR-38" source="Mxky3zlpcd0uLPRcEJlR-41" target="Mxky3zlpcd0uLPRcEJlR-41" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -123,8 +123,8 @@
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-40" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="Mxky3zlpcd0uLPRcEJlR-38" vertex="1">
           <mxGeometry y="90" width="180" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="Mxky3zlpcd0uLPRcEJlR-41" value="+ setPoints(player, points: int): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getPoints(player: Player): int&lt;br&gt;+ addTile(tile: Tiles): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getTiles(): List&amp;lt;Tiles&amp;gt;&lt;br&gt;+ getPosition(): int&lt;br&gt;+ setShelf(shelf: Shelf): void&lt;br&gt;+ setPersonalGoal(personalgoal: PersonalGoal): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-38" vertex="1">
-          <mxGeometry y="98" width="180" height="162" as="geometry" />
+        <mxCell id="Mxky3zlpcd0uLPRcEJlR-41" value="+ setPoints(player, points: int): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getPoints(player: Player): int&lt;br&gt;+ addTile(tile: Tiles): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getTiles(): List&amp;lt;Tiles&amp;gt;&lt;br&gt;+ getPosition(): int&lt;br&gt;+ setShelf(shelf: Shelf): void&lt;br&gt;+ setPersonalGoal(personalgoal: PersonalGoal): void&lt;br&gt;+ selectTile(index: int): Tiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-38" vertex="1">
+          <mxGeometry y="98" width="180" height="212" as="geometry" />
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-42" value="" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.524;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="Mxky3zlpcd0uLPRcEJlR-38" target="Mxky3zlpcd0uLPRcEJlR-4" edge="1">
           <mxGeometry x="-0.913" y="-5" relative="1" as="geometry">
