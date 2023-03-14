@@ -1,7 +1,6 @@
 package org.example.Model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Player {
     private final int position;
