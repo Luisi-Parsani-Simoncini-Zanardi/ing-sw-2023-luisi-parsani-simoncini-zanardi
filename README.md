@@ -6,6 +6,4 @@ Creare test sul Model
 
 Iniziare ad abbozzare il Controller
 
-Aggiungere la chat e i nickname nel Model
-
 Setuppare i JSON di backup per la persistenza
