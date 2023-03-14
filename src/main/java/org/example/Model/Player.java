@@ -4,14 +4,16 @@ import java.util.ArrayList;
 
 public class Player {
     private final int position;
+    private final String nickname;
     private int points;
     private Shelf shelf;
     private PersonalGoal personalGoal;
 
     private ArrayList<Tiles> temporaryTiles;
 
-    public Player (int numero) {
+    public Player (String nickname, int numero) {
         this.position=numero;
+        this.nickname=nickname;
         this.points=0;
         //shelf e personalGoal andranno settate con il loro rispettivo set dopo aver chiamato il costruttore
     }
@@ -39,6 +41,10 @@ public class Player {
 
     public int getPosition(){
         return position;
+    }
+
+    public String getNickname(){
+        return nickname;
     }
 
     public int getPoints(){
