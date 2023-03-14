@@ -16,7 +16,6 @@ public class Bag {
             tiles.add(Tiles.PLANTS);
             tiles.add(Tiles.GAMES);
         }
-        tiles.add(Tiles.EMPTY);
         Collections.shuffle(tiles); //ho trovato questo metodo che in maniera molto comoda randomizza la lista
     }                               //a questo punto la pop può semplicemente restituire il primo elemento
 
