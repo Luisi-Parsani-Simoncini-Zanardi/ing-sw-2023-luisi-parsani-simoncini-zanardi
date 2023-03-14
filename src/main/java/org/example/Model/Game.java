@@ -32,6 +32,7 @@ public class Game{
     public Player[] getPlayers() {
         return players;
     }
+    //da rivedere
 
     public void setBoard(Board board) {
         this.board = board;

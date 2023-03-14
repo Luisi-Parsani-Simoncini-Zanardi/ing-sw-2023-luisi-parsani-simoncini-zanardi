@@ -7,9 +7,5 @@ public class PersonalGoal {
         //da implementare
     }
 
-    public PersonalGoal(PersonalGoal personalGoal){
-        this.personalGoal=personalGoal.personalGoal;
-    }
-
     public PersonalGoal getPersonalGoal(){return this;}
 }
