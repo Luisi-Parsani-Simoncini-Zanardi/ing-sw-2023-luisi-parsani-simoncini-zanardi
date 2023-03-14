@@ -1,10 +1,14 @@
 package org.example.Model;
 
+import java.util.ArrayList;
+
 public class Player {
     private final int position;
     private int points;
     private Shelf shelf;
     private PersonalGoal personalGoal;
+
+    private ArrayList<Tiles> temporaryTiles;
 
     public Player (int numero) {
         this.position=numero;
@@ -23,6 +27,15 @@ public class Player {
     public void setPersonalGoal(PersonalGoal personalGoal) {
         this.personalGoal=personalGoal;
     }
+
+    public void addTile(Tiles tiles) {
+        temporaryTiles.add(tiles);
+    }
+
+    public ArrayList<Tiles> getTiles() {
+        return temporaryTiles;
+    }
+
 
     public int getPosition(){
         return position;
