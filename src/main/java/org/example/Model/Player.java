@@ -15,7 +15,7 @@ public class Player {
         this.position=numero;
         this.nickname=nickname;
         this.points=0;
-        //shelf e personalGoal will have to be setted by their respective set fuction after calling the constructor
+        //shelf e personalGoal will have to be set by their respective set function after calling the constructor
     }
 
     public int getPosition(){
