@@ -15,15 +15,16 @@ public class CommonGoal{
         return this;
     }
 
-    public void increaseRedeemedNumber() {
-        redeemedNumber++;
+    public int getGoalCode() {
+        return goalCode;
     }
 
-    public int getGoalCode() { //non c'è in UML
-        return goalCode;
+    public void increaseRedeemedNumber() {
+        redeemedNumber++;
     }
 
     public int getRedeemedNumber() {
         return redeemedNumber;
     }
+
 }
