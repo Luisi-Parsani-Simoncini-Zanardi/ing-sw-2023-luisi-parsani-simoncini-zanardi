@@ -17,16 +17,16 @@ public class PersonalGoal {
                 personalGoal[3][1]=Tiles.GAMES;
                 personalGoal[0][0]=Tiles.PLANTS;
                 personalGoal[0][2]=Tiles.FRAMES;
-                personalGoal[1][5]=Tiles.CATS;
+                personalGoal[1][4]=Tiles.CATS;
                 personalGoal[2][3]=Tiles.BOOKS;
                 personalGoal[5][2]=Tiles.TROPHIES;
                 break;
             case 2:
                 personalGoal[2][2]=Tiles.GAMES;
                 personalGoal[1][1]=Tiles.PLANTS;
-                personalGoal[5][5]=Tiles.FRAMES;
+                personalGoal[5][4]=Tiles.FRAMES;
                 personalGoal[2][0]=Tiles.CATS;
-                personalGoal[3][5]=Tiles.BOOKS;
+                personalGoal[3][4]=Tiles.BOOKS;
                 personalGoal[4][3]=Tiles.TROPHIES;
                 break;
             case 3:
