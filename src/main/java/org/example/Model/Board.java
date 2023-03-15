@@ -5,7 +5,7 @@ public class Board{
     private boolean endGame;
     private Bag bag;
 
-    public Board(){ //inizializzo la board a 4 giocatori, se sono meno la ridurrà il controller
+    public Board(){ //initializes the 4-player board, the controller will eventually reduce it
         this.board = new Tiles[][]{
             {Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED},
             {Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED},

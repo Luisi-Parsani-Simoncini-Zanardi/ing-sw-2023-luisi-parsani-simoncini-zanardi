@@ -2,7 +2,6 @@ package org.example.Model;
 
 public class Game{
 
-    //costruttore
     public Game (){}
     private Player firstPlayer;
     private Player currentPlayer;

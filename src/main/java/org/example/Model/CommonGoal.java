@@ -5,7 +5,6 @@ public class CommonGoal{
     private final int goalCode;
     private int redeemedNumber;
 
-    //costruttore
     public CommonGoal(int code){
 
         this.redeemedNumber = 0;
