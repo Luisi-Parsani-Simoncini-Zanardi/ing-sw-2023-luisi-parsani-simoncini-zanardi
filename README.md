@@ -1,6 +1,6 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
 
-Fare personalGoal con JSON
+Fare personalGoal e board con JSON
 
 Creare test sul Model
 
