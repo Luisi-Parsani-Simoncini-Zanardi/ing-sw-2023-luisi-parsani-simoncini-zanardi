@@ -11,8 +11,8 @@ public class Player {
 
     private ArrayList<Tiles> temporaryTiles;
 
-    public Player (String nickname, int numero) {
-        this.position=numero;
+    public Player (String nickname, int number) {
+        this.position=number;
         this.nickname=nickname;
         this.points=0;
         //shelf e personalGoal will have to be set by their respective set function after calling the constructor
