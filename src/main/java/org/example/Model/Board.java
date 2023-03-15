@@ -26,8 +26,8 @@ public class Board{
         this.bag=board.bag;
     }
 
-    public Board getBoard(){
-        return this;
+    public Tiles[][] getBoard(){
+        return board;
     }
 
     public void updateBoard(Tiles tile,int column,int row){

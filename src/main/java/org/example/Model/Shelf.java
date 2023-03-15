@@ -15,8 +15,8 @@ public class Shelf {
         this.shelf = shelf.shelf;
     }
 
-    public Shelf getShelf(){
-        return this;
+    public Tiles[][] getShelf(){
+        return shelf;
     }
 
     public void insertTiles(Tiles tile, int column, int row){

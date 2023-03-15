@@ -110,5 +110,5 @@ public class PersonalGoal {
         }
     }
 
-    public PersonalGoal getPersonalGoal() { return this; }
+    public Tiles[][] getPersonalGoal() { return personalGoal; }
 }

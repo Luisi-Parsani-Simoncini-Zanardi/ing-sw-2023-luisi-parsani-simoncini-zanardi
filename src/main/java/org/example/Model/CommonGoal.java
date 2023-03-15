@@ -10,9 +10,6 @@ public class CommonGoal{
         this.redeemedNumber = 0;
         this.goalCode = code;
     }
-    public CommonGoal getCommonGoal(){
-        return this;
-    }
 
     public int getGoalCode() {
         return goalCode;
