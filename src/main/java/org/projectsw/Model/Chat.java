@@ -1,4 +1,4 @@
-package org.example.Model;
+package org.projectsw.Model;
 
 import java.util.ArrayList;
 
