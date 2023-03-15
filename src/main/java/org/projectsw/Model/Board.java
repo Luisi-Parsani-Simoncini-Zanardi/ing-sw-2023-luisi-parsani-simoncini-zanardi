@@ -6,18 +6,7 @@ public class Board{
     private Bag bag;
 
     public Board(){ //initializes the 4-player board, the controller will eventually reduce it
-        this.board = new Tiles[][]{
-            {Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED},
-            {Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED},
-            {Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED},
-            {Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY},
-            {Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY},
-            {Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED},
-            {Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED},
-            {Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED},
-            {Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED, Tiles.EMPTY, Tiles.EMPTY, Tiles.UNUSED, Tiles.UNUSED, Tiles.UNUSED},
 
-        };
     }
 
     public Board(Board board){
