@@ -21,6 +21,9 @@ public class Board{
                 if(tmpMatrix[i][j].equals("EMPTY")){board[i][j] = Tiles.EMPTY;}
             }
         }
+
+        endGame = false;
+        bag = new Bag();
     }
 
     public Board(Board board){
