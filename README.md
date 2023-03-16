@@ -13,3 +13,7 @@ bisogna sistemare temporaryTiles nella classe player in modo che non ne posso av
 -Lorenzo Luisi
 sistemato, ho messo una Exception. poi parleremo meglio di cosa deve fare, ma penso sia legato alla view quello
 -Luca Parsani
+
+AGGIORNAMENTO BUG PLAYER!
+mi sono appena accorto che addTiles deve gestire anche il fatto che non si possono aggiungere EMPTY e UNUSED tiles.
+-Lorenzo Luisi
