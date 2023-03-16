@@ -11,3 +11,5 @@ Setuppare i JSON di backup per la persistenza -> lollo
 NOTA BUG!!!
 bisogna sistemare temporaryTiles nella classe player in modo che non ne posso avere più di 3
 -Lorenzo Luisi
+sistemato, ho messo una Exception. poi parleremo meglio di cosa deve fare, ma penso sia legato alla view quello
+-Luca Parsani
