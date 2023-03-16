@@ -15,6 +15,7 @@ public class Player {
         this.position=number;
         this.nickname=nickname;
         this.points=0;
+        this.temporaryTiles = new ArrayList<Tiles>();
         //shelf e personalGoal will have to be set by their respective set function after calling the constructor
     }
 
