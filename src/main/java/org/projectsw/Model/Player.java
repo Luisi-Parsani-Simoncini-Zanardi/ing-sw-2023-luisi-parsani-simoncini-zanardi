@@ -50,8 +50,15 @@ public class Player {
         return personalGoal;
     }
 
-    public void addTile(Tiles tiles) {
-        temporaryTiles.add(tiles);
+    public void addTile(Tiles tiles) throws MaximumTilesException {
+        if (temporaryTiles.size()<3)
+        {
+            temporaryTiles.add(tiles);
+        }
+        else
+        {
+            throw new MaximumTilesException("Maximum number of tiles reached");
+        }
     }
 
     public ArrayList<Tiles> getTiles() {
