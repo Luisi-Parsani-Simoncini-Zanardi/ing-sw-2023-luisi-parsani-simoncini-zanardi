@@ -171,13 +171,13 @@ class PlayerTest {
         try{
             player2.addTile(Tiles.UNUSED);
         }catch(Exception e){
-            //aggiungere assert size e controllo interno
+            assertEquals("You can't add an UNUSED tile", e.getMessage());
         }
 
         try{
             player2.addTile(Tiles.EMPTY);
         }catch(Exception e){
-            //aggiungere assert size e controllo interno
+            assertEquals("You can't add an EMPTY tile", e.getMessage());
         }
     }
 
