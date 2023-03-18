@@ -19,7 +19,14 @@ public class Shelf {
         return shelf;
     }
 
-    public void insertTiles(Tiles tile, int column, int row){
-        shelf[row][column] = tile;
+    public void insertTiles(Tiles tile, int row, int column) throws EmptyTilesException, UnusedTilesException{
+        if(row>5 || column > 4)
+            throw new ArrayIndexOutOfBoundsException("Out of bounds");
+        else if(tile.equals(Tiles.EMPTY))
+            throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
+        else if(tile.equals(Tiles.UNUSED))
+            throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
+        else
+            shelf[row][column] = tile;
     }
 }
