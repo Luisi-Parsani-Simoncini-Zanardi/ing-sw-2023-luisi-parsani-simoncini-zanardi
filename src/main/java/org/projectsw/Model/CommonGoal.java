@@ -15,8 +15,12 @@ public class CommonGoal{
         return goalCode;
     }
 
-    public void increaseRedeemedNumber() {
-        redeemedNumber++;
+    public void increaseRedeemedNumber() throws MaximumRedeemedPointsException{
+        if(getRedeemedNumber()<4)
+            redeemedNumber++;
+        else{
+            throw new MaximumRedeemedPointsException("There are no more points to redeem");
+        }
     }
 
     public int getRedeemedNumber() {
