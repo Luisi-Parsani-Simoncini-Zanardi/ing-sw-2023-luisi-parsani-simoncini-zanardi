@@ -30,7 +30,7 @@ public class Board{
         return board;
     }
 
-    public void updateBoard(Tiles tile,int column,int row){
+    public void updateBoard(Tiles tile,int row,int column){
         board[row][column]=tile;
     }
 
