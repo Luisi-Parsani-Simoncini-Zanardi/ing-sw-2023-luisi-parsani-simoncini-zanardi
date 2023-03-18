@@ -51,14 +51,16 @@ public class Player {
         return personalGoal;
     }
 
-    public void addTile(Tiles tiles) throws MaximumTilesException {
-        if (temporaryTiles.size()<3)
-        {
-            temporaryTiles.add(tiles);
-        }
-        else
-        {
+    public void addTile(Tiles tiles) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
+
+        if(temporaryTiles.size()>2){
             throw new MaximumTilesException("Maximum number of tiles reached");
+        }else if(tiles == Tiles.EMPTY){
+            throw new EmptyTilesException("You can't add an EMPTY tile");
+        }else if(tiles == Tiles.UNUSED){
+            throw new UnusedTilesException("You can't add an UNUSED tile");
+        }else{
+            temporaryTiles.add(tiles);
         }
     }
 
