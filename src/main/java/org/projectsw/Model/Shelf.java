@@ -21,7 +21,7 @@ public class Shelf {
 
     public void insertTiles(Tiles tile, int row, int column) throws EmptyTilesException, UnusedTilesException{
         if(row>5 || column > 4)
-            throw new ArrayIndexOutOfBoundsException("Out of bounds");
+            throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.equals(Tiles.EMPTY))
             throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.equals(Tiles.UNUSED))
