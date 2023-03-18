@@ -31,7 +31,10 @@ public class Board{
     }
 
     public void updateBoard(Tiles tile,int row,int column){
-        board[row][column]=tile;
+        if(row>8 || column>8)
+            throw new IndexOutOfBoundsException();
+        else
+            board[row][column]=tile;
     }
 
     public Tiles getTileFromBoard(int row,int column){
