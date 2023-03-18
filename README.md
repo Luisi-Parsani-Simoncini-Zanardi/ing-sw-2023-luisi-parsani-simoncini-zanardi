@@ -21,4 +21,6 @@ mi sono appena accorto che addTiles deve gestire anche il fatto che non si posso
 CONSIDERAZIONE SULLA CLASSE BOARD:
 potremmo settare endGame direttamente a false all'inizio della partita invece che doverlo fare manualmente ogni volta con setEndgame, perchè quando chiamiamo il costruttore di Board l'attributo endGame rimane non inizializzato. -Lorenzo Luisi
 
-POTENZIALE BUG!!! non c'è nessun modo di accedere alla bag di una board attraverso la classe Board e quindi potrebbe dare dei problemi quando si usa il costruttore di Board passandogli dei parametri
+POTENZIALI BUG:
+-non c'è nessun modo di accedere alla bag di una board attraverso la classe Board e quindi potrebbe dare dei problemi quando si usa il costruttore di Board passandogli dei parametri
+-bisogna gestire il fatto che non si possono solo 2 common goal in game e che quest'ultimi non possono essere uguali
