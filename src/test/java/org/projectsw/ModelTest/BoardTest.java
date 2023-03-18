@@ -35,16 +35,33 @@ class BoardTest {
     //test that the returned tile is of the right type
     @Test
     void getTileFromBoard() {
+        Board board = new Board();
+        Tiles temp;
+        board.updateBoard(Tiles.CATS, 4,0);
+        assertEquals(Tiles.CATS, board.getBoard()[4][0]);
+        temp = board.getTileFromBoard(4, 0);
+        assertEquals(Tiles.EMPTY, board.getBoard()[4][0]);
+        assertEquals(Tiles.CATS,temp);
     }
 
     //test that it sets the board to the endGame
     @Test
     void setEndGame() {
+        Board board = new Board();
+        board.setEndGame(false);
+        assertFalse(board.isEndGame());
+        board.setEndGame(true);
+        assertTrue(board.isEndGame());
     }
 
     //test that the value of endGame is the right one
     @Test
     void isEndGame() {
+        Board board = new Board();
+        board.setEndGame(false);
+        assertFalse(board.isEndGame());
+        board.setEndGame(true);
+        assertTrue(board.isEndGame());
     }
 
 }

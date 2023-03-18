@@ -34,7 +34,7 @@ public class Board{
         board[row][column]=tile;
     }
 
-    public Tiles getTileFromBoard(Tiles tile,int column,int row){
+    public Tiles getTileFromBoard(int row,int column){
         Tiles tmp = board[row][column];
         board[row][column]=Tiles.EMPTY;
         return tmp;
