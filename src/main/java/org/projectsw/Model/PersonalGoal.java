@@ -1,114 +1,34 @@
 package org.projectsw.Model;
 
+import com.google.gson.Gson;
+
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.util.*;
+
 public class PersonalGoal {
-    private Tiles[][] personalGoal;
+    private final Tiles[][] personalGoal;
+    private static List<Integer> usedCodes = new ArrayList<>(); //called codes
 
-    private static int[] used;//codici già chiamati
+    public PersonalGoal(int goalCode) throws IOException{
+        usedCodes.add(goalCode);  //the constructor add the used code to the list but doesn't check if the code is already used
+        Gson gson = new Gson();
+        String[][][] tmpMatrixes = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
 
-    public PersonalGoal(int cardCode){
         personalGoal = new Tiles[6][5];
         for (int i=0;i<6;i++){
             for(int j=0;j<5;j++){
-                personalGoal[i][j]=Tiles.EMPTY;
+                String str = tmpMatrixes[goalCode][i][j];
+                if(str.equals("EMPTY")){personalGoal[i][j] = Tiles.EMPTY;}
+                if(str.equals("PLANTS")){personalGoal[i][j] = Tiles.PLANTS;}
+                if(str.equals("TROPHIES")){personalGoal[i][j] = Tiles.TROPHIES;}
+                if(str.equals("GAMES")){personalGoal[i][j] = Tiles.GAMES;}
+                if(str.equals("EMPTY")){personalGoal[i][j] = Tiles.FRAMES;}
+                if(str.equals("EMPTY")){personalGoal[i][j] = Tiles.CATS;}
+                if(str.equals("EMPTY")){personalGoal[i][j] = Tiles.BOOKS;}
             }
-        }
-        switch(cardCode){
-            case 1:
-                personalGoal[3][1]=Tiles.GAMES;
-                personalGoal[0][0]=Tiles.PLANTS;
-                personalGoal[0][2]=Tiles.FRAMES;
-                personalGoal[1][4]=Tiles.CATS;
-                personalGoal[2][3]=Tiles.BOOKS;
-                personalGoal[5][2]=Tiles.TROPHIES;
-                break;
-            case 2:
-                personalGoal[2][2]=Tiles.GAMES;
-                personalGoal[1][1]=Tiles.PLANTS;
-                personalGoal[5][4]=Tiles.FRAMES;
-                personalGoal[2][0]=Tiles.CATS;
-                personalGoal[3][4]=Tiles.BOOKS;
-                personalGoal[4][3]=Tiles.TROPHIES;
-                break;
-            case 3:
-                personalGoal[1][3]=Tiles.GAMES;
-                personalGoal[2][2]=Tiles.PLANTS;
-                personalGoal[1][0]=Tiles.FRAMES;
-                personalGoal[3][1]=Tiles.CATS;
-                personalGoal[5][0]=Tiles.BOOKS;
-                personalGoal[3][4]=Tiles.TROPHIES;
-                break;
-            case 4:
-                personalGoal[0][4]=Tiles.GAMES;
-                personalGoal[3][3]=Tiles.PLANTS;
-                personalGoal[2][2]=Tiles.FRAMES;
-                personalGoal[4][2]=Tiles.CATS;
-                personalGoal[4][1]=Tiles.BOOKS;
-                personalGoal[2][0]=Tiles.TROPHIES;
-                break;
-            case 5:
-                personalGoal[5][0]=Tiles.GAMES;
-                personalGoal[4][4]=Tiles.PLANTS;
-                personalGoal[3][1]=Tiles.FRAMES;
-                personalGoal[5][3]=Tiles.CATS;
-                personalGoal[3][2]=Tiles.BOOKS;
-                personalGoal[1][1]=Tiles.TROPHIES;
-                break;
-            case 6:
-                personalGoal[4][1]=Tiles.GAMES;
-                personalGoal[5][0]=Tiles.PLANTS;
-                personalGoal[4][3]=Tiles.FRAMES;
-                personalGoal[0][4]=Tiles.CATS;
-                personalGoal[2][3]=Tiles.BOOKS;
-                personalGoal[0][2]=Tiles.TROPHIES;
-                break;
-            case 7:
-                personalGoal[4][4]=Tiles.GAMES;
-                personalGoal[2][1]=Tiles.PLANTS;
-                personalGoal[1][3]=Tiles.FRAMES;
-                personalGoal[0][0]=Tiles.CATS;
-                personalGoal[5][2]=Tiles.BOOKS;
-                personalGoal[3][0]=Tiles.TROPHIES;
-                break;
-            case 8:
-                personalGoal[5][3]=Tiles.GAMES;
-                personalGoal[3][0]=Tiles.PLANTS;
-                personalGoal[0][4]=Tiles.FRAMES;
-                personalGoal[1][1]=Tiles.CATS;
-                personalGoal[4][3]=Tiles.BOOKS;
-                personalGoal[2][2]=Tiles.TROPHIES;
-                break;
-            case 9:
-                personalGoal[0][2]=Tiles.GAMES;
-                personalGoal[4][4]=Tiles.PLANTS;
-                personalGoal[5][0]=Tiles.FRAMES;
-                personalGoal[2][2]=Tiles.CATS;
-                personalGoal[3][4]=Tiles.BOOKS;
-                personalGoal[4][1]=Tiles.TROPHIES;
-                break;
-            case 10:
-                personalGoal[1][1]=Tiles.GAMES;
-                personalGoal[5][3]=Tiles.PLANTS;
-                personalGoal[4][1]=Tiles.FRAMES;
-                personalGoal[3][3]=Tiles.CATS;
-                personalGoal[2][0]=Tiles.BOOKS;
-                personalGoal[0][4]=Tiles.TROPHIES;
-                break;
-            case 11:
-                personalGoal[2][0]=Tiles.GAMES;
-                personalGoal[0][2]=Tiles.PLANTS;
-                personalGoal[3][2]=Tiles.FRAMES;
-                personalGoal[4][4]=Tiles.CATS;
-                personalGoal[1][1]=Tiles.BOOKS;
-                personalGoal[5][3]=Tiles.TROPHIES;
-                break;
-            case 12:
-                personalGoal[4][4]=Tiles.GAMES;
-                personalGoal[1][1]=Tiles.PLANTS;
-                personalGoal[2][2]=Tiles.FRAMES;
-                personalGoal[5][0]=Tiles.CATS;
-                personalGoal[0][2]=Tiles.BOOKS;
-                personalGoal[3][3]=Tiles.TROPHIES;
-                break;
         }
     }
 
