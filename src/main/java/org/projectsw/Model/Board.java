@@ -24,6 +24,8 @@ public class Board{
 
         endGame = false;
         bag = new Bag();
+
+        endGame = false;
     }
 
     public Board(Board board){
