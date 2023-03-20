@@ -36,11 +36,14 @@ public class Board{
         return board;
     }
 
-    public void updateBoard(Tiles tile,int column,int row){
-        board[row][column]=tile;
+    public void updateBoard(Tiles tile,int row,int column){
+        if(row>8 || column>8)
+            throw new IndexOutOfBoundsException();
+        else
+            board[row][column]=tile;
     }
 
-    public Tiles getTileFromBoard(Tiles tile,int column,int row){
+    public Tiles getTileFromBoard(int row,int column){
         Tiles tmp = board[row][column];
         board[row][column]=Tiles.EMPTY;
         return tmp;

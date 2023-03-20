@@ -30,7 +30,6 @@ public class PersonalGoal {
                 if(str.equals("EMPTY")){personalGoal[i][j] = Tiles.BOOKS;}
             }
         }
-
     }
 
     public Tiles[][] getPersonalGoal() { return personalGoal; }
