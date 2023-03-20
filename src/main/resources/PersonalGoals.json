@@ -1,422 +1,530 @@
 [
-  {
-    "name": "Pg1",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "1",
-        "column": "5"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "2",
-        "column": "3"
-      },
-      {
-        "tile": "GAMES",
-        "row": "3",
-        "column": "1"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "0",
-        "column": "2"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "5",
-        "column": "2"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "0",
-        "column": "0"
-      }
+  [
+    [
+      "PLANTS" ,
+      "EMPTY" ,
+      "FRAMES" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "CATS"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "BOOKS" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "GAMES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg2",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "2",
-        "column": "0"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "3",
-        "column": "5"
-      },
-      {
-        "tile": "GAMES",
-        "row": "2",
-        "column": "2"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "5",
-        "column": "5"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "4",
-        "column": "3"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "1",
-        "column": "1"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "PLANTS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "CATS" ,
+      "EMPTY" ,
+      "GAMES" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "BOOKS"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "FRAMES"
     ]
-  },
-  {
-    "name": "Pg3",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "3",
-        "column": "1"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "5",
-        "column": "0"
-      },
-      {
-        "tile": "GAMES",
-        "row": "1",
-        "column": "3"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "1",
-        "column": "0"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "3",
-        "column": "4"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "2",
-        "column": "2"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "FRAMES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "GAMES" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "PLANTS" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "CATS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "BOOKS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg4",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "4",
-        "column": "2"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "4",
-        "column": "1"
-      },
-      {
-        "tile": "GAMES",
-        "row": "0",
-        "column": "4"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "2",
-        "column": "2"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "2",
-        "column": "0"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "3",
-        "column": "3"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "GAMES"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "TROPHIES" ,
+      "EMPTY" ,
+      "FRAMES" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "PLANTS" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "BOOKS" ,
+      "CATS" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg5",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "5",
-        "column": "3"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "3",
-        "column": "2"
-      },
-      {
-        "tile": "GAMES",
-        "row": "5",
-        "column": "0"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "3",
-        "column": "1"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "1",
-        "column": "1"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "4",
-        "column": "4"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "FRAMES" ,
+      "BOOKS" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "PLANTS"
+    ] ,
+    [
+      "GAMES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "CATS" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg6",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "0",
-        "column": "4"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "2",
-        "column": "3"
-      },
-      {
-        "tile": "GAMES",
-        "row": "4",
-        "column": "1"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "4",
-        "column": "3"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "0",
-        "column": "2"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "5",
-        "column": "0"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY" ,
+      "CATS"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "BOOKS" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "GAMES" ,
+      "EMPTY" ,
+      "FRAMES" ,
+      "EMPTY"
+    ] ,
+    [
+      "PLANTS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg7",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "0",
-        "column": "0"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "5",
-        "column": "2"
-      },
-      {
-        "tile": "GAMES",
-        "row": "4",
-        "column": "4"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "1",
-        "column": "3"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "3",
-        "column": "0"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "2",
-        "column": "1"
-      }
+  ],
+  [
+    [
+      "CATS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "FRAMES" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "PLANTS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "TROPHIES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "GAMES"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "BOOKS" ,
+      "EMPTY" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg8",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "1",
-        "column": "1"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "4",
-        "column": "3"
-      },
-      {
-        "tile": "GAMES",
-        "row": "5",
-        "column": "3"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "0",
-        "column": "4"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "2",
-        "column": "2"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "3",
-        "column": "0"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "FRAMES"
+    ] ,
+    [
+      "EMPTY" ,
+      "CATS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "PLANTS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "BOOKS" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "GAMES" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg9",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "2",
-        "column": "2"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "3",
-        "column": "4"
-      },
-      {
-        "tile": "GAMES",
-        "row": "0",
-        "column": "2"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "5",
-        "column": "0"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "4",
-        "column": "1"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "4",
-        "column": "4"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "GAMES" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "CATS" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "BOOKS"
+    ] ,
+    [
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "PLANTS"
+    ] ,
+    [
+      "FRAMES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg10",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "3",
-        "column": "3"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "2",
-        "column": "0"
-      },
-      {
-        "tile": "GAMES",
-        "row": "1",
-        "column": "1"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "4",
-        "column": "1"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "0",
-        "column": "4"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "5",
-        "column": "3"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES"
+    ] ,
+    [
+      "EMPTY" ,
+      "GAMES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "BOOKS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "CATS" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "FRAMES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "PLANTS" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg11",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "4",
-        "column": "4"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "1",
-        "column": "1"
-      },
-      {
-        "tile": "GAMES",
-        "row": "2",
-        "column": "0"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "3",
-        "column": "2"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "5",
-        "column": "3"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "0",
-        "column": "2"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "PLANTS" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "BOOKS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "GAMES" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "FRAMES" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "CATS"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY"
     ]
-  },
-  {
-    "name": "Pg12",
-    "PgShelf": [
-      {
-        "tile": "CATS",
-        "row": "5",
-        "column": "0"
-      } ,
-      {
-        "tile": "BOOKS",
-        "row": "0",
-        "column": "2"
-      },
-      {
-        "tile": "GAMES",
-        "row": "4",
-        "column": "4"
-      },
-      {
-        "tile": "FRAMES",
-        "row": "2",
-        "column": "2"
-      },
-      {
-        "tile": "TROPHIES",
-        "row": "3",
-        "column": "3"
-      },
-      {
-        "tile": "PLANTS",
-        "row": "1",
-        "column": "1"
-      }
+  ],
+  [
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "BOOKS" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "PLANTS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "FRAMES" ,
+      "EMPTY" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "TROPHIES" ,
+      "EMPTY"
+    ] ,
+    [
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "GAMES"
+    ] ,
+    [
+      "CATS" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY" ,
+      "EMPTY"
     ]
-  }
+    ]
 ]
