@@ -6,13 +6,14 @@ import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
+import java.util.*;
 
 public class PersonalGoal {
     private final Tiles[][] personalGoal;
-
-    private static int[] used;//codici già chiamati
+    private static List<Integer> usedCodes = new ArrayList<>(); //called codes
 
     public PersonalGoal(int goalCode) throws IOException{
+        usedCodes.add(goalCode);  //the constructor add the used code to the list but doesn't check if the code is already used
         Gson gson = new Gson();
         String[][][] tmpMatrixes = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
 
@@ -29,6 +30,7 @@ public class PersonalGoal {
                 if(str.equals("EMPTY")){personalGoal[i][j] = Tiles.BOOKS;}
             }
         }
+
     }
 
     public Tiles[][] getPersonalGoal() { return personalGoal; }
