@@ -6,6 +6,8 @@ import org.projectsw.Model.Player;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tiles;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
@@ -60,7 +62,7 @@ class PlayerTest {
 
     //test that the method sets correctly every possible personalGoal
     @Test
-    void setPersonalGoal() {
+    void setPersonalGoal() throws IOException {
         Player player = new Player("Morfeo", 1);
         PersonalGoal personal1 = new PersonalGoal(1);
         player.setPersonalGoal(personal1);
@@ -113,7 +115,7 @@ class PlayerTest {
 
     //test that the method returns the correct value of personal goal
     @Test
-    void getPersonalGoal() {
+    void getPersonalGoal() throws IOException {
         PersonalGoal personal = new PersonalGoal(4);
         Player player = new Player("Riccardo", 3);
         player.setPersonalGoal(personal);

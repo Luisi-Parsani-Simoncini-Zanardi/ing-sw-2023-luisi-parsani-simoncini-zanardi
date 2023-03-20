@@ -14,10 +14,10 @@ class ChatTest {
     void addChatLog(){
         Chat chat = new Chat();
         chat.addChatLog("Testing");
-        chat.addChatLog("classe");
+        chat.addChatLog("class");
         chat.addChatLog("chat");
         assertEquals("Testing", chat.getChat().get(0));
-        assertEquals("classe", chat.getChat().get(1));
+        assertEquals("class", chat.getChat().get(1));
         assertEquals("chat", chat.getChat().get(2));
     }
 
@@ -26,8 +26,8 @@ class ChatTest {
     void getChat() {
         Chat chat = new Chat();
         ArrayList<String> prova = new ArrayList<String>();
-        chat.addChatLog("Ciao sono Lorenzo e sto testando la classe chat");
-        prova.add("Ciao sono Lorenzo e sto testando la classe chat");
+        chat.addChatLog("Hi i'm Lorenzo and im testing the chat class");
+        prova.add("Hi i'm Lorenzo and im testing the chat class");
         assertEquals(prova, chat.getChat());
     }
 }

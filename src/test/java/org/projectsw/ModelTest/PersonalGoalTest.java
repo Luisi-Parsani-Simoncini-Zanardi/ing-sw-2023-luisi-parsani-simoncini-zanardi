@@ -4,13 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.PersonalGoal;
 import org.projectsw.Model.Tiles;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PersonalGoalTest {
 
     //test that the method returns the right personalGoal
     @Test
-    void getPersonalGoal() {
+    void getPersonalGoal() throws IOException {
         PersonalGoal personal = new PersonalGoal(1);
 
         assertTrue(

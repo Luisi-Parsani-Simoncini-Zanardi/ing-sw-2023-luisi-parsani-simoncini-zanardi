@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BagTest {
 
-    //test that the Tiles returned from the pop() method are og the right type
+    //test that the Tiles returned from the pop() method are of the right type
     //test that if there are no more tiles in the bag it returns Tiles.EMPTY
     @Test
     void pop() {
