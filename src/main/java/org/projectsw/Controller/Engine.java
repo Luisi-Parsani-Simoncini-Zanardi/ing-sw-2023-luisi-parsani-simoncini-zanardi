@@ -23,4 +23,25 @@ public class Engine {
             //send message
         }
     }
+
+    //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class
+    public void selctTiles(){}
+
+    public void placeTiles(){}
+
+    //implemented with strategy pattern
+    public void checkCommonGoals(){}
+
+    public void checkPersonalGoal(){}
+
+    public void endTurn(){}
+
+    public void endGame(){}
+
+    public void resetGame(){}
+
+    public void sayInChat(){}
+
+    public void fillBoard(){}
+
 }
