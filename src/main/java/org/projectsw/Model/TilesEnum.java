@@ -1,5 +1,5 @@
 package org.projectsw.Model;
 
-public enum Tiles {
+public enum TilesEnum {
     CATS,BOOKS,GAMES,FRAMES,TROPHIES,PLANTS,EMPTY,UNUSED;
 }

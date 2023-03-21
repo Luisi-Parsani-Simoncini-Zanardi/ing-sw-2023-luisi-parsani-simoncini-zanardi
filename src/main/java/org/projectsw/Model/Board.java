@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Board{
-    private Tiles[][] board;
+    private TilesEnum[][] board;
     private boolean endGame;
     private Bag bag;
 
@@ -14,11 +14,11 @@ public class Board{
         Gson gson = new Gson();
         String[][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoardFourPlayers.json"), String[][].class);
 
-        board = new Tiles[9][9];
+        board = new TilesEnum[9][9];
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
-                if(tmpMatrix[i][j].equals("UNUSED")){board[i][j] = Tiles.UNUSED;}
-                if(tmpMatrix[i][j].equals("EMPTY")){board[i][j] = Tiles.EMPTY;}
+                if(tmpMatrix[i][j].equals("UNUSED")){board[i][j] = TilesEnum.UNUSED;}
+                if(tmpMatrix[i][j].equals("EMPTY")){board[i][j] = TilesEnum.EMPTY;}
             }
         }
 
@@ -34,7 +34,7 @@ public class Board{
         this.bag=board.bag;
     }
 
-    public Tiles[][] getBoard(){
+    public TilesEnum[][] getBoard(){
         return board;
     }
 
@@ -42,20 +42,20 @@ public class Board{
         return bag;
     }
 
-    public void updateBoard(Tiles tile,int row,int column){
+    public void updateBoard(TilesEnum tile, int row, int column){
         if(row>8 || column>8)
             throw new IndexOutOfBoundsException();
         else
             board[row][column]=tile;
     }
 
-    public Tiles getTileFromBoard(int row,int column){
-        Tiles tmp = board[row][column];
-        board[row][column]=Tiles.EMPTY;
+    public TilesEnum getTileFromBoard(int row, int column){
+        TilesEnum tmp = board[row][column];
+        board[row][column]= TilesEnum.EMPTY;
         return tmp;
     }
 
-    public Tiles getTile(int row,int column){
+    public TilesEnum getTile(int row, int column){
         return board[row][column];
     }
 
