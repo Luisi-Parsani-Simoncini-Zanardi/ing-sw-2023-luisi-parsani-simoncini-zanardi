@@ -51,6 +51,10 @@ public class Board{
         return tmp;
     }
 
+    public Tiles getTile(int row,int column){
+        return board[row][column];
+    }
+
     public boolean isEndGame() {
         return endGame;
     }
