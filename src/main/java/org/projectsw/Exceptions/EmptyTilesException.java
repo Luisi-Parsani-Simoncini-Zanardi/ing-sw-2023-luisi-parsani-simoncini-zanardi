@@ -1,4 +1,4 @@
-package org.projectsw.Model;
+package org.projectsw.Exceptions;
 
 public class EmptyTilesException extends Exception{
 

@@ -1,5 +1,7 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.MaximumRedeemedPointsException;
+
 public class CommonGoal{
 
     private final int goalCode;
@@ -15,7 +17,7 @@ public class CommonGoal{
         return goalCode;
     }
 
-    public void increaseRedeemedNumber() throws MaximumRedeemedPointsException{
+    public void increaseRedeemedNumber() throws MaximumRedeemedPointsException {
         if(getRedeemedNumber()<4)
             redeemedNumber++;
         else{
