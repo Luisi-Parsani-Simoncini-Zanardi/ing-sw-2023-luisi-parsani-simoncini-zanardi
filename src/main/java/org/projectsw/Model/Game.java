@@ -6,7 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Game{
-
+    private Player firstPlayer;
+    private Player currentPlayer;
+    private ArrayList<Player> players;
+    private Board board;
+    private Chat chat;
+    private CommonGoal[] commonGoals;
     public Game (){
         Board board = null;
         try {
@@ -19,15 +24,9 @@ public class Game{
         Chat chat = new Chat();
         setChat(chat);
 
-        ArrayList<Player>players = new ArrayList<Player>();
+        ArrayList<Player>players = new ArrayList<>();
         setPlayers(players);
     }
-    private Player firstPlayer;
-    private Player currentPlayer;
-    private ArrayList<Player> players;
-    private Board board;
-    private Chat chat;
-    private CommonGoal[] commonGoals;
 
     public void setFirstPlayer(Player firstPlayer){
         this.firstPlayer=firstPlayer;
