@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-03-21T13:18:14.411Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="2KEnSwiU0RwsA36M3pau" version="21.0.8" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-21T13:35:29.697Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="o8_oaNf-Hxkm1wonYE8h" version="21.0.8" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="1551" dy="1577" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2227" dy="1957" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -18,7 +18,7 @@
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="Mxky3zlpcd0uLPRcEJlR-1" vertex="1">
           <mxGeometry y="70" width="270" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="Mxky3zlpcd0uLPRcEJlR-4" value="+ setFirstPlayer(firstPlayer: Player): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getFirstPlayer(): Player&lt;br&gt;+ setCurrentPlayer(currentPlayer: Player): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getCurrentPlayer(): Player&lt;br&gt;+ setPlayers(players[]: Player): void&lt;br&gt;+ setBoard(board: Board): void&lt;br&gt;+ setCommonGoals(commonGoal: CommonGoal): void&lt;br&gt;+ getPlayers(): Players[]&lt;br&gt;+ getBoard(): Board&lt;br&gt;+ getCommonGoal(): CommonGoal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-1" vertex="1">
+        <mxCell id="Mxky3zlpcd0uLPRcEJlR-4" value="+ setFirstPlayer(firstPlayer: Player): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getFirstPlayer(): Player&lt;br&gt;+ setCurrentPlayer(currentPlayer: Player): void&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ getCurrentPlayer(): Player&lt;br&gt;+ setPlayers(players[]: Player): void&lt;br&gt;+ addPlayer(player: Player): void&lt;br&gt;+ setBoard(board: Board): void&lt;br&gt;+ setCommonGoals(commonGoal: CommonGoal): void&lt;br&gt;+ getPlayers(): Players[]&lt;br&gt;+ getBoard(): Board&lt;br&gt;+ getCommonGoal(): CommonGoal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-1" vertex="1">
           <mxGeometry y="100" width="270" height="180" as="geometry" />
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-6" value="Board" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
