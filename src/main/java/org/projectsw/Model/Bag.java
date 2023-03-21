@@ -22,9 +22,9 @@ public class Bag {
     public Tile pop(){
         Tile tile;
         if(tiles.isEmpty()){
-            return ;
+            return new Tile(TilesEnum.EMPTY, 0);
         }
-        tile = tiles.get(0);new Tile(TilesEnum.EMPTY, 0)
+        tile = tiles.get(0);
         tiles.remove(0);
         return tile;
     }
