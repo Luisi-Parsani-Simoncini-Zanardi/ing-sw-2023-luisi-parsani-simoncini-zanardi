@@ -6,55 +6,111 @@ import org.projectsw.Exceptions.UnusedTilesException;
 
 import java.util.ArrayList;
 
+/**
+ * Class representing a player in the game.
+ */
 public class Player {
     private final int position;
     private final String nickname;
     private int points;
     private Shelf shelf;
     private PersonalGoal personalGoal;
-
     private ArrayList<Tile> temporaryTiles;
 
-    public Player (String nickname, int number) {
-        this.position=number;
+    /**
+     * Constructs a new player with the given nickname and position.
+     * points are set 0 as default
+     * shelf and personalGoal will have to be set by their respective set function after calling the constructor
+     * @param nickname the nickname of the player
+     * @param position the position of the player
+     */
+    public Player(String nickname, int position) {
+        this.position=position;
         this.nickname=nickname;
         this.points=0;
-        this.temporaryTiles = new ArrayList<Tile>();
-        //shelf e personalGoal will have to be set by their respective set function after calling the constructor
+        this.temporaryTiles = new ArrayList<>();
     }
 
+    /**
+     * Returns the position of the player.
+     * @return the position of the player
+     */
     public int getPosition(){
         return position;
     }
 
+    /**
+     * Returns the nickname of the player.
+     * @return the nickname of the player
+     */
     public String getNickname(){
         return nickname;
     }
 
-    public void setPoints(int points){
-        this.points=points;
-    }
-
+    /**
+     * Returns the points scored by the player.
+     * @return the points scored by the player
+     */
     public int getPoints(){
         return points;
     }
 
-    public void setShelf(Shelf shelf) {
-        this.shelf=shelf;
-    }
-
+    /**
+     * Returns the shelf of the player.
+     * @return the shelf of the player
+     */
     public Shelf getShelf() {
         return shelf;
     }
 
-    public void setPersonalGoal(PersonalGoal personalGoal) {
-        this.personalGoal=personalGoal;
+    /**
+     * Returns the temporary tiles of the player.
+     * @return the temporary tiles of the player
+     */
+    public ArrayList<Tile> getTiles() {
+        return temporaryTiles;
     }
 
+    /**
+     * Returns the personal goal of the player.
+     * @return the personal goal of the player
+     */
     public PersonalGoal getPersonalGoal() {
         return personalGoal;
     }
 
+    /**
+     * Sets the shelf of the player to the given shelf.
+     * @param shelf the shelf to set for the player
+     */
+    public void setShelf(Shelf shelf) {
+        this.shelf=shelf;
+    }
+
+    /**
+     * Sets the points scored by the player to the given points.
+     * @param points the points to set for the player
+     */
+    public void setPoints(int points){
+        this.points=points;
+    }
+
+    /**
+     * Sets the personalGoal of the player to the given personalGoal.
+     * @param personalGoal the personalGoal to set for the player
+     */
+    public void setPersonalGoal(PersonalGoal personalGoal) {
+        this.personalGoal=personalGoal;
+    }
+
+
+    /**
+     * Adds the given tile to the player's temporary tiles.
+     * @param tiles the tile to add to the player's temporary tiles
+     * @throws MaximumTilesException if the player already has the maximum number of tiles (i.e., 3)
+     * @throws EmptyTilesException if the tile is empty
+     * @throws UnusedTilesException if the tile is unused
+     */
     public void addTile(Tile tiles) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
 
         if(temporaryTiles.size()>2){
@@ -68,10 +124,12 @@ public class Player {
         }
     }
 
-    public ArrayList<Tile> getTiles() {
-        return temporaryTiles;
-    }
-
+    /**
+     *Removes and returns the tile at the specified index from the player's temporary tile list.
+     *@param num the index of the tile to select and remove
+     *@return the selected tile
+     *@throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= temporaryTiles.size())
+     */
     public Tile selectTile(int num){
         Tile temp;
         temp = temporaryTiles.get(num);
