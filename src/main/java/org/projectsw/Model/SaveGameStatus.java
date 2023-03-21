@@ -77,8 +77,8 @@ public class SaveGameStatus {
         // serializzazione del modello in formato JSON
         JsonObject json = new JsonObject();
 
-        json.add("firstPlayer", gson.toJsonTree(jsonPlayer(game.getFirstPlayer())));
-        json.add("currentPlayer", gson.toJsonTree(jsonPlayer(game.getCurrentPlayer())));
+        json.add("firstPlayer", new JsonPrimitive(game.getFirstPlayer().getNickname()));
+        json.add("currentPlayer", new JsonPrimitive(game.getCurrentPlayer().getNickname()));
         json.add("players", gson.toJsonTree(jsonPlayerArray()));
         json.add("board", gson.toJsonTree(jsonBoard(game.getBoard())));
         json.add("commonGoals", gson.toJsonTree(jsonCommonGoalArray()));
