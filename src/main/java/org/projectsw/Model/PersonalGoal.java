@@ -39,5 +39,16 @@ public class PersonalGoal {
         }
     }
 
+    public static List<Integer> getUsedCodes() {
+        return usedCodes;
+    }
+
+    public static void setUsedCodes(List<Integer> usedCodes) {
+        PersonalGoal.usedCodes = usedCodes;
+    }
+    public void cleanUsedCodes(){
+        PersonalGoal.getUsedCodes().clear();
+    }
+
     public Tiles[][] getPersonalGoal() { return personalGoal; }
 }
