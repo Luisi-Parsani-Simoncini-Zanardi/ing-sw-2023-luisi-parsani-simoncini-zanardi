@@ -1,6 +1,6 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
 
-Per domani:
+PER DOMANI:
 
 Sistemare test tile           -> Luca   -> DONE
 
@@ -11,7 +11,7 @@ Creare test savegame          -> Lollo
 Mettere commenti javadoc      -> Davide
 
 
-Per martedì:
+PER MARTEDì:
 
 Rivoluzionare codice common goal
 
