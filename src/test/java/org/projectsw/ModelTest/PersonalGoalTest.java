@@ -5,6 +5,8 @@ import org.projectsw.Model.PersonalGoal;
 import org.projectsw.Model.Tiles;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,4 +46,24 @@ class PersonalGoalTest {
             }
         }
     }
+
+
+    @Test
+    void setGetCleanUsedCodes() throws IOException{
+        PersonalGoal personalGoal = new PersonalGoal(0);
+        List<Integer> tmp = new ArrayList<>();
+        tmp.add(10);
+        tmp.add(30);
+        tmp.add(100);
+        PersonalGoal.setUsedCodes(tmp);
+        List<Integer> tmp2;
+        tmp2 = PersonalGoal.getUsedCodes();
+        assertEquals(100, (int) tmp2.get(2));
+        assertEquals(30, (int) tmp2.get(1));
+        assertEquals(10, (int) tmp2.get(0));
+        personalGoal.cleanUsedCodes();
+        assertTrue(PersonalGoal.getUsedCodes().isEmpty());
+
+    }
+
 }
