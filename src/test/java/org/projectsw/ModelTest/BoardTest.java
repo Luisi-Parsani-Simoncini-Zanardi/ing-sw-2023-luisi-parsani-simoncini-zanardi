@@ -65,5 +65,4 @@ class BoardTest {
         board.setEndGame(true);
         assertTrue(board.isEndGame());
     }
-
 }

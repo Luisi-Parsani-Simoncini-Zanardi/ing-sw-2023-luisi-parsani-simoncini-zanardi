@@ -8,11 +8,11 @@ import com.google.gson.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class saveGameStatus {
+public class SaveGameStatus {
     private Game game;
     private String filePath;
 
-    public saveGameStatus(Game game, String filePath) {
+    public SaveGameStatus(Game game, String filePath) {
         this.game = game;
         this.filePath = filePath;
     }
