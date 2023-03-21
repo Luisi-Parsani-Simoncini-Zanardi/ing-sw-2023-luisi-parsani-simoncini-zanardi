@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +46,6 @@ class GameTest {
     @Test
     void getCurrentPlayer() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
         Player elizabeth = new Player("Elizabeth", 2);
         game.setCurrentPlayer(elizabeth);
         assertEquals(elizabeth, game.getCurrentPlayer());
@@ -55,34 +55,34 @@ class GameTest {
     @Test
     void setPlayers() {
         Game game = new Game();
-        Player [] giocatore = {null,null,null,null};
         Player jhon = new Player("Jhon", 1);
         Player elizabeth = new Player("Elizabeth", 2);
         Player ronald = new Player("Ronald", 3);
         Player enzo = new Player("Enzo", 4);
-        giocatore[0] = jhon;
-        giocatore[1] = elizabeth;
-        giocatore[2] = ronald;
-        giocatore[3] = enzo;
-        game.setPlayers(giocatore);
-        assertEquals(giocatore,game.getPlayers());
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(jhon);
+        players.add(elizabeth);
+        players.add(ronald);
+        players.add(enzo);
+        game.setPlayers(players);
+        assertEquals(players,game.getPlayers());
     }
 
     //test that the method returns the right players of the game
     @Test
     void getPlayers() {
         Game game = new Game();
-        Player [] giocatore = {null,null,null,null};
         Player jhon = new Player("Jhon", 1);
         Player elizabeth = new Player("Elizabeth", 2);
         Player ronald = new Player("Ronald", 3);
         Player enzo = new Player("Enzo", 4);
-        giocatore[0] = jhon;
-        giocatore[1] = elizabeth;
-        giocatore[2] = ronald;
-        giocatore[3] = enzo;
-        game.setPlayers(giocatore);
-        assertEquals(giocatore,game.getPlayers());
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(jhon);
+        players.add(elizabeth);
+        players.add(ronald);
+        players.add(enzo);
+        game.setPlayers(players);
+        assertEquals(players,game.getPlayers());
     }
 
     //tests that the method update the board correctly
