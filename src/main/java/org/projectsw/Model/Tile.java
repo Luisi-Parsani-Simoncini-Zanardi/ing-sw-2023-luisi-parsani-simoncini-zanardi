@@ -10,6 +10,7 @@ public class Tile {
         this.imageNumber = imageNumber;
     }
 
+    //returns the type of the tile
     public TilesEnum getTile(){
         return tile;
     }
