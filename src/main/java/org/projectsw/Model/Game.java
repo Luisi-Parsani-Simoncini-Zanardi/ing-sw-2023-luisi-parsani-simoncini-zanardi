@@ -1,14 +1,30 @@
 package org.projectsw.Model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Game{
 
-    public Game (){}
+    public Game (){
+        Board board = null;
+        try {
+            board = new Board();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        setBoard(board);
+
+        Chat chat = new Chat();
+        setChat(chat);
+
+        ArrayList<Player>players = new ArrayList<Player>();
+        setPlayers(players);
+    }
     private Player firstPlayer;
     private Player currentPlayer;
     private ArrayList<Player> players;
     private Board board;
+    private Chat chat;
     private CommonGoal[] commonGoals;
 
     public void setFirstPlayer(Player firstPlayer){
@@ -31,6 +47,10 @@ public class Game{
         this.players = players;
     }
 
+    public void addPlayer(Player player){
+        players.add(player);
+    }
+
     public ArrayList<Player> getPlayers() {
         return players;
     }
@@ -41,6 +61,14 @@ public class Game{
 
     public Board getBoard() {
         return board;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
+    public Chat getChat() {
+        return chat;
     }
 
     public void setCommonGoals(CommonGoal[] commonGoals) {
