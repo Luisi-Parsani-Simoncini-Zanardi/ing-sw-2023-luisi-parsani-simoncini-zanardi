@@ -12,7 +12,7 @@ public class Board{
     public Board() throws IOException{ //initializes the 4-player board, the controller will eventually reduce it
 
         Gson gson = new Gson();
-        String[][] tmpMatrix = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][].class);
+        String[][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoardFourPlayers.json"), String[][].class);
 
         board = new Tiles[9][9];
         for(int i=0;i<9;i++){
