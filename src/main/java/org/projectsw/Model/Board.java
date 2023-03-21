@@ -38,6 +38,10 @@ public class Board{
         return board;
     }
 
+    public Bag getBag(){
+        return bag;
+    }
+
     public void updateBoard(Tiles tile,int row,int column){
         if(row>8 || column>8)
             throw new IndexOutOfBoundsException();
