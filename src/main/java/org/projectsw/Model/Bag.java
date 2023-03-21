@@ -28,5 +28,4 @@ public class Bag {
         tiles.remove(0);
         return tile;
     }
-
 }

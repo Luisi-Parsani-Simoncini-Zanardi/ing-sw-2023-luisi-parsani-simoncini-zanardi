@@ -1,11 +1,13 @@
 package org.projectsw.Model;
 
+import java.util.ArrayList;
+
 public class Game{
 
     public Game (){}
     private Player firstPlayer;
     private Player currentPlayer;
-    private Player[] players;
+    private ArrayList<Player> players;
     private Board board;
     private CommonGoal[] commonGoals;
 
@@ -25,11 +27,11 @@ public class Game{
         return currentPlayer;
     }
 
-    public void setPlayers(Player[] players) {
+    public void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
-    public Player[] getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 

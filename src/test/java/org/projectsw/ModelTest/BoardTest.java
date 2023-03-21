@@ -88,11 +88,4 @@ class BoardTest {
         assertEquals(Tiles.CATS,board.getTile(0,0));
         assertEquals(Tiles.CATS,board.getBoard()[0][0]);
     }
-
-
-
-
-
-
-
 }
