@@ -79,6 +79,18 @@ class BoardTest {
         }
     }
 
+    //test that getTile returns che correct tile and doesn't change the board
+    @Test
+    void getTile() throws IOException {
+        Board board = new Board();
+        board.updateBoard(Tiles.CATS,0,0);
+        board.getTile(0,0);
+        assertEquals(Tiles.CATS,board.getTile(0,0));
+        assertEquals(Tiles.CATS,board.getBoard()[0][0]);
+    }
+
+
+
 
 
 
