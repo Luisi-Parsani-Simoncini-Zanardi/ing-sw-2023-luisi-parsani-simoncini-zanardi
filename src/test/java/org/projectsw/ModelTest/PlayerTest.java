@@ -64,6 +64,11 @@ class PlayerTest {
     @Test
     void setPersonalGoal() throws IOException {
         Player player = new Player("Morfeo", 1);
+
+        PersonalGoal personal0 = new PersonalGoal(0);
+        player.setPersonalGoal(personal0);
+        assertEquals(personal0, player.getPersonalGoal());
+
         PersonalGoal personal1 = new PersonalGoal(1);
         player.setPersonalGoal(personal1);
         assertEquals(personal1, player.getPersonalGoal());
@@ -108,9 +113,10 @@ class PlayerTest {
         player.setPersonalGoal(personal11);
         assertEquals(personal11, player.getPersonalGoal());
 
-        PersonalGoal personal12 = new PersonalGoal(12);
-        player.setPersonalGoal(personal12);
-        assertEquals(personal12, player.getPersonalGoal());
+
+
+        PersonalGoal.cleanUsedCodes();
+
     }
 
     //test that the method returns the correct value of personal goal
@@ -120,6 +126,7 @@ class PlayerTest {
         Player player = new Player("Riccardo", 3);
         player.setPersonalGoal(personal);
         assertEquals(personal, player.getPersonalGoal());
+        PersonalGoal.cleanUsedCodes();
     }
 
     //test that the method actually adds a tile in the array temporaryTiles

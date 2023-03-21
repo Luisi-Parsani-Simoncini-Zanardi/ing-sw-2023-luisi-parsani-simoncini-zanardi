@@ -46,7 +46,7 @@ public class PersonalGoal {
     public static void setUsedCodes(List<Integer> usedCodes) {
         PersonalGoal.usedCodes = usedCodes;
     }
-    public void cleanUsedCodes(){
+    public static void cleanUsedCodes(){
         PersonalGoal.getUsedCodes().clear();
     }
 

@@ -16,7 +16,7 @@ class PersonalGoalTest {
     @Test
     void getPersonalGoal() throws IOException {
         PersonalGoal personalGoal = new PersonalGoal(0);
-        personalGoal.cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
         assertTrue(
         personalGoal.getPersonalGoal()[3][1].equals(Tiles.GAMES)&&
         personalGoal.getPersonalGoal()[0][0].equals(Tiles.PLANTS)&&
@@ -45,12 +45,12 @@ class PersonalGoalTest {
                 }
             }
         }
+        PersonalGoal.cleanUsedCodes();
     }
 
 
     @Test
-    void setGetCleanUsedCodes() throws IOException{
-        PersonalGoal personalGoal = new PersonalGoal(0);
+    void setGetCleanUsedCodes() {
         List<Integer> tmp = new ArrayList<>();
         tmp.add(10);
         tmp.add(30);
@@ -61,7 +61,7 @@ class PersonalGoalTest {
         assertEquals(100, (int) tmp2.get(2));
         assertEquals(30, (int) tmp2.get(1));
         assertEquals(10, (int) tmp2.get(0));
-        personalGoal.cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
         assertTrue(PersonalGoal.getUsedCodes().isEmpty());
 
     }
