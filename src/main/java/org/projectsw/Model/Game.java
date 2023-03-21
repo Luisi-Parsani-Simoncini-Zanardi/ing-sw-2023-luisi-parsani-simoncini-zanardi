@@ -1,7 +1,6 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 

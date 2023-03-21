@@ -5,7 +5,6 @@ package org.projectsw.Model;
  */
 public class Tile {
     private final TilesEnum tile;
-
     private final int imageNumber;
 
     /**

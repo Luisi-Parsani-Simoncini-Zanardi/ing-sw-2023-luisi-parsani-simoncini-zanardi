@@ -3,7 +3,6 @@ package org.projectsw.Model;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
-
 import java.util.ArrayList;
 
 /**

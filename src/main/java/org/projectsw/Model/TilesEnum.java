@@ -1,6 +1,5 @@
 package org.projectsw.Model;
 
-
 /**
  * Enumeration representing all the possible type of tiles
  */
