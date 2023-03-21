@@ -1,12 +1,32 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.MaximumPlayerException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class Game{
 
-    public Game (){}
+    public Game (){
+        Board board = null;
+        try {
+            board = new Board();
+        } catch (IOException e) {
+            //retry
+        }
+        setBoard(board);
+
+        Chat chat = new Chat();
+        setChat(chat);
+
+        ArrayList<Player>players = new ArrayList<Player>();
+        setPlayers(players);
+    }
     private Player firstPlayer;
     private Player currentPlayer;
-    private Player[] players;
+    private ArrayList<Player> players;
     private Board board;
+    private Chat chat;
     private CommonGoal[] commonGoals;
 
     public void setFirstPlayer(Player firstPlayer){
@@ -25,11 +45,21 @@ public class Game{
         return currentPlayer;
     }
 
-    public void setPlayers(Player[] players) {
+    public void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
-    public Player[] getPlayers() {
+    public void addPlayer(Player player) throws MaximumPlayerException {
+        int playerLength = getPlayers().size();
+        if (playerLength<4){
+            players.add(player);
+        }
+        else {
+            throw new MaximumPlayerException("Maximum number of players reached");
+        }
+    }
+
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
@@ -39,6 +69,14 @@ public class Game{
 
     public Board getBoard() {
         return board;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
+    public Chat getChat() {
+        return chat;
     }
 
     public void setCommonGoals(CommonGoal[] commonGoals) {
