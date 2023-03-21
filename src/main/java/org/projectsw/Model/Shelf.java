@@ -1,5 +1,8 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.EmptyTilesException;
+import org.projectsw.Exceptions.UnusedTilesException;
+
 public class Shelf {
     private Tiles[][] shelf;
 
@@ -19,7 +22,7 @@ public class Shelf {
         return shelf;
     }
 
-    public void insertTiles(Tiles tile, int row, int column) throws EmptyTilesException, UnusedTilesException{
+    public void insertTiles(Tiles tile, int row, int column) throws EmptyTilesException, UnusedTilesException {
         if(row>5 || column > 4)
             throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.equals(Tiles.EMPTY))

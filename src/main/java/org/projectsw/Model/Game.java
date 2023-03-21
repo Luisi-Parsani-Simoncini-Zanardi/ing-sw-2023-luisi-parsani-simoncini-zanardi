@@ -1,5 +1,7 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.MaximumPlayerException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -10,7 +12,7 @@ public class Game{
         try {
             board = new Board();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            //retry
         }
         setBoard(board);
 
@@ -47,8 +49,14 @@ public class Game{
         this.players = players;
     }
 
-    public void addPlayer(Player player){
-        players.add(player);
+    public void addPlayer(Player player) throws MaximumPlayerException {
+        int playerLength = getPlayers().size();
+        if (playerLength<4){
+            players.add(player);
+        }
+        else {
+            throw new MaximumPlayerException("Maximum number of players reached");
+        }
     }
 
     public ArrayList<Player> getPlayers() {
