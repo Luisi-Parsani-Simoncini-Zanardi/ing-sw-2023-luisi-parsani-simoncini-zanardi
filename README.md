@@ -8,7 +8,7 @@ Rivoluzionare UML common goal -> Lore
 
 Creare test savegame          -> Lollo   
 
-Mettere commenti javadoc      -> Davide
+Mettere commenti javadoc      -> Davide  ->DONE per le classi, manca documentazione test
 
 
 PER MARTEDì:
