@@ -17,6 +17,7 @@ public class SaveGameStatus {
         this.filePath = filePath;
     }
 
+    // function to put all the information relative to the player into a JSON
     public JsonObject jsonPlayer(Player player) {
         Gson gson = new Gson();
         JsonObject json = new JsonObject();
@@ -28,6 +29,8 @@ public class SaveGameStatus {
 
         return json;
     };
+
+    // function to put all the information relative to the board into a JSON
     public JsonObject jsonBoard(Board board) {
         Gson gson = new Gson();
         JsonObject json = new JsonObject();
@@ -38,6 +41,7 @@ public class SaveGameStatus {
         return json;
     }
 
+    // function to put all the information relative to the commonGoal into a JSON
     public JsonObject jsonCommonGoal(CommonGoal commonGoal) {
         JsonObject json = new JsonObject();
         json.add("goalCode", new JsonPrimitive(commonGoal.getGoalCode()));
@@ -46,6 +50,7 @@ public class SaveGameStatus {
         return json;
     }
 
+    // function to create a JSON that contains all the information relative to all players
     public JsonObject jsonPlayerArray() {
         Gson gsonTmp = new Gson();
         JsonObject jsonTmp = new JsonObject();
@@ -55,6 +60,7 @@ public class SaveGameStatus {
         return jsonTmp;
     }
 
+    // function to create a JSON that contains all the information relative to all commonGoals
     public JsonObject jsonCommonGoalArray() {
         Gson gsonTmp = new Gson();
         JsonObject jsonTmp = new JsonObject();
@@ -64,6 +70,7 @@ public class SaveGameStatus {
         return jsonTmp;
     }
 
+    // function that save a JSON object containing all the model status information in a file
     public void saveGame() {
         // creazione dell'oggetto Gson con la formattazione indentata
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
