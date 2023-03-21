@@ -59,21 +59,21 @@ public class Player {
 
         if(temporaryTiles.size()>2){
             throw new MaximumTilesException("Maximum number of tiles reached");
-        }else if(tiles == TilesEnum.EMPTY){
+        }else if(tiles.getTile() == TilesEnum.EMPTY){
             throw new EmptyTilesException("You can't add an EMPTY tile");
-        }else if(tiles == TilesEnum.UNUSED){
+        }else if(tiles.getTile() == TilesEnum.UNUSED){
             throw new UnusedTilesException("You can't add an UNUSED tile");
         }else{
             temporaryTiles.add(tiles);
         }
     }
 
-    public ArrayList<TilesEnum> getTiles() {
+    public ArrayList<Tile> getTiles() {
         return temporaryTiles;
     }
 
-    public TilesEnum selectTile(int num){
-        TilesEnum temp;
+    public Tile selectTile(int num){
+        Tile temp;
         temp = temporaryTiles.get(num);
         temporaryTiles.remove(num);
         return temp;
