@@ -65,4 +65,27 @@ class BoardTest {
         board.setEndGame(true);
         assertTrue(board.isEndGame());
     }
+
+    //test that the constructor returns a correct and fully inizialized maxtrix of tiles
+    @Test
+    void integrityTest() throws IOException {
+        Board board = new Board();
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                Tiles tile = board.getTile(i,j);
+                assertTrue(tile.equals(Tiles.EMPTY)||
+                            tile.equals(Tiles.UNUSED));
+            }
+        }
+    }
+
+    //test that getTile returns che correct tile and doesn't change the board
+    @Test
+    void getTile() throws IOException {
+        Board board = new Board();
+        board.updateBoard(Tiles.CATS,0,0);
+        board.getTile(0,0);
+        assertEquals(Tiles.CATS,board.getTile(0,0));
+        assertEquals(Tiles.CATS,board.getBoard()[0][0]);
+    }
 }
