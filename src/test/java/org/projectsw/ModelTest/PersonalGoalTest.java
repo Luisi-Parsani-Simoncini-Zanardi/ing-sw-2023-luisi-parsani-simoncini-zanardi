@@ -2,7 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.PersonalGoal;
-import org.projectsw.Model.Tiles;
+import org.projectsw.Model.TilesEnum;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ class PersonalGoalTest {
         PersonalGoal personalGoal = new PersonalGoal(0);
         personalGoal.cleanUsedCodes();
         assertTrue(
-        personalGoal.getPersonalGoal()[3][1].equals(Tiles.GAMES)&&
-        personalGoal.getPersonalGoal()[0][0].equals(Tiles.PLANTS)&&
-        personalGoal.getPersonalGoal()[0][2].equals(Tiles.FRAMES)&&
-        personalGoal.getPersonalGoal()[1][4].equals(Tiles.CATS)&&
-        personalGoal.getPersonalGoal()[2][3].equals(Tiles.BOOKS)&&
-        personalGoal.getPersonalGoal()[5][2].equals(Tiles.TROPHIES));
+        personalGoal.getPersonalGoal()[3][1].equals(TilesEnum.GAMES)&&
+        personalGoal.getPersonalGoal()[0][0].equals(TilesEnum.PLANTS)&&
+        personalGoal.getPersonalGoal()[0][2].equals(TilesEnum.FRAMES)&&
+        personalGoal.getPersonalGoal()[1][4].equals(TilesEnum.CATS)&&
+        personalGoal.getPersonalGoal()[2][3].equals(TilesEnum.BOOKS)&&
+        personalGoal.getPersonalGoal()[5][2].equals(TilesEnum.TROPHIES));
     }
 
     //test that the constructor returns a correct and full maxtrix of tiles
@@ -34,14 +34,14 @@ class PersonalGoalTest {
             PersonalGoal personalGoal = new PersonalGoal(i);
             for(int j=0;j<6;j++){
                 for(int h=0;h<5;h++){
-                    Tiles tile = personalGoal.getPersonalGoal()[j][h];
-                    assertTrue(tile.equals(Tiles.CATS)||
-                                tile.equals(Tiles.FRAMES)||
-                                tile.equals(Tiles.BOOKS)||
-                                tile.equals(Tiles.GAMES)||
-                                tile.equals(Tiles.TROPHIES)||
-                                tile.equals(Tiles.PLANTS)||
-                                tile.equals(Tiles.EMPTY));
+                    TilesEnum tile = personalGoal.getPersonalGoal()[j][h];
+                    assertTrue(tile.equals(TilesEnum.CATS)||
+                                tile.equals(TilesEnum.FRAMES)||
+                                tile.equals(TilesEnum.BOOKS)||
+                                tile.equals(TilesEnum.GAMES)||
+                                tile.equals(TilesEnum.TROPHIES)||
+                                tile.equals(TilesEnum.PLANTS)||
+                                tile.equals(TilesEnum.EMPTY));
                 }
             }
         }

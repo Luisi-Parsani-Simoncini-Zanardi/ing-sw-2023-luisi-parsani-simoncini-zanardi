@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 public class Bag {
 
-    private ArrayList<Tiles> tiles;
+    private ArrayList<Tile> tiles;
 
     public Bag() {
-        tiles = new ArrayList<Tiles>();
+        tiles = new ArrayList<Tile>();
         for (int i = 0; i < 22; i++) {
-            tiles.add(Tiles.CATS);
-            tiles.add(Tiles.TROPHIES);
-            tiles.add(Tiles.BOOKS);
-            tiles.add(Tiles.FRAMES);
-            tiles.add(Tiles.PLANTS);
-            tiles.add(Tiles.GAMES);
+            tiles.add(new Tile(TilesEnum.CATS, i%3));
+            tiles.add(new Tile(TilesEnum.TROPHIES, i%3));
+            tiles.add(new Tile(TilesEnum.BOOKS, i%3));
+            tiles.add(new Tile(TilesEnum.FRAMES, i%3));
+            tiles.add(new Tile(TilesEnum.PLANTS, i%3));
+            tiles.add(new Tile(TilesEnum.GAMES, i%3));
         }
         Collections.shuffle(tiles);
     }
 
-    public Tiles pop(){
-        Tiles tile;
+    public Tile pop(){
+        Tile tile;
         if(tiles.isEmpty()){
-            return Tiles.EMPTY;
+            return new Tile(TilesEnum.EMPTY, 0);
         }
         tile = tiles.get(0);
         tiles.remove(0);

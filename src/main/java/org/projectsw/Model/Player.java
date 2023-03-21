@@ -13,13 +13,13 @@ public class Player {
     private Shelf shelf;
     private PersonalGoal personalGoal;
 
-    private ArrayList<Tiles> temporaryTiles;
+    private ArrayList<TilesEnum> temporaryTiles;
 
     public Player (String nickname, int number) {
         this.position=number;
         this.nickname=nickname;
         this.points=0;
-        this.temporaryTiles = new ArrayList<Tiles>();
+        this.temporaryTiles = new ArrayList<TilesEnum>();
         //shelf e personalGoal will have to be set by their respective set function after calling the constructor
     }
 
@@ -55,25 +55,25 @@ public class Player {
         return personalGoal;
     }
 
-    public void addTile(Tiles tiles) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
+    public void addTile(TilesEnum tiles) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
 
         if(temporaryTiles.size()>2){
             throw new MaximumTilesException("Maximum number of tiles reached");
-        }else if(tiles == Tiles.EMPTY){
+        }else if(tiles == TilesEnum.EMPTY){
             throw new EmptyTilesException("You can't add an EMPTY tile");
-        }else if(tiles == Tiles.UNUSED){
+        }else if(tiles == TilesEnum.UNUSED){
             throw new UnusedTilesException("You can't add an UNUSED tile");
         }else{
             temporaryTiles.add(tiles);
         }
     }
 
-    public ArrayList<Tiles> getTiles() {
+    public ArrayList<TilesEnum> getTiles() {
         return temporaryTiles;
     }
 
-    public Tiles selectTile(int num){
-        Tiles temp;
+    public TilesEnum selectTile(int num){
+        TilesEnum temp;
         temp = temporaryTiles.get(num);
         temporaryTiles.remove(num);
         return temp;
