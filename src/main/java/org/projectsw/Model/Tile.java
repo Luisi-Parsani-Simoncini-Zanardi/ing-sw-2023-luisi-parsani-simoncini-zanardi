@@ -9,4 +9,12 @@ public class Tile {
         this.tile = tileType;
         this.imageNumber = imageNumber;
     }
+
+    public TilesEnum getTile(){
+        return tile;
+    }
+
+    public int getImageNumber(){
+        return imageNumber;
+    }
 }
