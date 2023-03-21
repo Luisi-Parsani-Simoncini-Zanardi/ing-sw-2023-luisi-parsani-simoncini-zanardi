@@ -14,6 +14,7 @@ class PersonalGoalTest {
     @Test
     void getPersonalGoal() throws IOException {
         PersonalGoal personalGoal = new PersonalGoal(0);
+        personalGoal.cleanUsedCodes();
         assertTrue(
         personalGoal.getPersonalGoal()[3][1].equals(Tiles.GAMES)&&
         personalGoal.getPersonalGoal()[0][0].equals(Tiles.PLANTS)&&
