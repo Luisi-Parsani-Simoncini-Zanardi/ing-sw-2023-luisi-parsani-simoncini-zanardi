@@ -1,15 +1,26 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Class to represent a player's personal goal card in the game.
+ * It contains a 6x5 grid of TilesEnum.
+ * Each player is assigned a unique goal code upon instantiation, which is used to generate
+ * the corresponding goal card from a JSON file.
+ */
 public class PersonalGoal {
     private final TilesEnum[][] personalGoal;
     private static List<Integer> usedCodes = new ArrayList<>(); //called codes
 
+    /**
+     * Constructs a new PersonalGoal object with the given goal code.
+     * @param goalCode the unique code assigned to this player's goal card
+     * @throws IOException if there is an error reading from the JSON file
+     * @throws IllegalArgumentException if the goal code has already been used by another player
+     */
     public PersonalGoal(int goalCode) throws IOException {
         if (usedCodes.contains(goalCode)) {
             throw new IllegalArgumentException("Goal code already used.");
@@ -37,16 +48,32 @@ public class PersonalGoal {
         }
     }
 
+    /**
+     * Returns the matrix of TilesEnum values that represent the player's goal.
+     * @return the 6x5 grid of TilesEnum
+     */
+    public TilesEnum[][] getPersonalGoal() { return personalGoal; }
+
+    /**
+     * Returns the list of all goal codes that have been used by players.
+     * @return the list of all goal codes that have been used by players
+     */
     public static List<Integer> getUsedCodes() {
         return usedCodes;
     }
 
+    /**
+     * Sets the list of all goal codes that have been used by players.
+     * @param usedCodes the list of all goal codes that have been used by players
+     */
     public static void setUsedCodes(List<Integer> usedCodes) {
         PersonalGoal.usedCodes = usedCodes;
     }
+
+    /**
+     * Clears the list of all goal codes that have been used by players.
+     */
     public static void cleanUsedCodes(){
         PersonalGoal.getUsedCodes().clear();
     }
-
-    public TilesEnum[][] getPersonalGoal() { return personalGoal; }
 }
