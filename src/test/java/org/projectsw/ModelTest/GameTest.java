@@ -93,7 +93,7 @@ class GameTest {
         game.setBoard(board);
         assertEquals(board, game.getBoard());
 
-        board.updateBoard(TilesEnum.CATS,4,4);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0),4,4);
         game.setBoard(board);
         assertEquals(board,game.getBoard());
     }
@@ -103,7 +103,7 @@ class GameTest {
     void getBoard() throws IOException {
         Game game = new Game();
         Board board = new Board();
-        board.updateBoard(TilesEnum.CATS,4,4);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0),4,4);
         game.setBoard(board);
         assertEquals(board, game.getBoard());
     }

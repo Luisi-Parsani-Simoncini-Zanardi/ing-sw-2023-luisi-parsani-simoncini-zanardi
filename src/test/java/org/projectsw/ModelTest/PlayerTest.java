@@ -1,10 +1,8 @@
 package org.projectsw.ModelTest;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Model.PersonalGoal;
-import org.projectsw.Model.Player;
-import org.projectsw.Model.Shelf;
-import org.projectsw.Model.TilesEnum;
+import org.projectsw.Model.*;
 
 import java.io.IOException;
 
@@ -64,53 +62,55 @@ class PlayerTest {
     @Test
     void setPersonalGoal() throws IOException {
         Player player = new Player("Morfeo", 1);
-        PersonalGoal personal1 = new PersonalGoal(1);
+        PersonalGoal personal1 = new PersonalGoal(0);
         player.setPersonalGoal(personal1);
         assertEquals(personal1, player.getPersonalGoal());
 
-        PersonalGoal personal2 = new PersonalGoal(2);
+        PersonalGoal personal2 = new PersonalGoal(1);
         player.setPersonalGoal(personal2);
         assertEquals(personal2, player.getPersonalGoal());
 
-        PersonalGoal personal3 = new PersonalGoal(3);
+        PersonalGoal personal3 = new PersonalGoal(2);
         player.setPersonalGoal(personal3);
         assertEquals(personal3, player.getPersonalGoal());
 
-        PersonalGoal personal4 = new PersonalGoal(4);
+        PersonalGoal personal4 = new PersonalGoal(3);
         player.setPersonalGoal(personal4);
         assertEquals(personal4, player.getPersonalGoal());
 
-        PersonalGoal personal5 = new PersonalGoal(5);
+        PersonalGoal personal5 = new PersonalGoal(4);
         player.setPersonalGoal(personal5);
         assertEquals(personal5, player.getPersonalGoal());
 
-        PersonalGoal personal6 = new PersonalGoal(6);
+        PersonalGoal personal6 = new PersonalGoal(5);
         player.setPersonalGoal(personal6);
         assertEquals(personal6, player.getPersonalGoal());
 
-        PersonalGoal personal7 = new PersonalGoal(7);
+        PersonalGoal personal7 = new PersonalGoal(6);
         player.setPersonalGoal(personal7);
         assertEquals(personal7, player.getPersonalGoal());
 
-        PersonalGoal personal8 = new PersonalGoal(8);
+        PersonalGoal personal8 = new PersonalGoal(7);
         player.setPersonalGoal(personal8);
         assertEquals(personal8, player.getPersonalGoal());
 
-        PersonalGoal personal9 = new PersonalGoal(9);
+        PersonalGoal personal9 = new PersonalGoal(8);
         player.setPersonalGoal(personal9);
         assertEquals(personal9, player.getPersonalGoal());
 
-        PersonalGoal personal10 = new PersonalGoal(10);
+        PersonalGoal personal10 = new PersonalGoal(9);
         player.setPersonalGoal(personal10);
         assertEquals(personal10, player.getPersonalGoal());
 
-        PersonalGoal personal11 = new PersonalGoal(11);
+        PersonalGoal personal11 = new PersonalGoal(10);
         player.setPersonalGoal(personal11);
         assertEquals(personal11, player.getPersonalGoal());
 
-        PersonalGoal personal12 = new PersonalGoal(12);
+        PersonalGoal personal12 = new PersonalGoal(11);
         player.setPersonalGoal(personal12);
         assertEquals(personal12, player.getPersonalGoal());
+
+        player.getPersonalGoal().cleanUsedCodes();
     }
 
     //test that the method returns the correct value of personal goal
@@ -130,54 +130,53 @@ class PlayerTest {
         Player player = new Player("Asia", 3);
 
         try{
-            player.addTile(TilesEnum.GAMES);
+            player.addTile(new Tile(TilesEnum.GAMES, 0));
             assertEquals(1,player.getTiles().size());
 
         }catch(Exception e){
             return;
         }
-        assertTrue(player.getTiles().contains(TilesEnum.GAMES));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
 
         try{
-            player.addTile(TilesEnum.CATS);
+            player.addTile(new Tile(TilesEnum.CATS, 0));
             assertEquals(2,player.getTiles().size());
         }catch(Exception e){
             return;
         }
-        assertTrue(player.getTiles().contains(TilesEnum.GAMES));
-        assertTrue(player.getTiles().contains(TilesEnum.CATS));
-
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
         try{
-            player.addTile(TilesEnum.PLANTS);
+            player.addTile(new Tile(TilesEnum.PLANTS, 0));
             assertEquals(3,player.getTiles().size());
         }catch(Exception e){
             return;
         }
-        assertTrue(player.getTiles().contains(TilesEnum.GAMES));
-        assertTrue(player.getTiles().contains(TilesEnum.CATS));
-        assertTrue(player.getTiles().contains(TilesEnum.PLANTS));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.PLANTS));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
 
         try{
-            player.addTile(TilesEnum.BOOKS);
+            player.addTile(new Tile(TilesEnum.BOOKS, 0));
             assertEquals(3,player.getTiles().size());
         }catch(Exception e){
             assertEquals("Maximum number of tiles reached", e.getMessage());
         }
-        assertTrue(player.getTiles().contains(TilesEnum.GAMES));
-        assertTrue(player.getTiles().contains(TilesEnum.CATS));
-        assertTrue(player.getTiles().contains(TilesEnum.PLANTS));
-        assertFalse(player.getTiles().contains(TilesEnum.BOOKS));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.PLANTS));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
+        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
+        assertFalse(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
 
         Player player2 = new Player("Roberto", 1);
 
         try{
-            player2.addTile(TilesEnum.UNUSED);
+            player2.addTile(new Tile(TilesEnum.UNUSED, 0));
         }catch(Exception e){
             assertEquals("You can't add an UNUSED tile", e.getMessage());
         }
 
         try{
-            player2.addTile(TilesEnum.EMPTY);
+            player2.addTile(new Tile(TilesEnum.EMPTY, 0));
         }catch(Exception e){
             assertEquals("You can't add an EMPTY tile", e.getMessage());
         }
@@ -190,27 +189,28 @@ class PlayerTest {
         Player test = new Player("Pietro",3);
         assertEquals(0,test.getTiles().size());
         try{
-            test.addTile(TilesEnum.BOOKS);
+            test.addTile(new Tile(TilesEnum.BOOKS, 0));
         }catch(Exception e){
         }
         assertEquals(1,test.getTiles().size());
-        assertTrue(test.getTiles().contains(TilesEnum.BOOKS));
+        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
 
         try{
-            test.addTile(TilesEnum.CATS);
+            test.addTile(new Tile(TilesEnum.CATS, 0));
         }catch(Exception e){
         }
         assertEquals(2,test.getTiles().size());
-        assertTrue(test.getTiles().contains(TilesEnum.BOOKS));
-        assertTrue(test.getTiles().contains(TilesEnum.CATS));
+        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
+        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
+
         try{
-            test.addTile(TilesEnum.FRAMES);
+            test.addTile(new Tile(TilesEnum.FRAMES, 0));
         }catch(Exception e){
         }
         assertEquals(3,test.getTiles().size());
-        assertTrue(test.getTiles().contains(TilesEnum.BOOKS));
-        assertTrue(test.getTiles().contains(TilesEnum.CATS));
-        assertTrue(test.getTiles().contains(TilesEnum.FRAMES));
+        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
+        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
+        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.FRAMES));
     }
 
     //test that the method edit the size of the array and returns the right value
@@ -218,22 +218,22 @@ class PlayerTest {
     void selectTile() {
         Player test = new Player("Pietro",3);
         try {
-            test.addTile(TilesEnum.BOOKS);
-            test.addTile(TilesEnum.CATS);
-            test.addTile(TilesEnum.FRAMES);
+            test.addTile(new Tile(TilesEnum.BOOKS, 0));
+            test.addTile(new Tile(TilesEnum.CATS, 0));
+            test.addTile(new Tile(TilesEnum.FRAMES, 0));
         }catch(Exception e){
         }
 
-        assertEquals(TilesEnum.BOOKS,test.selectTile(0));
-        assertEquals(TilesEnum.CATS,test.getTiles().get(0));
-        assertEquals(TilesEnum.FRAMES,test.getTiles().get(1));
+        assertEquals(TilesEnum.BOOKS,test.selectTile(0).getTile());
+        assertEquals(TilesEnum.CATS,test.getTiles().get(0).getTile());
+        assertEquals(TilesEnum.FRAMES,test.getTiles().get(1).getTile());
         assertEquals(2,test.getTiles().size());
 
-        assertEquals(TilesEnum.CATS,test.selectTile(0));
-        assertEquals(TilesEnum.FRAMES,test.getTiles().get(0));
+        assertEquals(TilesEnum.CATS,test.selectTile(0).getTile());
+        assertEquals(TilesEnum.FRAMES,test.getTiles().get(0).getTile());
         assertEquals(1,test.getTiles().size());
 
-        assertEquals(TilesEnum.FRAMES,test.selectTile(0));
+        assertEquals(TilesEnum.FRAMES,test.selectTile(0).getTile());
         assertEquals(0,test.getTiles().size());
     }
 }
