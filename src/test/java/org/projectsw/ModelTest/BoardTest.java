@@ -71,19 +71,9 @@ class BoardTest {
         Board board = new Board();
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
-                Tile tile = board.getTile(i,j);
-                assertTrue(tile.getTile().equals(TilesEnum.EMPTY)||
-                            tile.getTile().equals(TilesEnum.UNUSED));
+                Tile tile = board.getBoard()[i][j];
+                assertEquals(tile.getTile(), TilesEnum.UNUSED);
             }
         }
-    }
-
-    //test that getTile returns che correct tile and doesn't change the board
-    @Test
-    void getTile() throws IOException {
-        Board board = new Board();
-        board.updateBoard(new Tile(TilesEnum.CATS, 0),0,0);
-        assertEquals(TilesEnum.CATS,board.getTile(0,0).getTile());
-        assertEquals(TilesEnum.CATS,board.getBoard()[0][0].getTile());
     }
 }

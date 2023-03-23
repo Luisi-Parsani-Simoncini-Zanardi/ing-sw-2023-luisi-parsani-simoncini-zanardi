@@ -68,16 +68,6 @@ public class Board{
     }
 
     /**
-     * Returns the Tile at the given position on the board.
-     * @param row the row index of the Tile
-     * @param column the column index of the Tile
-     * @return the Tile at the given position
-     */
-    public Tile getTile(int row, int column){
-        return board[row][column];
-    }
-
-    /**
      * Returns the bag of tiles.
      * @return the Bag object representing the bag of tiles
      */
