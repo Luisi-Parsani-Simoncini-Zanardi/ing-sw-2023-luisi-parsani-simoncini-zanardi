@@ -19,7 +19,7 @@ public abstract class CommonGoal{
 
     /**
      * increase the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
-     * @throws MaximumRedeemedPointsException
+     * @throws MaximumRedeemedPointsException thrown if there are no more points to redeem on this CommonGoal
      */
     public void increaseRedeemedNumber() throws MaximumRedeemedPointsException{
         if(getRedeemedNumber()<4)
@@ -35,8 +35,4 @@ public abstract class CommonGoal{
     public boolean check(Shelf shelf){
         return false;
     }
-
-    //TODO: aggiunta solo per rimuovermi gli errori del gson, --questo metodo è da cancellare quando gson fixato--
-    public int getGoalCode(){return 1;}
-
 }
