@@ -4,6 +4,7 @@ import org.projectsw.Model.Shelf;
 
 public abstract class CommonGoal{
     private int redeemedNumber;
+    protected int commonGoalCode;
 
     public CommonGoal(){
         this.redeemedNumber = 0;
