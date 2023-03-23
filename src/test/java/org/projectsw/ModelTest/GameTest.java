@@ -108,4 +108,16 @@ class GameTest {
         game.setBoard(board);
         assertEquals(board, game.getBoard());
     }
+
+    @Test
+    void randomCommonGoal(){
+        Game game = new Game();
+        ArrayList<CommonGoal> test= new ArrayList<>();
+        try{
+            test = game.randomCommonGoals();
+        } catch(Exception e){}
+        game.setCommonGoals(test);
+        assertTrue(game.getCommonGoals().get(0) instanceof CommonGoal);
+        assertTrue(game.getCommonGoals().get(1) instanceof CommonGoal);
+    }
 }

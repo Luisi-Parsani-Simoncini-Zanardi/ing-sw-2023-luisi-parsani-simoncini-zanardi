@@ -1,8 +1,15 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
-import org.projectsw.Model.CommonGoal.CommonGoal;
+
+import org.projectsw.Model.CommonGoal.*;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
+
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * The class contains information about the game state,
@@ -14,7 +21,7 @@ public class Game{
     private ArrayList<Player> players;
     private Board board;
     private Chat chat;
-    private CommonGoal[] commonGoals;
+    private ArrayList<CommonGoal> commonGoals;
 
 
     /**
@@ -68,7 +75,7 @@ public class Game{
      * Returns the common goals for the game.
      * @return the common goals for the game.
      */
-    public CommonGoal[] getCommonGoals() {
+    public ArrayList<CommonGoal> getCommonGoals() {
         return commonGoals;
     }
 
@@ -125,7 +132,7 @@ public class Game{
      * Sets the common goals of the game.
      * @param commonGoals the common goals of the game.
      */
-    public void setCommonGoals(CommonGoal[] commonGoals) {
+    public void setCommonGoals(ArrayList<CommonGoal> commonGoals) {
         this.commonGoals = commonGoals;
     }
 
@@ -145,5 +152,47 @@ public class Game{
     }
 
     //TODO: manca implementazione
-    private CommonGoal RandomCommonGoals(){return null;}
+
+
+    private ArrayList<Class<?>> fillCommonGoalsArray(){
+        ArrayList<Class<?>> randomGoalsClasses = new ArrayList<>();
+
+        randomGoalsClasses.add(ColumnEqualsFour.class);
+        randomGoalsClasses.add(ColumnEqualsTwo.class);
+        randomGoalsClasses.add(ColumnGroup.class);
+        randomGoalsClasses.add(Cross.class);
+        randomGoalsClasses.add(Diagonal.class);
+        randomGoalsClasses.add(DifferentColumn.class);
+        randomGoalsClasses.add(DifferentRow.class);
+        randomGoalsClasses.add(Edges.class);
+        randomGoalsClasses.add(EightEquals.class);
+        randomGoalsClasses.add(RowGroup.class);
+        randomGoalsClasses.add(Square.class);
+        randomGoalsClasses.add(Triangle.class);
+
+        return randomGoalsClasses;
+    }
+    public ArrayList<CommonGoal> randomCommonGoals() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+
+        CommonGoal istance;
+        ArrayList<CommonGoal> commonGoals = new ArrayList<>();
+        ArrayList<Class<?>> randomGoalsClasses;
+        randomGoalsClasses = fillCommonGoalsArray();
+
+        Random random = new Random();
+        int index1 = random.nextInt(randomGoalsClasses.size());
+        Class<?> randomClass = randomGoalsClasses.get(index1);
+        istance = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
+        commonGoals.add(istance);
+        randomGoalsClasses.remove(index1);
+
+        index1 = random.nextInt(randomGoalsClasses.size());
+        randomClass = randomGoalsClasses.get(index1);
+        istance = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
+        commonGoals.add(istance);
+
+        return commonGoals;
+
+    }
+
 }

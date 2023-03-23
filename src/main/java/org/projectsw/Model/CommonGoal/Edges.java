@@ -4,6 +4,10 @@ import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
 public class Edges extends ShapeBehavior{
+    public Edges(){
+        super();
+        this.commonGoalCode = 8;
+    }
 
     /**
      * @param shelf is the player shelf

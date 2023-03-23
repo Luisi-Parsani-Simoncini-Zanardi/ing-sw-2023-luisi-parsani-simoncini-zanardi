@@ -9,6 +9,7 @@ public class DifferentRow extends RowBehavior {
 
     public DifferentRow(){
         super();
+        this.commonGoalCode = 6;
     }
     /**
      * @param shelf is the player shelf

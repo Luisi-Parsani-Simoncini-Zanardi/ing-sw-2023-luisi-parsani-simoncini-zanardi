@@ -9,6 +9,7 @@ public class RowGroup extends RowBehavior{
 
     public RowGroup(){
         super();
+        this.commonGoalCode = 7;
     }
 
     /**
