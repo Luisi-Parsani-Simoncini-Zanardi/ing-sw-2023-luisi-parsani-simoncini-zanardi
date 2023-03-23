@@ -39,4 +39,8 @@ public class Bag {
         tiles.remove(0);
         return tile;
     }
+
+    public ArrayList<Tile> getBag() {
+        return tiles;
+    }
 }
