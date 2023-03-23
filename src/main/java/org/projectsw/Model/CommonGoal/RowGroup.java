@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class RowGroup implements RowBehavior{
 
     /**
-     *
      * @param shelf is the player shelf
      * @return true if there are at least 4 rows with at most 3 different tile types, returns false otherwise
      */

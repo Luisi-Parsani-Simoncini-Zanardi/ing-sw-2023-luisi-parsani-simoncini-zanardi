@@ -27,7 +27,7 @@ class RowGroupTest {
 
     //tests that the algorithm successfully checks that the shelf has too much types in the rows
     @Test
-    void toomuchtypes() {
+    void tooMuchTypes() {
         CommonGoal commonRow = new Row(new RowGroup());
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
