@@ -9,13 +9,13 @@ import java.util.ArrayList;
  * including the board, players (the current playing one and the first one), chat, and common goals.
  */
 public class Game{
-
     private Player firstPlayer;
     private Player currentPlayer;
     private ArrayList<Player> players;
     private Board board;
     private Chat chat;
     private CommonGoal[] commonGoals;
+
 
     /**
      * Creates a new instance of the Game class with a new chat and an empty player list,
