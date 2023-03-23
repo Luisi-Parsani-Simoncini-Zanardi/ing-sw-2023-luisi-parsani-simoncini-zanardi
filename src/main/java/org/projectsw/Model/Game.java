@@ -150,4 +150,7 @@ public class Game{
             throw new MaximumPlayerException("Maximum number of players reached");
         }
     }
+
+    //TODO: manca implementazione
+    private CommonGoal RandomCommonGoals(){return null;}
 }
