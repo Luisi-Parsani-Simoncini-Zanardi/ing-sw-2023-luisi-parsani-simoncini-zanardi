@@ -13,7 +13,7 @@ public abstract class ShapeBehavior extends CommonGoal{
      * @return true if the TileEnum type of the Tiles is equal, false otherwise
      */
     protected boolean equalTiles(Tile a, Tile b){
-        if(a.getTile() == b.getTile())
+        if(a.getTile().equals(b.getTile()))
             return true;
         return false;
     }

@@ -43,7 +43,7 @@ class DifferentRowTest {
 
     //tests that the algorithm successfully checks that the shelf used not allowed types
     @Test
-    void unusedTiles(){
+    void emptyTiles(){
         CommonGoal commonRow = new DifferentRow();
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
