@@ -6,35 +6,16 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class RowGroup implements RowBehavior{
-
-    /**
-     *
-     * @param shelf is the player shelf
-     * @return true if there are at least 4 rows with at most 3 different tile types, returns false otherwise
-     */
+public class DifferentRow implements RowBehavior {
     @Override
-    public boolean check(Shelf shelf){
-        ArrayList<Tile> tiles = new ArrayList<Tile>();
-        int rightRows=0;
-        for(int i=5; i>-1; i--) {
-            for (int j = 0; j < 5; j++) {
-                tiles.add(shelf.getTileShelf(i, j));
-            }
-            if(this.differentTiles(tiles)==-1)
-                return false;
-            else if(this.differentTiles(tiles)<4)
-                rightRows++;
-            tiles.clear();
-            if(rightRows == 4)
-                return true;
-        }
+    public boolean check(Shelf shelf) {
         return false;
     }
+
     /**
-     * Returns the number of different Type of tiles in the row and checks that there aren't UNUSED or EMPTY Tiles
+     * Returns the number of different Type of tiles in the row
      * @param rowTiles the ArrayList of Tiles to check
-     * @return the number of different tiles types in the arrayList and checks that there aren't UNUSED or EMPTY Tiles
+     * @return the number of different tiles types in the arrayList
      */
     private int differentTiles(ArrayList<Tile> rowTiles){
         int counter=0;
@@ -50,9 +31,9 @@ public class RowGroup implements RowBehavior{
             counter++;
         if(rowTiles.stream().anyMatch(tile -> tile.getTile() == TilesEnum.TROPHIES))
             counter++;
-        if(rowTiles.stream().anyMatch(tile -> tile.getTile() == TilesEnum.EMPTY))
-            counter = -1;
         if(rowTiles.stream().anyMatch(tile -> tile.getTile() == TilesEnum.UNUSED))
+            counter = -1;
+        if(rowTiles.stream().anyMatch(tile -> tile.getTile() == TilesEnum.EMPTY))
             counter = -1;
         return counter;
     }
