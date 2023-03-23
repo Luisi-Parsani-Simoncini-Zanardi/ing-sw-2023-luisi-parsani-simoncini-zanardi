@@ -1,6 +1,8 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
+import org.projectsw.Model.CommonGoal.CommonGoal;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -148,4 +150,7 @@ public class Game{
             throw new MaximumPlayerException("Maximum number of players reached");
         }
     }
+
+    //TODO: manca implementazione
+    private CommonGoal RandomCommonGoals(){return null;}
 }
