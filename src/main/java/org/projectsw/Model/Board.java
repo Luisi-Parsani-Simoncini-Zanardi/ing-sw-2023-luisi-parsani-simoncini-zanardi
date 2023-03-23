@@ -13,27 +13,43 @@ public class Board{
     private Bag bag;
 
     /**
-     * Constructs a Board object from a json file
-     * initializes the 4-player board, the controller will eventually reduce it
-     * @throws IOException if an error occurs while reading from the file
+     * Constructs a Board full of unused tiles
      */
-    public Board() throws IOException{
-
-        Gson gson = new Gson();
-        String[][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoardFourPlayers.json"), String[][].class);
-
+    public Board(){
         board = new Tile[9][9];
+        bag = new Bag();
+        endGame = false;
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
-                if(tmpMatrix[i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
-                if(tmpMatrix[i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
+                board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
+    }
 
-        endGame = false;
-        bag = new Bag();
-
-        endGame = false;
+    /**
+     * Constructs a Board object from a json file
+     * initializes the board for the numer of players requested
+     * thows IOException if comes an error opening the file, thows IndexOutOfBoundsExeption if
+     * the number of players is not 2,3 or 4
+     * @param playersNumber the number of players playing the game
+     */
+    public Board(int playersNumber) {
+        if(playersNumber<2 || playersNumber>4) throw new IllegalArgumentException();
+        try{
+            Gson gson = new Gson();
+            String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
+            board = new Tile[9][9];
+            for(int i=0;i<9;i++){
+                for(int j=0;j<9;j++){
+                    if(tmpMatrix[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
+                    if(tmpMatrix[playersNumber-2][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
+                }
+            }
+            endGame = false;
+            bag = new Bag();
+        }catch (IOException e){
+            System.out.println("Error opening the json"+e.getMessage());
+        }
     }
 
     /**
@@ -52,16 +68,6 @@ public class Board{
      */
     public Tile[][] getBoard(){
         return board;
-    }
-
-    /**
-     * Returns the Tile at the given position on the board.
-     * @param row the row index of the Tile
-     * @param column the column index of the Tile
-     * @return the Tile at the given position
-     */
-    public Tile getTile(int row, int column){
-        return board[row][column];
     }
 
     /**

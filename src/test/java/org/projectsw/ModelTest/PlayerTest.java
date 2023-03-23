@@ -3,8 +3,6 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
@@ -59,10 +57,10 @@ class PlayerTest {
 
     //test that the method sets correctly every possible personalGoal
     @Test
-    void setPersonalGoal() throws IOException {
+    void setPersonalGoal(){
 
         Player player = new Player("Morfeo", 1);
-        player.getPersonalGoal().cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
 
         PersonalGoal personal1 = new PersonalGoal(0);
         player.setPersonalGoal(personal1);
@@ -112,16 +110,16 @@ class PlayerTest {
         player.setPersonalGoal(personal12);
         assertEquals(personal12, player.getPersonalGoal());
 
-        player.getPersonalGoal().cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
     }
 
     //test that the method returns the correct value of personal goal
     @Test
-    void getPersonalGoal() throws IOException {
+    void getPersonalGoal(){
 
         PersonalGoal personal = new PersonalGoal(4);
         Player player = new Player("Riccardo", 3);
-        player.getPersonalGoal().cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
         player.setPersonalGoal(personal);
         assertEquals(personal, player.getPersonalGoal());
     }
@@ -245,7 +243,7 @@ class PlayerTest {
     @Test
     void setGetPersonalGoalRedeemed(){
         Player test = new Player("Pietro",3);
-        test.getPersonalGoal().cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
 
         test.setPersonalGoalRedeemed(true);
         assertTrue(test.isPersonalGoalRedeemed());
@@ -257,7 +255,7 @@ class PlayerTest {
     @Test
     void setGetCommonGoalRedeemed(){
         Player test = new Player("Pietro",3);
-        test.getPersonalGoal().cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
 
         test.setCommonGoalRedeemed(true, 0);
         assertTrue(test.isCommonGoalRedeemed(0));
@@ -272,9 +270,9 @@ class PlayerTest {
 
     //tests the IllegalArgumentException catch recalculates the personalGoal
     @Test
-    void tryPersonalGoal() throws IOException {
+    void tryPersonalGoal(){
         Player test = new Player("Pietro",3);
-        test.getPersonalGoal().cleanUsedCodes();
+        PersonalGoal.cleanUsedCodes();
 
         PersonalGoal personal5 = new PersonalGoal(4);
 

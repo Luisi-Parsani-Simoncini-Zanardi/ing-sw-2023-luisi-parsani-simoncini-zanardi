@@ -1,10 +1,13 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
+
 import org.projectsw.Model.CommonGoal.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,7 +16,6 @@ import java.util.Random;
  * including the board, players (the current playing one and the first one), chat, and common goals.
  */
 public class Game{
-
     private Player firstPlayer;
     private Player currentPlayer;
     private ArrayList<Player> players;
@@ -21,24 +23,20 @@ public class Game{
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
 
+
     /**
-     * Creates a new instance of the Game class with a new board, chat, and empty player list,
+     * Creates a new instance of the Game class with a new chat and an empty player list,
      * first and current player are not set yet.
      */
     public Game(){
-        Board board = null;
-        try {
-            board= new Board();
-        }catch (IOException e) {
-            System.out.println("Error opening the json file");
-        }
+        Board board = new Board();
         setBoard(board);
-
         Chat chat = new Chat();
         setChat(chat);
 
         ArrayList<Player>players = new ArrayList<>();
         setPlayers(players);
+
     }
 
     /**

@@ -32,7 +32,9 @@ public class SaveGameStatus {
      * @return a JSON object containing all the information about the given player
      */
     public JsonObject jsonPlayer(Player player) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .create();
         JsonObject json = new JsonObject();
         json.add("position", new JsonPrimitive(player.getPosition()));
         json.add("nickname", new JsonPrimitive(player.getNickname()));
@@ -41,6 +43,7 @@ public class SaveGameStatus {
         json.add("personalGoal", gson.toJsonTree(player.getPersonalGoal()));
 
         return json;
+
     }
 
     /**
