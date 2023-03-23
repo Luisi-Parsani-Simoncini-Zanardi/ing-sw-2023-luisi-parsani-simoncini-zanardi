@@ -72,7 +72,38 @@ class BoardTest {
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 Tile tile = board.getBoard()[i][j];
-                assertEquals(tile.getTile(), TilesEnum.UNUSED);
+                assertEquals(tile.getTile(),TilesEnum.UNUSED);
+            }
+        }
+    }
+
+    //test that the constructor constucts the correct board for every kind of game (2-4 players)
+    @Test
+    void integrityTestBoards(){
+        for(int p=2;p<5;p++) {
+            int emptyNumber = 0;
+            int unusedNumber = 0;
+            Board board = new Board(p);
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    Tile tile = board.getBoard()[i][j];
+                    assertTrue(tile.getTile().equals(TilesEnum.UNUSED) ||
+                            tile.getTile().equals(TilesEnum.EMPTY));
+                    if(tile.getTile().equals(TilesEnum.UNUSED)) unusedNumber++;
+                    if(tile.getTile().equals(TilesEnum.EMPTY)) emptyNumber++;
+                }
+            }
+            if(p == 2){
+                assertEquals(52,unusedNumber);
+                assertEquals(29,emptyNumber);
+            }
+            if(p == 3){
+                assertEquals(44,unusedNumber);
+                assertEquals(37,emptyNumber);
+            }
+            if(p == 4){
+                assertEquals(36,unusedNumber);
+                assertEquals(45,emptyNumber);
             }
         }
     }

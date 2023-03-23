@@ -38,8 +38,8 @@ public class Board{
             board = new Tile[9][9];
             for(int i=0;i<9;i++){
                 for(int j=0;j<9;j++){
-                    if(tmpMatrix[playersNumber][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
-                    if(tmpMatrix[playersNumber][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
+                    if(tmpMatrix[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
+                    if(tmpMatrix[playersNumber-2][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
                 }
             }
             endGame = false;
