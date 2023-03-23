@@ -12,7 +12,7 @@ class RowGroupTest {
     //tests that the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal
     @Test
     void checkTrue() {
-        CommonGoal commonRow = new Row(new RowGroup());
+        CommonGoal commonRow = new RowGroup();
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -28,7 +28,7 @@ class RowGroupTest {
     //tests that the algorithm successfully checks that the shelf has too much types in the rows
     @Test
     void tooMuchTypes() {
-        CommonGoal commonRow = new Row(new RowGroup());
+        CommonGoal commonRow = new RowGroup();
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -44,7 +44,7 @@ class RowGroupTest {
     //tests that the algorithm successfully checks that the shelf used not allowed types
     @Test
     void unusedTiles(){
-        CommonGoal commonRow = new Row(new RowGroup());
+        CommonGoal commonRow = new RowGroup();
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -60,7 +60,7 @@ class RowGroupTest {
     //tests that the algorithm successfully checks that the shelf has few rows of the right kind
     @Test
     void fewRows(){
-        CommonGoal commonRow = new Row(new RowGroup());
+        CommonGoal commonRow = new RowGroup();
         Shelf shelf = new Shelf();
         for(int i=2; i>-1; i--)
             try {

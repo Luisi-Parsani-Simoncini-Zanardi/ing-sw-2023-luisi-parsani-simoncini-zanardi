@@ -1,7 +1,9 @@
 package org.projectsw.Model.CommonGoal;
 
-import org.projectsw.Model.Shelf;
+public abstract class ShapeBehavior extends CommonGoal{
+    public ShapeBehavior(){
+        super();
+    }
 
-public interface ShapeBehavior {
-    public boolean check(Shelf shelf);
+    //TODO: qui si mettono tutte i metodi che si vogliono usare nelle classi figlie senza duplicarli in quest'ultime
 }
