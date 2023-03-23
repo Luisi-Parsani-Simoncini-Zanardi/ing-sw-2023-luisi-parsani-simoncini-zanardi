@@ -3,7 +3,10 @@ package org.projectsw.Model;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Class representing a player in the game.
@@ -15,19 +18,30 @@ public class Player {
     private Shelf shelf;
     private PersonalGoal personalGoal;
     private ArrayList<Tile> temporaryTiles;
+    private boolean personalGoalRedeemed;
+    private ArrayList<Boolean> commonGoalRedeemed;
 
     /**
      * Constructs a new player with the given nickname and position.
      * points are set 0 as default
-     * shelf and personalGoal will have to be set by their respective set function after calling the constructor
+     * flags are set false as default
+     * shelf is instanced as an empty shelf
+     * one of the 12 possible personal goals is instanced by generating a random personal goal code and giving it as a parameter to the personalGoal constructor
      * @param nickname the nickname of the player
      * @param position the position of the player
      */
     public Player(String nickname, int position) {
         this.position=position;
         this.nickname=nickname;
-        this.points=0;
-        this.temporaryTiles = new ArrayList<>();
+        points=0;
+        temporaryTiles = new ArrayList<>();
+        personalGoalRedeemed = false;
+        commonGoalRedeemed = new ArrayList<Boolean>();
+        commonGoalRedeemed.add(false);
+        commonGoalRedeemed.add(false);
+        shelf = new Shelf();
+        Random random = new Random();
+        int randomNumber = random.nextInt(12);
     }
 
     /**
@@ -79,6 +93,23 @@ public class Player {
     }
 
     /**
+     * Returns whether the personal goal has been redeemed or not
+     * @return true if the personal goal has been redeemed, false otherwise
+     */
+    public boolean isPersonalGoalRedeemed(){
+        return personalGoalRedeemed;
+    }
+
+    /**
+     * Returns whether the number i common goal has been redeemed or not
+     * @param i the index of the personalGoalArray element to be checked
+     * @return true if the personal goal has been redeemed, false otherwise
+     */
+    public boolean isCommonGoalRedeemed(int i){
+        return commonGoalRedeemed.get(i);
+    }
+
+    /**
      * Sets the shelf of the player to the given shelf.
      * @param shelf the shelf to set for the player
      */
@@ -102,6 +133,22 @@ public class Player {
         this.personalGoal=personalGoal;
     }
 
+    /**
+     * Sets personalGoalRedeemed to the desired status
+     * @param status the status to be assigned
+     */
+    public void setPersonalGoalRedeemed (boolean status){
+        personalGoalRedeemed = status;
+    }
+
+    /**
+     * Sets the number i element of the commonGoal array the desired status
+     * @param status the status to be assigned
+     * @param i the index of the personalGoalArray element to be assigned
+     */
+    public void setCommonGoalRedeemed (boolean status, int i){
+        commonGoalRedeemed.set(i, status);
+    }
 
     /**
      * Adds the given tile to the player's temporary tiles.
@@ -134,5 +181,24 @@ public class Player {
         temp = temporaryTiles.get(num);
         temporaryTiles.remove(num);
         return temp;
+    }
+
+    /**
+     * Tries to instance a PersonalGoal object, and iterates in case of IllegalArgumentException, each time generating a new random code
+     * @param goalCode the unique code assigned to this player's goal card
+     * @return a PersonalGoal object if the code is not used
+     */
+    public PersonalGoal tryPersonalGoal (int goalCode) {
+        PersonalGoal generatedPersonalGoal = null;
+        try {
+            generatedPersonalGoal = new PersonalGoal(goalCode);
+        } catch (IOException e) {
+            System.out.println("Error opening the json file");
+        } catch (IllegalArgumentException e) {
+            Random random = new Random();
+            int randomNumber = random.nextInt(12);
+            return tryPersonalGoal(randomNumber);
+        }
+        return generatedPersonalGoal;
     }
 }
