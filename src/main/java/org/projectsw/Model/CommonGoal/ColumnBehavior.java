@@ -1,7 +1,9 @@
 package org.projectsw.Model.CommonGoal;
 
-import org.projectsw.Model.Shelf;
+public abstract class ColumnBehavior extends CommonGoal {
+    public ColumnBehavior(){
+        super();
+    }
 
-public interface ColumnBehavior {
-    public boolean check(Shelf shelf);
+    //TODO: qui si mettono tutte i metodi che si vogliono usare nelle classi figlie senza duplicarli in quest'ultime
 }

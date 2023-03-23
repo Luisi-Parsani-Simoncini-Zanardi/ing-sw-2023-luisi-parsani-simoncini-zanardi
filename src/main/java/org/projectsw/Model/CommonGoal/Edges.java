@@ -3,7 +3,7 @@ package org.projectsw.Model.CommonGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
-public class Edges implements ShapeBehavior{
+public class Edges extends ShapeBehavior{
 
     /**
      * @param shelf is the player shelf

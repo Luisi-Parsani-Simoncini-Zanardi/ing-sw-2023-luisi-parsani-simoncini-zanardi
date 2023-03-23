@@ -19,8 +19,8 @@ public abstract class CommonGoal{
         else throw  new MaximumRedeemedPointsException("There are no more points to redeem");
     }
 
-    public Boolean check(Shelf shelf){
-        return null;
+    public boolean check(Shelf shelf){
+        return false;
     }
 
     //TODO: aggiunta solo per rimuovermi gli errori del gson, --questo metodo è da cancellare quando gson fixato--

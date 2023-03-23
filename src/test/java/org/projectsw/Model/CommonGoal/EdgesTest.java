@@ -11,7 +11,7 @@ class EdgesTest {
     //test that the edges are of the same TileEnum type
     @Test
     void checkTrue() {
-        CommonGoal commonGoal = new Shape(new Edges());
+        CommonGoal commonGoal = new Edges();
         Shelf shelf = new Shelf();
         try {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
@@ -25,7 +25,7 @@ class EdgesTest {
     //test that the edges are of a different TileEnum type
     @Test
     void checkDifferentType(){
-        CommonGoal commonGoal = new Shape(new Edges());
+        CommonGoal commonGoal = new Edges();
         Shelf shelf = new Shelf();
         try {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
@@ -39,7 +39,7 @@ class EdgesTest {
     //test that the edges are only of TilesEnum allowed types
     @Test
     void checkAllowed(){
-        CommonGoal commonGoal = new Shape(new Edges());
+        CommonGoal commonGoal = new Edges();
         Shelf shelf = new Shelf();
         try {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
