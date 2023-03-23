@@ -28,7 +28,7 @@ public class Game{
         try {
             board= new Board();
         }catch (IOException e) {
-            System.out.println("Error opening the json");
+            System.out.println("Error opening the json file");
         }
         setBoard(board);
 

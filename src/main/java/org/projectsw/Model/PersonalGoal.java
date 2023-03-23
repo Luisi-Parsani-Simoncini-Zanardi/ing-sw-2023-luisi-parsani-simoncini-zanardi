@@ -21,7 +21,7 @@ public class PersonalGoal {
      * @throws IOException if there is an error reading from the JSON file
      * @throws IllegalArgumentException if the goal code has already been used by another player
      */
-    public PersonalGoal(int goalCode) throws IOException {
+    public PersonalGoal(int goalCode) throws IOException, IllegalArgumentException {
         if (usedCodes.contains(goalCode)) {
             throw new IllegalArgumentException("Goal code already used.");
         }

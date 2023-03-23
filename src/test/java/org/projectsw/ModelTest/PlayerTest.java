@@ -23,7 +23,7 @@ class PlayerTest {
         assertEquals("Paolo",player.getNickname());
     }
 
-    //test that the method setPoits actually sets a new value for the attribute points of the object player
+    //test that the method setPoints actually sets a new value for the attribute points of the object player
     @Test
     void setPoints() {
         Player player = new Player("Luca", 2);
@@ -60,7 +60,10 @@ class PlayerTest {
     //test that the method sets correctly every possible personalGoal
     @Test
     void setPersonalGoal() throws IOException {
+
         Player player = new Player("Morfeo", 1);
+        player.getPersonalGoal().cleanUsedCodes();
+
         PersonalGoal personal1 = new PersonalGoal(0);
         player.setPersonalGoal(personal1);
         assertEquals(personal1, player.getPersonalGoal());
@@ -115,8 +118,10 @@ class PlayerTest {
     //test that the method returns the correct value of personal goal
     @Test
     void getPersonalGoal() throws IOException {
+
         PersonalGoal personal = new PersonalGoal(4);
         Player player = new Player("Riccardo", 3);
+        player.getPersonalGoal().cleanUsedCodes();
         player.setPersonalGoal(personal);
         assertEquals(personal, player.getPersonalGoal());
     }
@@ -234,5 +239,47 @@ class PlayerTest {
 
         assertEquals(TilesEnum.FRAMES,test.selectTile(0).getTile());
         assertEquals(0,test.getTiles().size());
+    }
+
+    //tests the set and get methods of pg redeemed
+    @Test
+    void setGetPersonalGoalRedeemed(){
+        Player test = new Player("Pietro",3);
+        test.getPersonalGoal().cleanUsedCodes();
+
+        test.setPersonalGoalRedeemed(true);
+        assertTrue(test.isPersonalGoalRedeemed());
+        test.setPersonalGoalRedeemed(false);
+        assertFalse(test.isPersonalGoalRedeemed());
+    }
+
+    //tests the set and get methods of cg redeemed
+    @Test
+    void setGetCommonGoalRedeemed(){
+        Player test = new Player("Pietro",3);
+        test.getPersonalGoal().cleanUsedCodes();
+
+        test.setCommonGoalRedeemed(true, 0);
+        assertTrue(test.isCommonGoalRedeemed(0));
+        test.setCommonGoalRedeemed(false, 0);
+        assertFalse(test.isCommonGoalRedeemed(0));
+
+        test.setCommonGoalRedeemed(true, 1);
+        assertTrue(test.isCommonGoalRedeemed(1));
+        test.setCommonGoalRedeemed(false, 1);
+        assertFalse(test.isCommonGoalRedeemed(1));
+    }
+
+    //tests the IllegalArgumentException catch recalculates the personalGoal
+    @Test
+    void tryPersonalGoal() throws IOException {
+        Player test = new Player("Pietro",3);
+        test.getPersonalGoal().cleanUsedCodes();
+
+        PersonalGoal personal5 = new PersonalGoal(4);
+
+        PersonalGoal personal6 = test.tryPersonalGoal(4);
+
+        assertNotEquals(personal5, personal6);
     }
 }

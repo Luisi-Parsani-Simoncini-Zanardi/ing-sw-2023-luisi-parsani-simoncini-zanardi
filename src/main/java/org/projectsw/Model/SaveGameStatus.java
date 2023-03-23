@@ -116,7 +116,7 @@ public class SaveGameStatus {
         try (FileWriter fileWriter = new FileWriter(filePath)) {
             gson.toJson(json, fileWriter);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error opening the json file");
         }
     }
 }
