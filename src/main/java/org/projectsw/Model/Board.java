@@ -14,26 +14,22 @@ public class Board{
 
     /**
      * Constructs a Board object from a json file
-     * initializes the 4-player board, the controller will eventually reduce it
+     * initializes the board for the numer of players requested
+     * @param playersNumber the number of players playing the game
      * @throws IOException if an error occurs while reading from the file
      */
-    public Board() throws IOException{
-
+    public Board(int playersNumber) throws IOException{
         Gson gson = new Gson();
-        String[][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][].class);
-
+        String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
         board = new Tile[9][9];
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
-                if(tmpMatrix[i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
-                if(tmpMatrix[i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
+                if(tmpMatrix[playersNumber][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
+                if(tmpMatrix[playersNumber][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
             }
         }
-
         endGame = false;
         bag = new Bag();
-
-        endGame = false;
     }
 
     /**
