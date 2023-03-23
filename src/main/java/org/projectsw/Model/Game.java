@@ -1,13 +1,8 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
-
 import org.projectsw.Model.CommonGoal.*;
-
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -151,9 +146,9 @@ public class Game{
         }
     }
 
-    //TODO: manca implementazione
-
-
+    /**
+     * @return method that return an ArrayList of generic classes containing all CommonGoal children classes
+     */
     private ArrayList<Class<?>> fillCommonGoalsArray(){
         ArrayList<Class<?>> randomGoalsClasses = new ArrayList<>();
 
@@ -172,6 +167,15 @@ public class Game{
 
         return randomGoalsClasses;
     }
+
+    /**
+     *
+     * @return the ArrayList of commonGoals containing two random commonGoals chosen by the children of CommonGoal
+     * @throws NoSuchMethodException thrown if getDeclaredConstructor doesn't find the method
+     * @throws InvocationTargetException thrown if getDeclaredConstructor doesn't find the target
+     * @throws InstantiationException thrown if getDeclaredConstructor can't istance correctly the target
+     * @throws IllegalAccessException thrown if getDeclaredConstructor doesn't access the target correctly
+     */
     public ArrayList<CommonGoal> randomCommonGoals() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
         CommonGoal istance;
