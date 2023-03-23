@@ -2,13 +2,13 @@
 
 DIVISIONE COMPITI:
 
-Luca -> Aggiungere le flag a player, sistemare la exception di goalcode, aggiungere la definizione di personalgoal dentro a player
+Luca -> Aggiungere i javadoc ai test
 
-Lore -> Sistemare i commongoal
+Lore -> Sistemare l'uml di commonGoal
 
-Lollo -> Creare i test di savegamestatus
+Lollo -> Creare i test di savegamestatus e sistemare gli errori di SaveGameStatus dovuti al nuovo commongoal
 
-Davide -> Finire i Javadoc e istanziare in json i vari tipi di board
+Davide -> Istanziare in json i vari tipi di board
 
 NOTA PER QUANDO CREATE NUOVE CLASSI O AGGIUNGETE NUOVI METODI (da Davide)
 Creando i javadoc sto anche riorndinando un po' le classi al loro interno, alcune continuando ad aggiungere e togliere metodi erano diventate davvero incasinate.
