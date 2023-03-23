@@ -18,7 +18,9 @@ public class SaveGameStatus {
     }
 
     public JsonObject jsonPlayer(Player player) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .create();
         JsonObject json = new JsonObject();
         json.add("position", new JsonPrimitive(player.getPosition()));
         json.add("nickname", new JsonPrimitive(player.getNickname()));
@@ -28,6 +30,12 @@ public class SaveGameStatus {
 
         return json;
     };
+
+    public String prova(Game game) {
+        Gson gson = new Gson();
+        String json = gson.toJson(game);
+        return json;
+    }
     public JsonObject jsonBoard(Board board) {
         Gson gson = new Gson();
         JsonObject json = new JsonObject();
