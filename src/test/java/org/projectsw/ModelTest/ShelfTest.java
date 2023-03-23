@@ -2,7 +2,8 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Shelf;
-import org.projectsw.Model.Tiles;
+import org.projectsw.Model.Tile;
+import org.projectsw.Model.TilesEnum;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,28 +20,28 @@ class ShelfTest {
     void insertTiles() {
         Shelf shelf = new Shelf();
         try {
-            shelf.insertTiles(Tiles.CATS, 5,5);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 5,5);
         }catch(Exception e){
             assertEquals("Out of bounds", e.getMessage());
         }
 
         try {
-            shelf.insertTiles(Tiles.UNUSED, 5,4);
+            shelf.insertTiles(new Tile(TilesEnum.UNUSED, 0), 5,4);
         }catch(Exception e){
             assertEquals("You can't add an UNUSED tile to the shelf", e.getMessage());
         }
 
         try {
-            shelf.insertTiles(Tiles.EMPTY, 5,4);
+            shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), 5,4);
         }catch(Exception e){
             assertEquals("You can't add an EMPTY tile to the shelf", e.getMessage());
         }
 
-        assertEquals(Tiles.EMPTY, shelf.getShelf()[5][4]);
+        assertEquals(TilesEnum.EMPTY, shelf.getShelf()[5][4].getTile());
         try {
-            shelf.insertTiles(Tiles.CATS, 5,4);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 5,4);
         }catch(Exception e){
         }
-        assertEquals(Tiles.CATS, shelf.getShelf()[5][4]);
+        assertEquals(TilesEnum.CATS, shelf.getShelf()[5][4].getTile());
     }
 }

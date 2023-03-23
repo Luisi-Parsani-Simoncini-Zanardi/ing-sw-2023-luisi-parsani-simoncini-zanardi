@@ -2,9 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Chat;
-
 import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ChatTest {
@@ -25,7 +23,7 @@ class ChatTest {
     @Test
     void getChat() {
         Chat chat = new Chat();
-        ArrayList<String> prova = new ArrayList<String>();
+        ArrayList<String> prova = new ArrayList<>();
         chat.addChatLog("Hi i'm Lorenzo and im testing the chat class");
         prova.add("Hi i'm Lorenzo and im testing the chat class");
         assertEquals(prova, chat.getChat());
