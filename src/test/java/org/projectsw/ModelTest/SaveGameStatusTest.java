@@ -39,14 +39,21 @@ public class SaveGameStatusTest {
 
     public void assertEqualsShelf (Shelf shelfTest, Shelf shelfAssert) {
         for(int i=0; i<shelfTest.getShelf().length; i++) {
-            for(int j=0; i<shelfTest.getShelf()[i].length; j++){
+            for(int j=0; j<shelfTest.getShelf()[i].length; j++){
                 assertEquals(shelfTest.getShelf()[i][j], shelfAssert.getShelf()[i][j]);
             }
         }
     }
 
     public void assertEqualsPersonalGoal (PersonalGoal PersonalGoalTest, PersonalGoal PersonalGoalAssert) {
-
+        for(int i=0; i<PersonalGoalTest.getPersonalGoal().length-1; i++){
+            for(int j=0; j<PersonalGoalTest.getPersonalGoal()[i].length-1; j++) {
+                assertEquals(PersonalGoalTest.getPersonalGoal()[i][j], PersonalGoalAssert.getPersonalGoal()[i][j]);
+            }
+        }
+        for(int i=0; i<PersonalGoalTest.getUsedCodes().size(); i++) {
+            assertEquals(PersonalGoalTest.getUsedCodes().get(i), PersonalGoalAssert.getUsedCodes().get(i));
+        }
     }
 
     public void assertEqualsPlayer (Player playerTest, Player playerAssert) {
@@ -54,8 +61,31 @@ public class SaveGameStatusTest {
         assertEquals(playerTest.getPosition(), playerAssert.getPosition());
         assertEquals(playerTest.getPoints(), playerAssert.getPoints());
         assertEqualsShelf(playerTest.getShelf(), playerAssert.getShelf());
+        assertEqualsPersonalGoal(playerTest.getPersonalGoal(), playerAssert.getPersonalGoal());
     }
 
+
+    public void assertEqualsBag (Bag bagTest, Bag bagAssert) {
+        for(int i=0; i<bagTest.getBag().size(); i++) {
+            assertEquals(bagTest.getBag().get(i), bagAssert.getBag().get(i));
+        }
+    }
+
+    public void assertEqualsBoard (Board boardTest, Board boardAssert) {
+        for(int i=0; i<boardTest.getBoard().length; i++) {
+            for(int j=0; j<boardTest.getBoard()[i].length; j++){
+                assertEquals(boardTest.getBoard()[i][j], boardAssert.getBoard()[i][j]);
+            }
+        }
+        assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
+        assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
+    }
+
+    public void assertEqualsChat (Chat chatTest, Chat chatAssert) {
+        for(int i=0; i<chatTest.getChat().size(); i++) {
+            assertEquals(chatTest.getChat().get(i), chatAssert.getChat().get(i));
+        }
+    }
 
 
 
@@ -90,20 +120,13 @@ public class SaveGameStatusTest {
         Gson gson = new Gson();
         Game data = gson.fromJson(json, Game.class);
 
-
-        assertEquals(game.getFirstPlayer().getNickname(), data.getFirstPlayer().getNickname());
-        assertEquals(game.getFirstPlayer().getPosition(), data.getFirstPlayer().getPosition());
-        assertEquals(game.getFirstPlayer().getPoints(), data.getFirstPlayer().getPoints());
-        assertEquals(game.getFirstPlayer().getNickname(), data.getFirstPlayer().getNickname());
-
-
-        /*Shelf shelfProva = new Shelf();
-        for (int i=0; i<shelfProva.getShelf().length; i++) {
-            System.out.println("[");
-            for(int j=0; j<shelfProva.getShelf()[i].length; j++)
-            System.out.println(shelfProva.getShelf()[i][j]);
-            System.out.println("]");
-        }*/
+        assertEqualsPlayer(game.getFirstPlayer(), data.getFirstPlayer());
+        assertEqualsPlayer(game.getCurrentPlayer(), data.getCurrentPlayer());
+        for(int i=0; i<game.getPlayers().size(); i++) {
+            assertEqualsPlayer(game.getPlayers().get(i), data.getPlayers().get(i));
+        }
+        assertEqualsBoard(game.getBoard(), data.getBoard());
+        assertEqualsChat(game.getChat(), data.getChat());
 
 
     }
