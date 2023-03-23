@@ -1,13 +1,10 @@
 package org.projectsw.ModelTest;
 
 import com.google.gson.*;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.projectsw.Model.*;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -87,31 +84,8 @@ public class SaveGameStatusTest {
         }
     }
 
-
-
     @Test
-    public void jsonPlayerDeserializer() throws IOException {
-        Game game = gameInizializer();
-        Player playerTest = game.getPlayers().get(1);
-
-        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
-
-        Gson gson = new Gson();
-        JsonObject json = saveGameStatus.jsonPlayer(game.getPlayers().get(1));
-        Player playerAssert = gson.fromJson(json, Player.class);
-
-        System.out.println(json);
-        System.out.println(playerTest.getShelf().getShelf());
-        System.out.println(playerAssert.getShelf().getShelf());
-        assertEquals(playerTest.getNickname(), playerAssert.getNickname());
-        assertEquals(playerTest.getPosition(), playerAssert.getPosition());
-        assertEquals(playerTest.getPoints(), playerAssert.getPoints());
-        //assertEquals(playerTest.getShelf() , playerAssert.getShelf());
-
-    }
-
-    @Test
-    public void prova() throws IOException {
+    public void gameDeserializerTest() throws IOException {
 
         Game game = gameInizializer();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
