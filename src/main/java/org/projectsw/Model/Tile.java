@@ -13,6 +13,7 @@ public class Tile {
      * @param imageNumber the image number of the tile
      */
     public Tile (TilesEnum tileType, int imageNumber){
+        if(imageNumber<0||imageNumber>2) throw new IllegalArgumentException();
         this.tile = tileType;
         this.imageNumber = imageNumber;
     }

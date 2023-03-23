@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShelfTest {
