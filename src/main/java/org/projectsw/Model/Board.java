@@ -18,18 +18,22 @@ public class Board{
      * @param playersNumber the number of players playing the game
      * @throws IOException if an error occurs while reading from the file
      */
-    public Board(int playersNumber) throws IOException{
-        Gson gson = new Gson();
-        String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
-        board = new Tile[9][9];
-        for(int i=0;i<9;i++){
-            for(int j=0;j<9;j++){
-                if(tmpMatrix[playersNumber][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
-                if(tmpMatrix[playersNumber][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
+    public Board(int playersNumber) {
+        try{
+            Gson gson = new Gson();
+            String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
+            board = new Tile[9][9];
+            for(int i=0;i<9;i++){
+                for(int j=0;j<9;j++){
+                    if(tmpMatrix[playersNumber][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
+                    if(tmpMatrix[playersNumber][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
+                }
             }
+            endGame = false;
+            bag = new Bag();
+        }catch (IOException e){
+            System.out.println("Error opening the json"+e.getMessage());
         }
-        endGame = false;
-        bag = new Bag();
     }
 
     /**
