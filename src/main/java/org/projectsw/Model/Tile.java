@@ -10,10 +10,10 @@ public class Tile {
     /**
      * Constructs a new Tile object with the specified type and image number.
      * @param tileType the type of the tile
-     * @param imageNumber the image number of the tile
+     * @param imageNumber the image number of the tile (must be 0,1, or 2)
      */
     public Tile (TilesEnum tileType, int imageNumber){
-        if(imageNumber<0||imageNumber>2) throw new IllegalArgumentException();
+        if(imageNumber < 0 || imageNumber > 2) throw new IllegalArgumentException();
         this.tile = tileType;
         this.imageNumber = imageNumber;
     }
