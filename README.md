@@ -2,7 +2,7 @@
 
 DIVISIONE COMPITI:
 
-Luca -> Aggiungere i javadoc ai test
+Luca -> Aggiungere i javadoc ai test e sistemare l'UML
 
 Lore -> Sistemare l'uml di commonGoal
 
