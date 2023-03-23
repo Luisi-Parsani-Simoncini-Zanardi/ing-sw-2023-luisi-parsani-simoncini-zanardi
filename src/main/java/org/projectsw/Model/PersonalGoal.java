@@ -12,40 +12,44 @@ import java.util.*;
  * the corresponding goal card from a JSON file.
  */
 public class PersonalGoal {
-    private final TilesEnum[][] personalGoal;
+    private TilesEnum[][] personalGoal;
     private static List<Integer> usedCodes = new ArrayList<>(); //called codes
 
     /**
      * Constructs a new PersonalGoal object with the given goal code.
      * @param goalCode the unique code assigned to this player's goal card
-     * @throws IOException if there is an error reading from the JSON file
      * @throws IllegalArgumentException if the goal code has already been used by another player
      */
-    public PersonalGoal(int goalCode) throws IOException, IllegalArgumentException {
-        if (usedCodes.contains(goalCode)) {
-            throw new IllegalArgumentException("Goal code already used.");
-        }
-        usedCodes.add(goalCode);
+    public PersonalGoal(int goalCode){
+        try {
+            if (usedCodes.contains(goalCode)) {
+                throw new IllegalArgumentException("Goal code already used.");
+            }
+            usedCodes.add(goalCode);
 
-        Gson gson = new Gson();
-        String[][][] tmpMatrixes = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
+            Gson gson = new Gson();
+            String[][][] tmpMatrixes = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
 
-        personalGoal = new TilesEnum[6][5];
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++) {
-                String str = tmpMatrixes[goalCode][i][j];
-                switch (str) {
-                    case "EMPTY" -> personalGoal[i][j] = TilesEnum.EMPTY;
-                    case "PLANTS" -> personalGoal[i][j] = TilesEnum.PLANTS;
-                    case "TROPHIES" -> personalGoal[i][j] = TilesEnum.TROPHIES;
-                    case "GAMES" -> personalGoal[i][j] = TilesEnum.GAMES;
-                    case "FRAMES" -> personalGoal[i][j] = TilesEnum.FRAMES;
-                    case "CATS" -> personalGoal[i][j] = TilesEnum.CATS;
-                    case "BOOKS" -> personalGoal[i][j] = TilesEnum.BOOKS;
-                    default -> throw new IllegalArgumentException("Invalid tile value: " + str);
+            personalGoal = new TilesEnum[6][5];
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 5; j++) {
+                    String str = tmpMatrixes[goalCode][i][j];
+                    switch (str) {
+                        case "EMPTY" -> personalGoal[i][j] = TilesEnum.EMPTY;
+                        case "PLANTS" -> personalGoal[i][j] = TilesEnum.PLANTS;
+                        case "TROPHIES" -> personalGoal[i][j] = TilesEnum.TROPHIES;
+                        case "GAMES" -> personalGoal[i][j] = TilesEnum.GAMES;
+                        case "FRAMES" -> personalGoal[i][j] = TilesEnum.FRAMES;
+                        case "CATS" -> personalGoal[i][j] = TilesEnum.CATS;
+                        case "BOOKS" -> personalGoal[i][j] = TilesEnum.BOOKS;
+                        default -> throw new IllegalArgumentException("Invalid tile value: " + str);
+                    }
                 }
             }
+        }catch (IOException e){
+            System.out.println("Error opening the file:"+e.getMessage());
         }
+
     }
 
     /**

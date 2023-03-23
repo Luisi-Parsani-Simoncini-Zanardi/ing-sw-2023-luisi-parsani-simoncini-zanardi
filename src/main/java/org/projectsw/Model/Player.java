@@ -3,8 +3,6 @@ package org.projectsw.Model;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -36,7 +34,7 @@ public class Player {
         points=0;
         temporaryTiles = new ArrayList<>();
         personalGoalRedeemed = false;
-        commonGoalRedeemed = new ArrayList<Boolean>();
+        commonGoalRedeemed = new ArrayList<>();
         commonGoalRedeemed.add(false);
         commonGoalRedeemed.add(false);
         shelf = new Shelf();
@@ -190,11 +188,9 @@ public class Player {
      * @return a PersonalGoal object if the code is not used
      */
     public PersonalGoal tryPersonalGoal (int goalCode) {
-        PersonalGoal generatedPersonalGoal = null;
+        PersonalGoal generatedPersonalGoal;
         try {
             generatedPersonalGoal = new PersonalGoal(goalCode);
-        } catch (IOException e) {
-            System.out.println("Error opening the json file");
         } catch (IllegalArgumentException e) {
             Random random = new Random();
             int randomNumber = random.nextInt(12);
