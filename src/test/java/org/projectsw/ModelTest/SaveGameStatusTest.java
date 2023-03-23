@@ -13,10 +13,10 @@ public class SaveGameStatusTest {
 
     public Game gameInizializer() throws IOException {
         Game game = new Game();
-        CommonGoal commonGoal1 = new CommonGoal(0);
+        /*CommonGoal commonGoal1 = new CommonGoal(0);
         CommonGoal commonGoal2 = new CommonGoal(1);
         CommonGoal[] commonGoals = {commonGoal1, commonGoal2};
-        game.setCommonGoals(commonGoals);
+        game.setCommonGoals(commonGoals);*/
         Player player1 = new Player("Davide", 0);
         player1.setShelf(new Shelf());
         player1.setPersonalGoal(new PersonalGoal(0));
@@ -34,10 +34,14 @@ public class SaveGameStatusTest {
         return game;
     }
 
+    public void assertEqualsTile (Tile tileTest, Tile tileAssert) {
+        assertEquals(tileTest.getTile(), tileAssert.getTile());
+        assertEquals(tileTest.getImageNumber(), tileAssert.getImageNumber());
+    }
     public void assertEqualsShelf (Shelf shelfTest, Shelf shelfAssert) {
         for(int i=0; i<shelfTest.getShelf().length; i++) {
             for(int j=0; j<shelfTest.getShelf()[i].length; j++){
-                assertEquals(shelfTest.getShelf()[i][j], shelfAssert.getShelf()[i][j]);
+                assertEqualsTile(shelfTest.getShelf()[i][j], shelfAssert.getShelf()[i][j]);
             }
         }
     }
@@ -59,19 +63,22 @@ public class SaveGameStatusTest {
         assertEquals(playerTest.getPoints(), playerAssert.getPoints());
         assertEqualsShelf(playerTest.getShelf(), playerAssert.getShelf());
         assertEqualsPersonalGoal(playerTest.getPersonalGoal(), playerAssert.getPersonalGoal());
+        assertEquals(playerTest.isPersonalGoalRedeemed(), playerAssert.isPersonalGoalRedeemed());
+        assertEquals(playerTest.isCommonGoalRedeemed(0), playerAssert.isCommonGoalRedeemed(0));
+        assertEquals(playerTest.isCommonGoalRedeemed(1), playerAssert.isCommonGoalRedeemed(1));
     }
 
 
     public void assertEqualsBag (Bag bagTest, Bag bagAssert) {
         for(int i=0; i<bagTest.getBag().size(); i++) {
-            assertEquals(bagTest.getBag().get(i), bagAssert.getBag().get(i));
+            assertEqualsTile(bagTest.getBag().get(i), bagAssert.getBag().get(i));
         }
     }
 
     public void assertEqualsBoard (Board boardTest, Board boardAssert) {
         for(int i=0; i<boardTest.getBoard().length; i++) {
             for(int j=0; j<boardTest.getBoard()[i].length; j++){
-                assertEquals(boardTest.getBoard()[i][j], boardAssert.getBoard()[i][j]);
+                assertEqualsTile(boardTest.getBoard()[i][j], boardAssert.getBoard()[i][j]);
             }
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
@@ -90,7 +97,7 @@ public class SaveGameStatusTest {
         Game game = gameInizializer();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
 
-        String json = saveGameStatus.prova(game);
+        String json = saveGameStatus.gameToJson();
         Gson gson = new Gson();
         Game data = gson.fromJson(json, Game.class);
 
