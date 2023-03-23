@@ -20,7 +20,7 @@ public class Board{
     public Board() throws IOException{
 
         Gson gson = new Gson();
-        String[][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoardFourPlayers.json"), String[][].class);
+        String[][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][].class);
 
         board = new Tile[9][9];
         for(int i=0;i<9;i++){
