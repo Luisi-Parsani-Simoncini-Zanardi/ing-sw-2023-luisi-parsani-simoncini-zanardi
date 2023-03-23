@@ -42,6 +42,7 @@ public class Player {
         shelf = new Shelf();
         Random random = new Random();
         int randomNumber = random.nextInt(12);
+        personalGoal = tryPersonalGoal(randomNumber);
     }
 
     /**
