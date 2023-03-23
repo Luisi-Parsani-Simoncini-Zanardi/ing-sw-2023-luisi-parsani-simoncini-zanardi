@@ -2,6 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
+import org.projectsw.Model.CommonGoal.CommonGoal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ class GameTest {
     @Test
     void setCommonGoals() {
         Game game = new Game();
-        CommonGoal []test = {null, null};
+        CommonGoal[]test = {null, null};
         test[0] = new CommonGoal(4);
         test[1] = new CommonGoal(5);
         game.setCommonGoals(test);

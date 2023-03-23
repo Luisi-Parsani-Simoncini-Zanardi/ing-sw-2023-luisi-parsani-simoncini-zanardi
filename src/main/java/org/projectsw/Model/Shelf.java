@@ -40,7 +40,13 @@ public class Shelf {
         return shelf;
     }
 
-
+    /**
+     * Returns a specific tile of the shelf
+     * @param row coordinate for the row
+     * @param column coordinate for the column
+     * @return the tile at the coordinates row x column
+     */
+    public Tile getTileShelf(int row, int column){return shelf[row][column];}
     /**
      *Sets the matrix of tiles for the shelf from the given shelf.
      *@param shelf the shelf where the matrix of tiles is taken from

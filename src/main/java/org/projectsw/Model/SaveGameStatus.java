@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.google.gson.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.projectsw.Model.CommonGoal.CommonGoal;
 
 /**
  * This class represents a status for saving a game, including the game itself and the file path
