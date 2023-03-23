@@ -5,14 +5,12 @@ import org.projectsw.Model.Board;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
     //test that the method unpdate the board correctly
     @Test
-    void updateBoard() throws IOException {
+    void updateBoard(){
         Board board = new Board();
         assertEquals(TilesEnum.EMPTY, board.getBoard()[5][5].getTile());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 5,5);
@@ -21,7 +19,7 @@ class BoardTest {
 
     //test that the board is correct before and after an update
     @Test
-    void getBoard() throws IOException {
+    void getBoard(){
         Board board = new Board();
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         board.updateBoard(new Tile(TilesEnum.FRAMES, 0), 4,1);
@@ -37,7 +35,7 @@ class BoardTest {
     //test that the method takes the tile from the board, setting it as EMPTY on the board
     //test that the returned tile is of the right type
     @Test
-    void getTileFromBoard() throws IOException {
+    void getTileFromBoard(){
         Board board = new Board();
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
@@ -49,7 +47,7 @@ class BoardTest {
 
     //test that it sets the board to the endGame
     @Test
-    void setEndGame() throws IOException {
+    void setEndGame(){
         Board board = new Board();
         board.setEndGame(false);
         assertFalse(board.isEndGame());
@@ -59,7 +57,7 @@ class BoardTest {
 
     //test that the value of endGame is the right one
     @Test
-    void isEndGame() throws IOException {
+    void isEndGame(){
         Board board = new Board();
         board.setEndGame(false);
         assertFalse(board.isEndGame());
@@ -69,7 +67,7 @@ class BoardTest {
 
     //test that the constructor returns a correct and fully inizialized maxtrix of tiles
     @Test
-    void integrityTest() throws IOException {
+    void integrityTestUnusedBoard(){
         Board board = new Board();
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){

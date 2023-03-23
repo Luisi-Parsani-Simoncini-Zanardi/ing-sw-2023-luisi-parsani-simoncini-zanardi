@@ -16,7 +16,6 @@ public class Board{
      * Constructs a Board object from a json file
      * initializes the board for the numer of players requested
      * @param playersNumber the number of players playing the game
-     * @throws IOException if an error occurs while reading from the file
      */
     public Board(int playersNumber) {
         try{
