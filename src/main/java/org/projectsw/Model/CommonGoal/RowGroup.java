@@ -51,8 +51,6 @@ public class RowGroup implements RowBehavior{
             counter++;
         if(rowTiles.stream().anyMatch(tile -> tile.getTile() == TilesEnum.EMPTY))
             counter = -1;
-        if(rowTiles.stream().anyMatch(tile -> tile.getTile() == TilesEnum.UNUSED))
-            counter = -1;
         return counter;
     }
 }

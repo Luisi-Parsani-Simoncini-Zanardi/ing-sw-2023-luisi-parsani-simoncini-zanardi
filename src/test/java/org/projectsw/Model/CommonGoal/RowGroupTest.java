@@ -50,7 +50,7 @@ class RowGroupTest {
             try {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, 0);
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, 1);
-                shelf.insertTiles(new Tile(TilesEnum.UNUSED,0), i, 2);
+                shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
