@@ -13,6 +13,20 @@ public class Board{
     private Bag bag;
 
     /**
+     * Constructs a Board full of unused tiles
+     */
+    public Board(){
+        board = new Tile[9][9];
+        bag = new Bag();
+        endGame = false;
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                board[i][j] = new Tile(TilesEnum.UNUSED,0);
+            }
+        }
+    }
+
+    /**
      * Constructs a Board object from a json file
      * initializes the board for the numer of players requested
      * @param playersNumber the number of players playing the game
