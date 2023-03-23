@@ -19,7 +19,7 @@ public abstract class CommonGoal{
 
     /**
      * increase the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
-     * @throws MaximumRedeemedPointsException
+     * @throws MaximumRedeemedPointsException thrown if there are no more points to redeem on this CommonGoal
      */
     public void increaseRedeemedNumber() throws MaximumRedeemedPointsException{
         if(getRedeemedNumber()<4)
