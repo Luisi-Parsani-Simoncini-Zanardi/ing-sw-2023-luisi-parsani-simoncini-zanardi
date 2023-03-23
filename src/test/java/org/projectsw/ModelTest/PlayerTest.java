@@ -269,4 +269,17 @@ class PlayerTest {
         test.setCommonGoalRedeemed(false, 1);
         assertFalse(test.isCommonGoalRedeemed(1));
     }
+
+    //tests the IllegalArgumentException catch recalculates the personalGoal
+    @Test
+    void tryPersonalGoal() throws IOException {
+        Player test = new Player("Pietro",3);
+        test.getPersonalGoal().cleanUsedCodes();
+
+        PersonalGoal personal5 = new PersonalGoal(4);
+
+        PersonalGoal personal6 = test.tryPersonalGoal(4);
+
+        assertNotEquals(personal5, personal6);
+    }
 }
