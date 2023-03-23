@@ -29,9 +29,12 @@ public class Board{
     /**
      * Constructs a Board object from a json file
      * initializes the board for the numer of players requested
+     * thows IOException if comes an error opening the file, thows IndexOutOfBoundsExeption if
+     * the number of players is not 2,3 or 4
      * @param playersNumber the number of players playing the game
      */
     public Board(int playersNumber) {
+        if(playersNumber<2 || playersNumber>4) throw new IllegalArgumentException();
         try{
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);

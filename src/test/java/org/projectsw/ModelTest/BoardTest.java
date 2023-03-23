@@ -1,18 +1,17 @@
 package org.projectsw.ModelTest;
 
-import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Board;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
-
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class BoardTest {
     //test that the method unpdate the board correctly
     @Test
     void updateBoard(){
         Board board = new Board();
-        assertEquals(TilesEnum.EMPTY, board.getBoard()[5][5].getTile());
+        assertEquals(TilesEnum.UNUSED, board.getBoard()[5][5].getTile());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 5,5);
         assertEquals(TilesEnum.CATS, board.getBoard()[5][5].getTile());
     }
@@ -65,7 +64,9 @@ class BoardTest {
         assertTrue(board.isEndGame());
     }
 
-    //test that the constructor returns a correct and fully inizialized maxtrix of tiles
+    /**
+     * Tests that the Board constructor returns a correctly initialized matrix of tiles with all tiles set to UNUSED.
+     */
     @Test
     void integrityTestUnusedBoard(){
         Board board = new Board();
@@ -77,7 +78,10 @@ class BoardTest {
         }
     }
 
-    //test that the constructor constucts the correct board for every kind of game (2-4 players)
+    /**
+     * Tests that the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
+     * from 2 to 4 players, it also conunts if the number of empty and unused tiles is correct
+     */
     @Test
     void integrityTestBoards(){
         for(int p=2;p<5;p++) {
@@ -106,5 +110,25 @@ class BoardTest {
                 assertEquals(45,emptyNumber);
             }
         }
+    }
+
+    /**
+     * Tests if the IndexOutOfBoundsException is correctly thrown for a number of players higher then expected
+     */
+    @Test
+    void testInvalidPlayersNumber1() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Board board = new Board(5);
+        });
+    }
+
+    /**
+     * Tests if the IndexOutOfBoundsException is correctly thrown for a number of players lower then expected
+     */
+    @Test
+    void testInvalidPlayersNumber2() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Board board = new Board(1);
+        });
     }
 }
