@@ -1,22 +1,14 @@
 # ing-sw-2023-luisi-parsani-simoncini-zanardi
 
-PER DOMANI:
+DIVISIONE COMPITI:
 
-Sistemare test tile           -> Luca   -> DONE
+Luca -> Aggiungere le flag a player, sistemare la exception di goalcode, aggiungere la definizione di personalgoal dentro a player
 
-Rivoluzionare UML common goal -> Lore   
+Lore -> Sistemare i commongoal
 
-Creare test savegame          -> Lollo   
+Lollo -> Creare i test di savegamestatus
 
-Mettere commenti javadoc      -> Davide  ->DONE per le classi, manca documentazione test
-
-
-PER MARTEDì:
-
-Rivoluzionare codice common goal
-
-Scrivere codice controller
-
+Davide -> Finire i Javadoc e istanziare in json i vari tipi di board
 
 NOTA PER QUANDO CREATE NUOVE CLASSI O AGGIUNGETE NUOVI METODI (da Davide)
 Creando i javadoc sto anche riorndinando un po' le classi al loro interno, alcune continuando ad aggiungere e togliere metodi erano diventate davvero incasinate.
