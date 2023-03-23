@@ -108,27 +108,4 @@ class GameTest {
         game.setBoard(board);
         assertEquals(board, game.getBoard());
     }
-
-    //test that the commonGoals are set correctly
-    @Test
-    void setCommonGoals() {
-        Game game = new Game();
-        CommonGoal[]test = {null, null};
-        test[0] = new CommonGoal(4);
-        test[1] = new CommonGoal(5);
-        game.setCommonGoals(test);
-        assertEquals(test,game.getCommonGoals());
-    }
-
-    //test that the commonGoals are returned correctly
-    @Test
-    void getCommonGoals() {
-        Game game = new Game();
-        CommonGoal []test = {null, null};
-        test[0] = new CommonGoal(4);
-        test[1] = new CommonGoal(5);
-        game.setCommonGoals(test);
-        assertEquals(test,game.getCommonGoals());
-    }
-
 }

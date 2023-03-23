@@ -23,4 +23,7 @@ public abstract class CommonGoal{
         return null;
     }
 
+    //TODO: aggiunta solo per rimuovermi gli errori del gson, --questo metodo è da cancellare quando gson fixato--
+    public int getGoalCode(){return 1;}
+
 }
