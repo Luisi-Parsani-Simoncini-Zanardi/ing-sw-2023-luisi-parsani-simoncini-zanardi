@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-03-24T12:40:32.637Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="Fs38UozLSlKsl6Cu2Xoj" version="21.1.0" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-24T13:40:07.736Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="kIXgtI--NRxHgFb8QStO" version="21.0.8" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="2219" dy="1418" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="2229" dy="1534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -56,7 +56,7 @@
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-20" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="Mxky3zlpcd0uLPRcEJlR-18" vertex="1">
           <mxGeometry y="52" width="230" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="Mxky3zlpcd0uLPRcEJlR-21" value="+ getShelf(): Tile[][]&lt;br&gt;+ getTileShelf(row, column: int): Tile&lt;br&gt;+ setShelf (shelf: Shelf): void&lt;br&gt;+ instertTiles(column, row; int; tile: Tiles): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-18" vertex="1">
+        <mxCell id="Mxky3zlpcd0uLPRcEJlR-21" value="+ getShelf(): Tile[][]&lt;br&gt;+ getTileShelf(row, column: int): Tile&lt;br&gt;+ setShelf (Tile[][]: Shelf): void&lt;br&gt;+ instertTiles(column, row; int; tile: Tiles): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-18" vertex="1">
           <mxGeometry y="60" width="230" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-22" value="" style="endArrow=diamondThin;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="Mxky3zlpcd0uLPRcEJlR-18" target="Mxky3zlpcd0uLPRcEJlR-39" edge="1">
@@ -150,7 +150,7 @@
         <mxCell id="AMuZGpQVMHgPtwnpilzj-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="AMuZGpQVMHgPtwnpilzj-1" vertex="1">
           <mxGeometry y="52" width="160" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="AMuZGpQVMHgPtwnpilzj-4" value="+ getBagSize(): int&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ pop(): Tiles&lt;br&gt;+ getBag(): ArrayList&amp;lt;Tile&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="AMuZGpQVMHgPtwnpilzj-1" vertex="1">
+        <mxCell id="AMuZGpQVMHgPtwnpilzj-4" value="+ getBagSize(): int&lt;br&gt;+ getBag(): ArrayList&amp;lt;Tile&amp;gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;+ pop(): Tiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="AMuZGpQVMHgPtwnpilzj-1" vertex="1">
           <mxGeometry y="60" width="160" height="60" as="geometry" />
         </mxCell>
         <mxCell id="AMuZGpQVMHgPtwnpilzj-5" value="" style="endArrow=diamondThin;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="AMuZGpQVMHgPtwnpilzj-2" target="Mxky3zlpcd0uLPRcEJlR-9" edge="1">
