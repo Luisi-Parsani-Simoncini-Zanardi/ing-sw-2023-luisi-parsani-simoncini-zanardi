@@ -11,7 +11,7 @@ public class Diagonal extends ShapeBehavior {
 
     /**
      * @param shelf is the player shelf
-     * @return true if there is a diagonal of Tiles equal to each other, false otherwise
+     * @return true if there is a diagonal of Tiles equals to each other, false otherwise
      */
     @Override
     public boolean check(Shelf shelf) {
