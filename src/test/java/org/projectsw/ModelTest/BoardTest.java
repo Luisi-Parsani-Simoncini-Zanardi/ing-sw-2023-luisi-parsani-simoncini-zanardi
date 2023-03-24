@@ -7,7 +7,60 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class BoardTest {
+    /**
+     * tests if the method updates the board correctly
+     */
+    @Test
+    void testUpdateBoard(){
+        Board board = new Board();
+        assertEquals(TilesEnum.UNUSED, board.getBoard()[5][5].getTile());
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 5,5);
+        assertEquals(TilesEnum.CATS, board.getBoard()[5][5].getTile());
+    }
 
+    /**
+     * tests if the board is correct before and after an update
+     */
+    @Test
+    void testGetBoard(){
+        Board board = new Board();
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
+        board.updateBoard(new Tile(TilesEnum.FRAMES, 0), 4,1);
+        board.updateBoard(new Tile(TilesEnum.PLANTS, 0), 4,2);
+        board.updateBoard(new Tile(TilesEnum.GAMES, 0), 4,3);
+        assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
+        assertEquals(TilesEnum.FRAMES, board.getBoard()[4][1].getTile());
+        assertEquals(TilesEnum.PLANTS, board.getBoard()[4][2].getTile());
+        assertEquals(TilesEnum.GAMES, board.getBoard()[4][3].getTile());
+
+    }
+
+    /**
+     * tests if the method takes the tile from the board correctly, setting it as EMPTY on the board, and if the returned tile is of the right type
+     */
+    @Test
+    void testGetTileFromBoard(){
+        Board board = new Board();
+        TilesEnum temp;
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
+        assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
+        temp = board.getTileFromBoard(4, 0).getTile();
+        assertEquals(TilesEnum.EMPTY, board.getBoard()[4][0].getTile());
+        assertEquals(TilesEnum.CATS,temp);
+    }
+
+    /**
+     * tests that the method sets correctly the board to the endGame
+     */
+    @Test
+    void testEndGame(){
+        Board board = new Board();
+        board.setEndGame(false);
+        assertFalse(board.isEndGame());
+        board.setEndGame(true);
+        assertTrue(board.isEndGame());
+    }
+    
     /**
      * Tests if the Board constructor returns a correctly initialized matrix of tiles with all tiles set to UNUSED.
      */
@@ -25,8 +78,8 @@ class BoardTest {
     }
 
     /**
-     * Tests if the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
-     * from 2 to 4 players, it also conunts if the number of empty and unused tiles is correct
+     * tests that the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
+     * from 2 to 4 players, it also checks if the number of empty and unused tiles is correct
      */
     @Test
     void integrityTestBoards(){

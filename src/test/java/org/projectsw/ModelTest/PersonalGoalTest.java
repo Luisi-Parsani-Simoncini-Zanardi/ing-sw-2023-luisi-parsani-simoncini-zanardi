@@ -9,9 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PersonalGoalTest {
 
-    //test that the method returns the right personalGoal
+    /**
+     * tests if the method returns the correct personalGoal
+     */
     @Test
-    void getPersonalGoal(){
+    void testGetPersonalGoal(){
         PersonalGoal personalGoal = new PersonalGoal(0);
         PersonalGoal.cleanUsedCodes();
         assertTrue(personalGoal.getPersonalGoal()[3][1].equals(TilesEnum.GAMES)&&
@@ -22,8 +24,9 @@ class PersonalGoalTest {
                     personalGoal.getPersonalGoal()[5][2].equals(TilesEnum.TROPHIES));
     }
 
-    //test that the constructor returns a correct and full maxtrix of tiles
-    //tested for all 12 codes
+    /**
+     * test if the constructor returns a correct and full matrix of tiles
+     */
     @Test
     void integrityTest(){
         for(int i=0;i<12;i++){
@@ -44,9 +47,11 @@ class PersonalGoalTest {
         PersonalGoal.cleanUsedCodes();
     }
 
-
+    /**
+     * tests if the set, get and clean methods of usedCodes work correctly
+     */
     @Test
-    void setGetCleanUsedCodes() {
+    void testSetGetCleanUsedCodes() {
         List<Integer> tmp = new ArrayList<>();
         tmp.add(10);
         tmp.add(30);
