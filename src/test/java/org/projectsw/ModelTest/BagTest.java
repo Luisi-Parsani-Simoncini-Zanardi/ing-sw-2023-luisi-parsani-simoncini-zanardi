@@ -13,7 +13,7 @@ class BagTest {
      * tests if the Tiles returned from the pop() method are of the right type, and that if there are no more tiles in the bag it returns Tiles.EMPTY
      */
     @Test
-    void checkPop() {
+    void testPop() {
         Tile tile;
         Bag bag = new Bag();
         for(int i=0; i < 132; i++){

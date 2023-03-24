@@ -11,7 +11,7 @@ class BoardTest {
      * tests if the method updates the board correctly
      */
     @Test
-    void checkUpdateBoard(){
+    void testUpdateBoard(){
         Board board = new Board();
         assertEquals(TilesEnum.UNUSED, board.getBoard()[5][5].getTile());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 5,5);
@@ -22,7 +22,7 @@ class BoardTest {
      * tests if the board is correct before and after an update
      */
     @Test
-    void checkGetBoard(){
+    void testGetBoard(){
         Board board = new Board();
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         board.updateBoard(new Tile(TilesEnum.FRAMES, 0), 4,1);
@@ -39,7 +39,7 @@ class BoardTest {
      *  tests if the method takes the tile from the board correctly, setting it as EMPTY on the board, and if the returned tile is of the right type
      */
     @Test
-    void checkGetTileFromBoard(){
+    void testGetTileFromBoard(){
         Board board = new Board();
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
@@ -53,7 +53,7 @@ class BoardTest {
      * tests that the method sets correctly the board to the endGame
      */
     @Test
-    void checkEndGame(){
+    void testEndGame(){
         Board board = new Board();
         board.setEndGame(false);
         assertFalse(board.isEndGame());

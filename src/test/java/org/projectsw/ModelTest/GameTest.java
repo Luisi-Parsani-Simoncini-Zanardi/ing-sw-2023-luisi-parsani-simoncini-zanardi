@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
-    //test that the method sets the right firstPlayer of the game
+    /**
+     * tests if the method sets firstPlayer correctly
+     */
     @Test
-    void setFirstPlayer() {
+    void testSetFirstPlayer() {
         Game game = new Game();
         Player jhon = new Player("Jhon", 1);
         Player elizabeth = new Player("Elizabeth", 2);
@@ -22,18 +24,22 @@ class GameTest {
         assertEquals(elizabeth,game.getFirstPlayer());
     }
 
-    //test that the method returns the right firstPlayer of the game
+    /**
+     * tests if the method returns firstPlayer correctly
+     */
     @Test
-    void getFirstPlayer() {
+    void testGetFirstPlayer() {
         Game game = new Game();
         Player jhon = new Player("Jhon", 1);
         game.setFirstPlayer(jhon);
         assertEquals(jhon, game.getFirstPlayer());
     }
 
-    //test that the method sets correctly the current player
+    /**
+     * tests if the method sets correctly the current player
+     */
     @Test
-    void setCurrentPlayer() {
+    void testSetCurrentPlayer() {
         Game game = new Game();
         Player elizabeth = new Player("Elizabeth", 1);
         Player enzo = new Player("Enzo", 2);
@@ -43,18 +49,22 @@ class GameTest {
         assertEquals(enzo, game.getCurrentPlayer());
     }
 
-    //test that the method returns the current player
+    /**
+     * tests if the method returns the current player correctly
+     */
     @Test
-    void getCurrentPlayer() {
+    void testGetCurrentPlayer() {
         Game game = new Game();
         Player elizabeth = new Player("Elizabeth", 2);
         game.setCurrentPlayer(elizabeth);
         assertEquals(elizabeth, game.getCurrentPlayer());
     }
 
-    //test that the method sets the right players of the game
+    /**
+     * tests if the method sets the players correctly
+     */
     @Test
-    void setPlayers() {
+    void testSetPlayers() {
         Game game = new Game();
         Player jhon = new Player("Jhon", 1);
         Player elizabeth = new Player("Elizabeth", 2);
@@ -69,9 +79,11 @@ class GameTest {
         assertEquals(players,game.getPlayers());
     }
 
-    //test that the method returns the right players of the game
+    /**
+     * tests if the method returns the right players of the game
+     */
     @Test
-    void getPlayers() {
+    void testGetPlayers() {
         Game game = new Game();
         Player jhon = new Player("Jhon", 1);
         Player elizabeth = new Player("Elizabeth", 2);
@@ -86,9 +98,11 @@ class GameTest {
         assertEquals(players,game.getPlayers());
     }
 
-    //tests that the method update the board correctly
+    /**
+     * tests if the method updates the board correctly
+     */
     @Test
-    void setBoard() throws IOException {
+    void testSetBoard() throws IOException {
         Game game = new Game();
         Board board = new Board();
         game.setBoard(board);
@@ -99,9 +113,11 @@ class GameTest {
         assertEquals(board,game.getBoard());
     }
 
-    //tests that the method returns the board
+    /**
+     * tests if the method returns the board correctly
+     */
     @Test
-    void getBoard() throws IOException {
+    void testGetBoard() throws IOException {
         Game game = new Game();
         Board board = new Board();
         board.updateBoard(new Tile(TilesEnum.CATS, 0),4,4);
@@ -109,8 +125,11 @@ class GameTest {
         assertEquals(board, game.getBoard());
     }
 
+    /**
+     * tests if the method correctly generates a random commonGoal
+     */
     @Test
-    void randomCommonGoal(){
+    void testRandomCommonGoal(){
         Game game = new Game();
         ArrayList<CommonGoal> test= new ArrayList<>();
         try{
