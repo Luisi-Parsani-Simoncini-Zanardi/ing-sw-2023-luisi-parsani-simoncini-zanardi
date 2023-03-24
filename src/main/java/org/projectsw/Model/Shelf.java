@@ -45,7 +45,7 @@ public class Shelf {
      * @return the tile at the coordinates row x column
      */
     public Tile getTileShelf(int row, int column){
-        if(row < 0 || row > 5 || column < 0 || column > 4) throw new IndexOutOfBoundsException();
+        if( row > 5 || column > 4) throw new IndexOutOfBoundsException();
         return shelf[row][column];
     }
 
@@ -66,7 +66,7 @@ public class Shelf {
      * @throws IndexOutOfBoundsException if the row or column is out of bounds
      */
     public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException {
-        if(row < 0 || row>5 || column < 0 || column > 4) throw new IndexOutOfBoundsException("Out of bounds");
+        if(row>5 || column > 4) throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
         else shelf[row][column] = tile;

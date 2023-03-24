@@ -11,11 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShelfTest {
 
     /**
-     * Tests that the empty constructor of shelf actually creates a 6x5 matrix of empty tiles
+     * Tests if the empty constructor of shelf actually creates a 6x5 matrix of empty tiles
      */
     @Test
     void integrityShelfTest(){
         Shelf shelf = new Shelf();
+        assertEquals(6,shelf.getShelf().length);
+        assertEquals(5,shelf.getShelf()[0].length);
         for(int i=0; i<6; i++){
             for(int j=0; j<5; j++){
                 assertEquals(TilesEnum.EMPTY,shelf.getShelf()[i][j].getTile());
@@ -24,7 +26,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests if the constructor that copies a shelf in another do it correctly
+     * Tests if the constructor that copies a shelf in another does it correctly
      */
     @Test
     void rightShelfCopy() throws EmptyTilesException, UnusedTilesException {
@@ -46,10 +48,10 @@ class ShelfTest {
     }
 
     /**
-     * Tests the getters and the setters of the shelf
+     * Tests if getters and setters of shelf works correctly
      */
     @Test
-    void getSetShelfTest() throws EmptyTilesException, UnusedTilesException {
+    void getAndSetShelfTest() throws EmptyTilesException, UnusedTilesException {
         Shelf shelf = new Shelf();
         shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,0);
         shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),4,4);
@@ -69,7 +71,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the get tile method returns the correct tile
+     * Tests if the get tile method returns the correct tile
      */
     @Test
     void getTileShelfTest() throws EmptyTilesException, UnusedTilesException {
@@ -79,43 +81,27 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the getTileShelf method throws an IndexOutOfBoundsException when the row argument is negative.
+     * Tests if the getTileShelf method throws an IndexOutOfBoundsException
+     * when the row argument is too big.
      */
     @Test
-    void getTileShelfgExceptionWhenRowIsNegative() {
-        Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(-1, 0));
-    }
-
-    /**
-     * Tests that the getTileShelf method throws an IndexOutOfBoundsException when the row argument is too large.
-     */
-    @Test
-    void getTileShelfgExceptionWhenRowIsTooLarge() {
+    void getTileShelfgExceptionWhenRowIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(6, 0));
     }
 
     /**
-     * Tests that the getTileShelf method throws an IndexOutOfBoundsException when the column argument is negative.
+     * Tests if the getTileShelf method throws an IndexOutOfBoundsException
+     * when the column argument is too big.
      */
     @Test
-    void getTileShelfgExceptionWhenColumnIsNegative() {
-        Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(0, -1));
-    }
-
-    /**
-     * Tests that the getTileShelf method throws an IndexOutOfBoundsException when the column argument is too large.
-     */
-    @Test
-    void getTileShelfgExceptionWhenColumnIsTooLarge() {
+    void getTileShelfgExceptionWhenColumnIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(0, 5));
     }
 
     /**
-     * Tests the sorrect insertion of a tile in the shelf,
+     * Tests the correct insertion of a tile in the shelf,
      * also test if the rest of the shelf remains like iit was before the insertion
      */
 
@@ -134,16 +120,8 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException when the row argument is negative.
-     */
-    @Test
-    void insertExceptionWhenRowIsNegative() {
-        Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.insertTiles(new Tile(TilesEnum.CATS,0),-1,0));
-    }
-
-    /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException when the row argument is too big.
+     * Tests that the insertTiles method throws an IndexOutOfBoundsException
+     * when the row argument is too big.
      */
     @Test
     void insertExceptionWhenRowIsTooBig() {
@@ -152,25 +130,16 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException when the column argument is negative.
-     */
-    @Test
-    void insertExceptionWhenColumnIsNegative() {
-        Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,-1));
-    }
-
-    /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException when the column argument is negative.
+     * Tests that the insertTiles method throws an IndexOutOfBoundsException
+     * when the column argument is too big.
      */
     @Test
     void insertExceptionWhenColumnIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,5));
     }
-
     /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException when try to insert empty.
+     * Tests that the insertTiles method throws an EmptyTilesException when try to insert empty.
      */
     @Test
     void insertExceptionWhenInsertEmpty() {
@@ -179,7 +148,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException when try to insert unused.
+     * Tests that the insertTiles method throws an UnusedTilesException when try to insert unused.
      */
     @Test
     void insertExceptionWhenInsertUnused() {

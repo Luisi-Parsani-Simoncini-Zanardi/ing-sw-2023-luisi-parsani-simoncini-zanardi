@@ -4,13 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Bag;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BagTest {
 
     /**
-     * Tests that the bag is well created,
+     * Tests if the bag is well created,
      * that is formed by 22 tiles of each type and that every imageNumber is used
      */
     @Test
@@ -63,20 +62,19 @@ class BagTest {
     }
 
     /**
-     * Tests that get size always returns the right size of the bag afer every pop
+     * Tests if get size always returns the right size of the bag afer every pop
      */
     @Test
     void getSizeTest(){
-        Tile tile;
         Bag bag = new Bag();
         for(int i=132; i > 0; i--) {
             assertEquals(i,bag.getBagSize());
-            tile = bag.pop();
+            bag.pop();
         }
     }
 
     /**
-     * test that the Tiles returned from the pop method are of the right type
+     * test if the Tiles returned from the pop method are of the right type
      * also tests if popping when the bag is empty always returns an EMPTY tile
      */
     @Test
@@ -96,5 +94,5 @@ class BagTest {
         assertEquals(TilesEnum.EMPTY,tile.getTile());
     }
 
-    //TODO: we dont test if the shuffle method actually randomize our bag
+    //actually we dont test if the shuffle method actually randomize our bag
 }

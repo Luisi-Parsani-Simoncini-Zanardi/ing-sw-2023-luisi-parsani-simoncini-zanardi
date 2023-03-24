@@ -7,69 +7,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class BoardTest {
-    //test that the method unpdate the board correctly
-    @Test
-    void updateBoard(){
-        Board board = new Board();
-        assertEquals(TilesEnum.UNUSED, board.getBoard()[5][5].getTile());
-        board.updateBoard(new Tile(TilesEnum.CATS, 0), 5,5);
-        assertEquals(TilesEnum.CATS, board.getBoard()[5][5].getTile());
-    }
-
-    //test that the board is correct before and after an update
-    @Test
-    void getBoard(){
-        Board board = new Board();
-        board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
-        board.updateBoard(new Tile(TilesEnum.FRAMES, 0), 4,1);
-        board.updateBoard(new Tile(TilesEnum.PLANTS, 0), 4,2);
-        board.updateBoard(new Tile(TilesEnum.GAMES, 0), 4,3);
-        assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
-        assertEquals(TilesEnum.FRAMES, board.getBoard()[4][1].getTile());
-        assertEquals(TilesEnum.PLANTS, board.getBoard()[4][2].getTile());
-        assertEquals(TilesEnum.GAMES, board.getBoard()[4][3].getTile());
-
-    }
-
-    //test that the method takes the tile from the board, setting it as EMPTY on the board
-    //test that the returned tile is of the right type
-    @Test
-    void getTileFromBoard(){
-        Board board = new Board();
-        TilesEnum temp;
-        board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
-        assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
-        temp = board.getTileFromBoard(4, 0).getTile();
-        assertEquals(TilesEnum.EMPTY, board.getBoard()[4][0].getTile());
-        assertEquals(TilesEnum.CATS,temp);
-    }
-
-    //test that it sets the board to the endGame
-    @Test
-    void setEndGame(){
-        Board board = new Board();
-        board.setEndGame(false);
-        assertFalse(board.isEndGame());
-        board.setEndGame(true);
-        assertTrue(board.isEndGame());
-    }
-
-    //test that the value of endGame is the right one
-    @Test
-    void isEndGame(){
-        Board board = new Board();
-        board.setEndGame(false);
-        assertFalse(board.isEndGame());
-        board.setEndGame(true);
-        assertTrue(board.isEndGame());
-    }
 
     /**
-     * Tests that the Board constructor returns a correctly initialized matrix of tiles with all tiles set to UNUSED.
+     * Tests if the Board constructor returns a correctly initialized matrix of tiles with all tiles set to UNUSED.
      */
     @Test
     void integrityTestUnusedBoard(){
         Board board = new Board();
+        assertEquals(9,board.getBoard().length);
+        assertEquals(9,board.getBoard()[0].length);
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 Tile tile = board.getBoard()[i][j];
@@ -79,7 +25,7 @@ class BoardTest {
     }
 
     /**
-     * Tests that the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
+     * Tests if the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
      * from 2 to 4 players, it also conunts if the number of empty and unused tiles is correct
      */
     @Test
@@ -88,7 +34,9 @@ class BoardTest {
             int emptyNumber = 0;
             int unusedNumber = 0;
             Board board = new Board(p);
+            assertEquals(9,board.getBoard()[0].length);
             for (int i = 0; i < 9; i++) {
+                assertEquals(9,board.getBoard()[i].length);
                 for (int j = 0; j < 9; j++) {
                     Tile tile = board.getBoard()[i][j];
                     assertTrue(tile.getTile().equals(TilesEnum.UNUSED) ||
@@ -113,22 +61,130 @@ class BoardTest {
     }
 
     /**
-     * Tests if the IndexOutOfBoundsException is correctly thrown for a number of players higher then expected
+     * Tests if the constructor of the board throws correctly the IndexOutOfBoundsException for a number
+     * of players higher then expected
      */
     @Test
-    void testInvalidPlayersNumber1() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            Board board = new Board(5);
-        });
+    void testInvalidPlayersNumberHigher() {
+        assertThrows(IllegalArgumentException.class, () -> new Board(5));
     }
 
     /**
-     * Tests if the IndexOutOfBoundsException is correctly thrown for a number of players lower then expected
+     * Tests if the constructor of the board throws correctly the IndexOutOfBoundsException for a number
+     * of players lower then expected
      */
     @Test
-    void testInvalidPlayersNumber2() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            Board board = new Board(1);
-        });
+    void testInvalidPlayersNumberLower() {
+        assertThrows(IllegalArgumentException.class, () -> new Board(1));
     }
+
+    /**
+     * Tests if the constructor that copies a board in another does it correctly
+     */
+    @Test
+    void integrityTestCopiedBoard(){
+        Board board = new Board();
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
+        board.getBag().pop();
+        board.getBag().pop();
+        board.setEndGame(true);
+        Board copiedBoard = new Board(board);
+        assertEquals(board.getBag().getBagSize(),copiedBoard.getBag().getBagSize());
+        assertEquals(board.isEndGame(),copiedBoard.isEndGame());
+        assertEquals(9,board.getBoard()[0].length);
+        for (int i = 0; i < 9; i++) {
+            assertEquals(9,board.getBoard()[i].length);
+            for(int j=0;j<9;j++){
+                assertEquals(board.getBoard()[i][j],copiedBoard.getBoard()[i][j]);
+            }
+        }
+    }
+
+    /**
+     * test if the method copy the tile from the board setting it as EMPTY, if
+     * the returned tile is of the right type and if the rest of the board remains like it was
+     */
+    @Test
+    void getTileFromBoard(){
+        Board board1 = new Board();
+        board1.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
+        board1.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
+        board1.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
+        Board board2 = new Board(board1);
+        TilesEnum temp = board1.getTileFromBoard(0, 0).getTile();
+        assertEquals(TilesEnum.EMPTY, board1.getBoard()[0][0].getTile());
+        assertEquals(TilesEnum.CATS, temp);
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                if(i != 0 && j != 0) assertEquals(board1.getBoard()[i][j].getTile(),board2.getBoard()[i][j].getTile());
+            }
+        }
+    }
+
+    /**
+     * Tests if the getTileFromBoard() method throws an IndexOutOfBoundsException when given an invalid row index.
+     */
+    @Test
+    public void testGetTileFromBoardInvalidRow() {
+        Board board = new Board();
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(9, 0));
+    }
+
+    /**
+     * Tests if the getTileFromBoard method throws an IndexOutOfBoundsException when given an invalid Column index.
+     */
+    @Test
+    public void testGetTileFromBoardInvalidColumn() {
+        Board board = new Board();
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(0, 9));
+    }
+
+    /**
+     * test if isAndGame and setEndGame works correctly
+     */
+    @Test
+    void inAndSetEndGame(){
+        Board board = new Board();
+        board.setEndGame(false);
+        assertFalse(board.isEndGame());
+        board.setEndGame(true);
+        assertTrue(board.isEndGame());
+    }
+
+    /**
+     * test if the method unpdateBoard works correctly, leaving unchanghed the rest of the board
+     */
+    @Test
+    void updateBoardTest(){
+        Board board = new Board();
+        assertEquals(TilesEnum.UNUSED, board.getBoard()[0][0].getTile());
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                if(i != 0 && j != 0) assertEquals(TilesEnum.UNUSED,board.getBoard()[i][j].getTile());
+            }
+        }
+        assertEquals(TilesEnum.CATS, board.getBoard()[0][0].getTile());
+    }
+
+    /**
+     * Tests if the updateBoard method throws an IndexOutOfBoundsException when given an invalid row index.
+     */
+    @Test
+    public void testUpdateBoardInvalidRow() {
+        Board board = new Board();
+       assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 9, 0));
+    }
+
+    /**
+     * Tests if the updateBoard method throws an IndexOutOfBoundsException when given an invalid column index.
+     */
+    @Test
+    public void testUpdateBoardInvalidColumn() {
+        Board board = new Board();
+        assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 0, 9));
+    }
+
 }
