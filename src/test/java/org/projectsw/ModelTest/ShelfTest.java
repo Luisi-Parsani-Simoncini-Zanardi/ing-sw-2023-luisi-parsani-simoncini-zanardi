@@ -9,13 +9,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ShelfTest {
 
-    @Test
-    void getShelf() {
-    }
-
-    //test that the method don't insert tiles out of bounds
-    //test that the method don't insert EMPTY or UNUSED tiles
-    //test that the method insert the correct tile in the correct position in the shelf
+    /**
+     * tests if the method doesn't insert tiles out of bounds, if the method doesn't insert EMPTY or UNUSED tiles and if the method insert the correct tile in the correct position in the shelf
+     */
     @Test
     void insertTiles() {
         Shelf shelf = new Shelf();
