@@ -31,7 +31,7 @@ public class TileTest {
      * Tests if the IndexOutOfBoundsException is correctly thrown for a imageNumber lower then expected
      */
     @Test
-    void testInvalidPlayersNumberHiger() {
+    void testInvalidPlayersNumberHigher() {
         assertThrows(IllegalArgumentException.class, () -> {
             Tile tile = new Tile(TilesEnum.CATS,3);
         });
