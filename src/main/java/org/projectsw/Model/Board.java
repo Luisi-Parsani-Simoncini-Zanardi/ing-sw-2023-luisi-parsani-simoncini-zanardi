@@ -57,9 +57,9 @@ public class Board{
      * @param board the Board object to copy from
      */
     public Board(Board board){
-        this.board=board.board;
-        this.endGame=board.endGame;
-        this.bag=board.bag;
+        this.board = board.board;
+        this.endGame = board.endGame;
+        this.bag = board.bag;
     }
 
     /**
@@ -76,6 +76,22 @@ public class Board{
      */
     public Bag getBag(){
         return bag;
+    }
+
+    /**
+     * Returns the Tile at the given position on the board and replaces it with an empty Tile.
+     * @param row the row index of the Tile
+     * @param column the column index of the Tile
+     * @return the Tile at the given position
+     * @throws IndexOutOfBoundsException if the given row or column index is out of bounds
+     */
+    public Tile getTileFromBoard(int row, int column){
+        if(row>8 || column>8) throw new IndexOutOfBoundsException();
+        else {
+            Tile tmp = board[row][column];
+            board[row][column] = new Tile(TilesEnum.EMPTY, 0);
+            return tmp;
+        }
     }
 
     /**
@@ -102,21 +118,7 @@ public class Board{
      * @throws IndexOutOfBoundsException if the given row or column index is out of bounds
      */
     public void updateBoard(Tile tile, int row, int column){
-        if(row>8 || column>8)
-            throw new IndexOutOfBoundsException();
-        else
-            board[row][column]=tile;
-    }
-
-    /**
-     * Returns the Tile at the given position on the board and replaces it with an empty Tile.
-     * @param row the row index of the Tile
-     * @param column the column index of the Tile
-     * @return the Tile at the given position
-     */
-    public Tile getTileFromBoard(int row, int column){
-        Tile tmp = board[row][column];
-        board[row][column]= new Tile(TilesEnum.EMPTY, 0);
-        return tmp;
+        if(row>8 || column>8) throw new IndexOutOfBoundsException();
+        else board[row][column]=tile;
     }
 }
