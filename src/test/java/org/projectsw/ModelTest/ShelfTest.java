@@ -57,14 +57,14 @@ class ShelfTest {
         Tile[][] shelfGetted = shelf.getShelf();
         for(int i=0; i<6; i++){
             for(int j=0; j<5; j++){
-                assertEquals(shelf.getShelf()[i][j].getTile(),shelfGetted[i][j].getTile());
+                assertEquals(shelf.getShelf()[i][j],shelfGetted[i][j]);
             }
         }
         shelfGetted[3][3] = new Tile(TilesEnum.GAMES,0);
         shelf.setShelf(shelfGetted);
         for(int i=0; i<6; i++){
             for(int j=0; j<5; j++){
-                assertEquals(shelf.getShelf()[i][j].getTile(),shelfGetted[i][j].getTile());
+                assertEquals(shelf.getShelf()[i][j],shelfGetted[i][j]);
             }
         }
     }
@@ -95,8 +95,9 @@ class ShelfTest {
     @Test
     void getTileShelfTest() throws EmptyTilesException, UnusedTilesException {
         Shelf shelf = new Shelf();
-        shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,0);
-        assertEquals(TilesEnum.CATS,shelf.getTileShelf(0,0).getTile());
+        Tile tile = new Tile(TilesEnum.CATS,0);
+        shelf.insertTiles(tile,0,0);
+        assertEquals(tile,shelf.getTileShelf(0,0));
     }
 
     /**
@@ -127,12 +128,13 @@ class ShelfTest {
     @Test
     void insertTilesTest() throws EmptyTilesException, UnusedTilesException {
         Shelf shelf = new Shelf();
-        shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,0);
-        assertEquals(TilesEnum.CATS,shelf.getTileShelf(0,0).getTile());
+        Tile tile = new Tile(TilesEnum.CATS,0);
+        shelf.insertTiles(tile,0,0);
+        assertEquals(tile,shelf.getTileShelf(0,0));
         for(int i=0; i<6; i++) {
             for (int j = 0; j < 5; j++) {
                 if (i != 0 || j != 0){
-                    assertEquals(TilesEnum.EMPTY, shelf.getTileShelf(i, j).getTile());
+                    assertEquals(TilesEnum.EMPTY,shelf.getShelf()[i][j].getTile());
                 }
             }
         }
@@ -173,5 +175,17 @@ class ShelfTest {
     void insertExceptionWhenInsertUnused() {
         Shelf shelf = new Shelf();
         assertThrows(UnusedTilesException.class, () -> shelf.insertTiles(new Tile(TilesEnum.UNUSED,0),0,0));
+    }
+
+    /**
+     * Tests that the insertTiles method throws an UnusedTilesException when try to insert unused.
+     */
+    @Test
+    void correctIntegrationWithTile() throws EmptyTilesException, UnusedTilesException {
+        Shelf shelf = new Shelf();
+        Tile tile = new Tile(TilesEnum.CATS,0);
+        shelf.insertTiles(tile,0,0);
+        assertEquals(tile.getTile(),shelf.getShelf()[0][0].getTile());
+        assertEquals(tile.getImageNumber(),shelf.getShelf()[0][0].getImageNumber());
     }
 }
