@@ -27,6 +27,13 @@ public class Bag {
     }
 
     /**
+     * @return the size of the bag
+     */
+    public int getBagSize(){
+        return tiles.size();
+    }
+
+    /**
      * Removes and returns the first tile from the bag. If the bag is empty, returns a new Tile object with type EMPTY.
      * @return The Tile object that was removed from the bag or a new Tile object with type EMPTY if the bag is empty.
      */

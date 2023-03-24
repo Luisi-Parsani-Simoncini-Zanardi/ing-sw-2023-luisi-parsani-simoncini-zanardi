@@ -4,11 +4,10 @@ import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
 
 /**
- * Class representing a shelf with a matrix of tiles.
+ * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
  */
 public class Shelf {
     private Tile[][] shelf;
-
 
     /**
      * Constructs a new empty shelf with 6 rows and 5 columns.
@@ -21,7 +20,6 @@ public class Shelf {
             }
         }
     }
-
 
     /**
      * Constructs a new shelf with the same contents as the given shelf.
@@ -46,12 +44,16 @@ public class Shelf {
      * @param column coordinate for the column
      * @return the tile at the coordinates row x column
      */
-    public Tile getTileShelf(int row, int column){return shelf[row][column];}
+    public Tile getTileShelf(int row, int column){
+        if( row > 5 || column > 4) throw new IndexOutOfBoundsException();
+        return shelf[row][column];
+    }
+
     /**
      *Sets the matrix of tiles for the shelf from the given shelf.
      *@param shelf the shelf where the matrix of tiles is taken from
      */
-    public void setShelf(Shelf shelf){ this.shelf = shelf.getShelf();}
+    public void setShelf(Tile[][] shelf){ this.shelf = shelf;}
 
 
     /**
@@ -64,13 +66,9 @@ public class Shelf {
      * @throws IndexOutOfBoundsException if the row or column is out of bounds
      */
     public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException {
-        if(row>5 || column > 4)
-            throw new IndexOutOfBoundsException("Out of bounds");
-        else if(tile.getTile().equals(TilesEnum.EMPTY))
-            throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
-        else if(tile.getTile().equals(TilesEnum.UNUSED))
-            throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
-        else
-            shelf[row][column] = tile;
+        if(row>5 || column > 4) throw new IndexOutOfBoundsException("Out of bounds");
+        else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
+        else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
+        else shelf[row][column] = tile;
     }
 }
