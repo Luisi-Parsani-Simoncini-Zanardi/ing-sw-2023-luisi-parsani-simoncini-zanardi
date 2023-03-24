@@ -53,7 +53,10 @@ public class Shelf {
      *Sets the matrix of tiles for the shelf from the given shelf.
      *@param shelf the shelf where the matrix of tiles is taken from
      */
-    public void setShelf(Tile[][] shelf){ this.shelf = shelf;}
+    public void setShelf(Tile[][] shelf){
+        if(shelf.length != 6 || shelf[0].length != 5) throw new IllegalArgumentException();
+        this.shelf = shelf;
+    }
 
 
     /**

@@ -41,7 +41,6 @@ class ShelfTest {
                 assertEquals(shelf.getShelf()[i][j].getTile(),shelfClone.getShelf()[i][j].getTile());
             }
         }
-        //the following lines are important
         assertEquals(TilesEnum.CATS,shelfClone.getTileShelf(0,0).getTile());
         assertEquals(TilesEnum.PLANTS,shelfClone.getTileShelf(4,4).getTile());
 
@@ -68,6 +67,26 @@ class ShelfTest {
                 assertEquals(shelf.getShelf()[i][j].getTile(),shelfGetted[i][j].getTile());
             }
         }
+    }
+
+    /**
+     * Tests that the setShelf() method throws an IllegalArgumentException when
+     * given an array of tiles with incorrect dimensions.
+     */
+    @Test
+    public void testSetShelfInvalidInput() {
+        Shelf shelf = new Shelf();
+        //Both rows and columns wrong
+        final Tile[][] invalidShelf0 = new Tile[5][6];
+        assertThrows(IllegalArgumentException.class, () -> shelf.setShelf(invalidShelf0));
+
+        //Only columns wrong
+        final Tile[][] invalidShelf1 = new Tile[6][6];
+        assertThrows(IllegalArgumentException.class, () -> shelf.setShelf(invalidShelf1));
+
+        //Only rows wrong
+        final Tile[][] invalidShelf2 = new Tile[7][5];
+        assertThrows(IllegalArgumentException.class, () -> shelf.setShelf(invalidShelf2));
     }
 
     /**
