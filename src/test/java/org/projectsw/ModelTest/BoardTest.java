@@ -7,18 +7,22 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class BoardTest {
-    //test that the method unpdate the board correctly
+    /**
+     * tests if the method updates the board correctly
+     */
     @Test
-    void updateBoard(){
+    void checkUpdateBoard(){
         Board board = new Board();
         assertEquals(TilesEnum.UNUSED, board.getBoard()[5][5].getTile());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 5,5);
         assertEquals(TilesEnum.CATS, board.getBoard()[5][5].getTile());
     }
 
-    //test that the board is correct before and after an update
+    /**
+     * tests if the board is correct before and after an update
+     */
     @Test
-    void getBoard(){
+    void checkGetBoard(){
         Board board = new Board();
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         board.updateBoard(new Tile(TilesEnum.FRAMES, 0), 4,1);
@@ -31,10 +35,11 @@ class BoardTest {
 
     }
 
-    //test that the method takes the tile from the board, setting it as EMPTY on the board
-    //test that the returned tile is of the right type
+    /**
+     *  tests if the method takes the tile from the board correctly, setting it as EMPTY on the board, and if the returned tile is of the right type
+     */
     @Test
-    void getTileFromBoard(){
+    void checkGetTileFromBoard(){
         Board board = new Board();
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
@@ -44,19 +49,11 @@ class BoardTest {
         assertEquals(TilesEnum.CATS,temp);
     }
 
-    //test that it sets the board to the endGame
+    /**
+     * tests that the method sets correctly the board to the endGame
+     */
     @Test
-    void setEndGame(){
-        Board board = new Board();
-        board.setEndGame(false);
-        assertFalse(board.isEndGame());
-        board.setEndGame(true);
-        assertTrue(board.isEndGame());
-    }
-
-    //test that the value of endGame is the right one
-    @Test
-    void isEndGame(){
+    void checkEndGame(){
         Board board = new Board();
         board.setEndGame(false);
         assertFalse(board.isEndGame());
@@ -65,7 +62,7 @@ class BoardTest {
     }
 
     /**
-     * Tests that the Board constructor returns a correctly initialized matrix of tiles with all tiles set to UNUSED.
+     * tests that the Board constructor returns a correctly initialized matrix of tiles with all tiles set to UNUSED.
      */
     @Test
     void integrityTestUnusedBoard(){
@@ -79,8 +76,8 @@ class BoardTest {
     }
 
     /**
-     * Tests that the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
-     * from 2 to 4 players, it also conunts if the number of empty and unused tiles is correct
+     * tests that the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
+     * from 2 to 4 players, it also checks if the number of empty and unused tiles is correct
      */
     @Test
     void integrityTestBoards(){
@@ -113,7 +110,7 @@ class BoardTest {
     }
 
     /**
-     * Tests if the IndexOutOfBoundsException is correctly thrown for a number of players higher then expected
+     * tests if the IndexOutOfBoundsException is correctly thrown for a number of players higher then expected
      */
     @Test
     void testInvalidPlayersNumber1() {
@@ -123,7 +120,7 @@ class BoardTest {
     }
 
     /**
-     * Tests if the IndexOutOfBoundsException is correctly thrown for a number of players lower then expected
+     * tests if the IndexOutOfBoundsException is correctly thrown for a number of players lower then expected
      */
     @Test
     void testInvalidPlayersNumber2() {

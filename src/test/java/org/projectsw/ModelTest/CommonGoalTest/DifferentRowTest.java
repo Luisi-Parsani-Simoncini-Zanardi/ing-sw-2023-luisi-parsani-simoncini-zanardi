@@ -11,7 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DifferentRowTest {
 
-    //tests that the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal
+    /**
+     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal
+     */
     @Test
     void checkTrue() {
         CommonGoal commonRow = new DifferentRow();
@@ -27,7 +29,9 @@ class DifferentRowTest {
         assertTrue(commonRow.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf has too much types in the rows
+    /**
+     * tests if the algorithm successfully checks that the shelf has too much types in the rows
+     */
     @Test
     void fewTypes() {
         CommonGoal commonRow = new DifferentRow();
@@ -43,7 +47,9 @@ class DifferentRowTest {
         assertFalse(commonRow.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf used not allowed types
+    /**
+     * tests if the algorithm successfully checks that the shelf used not allowed types
+     */
     @Test
     void emptyTiles(){
         CommonGoal commonRow = new DifferentRow();
@@ -59,7 +65,9 @@ class DifferentRowTest {
         assertFalse(commonRow.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf has few rows of the right kind
+    /**
+     * tests if the algorithm successfully checks that the shelf has few rows of the right kind
+     */
     @Test
     void fewRows(){
         CommonGoal commonRow = new DifferentRow();

@@ -10,8 +10,9 @@ import org.projectsw.Model.TilesEnum;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DiagonalTest {
-
-    //tests that the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal on the first diagonal
+    /**
+     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal on the first diagonal
+     */
     @Test
     void checkTrue1() {
         CommonGoal diagonal = new Diagonal();
@@ -27,7 +28,9 @@ class DiagonalTest {
         assertTrue(diagonal.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal on the second diagonal
+    /**
+     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal on the second diagonal
+     */
     @Test
     void checkTrue2() {
         CommonGoal diagonal = new Diagonal();
@@ -43,7 +46,9 @@ class DiagonalTest {
         assertTrue(diagonal.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf has too much types in the rows
+    /**
+     * tests if the algorithm successfully checks that the shelf has too much types in the rows
+     */
     @Test
     void checkFalse() {
         CommonGoal diagonal = new Diagonal();
@@ -59,6 +64,9 @@ class DiagonalTest {
         assertFalse(diagonal.check(shelf));
     }
 
+    /**
+     * tests if the algorithm successfully checks that the empty shelf does not satisfy the requirements
+     */
     @Test
     void checkEmpty() {
         CommonGoal diagonal = new Diagonal();

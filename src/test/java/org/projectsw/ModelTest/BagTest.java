@@ -9,10 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BagTest {
 
-    //test that the Tiles returned from the pop() method are of the right type
-    //test that if there are no more tiles in the bag it returns Tiles.EMPTY
+    /**
+     * tests if the Tiles returned from the pop() method are of the right type, and that if there are no more tiles in the bag it returns Tiles.EMPTY
+     */
     @Test
-    void pop() {
+    void checkPop() {
         Tile tile;
         Bag bag = new Bag();
         for(int i=0; i < 132; i++){

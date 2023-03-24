@@ -10,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EdgesTest {
 
-    //test that the edges are of the same TileEnum type
+    /**
+     * tests if the method returns true when the edges are of the same TileEnum type
+     */
     @Test
     void checkTrue() {
         CommonGoal commonGoal = new Edges();
@@ -24,7 +26,9 @@ class EdgesTest {
         assertTrue(commonGoal.check(shelf));
     }
 
-    //test that the edges are of a different TileEnum type
+    /**
+     * tests if the method returns true when the edges are of a different TileEnum type
+     */
     @Test
     void checkDifferentType(){
         CommonGoal commonGoal = new Edges();
@@ -38,7 +42,9 @@ class EdgesTest {
         assertFalse(commonGoal.check(shelf));
     }
 
-    //test that the edges are only of TilesEnum allowed types
+    /**
+     * tests if the method returns false when the edges are not of only TilesEnum allowed types
+     */
     @Test
     void checkAllowed(){
         CommonGoal commonGoal = new Edges();

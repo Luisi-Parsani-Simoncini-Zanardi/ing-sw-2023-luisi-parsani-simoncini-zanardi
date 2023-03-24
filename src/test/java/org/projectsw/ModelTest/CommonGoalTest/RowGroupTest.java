@@ -11,7 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RowGroupTest {
 
-    //tests that the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal
+    /**
+     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal
+     */
     @Test
     void checkTrue() {
         CommonGoal commonRow = new RowGroup();
@@ -27,7 +29,9 @@ class RowGroupTest {
         assertTrue(commonRow.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf has too much types in the rows
+    /**
+     *     tests that the algorithm returns false when the shelf has too much types in the rows
+     */
     @Test
     void tooMuchTypes() {
         CommonGoal commonRow = new RowGroup();
@@ -43,7 +47,9 @@ class RowGroupTest {
         assertFalse(commonRow.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf used not allowed types
+    /**
+     * tests if the algorithm successfully checks that the shelf used not allowed types
+     */
     @Test
     void unusedTiles(){
         CommonGoal commonRow = new RowGroup();
@@ -59,7 +65,9 @@ class RowGroupTest {
         assertFalse(commonRow.check(shelf));
     }
 
-    //tests that the algorithm successfully checks that the shelf has few rows of the right kind
+    /**
+     * tests if the algorithm successfully checks that the shelf has too few rows of the right kind
+     */
     @Test
     void fewRows(){
         CommonGoal commonRow = new RowGroup();
