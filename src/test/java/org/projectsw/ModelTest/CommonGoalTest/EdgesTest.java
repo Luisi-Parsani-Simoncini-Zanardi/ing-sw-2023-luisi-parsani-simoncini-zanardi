@@ -1,4 +1,6 @@
-package org.projectsw.Model.CommonGoal;
+package org.projectsw.ModelTest.CommonGoalTest;
+import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.Edges;
 import org.projectsw.Model.Shelf;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Tile;
