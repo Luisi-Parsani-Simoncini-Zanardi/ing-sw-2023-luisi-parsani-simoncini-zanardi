@@ -70,7 +70,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the setShelf() method throws an IllegalArgumentException when
+     * Tests if the setShelf() method throws an IllegalArgumentException when
      * given an array of tiles with incorrect dimensions.
      */
     @Test
@@ -141,7 +141,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException
+     * Tests if the insertTiles method throws an IndexOutOfBoundsException
      * when the row argument is too big.
      */
     @Test
@@ -151,7 +151,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the insertTiles method throws an IndexOutOfBoundsException
+     * Tests if the insertTiles method throws an IndexOutOfBoundsException
      * when the column argument is too big.
      */
     @Test
@@ -160,7 +160,7 @@ class ShelfTest {
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,5));
     }
     /**
-     * Tests that the insertTiles method throws an EmptyTilesException when try to insert empty.
+     * Tests if the insertTiles method throws an EmptyTilesException when try to insert empty.
      */
     @Test
     void insertExceptionWhenInsertEmpty() {
@@ -169,7 +169,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests that the insertTiles method throws an UnusedTilesException when try to insert unused.
+     * Tests if the insertTiles method throws an UnusedTilesException when try to insert unused.
      */
     @Test
     void insertExceptionWhenInsertUnused() {
@@ -177,8 +177,8 @@ class ShelfTest {
         assertThrows(UnusedTilesException.class, () -> shelf.insertTiles(new Tile(TilesEnum.UNUSED,0),0,0));
     }
 
-    /**
-     * Tests that the insertTiles method throws an UnusedTilesException when try to insert unused.
+    /*
+     * Thest if the Tile functions are well integrated with Shelf class by calling them from the shelf object
      */
     @Test
     void correctIntegrationWithTile() throws EmptyTilesException, UnusedTilesException {

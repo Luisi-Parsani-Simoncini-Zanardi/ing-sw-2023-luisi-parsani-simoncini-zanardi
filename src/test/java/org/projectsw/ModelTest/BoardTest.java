@@ -240,4 +240,19 @@ class BoardTest {
         assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 0, 9));
     }
 
+    /*
+     * Thest if the Bag functions are well integrated with Board class by calling them from the shelf object
+     */
+    @Test
+    public void integrationWithBagTest(){
+        Board board = new Board();
+        assertEquals(132,board.getBag().getBagSize());
+        for(int i=131;i>=0;i--){
+            assertNotEquals(TilesEnum.EMPTY,board.getBag().pop().getTile());
+            assertEquals(i,board.getBag().getBagSize());
+        }
+        assertEquals(0,board.getBag().getBagSize());
+        assertEquals(TilesEnum.EMPTY,board.getBag().pop().getTile());
+    }
+
 }
