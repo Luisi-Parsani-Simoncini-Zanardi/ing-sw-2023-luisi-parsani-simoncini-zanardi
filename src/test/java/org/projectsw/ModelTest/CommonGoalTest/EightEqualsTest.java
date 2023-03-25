@@ -2,7 +2,6 @@ package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
-import org.projectsw.Model.CommonGoal.Cross;
 import org.projectsw.Model.CommonGoal.EightEquals;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
