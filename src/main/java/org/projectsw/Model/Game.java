@@ -171,14 +171,15 @@ public class Game{
     /**
      *
      * @return the ArrayList of commonGoals containing two random commonGoals chosen by the children of CommonGoal
-     * @throws NoSuchMethodException thrown if getDeclaredConstructor doesn't find the method
-     * @throws InvocationTargetException thrown if getDeclaredConstructor doesn't find the target
-     * @throws InstantiationException thrown if getDeclaredConstructor can't istance correctly the target
-     * @throws IllegalAccessException thrown if getDeclaredConstructor doesn't access the target correctly
+     * @throws NoSuchMethodException thrown if getDeclaredConstructor doesn't find the method constructor of the class
+     * @throws InvocationTargetException wraps an exception thrown by the target constructor
+     * @throws InstantiationException thrown if newInstance() try to instantiate an object that can't be instantiated
+     * @throws IllegalAccessException thrown when newInstance() tries to reflectively create an instance but randomCommonGoals
+     * does not have access to the definition of the specified constructor
      */
     public ArrayList<CommonGoal> randomCommonGoals() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        CommonGoal istance;
+        CommonGoal singleIst;
         ArrayList<CommonGoal> commonGoals = new ArrayList<>();
         ArrayList<Class<?>> randomGoalsClasses;
         randomGoalsClasses = fillCommonGoalsArray();
@@ -186,14 +187,14 @@ public class Game{
         Random random = new Random();
         int index1 = random.nextInt(randomGoalsClasses.size());
         Class<?> randomClass = randomGoalsClasses.get(index1);
-        istance = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(istance);
+        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
+        commonGoals.add(singleIst);
         randomGoalsClasses.remove(index1);
 
         index1 = random.nextInt(randomGoalsClasses.size());
         randomClass = randomGoalsClasses.get(index1);
-        istance = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(istance);
+        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
+        commonGoals.add(singleIst);
 
         return commonGoals;
 
