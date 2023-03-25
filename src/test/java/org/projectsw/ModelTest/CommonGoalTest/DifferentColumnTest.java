@@ -3,7 +3,6 @@ package org.projectsw.ModelTest.CommonGoalTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.DifferentColumn;
-import org.projectsw.Model.CommonGoal.RowGroup;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;

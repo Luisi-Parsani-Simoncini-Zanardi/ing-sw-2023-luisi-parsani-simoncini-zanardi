@@ -10,6 +10,8 @@ public class Square extends ShapeBehavior {
     //TODO: manca l'implementazione
     @Override
     public boolean check(Shelf shelf) {
+
+        int [][] checkShelf;
         return false;
     }
 }
