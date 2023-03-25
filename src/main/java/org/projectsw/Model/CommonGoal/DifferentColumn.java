@@ -10,7 +10,6 @@ public class DifferentColumn extends ColumnBehavior {
         super();
         this.commonGoalCode = 2;
     }
-    //TODO: da testare
 
     /**
      * @param shelf is the player's shelf
