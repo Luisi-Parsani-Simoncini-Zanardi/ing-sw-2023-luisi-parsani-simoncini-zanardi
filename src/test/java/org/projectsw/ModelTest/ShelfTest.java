@@ -147,7 +147,8 @@ class ShelfTest {
     @Test
     void insertExceptionWhenRowIsTooBig() {
         Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.insertTiles(new Tile(TilesEnum.CATS,0),6,0));
+        assertThrows(IndexOutOfBoundsException.class, () ->
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),6,0));
     }
 
     /**
@@ -157,7 +158,8 @@ class ShelfTest {
     @Test
     void insertExceptionWhenColumnIsTooBig() {
         Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,5));
+        assertThrows(IndexOutOfBoundsException.class, () ->
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,5));
     }
     /**
      * Tests if the insertTiles method throws an EmptyTilesException when try to insert empty.
@@ -165,7 +167,8 @@ class ShelfTest {
     @Test
     void insertExceptionWhenInsertEmpty() {
         Shelf shelf = new Shelf();
-        assertThrows(EmptyTilesException.class, () -> shelf.insertTiles(new Tile(TilesEnum.EMPTY,0),0,0));
+        assertThrows(EmptyTilesException.class, () ->
+                shelf.insertTiles(new Tile(TilesEnum.EMPTY,0),0,0));
     }
 
     /**
@@ -174,7 +177,8 @@ class ShelfTest {
     @Test
     void insertExceptionWhenInsertUnused() {
         Shelf shelf = new Shelf();
-        assertThrows(UnusedTilesException.class, () -> shelf.insertTiles(new Tile(TilesEnum.UNUSED,0),0,0));
+        assertThrows(UnusedTilesException.class, () ->
+                shelf.insertTiles(new Tile(TilesEnum.UNUSED,0),0,0));
     }
 
     /*

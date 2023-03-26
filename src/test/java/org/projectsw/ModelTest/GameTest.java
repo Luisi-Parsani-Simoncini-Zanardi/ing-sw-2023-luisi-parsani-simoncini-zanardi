@@ -3,10 +3,8 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
-
 import java.io.IOException;
 import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
@@ -102,7 +100,7 @@ class GameTest {
      * tests if the method updates the board correctly
      */
     @Test
-    void testSetBoard() throws IOException {
+    void testSetBoard(){
         Game game = new Game();
         Board board = new Board();
         game.setBoard(board);
@@ -117,7 +115,7 @@ class GameTest {
      * tests if the method returns the board correctly
      */
     @Test
-    void testGetBoard() throws IOException {
+    void testGetBoard(){
         Game game = new Game();
         Board board = new Board();
         board.updateBoard(new Tile(TilesEnum.CATS, 0),4,4);
