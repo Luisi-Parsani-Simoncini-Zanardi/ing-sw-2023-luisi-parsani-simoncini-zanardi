@@ -1,13 +1,8 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
-
 import org.projectsw.Model.CommonGoal.*;
-
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -151,9 +146,9 @@ public class Game{
         }
     }
 
-    //TODO: manca implementazione
-
-
+    /**
+     * @return method that return an ArrayList of generic classes containing all CommonGoal children classes
+     */
     private ArrayList<Class<?>> fillCommonGoalsArray(){
         ArrayList<Class<?>> randomGoalsClasses = new ArrayList<>();
 
@@ -177,7 +172,7 @@ public class Game{
      * create a custom 2 elements CommonGoal array given their code
      * @param code0
      * @param code1
-     * @return CommonGoal array
+     * @return custom CommonGoal array
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws InstantiationException
@@ -192,9 +187,20 @@ public class Game{
 
         return commonGoals;
     }
+    
+    /**
+     *
+     * @return the ArrayList of commonGoals containing two random commonGoals chosen by the children of CommonGoal
+     * @throws NoSuchMethodException thrown if getDeclaredConstructor doesn't find the method constructor of the class
+     * @throws InvocationTargetException wraps an exception thrown by the target constructor
+     * @throws InstantiationException thrown if newInstance() try to instantiate an object that can't be instantiated
+     * @throws IllegalAccessException thrown when newInstance() tries to reflectively create an instance but randomCommonGoals
+     * does not have access to the definition of the specified constructor
+     */
+
     public ArrayList<CommonGoal> randomCommonGoals() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        CommonGoal istance;
+        CommonGoal singleIst;
         ArrayList<CommonGoal> commonGoals = new ArrayList<>();
         ArrayList<Class<?>> randomGoalsClasses;
         randomGoalsClasses = fillCommonGoalsArray();
@@ -202,14 +208,14 @@ public class Game{
         Random random = new Random();
         int index1 = random.nextInt(randomGoalsClasses.size());
         Class<?> randomClass = randomGoalsClasses.get(index1);
-        istance = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(istance);
+        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
+        commonGoals.add(singleIst);
         randomGoalsClasses.remove(index1);
 
         index1 = random.nextInt(randomGoalsClasses.size());
         randomClass = randomGoalsClasses.get(index1);
-        istance = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(istance);
+        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
+        commonGoals.add(singleIst);
 
         return commonGoals;
 

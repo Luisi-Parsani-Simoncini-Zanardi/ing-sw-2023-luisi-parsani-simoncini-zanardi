@@ -7,9 +7,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ChatTest {
 
-    //test that the method addChatLog correctly add a String to the ArrayList chat
+    /**
+     * tests if the method addChatLog correctly add a String to the ArrayList chat
+     */
     @Test
-    void addChatLog(){
+    void testAddChatLog(){
         Chat chat = new Chat();
         chat.addChatLog("Testing");
         chat.addChatLog("class");
@@ -19,9 +21,11 @@ class ChatTest {
         assertEquals("chat", chat.getChat().get(2));
     }
 
-    //test that the method actually returns an ArrayList containing the right values
+    /**
+     * tests if the method actually returns an ArrayList containing the right values
+     */
     @Test
-    void getChat() {
+    void testGetChat() {
         Chat chat = new Chat();
         ArrayList<String> prova = new ArrayList<>();
         chat.addChatLog("Hi i'm Lorenzo and im testing the chat class");

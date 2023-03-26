@@ -16,6 +16,18 @@ public class PersonalGoal {
     private static List<Integer> usedCodes = new ArrayList<>(); //called codes
 
     /**
+     * Constructs a new EMPTY PersonalGoal
+     */
+    public PersonalGoal(){
+        personalGoal = new TilesEnum[6][5];
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+                personalGoal[i][j] = TilesEnum.EMPTY;
+            }
+        }
+    }
+
+    /**
      * Constructs a new PersonalGoal object with the given goal code.
      * @param goalCode the unique code assigned to this player's goal card
      * @throws IllegalArgumentException if the goal code has already been used by another player
