@@ -28,6 +28,10 @@ public class SaveGameStatus {
         this.filePath = filePath;
     }
 
+    /**
+     * serialize the game class into a json string
+     * @return json string
+     */
     public String gameToJson() {
         Gson gson = new Gson();
         String json = gson.toJson(game);
@@ -35,9 +39,9 @@ public class SaveGameStatus {
     }
 
     /**
-     * Serializes the game data to JSON format and saves it to a file.
+     * save the serialized game state into a file
      */
-    public String saveGame() {
+    public void saveGame() {
 
         String json = gameToJson();
 
@@ -53,7 +57,5 @@ public class SaveGameStatus {
         } catch (IOException e) {
             System.out.println("Errore durante la scrittura del file: " + e.getMessage());
         }
-
-        return json;
     }
 }

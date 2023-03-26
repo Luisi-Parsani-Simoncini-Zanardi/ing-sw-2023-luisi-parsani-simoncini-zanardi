@@ -157,20 +157,40 @@ public class Game{
     private ArrayList<Class<?>> fillCommonGoalsArray(){
         ArrayList<Class<?>> randomGoalsClasses = new ArrayList<>();
 
+        randomGoalsClasses.add(Square.class);
+        randomGoalsClasses.add(DifferentColumn.class);
         randomGoalsClasses.add(ColumnEqualsFour.class);
         randomGoalsClasses.add(ColumnEqualsTwo.class);
         randomGoalsClasses.add(ColumnGroup.class);
-        randomGoalsClasses.add(Cross.class);
-        randomGoalsClasses.add(Diagonal.class);
-        randomGoalsClasses.add(DifferentColumn.class);
         randomGoalsClasses.add(DifferentRow.class);
+        randomGoalsClasses.add(RowGroup.class);
         randomGoalsClasses.add(Edges.class);
         randomGoalsClasses.add(EightEquals.class);
-        randomGoalsClasses.add(RowGroup.class);
-        randomGoalsClasses.add(Square.class);
+        randomGoalsClasses.add(Cross.class);
+        randomGoalsClasses.add(Diagonal.class);
         randomGoalsClasses.add(Triangle.class);
 
         return randomGoalsClasses;
+    }
+
+    /**
+     * create a custom 2 elements CommonGoal array given their code
+     * @param code0
+     * @param code1
+     * @return CommonGoal array
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public ArrayList<CommonGoal> getCommonGoalsByCode(int code0, int code1) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        ArrayList<Class<?>> allCommon;
+        allCommon = fillCommonGoalsArray();
+        ArrayList<CommonGoal> commonGoals = new ArrayList<>();
+        commonGoals.add((CommonGoal)allCommon.get(code0-1).getDeclaredConstructor().newInstance());
+        commonGoals.add((CommonGoal)allCommon.get(code1-1).getDeclaredConstructor().newInstance());
+
+        return commonGoals;
     }
     public ArrayList<CommonGoal> randomCommonGoals() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
