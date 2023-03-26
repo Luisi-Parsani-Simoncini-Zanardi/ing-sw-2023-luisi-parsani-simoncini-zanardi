@@ -73,6 +73,22 @@ class PersonalGoalTest {
     }
 
     /**
+     * Tests if the constructor of the PersonalGoal throws correctly the IllegalArgumentException for a code
+     * already used, even if this is setted with an exernal list
+     */
+    @Test
+    void testInvalidPersonaGoalCodeUsed() {
+        new PersonalGoal(0);
+        assertThrows(IllegalArgumentException.class, () -> new PersonalGoal(0));
+        PersonalGoal.cleanUsedCodes();
+        assertTrue(PersonalGoal.getUsedCodes().isEmpty());
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(0);
+        PersonalGoal.setUsedCodes(list);
+        assertThrows(IllegalArgumentException.class, () -> new PersonalGoal(0));
+    }
+
+    /**
      * Tests if the returned personalGoal the correct one
      */
     @Test

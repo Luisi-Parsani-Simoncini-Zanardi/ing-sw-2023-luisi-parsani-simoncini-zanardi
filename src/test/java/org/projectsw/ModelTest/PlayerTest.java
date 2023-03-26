@@ -1,283 +1,288 @@
 package org.projectsw.ModelTest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Exceptions.EmptyTilesException;
+import org.projectsw.Exceptions.MaximumTilesException;
+import org.projectsw.Exceptions.UnusedTilesException;
 import org.projectsw.Model.*;
-
+import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
 
-    //test that the method getPosition returns the correct position of the player
+    /*
+     * Clean the list of used codes before each test
+     */
+    @BeforeEach
+    void codesCleaner(){
+        PersonalGoal.cleanUsedCodes();
+    }
+
+    /*
+     * Tests if the constructor of player works correctly
+     */
     @Test
-    void getPosition() {
+    void integrityTestPlayer(){
+        //Checking the first parameters: nickname, position, points, shelf
+        Player player = new Player("Davide",0);
+        assertEquals("Davide",player.getNickname());
+        assertEquals(0,player.getPosition());
+        assertEquals(0,player.getPoints());
+        Shelf shelf = new Shelf();
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++){
+                assertEquals(shelf.getTileShelf(i,j).getTile(),player.getShelf().getTileShelf(i,j).getTile());
+            }
+        }
+        //Checking if the personal goal given to the player actually matches with one of the 12 possible goals
+        PersonalGoal.cleanUsedCodes();
+        boolean personalGoalFound = false;
+        for(int p=0;p<12;p++){
+            boolean different = false;
+            PersonalGoal personalGoal = new PersonalGoal(p);
+            for(int i=0; i<6; i++){
+                for(int j=0; j<5; j++){
+                    if(!personalGoal.getPersonalGoal()[i][j].equals(player.getPersonalGoal().getPersonalGoal()[i][j])){
+                        different = true;
+                    }
+                }
+            }
+            if(!different) personalGoalFound = true;
+        }
+        assertTrue(personalGoalFound);
+        //Checking if thelast 3 parameters are inizialized correctly
+        assertFalse(player.isPersonalGoalRedeemed());
+        assertTrue(player.getTemporaryTiles().isEmpty());
+        assertTrue(player.getCommonGoalRedeemed().isEmpty());
+
+    }
+
+    /*
+     * Tests if the getter of position attribute works correctly
+     */
+    @Test
+    void getPositionTest() {
         Player player = new Player("Lorenzo", 2);
         assertEquals(2,player.getPosition());
     }
 
-    //test that the method getNickname returns the correct nickname of the player
+    /*
+     * Tests if the getter of nickname attribute works correctly
+     */
     @Test
-    void getNickname() {
+    void getNicknameTest() {
         Player player = new Player("Paolo", 2);
         assertEquals("Paolo",player.getNickname());
     }
 
-    //test that the method setPoints actually sets a new value for the attribute points of the object player
+    /*
+     * Tests if the getter and setter of points attribute works correctly
+     */
     @Test
-    void setPoints() {
-        Player player = new Player("Luca", 2);
-        player.setPoints(999);
-        assertEquals(999, player.getPoints());
-    }
-
-    //test that the method getPoints returns the correct value of the attribute points
-    @Test
-    void getPoints() {
+    void getAndSetPointsTest() {
         Player player = new Player("Davide", 3);
         player.setPoints(57);
         assertEquals(57, player.getPoints());
     }
 
-    //test that the method actually set a shelf for the player
+    /*
+     * Tests if the getter and setter of shelf attribute works correctly
+     */
     @Test
-    void setShelf() {
-        Shelf shelf1 = new Shelf();
-        Player player = new Player("Shelfie", 1);
-        player.setShelf(shelf1);
-        assertEquals(shelf1, player.getShelf());
-    }
-
-    //test that the method returns the shelf of the player correctly
-    @Test
-    void getShelf() {
-        Shelf shelf1 = new Shelf();
+    void getAndSetShelfTest() {
+        Shelf shelf = new Shelf();
         Player player = new Player("Attila", 4);
-        player.setShelf(shelf1);
-        assertEquals(shelf1, player.getShelf());
+        player.setShelf(shelf);
+        assertEquals(shelf, player.getShelf());
     }
 
-    //test that the method sets correctly every possible personalGoal
+    /*
+     * Tests if the getter of shelf attribute works correctly
+     */
     @Test
-    void setPersonalGoal(){
-
-        Player player = new Player("Morfeo", 1);
+    void getAndSetPersonalGoalTest(){
+        PersonalGoal personalGoal = new PersonalGoal(0);
         PersonalGoal.cleanUsedCodes();
-
-        PersonalGoal personal1 = new PersonalGoal(0);
-        player.setPersonalGoal(personal1);
-        assertEquals(personal1, player.getPersonalGoal());
-
-        PersonalGoal personal2 = new PersonalGoal(1);
-        player.setPersonalGoal(personal2);
-        assertEquals(personal2, player.getPersonalGoal());
-
-        PersonalGoal personal3 = new PersonalGoal(2);
-        player.setPersonalGoal(personal3);
-        assertEquals(personal3, player.getPersonalGoal());
-
-        PersonalGoal personal4 = new PersonalGoal(3);
-        player.setPersonalGoal(personal4);
-        assertEquals(personal4, player.getPersonalGoal());
-
-        PersonalGoal personal5 = new PersonalGoal(4);
-        player.setPersonalGoal(personal5);
-        assertEquals(personal5, player.getPersonalGoal());
-
-        PersonalGoal personal6 = new PersonalGoal(5);
-        player.setPersonalGoal(personal6);
-        assertEquals(personal6, player.getPersonalGoal());
-
-        PersonalGoal personal7 = new PersonalGoal(6);
-        player.setPersonalGoal(personal7);
-        assertEquals(personal7, player.getPersonalGoal());
-
-        PersonalGoal personal8 = new PersonalGoal(7);
-        player.setPersonalGoal(personal8);
-        assertEquals(personal8, player.getPersonalGoal());
-
-        PersonalGoal personal9 = new PersonalGoal(8);
-        player.setPersonalGoal(personal9);
-        assertEquals(personal9, player.getPersonalGoal());
-
-        PersonalGoal personal10 = new PersonalGoal(9);
-        player.setPersonalGoal(personal10);
-        assertEquals(personal10, player.getPersonalGoal());
-
-        PersonalGoal personal11 = new PersonalGoal(10);
-        player.setPersonalGoal(personal11);
-        assertEquals(personal11, player.getPersonalGoal());
-
-        PersonalGoal personal12 = new PersonalGoal(11);
-        player.setPersonalGoal(personal12);
-        assertEquals(personal12, player.getPersonalGoal());
-
-        PersonalGoal.cleanUsedCodes();
-    }
-
-    //test that the method returns the correct value of personal goal
-    @Test
-    void getPersonalGoal(){
-
-        PersonalGoal personal = new PersonalGoal(4);
         Player player = new Player("Riccardo", 3);
-        PersonalGoal.cleanUsedCodes();
-        player.setPersonalGoal(personal);
-        assertEquals(personal, player.getPersonalGoal());
+        player.setPersonalGoal(personalGoal);
+        assertEquals(personalGoal, player.getPersonalGoal());
     }
 
-    //test that the method actually adds a tile in the array temporaryTiles
-    //test that temporaryTiles can't have more than 3 elements
-    //test that temporaryTiles can't contain EMPTY or UNUSED tile type
+    /*
+     * Tests if the getter of temporaryTiles attribute works correctly
+     */
     @Test
-    void addTile() {
-        Player player = new Player("Asia", 3);
-
-        try{
-            player.addTile(new Tile(TilesEnum.GAMES, 0));
-            assertEquals(1,player.getTiles().size());
-
-        }catch(Exception e){
-            return;
-        }
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
-
-        try{
-            player.addTile(new Tile(TilesEnum.CATS, 0));
-            assertEquals(2,player.getTiles().size());
-        }catch(Exception e){
-            return;
-        }
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
-        try{
-            player.addTile(new Tile(TilesEnum.PLANTS, 0));
-            assertEquals(3,player.getTiles().size());
-        }catch(Exception e){
-            return;
-        }
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.PLANTS));
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
-
-        try{
-            player.addTile(new Tile(TilesEnum.BOOKS, 0));
-            assertEquals(3,player.getTiles().size());
-        }catch(Exception e){
-            assertEquals("Maximum number of tiles reached", e.getMessage());
-        }
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.PLANTS));
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.GAMES));
-        assertTrue(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
-        assertFalse(player.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
-
-        Player player2 = new Player("Roberto", 1);
-
-        try{
-            player2.addTile(new Tile(TilesEnum.UNUSED, 0));
-        }catch(Exception e){
-            assertEquals("You can't add an UNUSED tile", e.getMessage());
-        }
-
-        try{
-            player2.addTile(new Tile(TilesEnum.EMPTY, 0));
-        }catch(Exception e){
-            assertEquals("You can't add an EMPTY tile", e.getMessage());
-        }
+    void getAndSetTemporaryTilesTest(){
+        ArrayList<Tile> list = new ArrayList<>();
+        list.add(new Tile(TilesEnum.CATS,0));
+        list.add(new Tile(TilesEnum.BOOKS,0));
+        Player player = new Player("Riccardo", 3);
+        player.setTemporaryTiles(list);
+        assertEquals(list, player.getTemporaryTiles());
     }
 
-    //test that the method getTiles actually returns the right temporaryTile array
+    /*
+     * Tests if the getter and setter of temporaryTiles attribute works correctly
+     */
     @Test
-    void getTiles() {
-
-        Player test = new Player("Pietro",3);
-        assertEquals(0,test.getTiles().size());
-        try{
-            test.addTile(new Tile(TilesEnum.BOOKS, 0));
-        }catch(Exception e){
-        }
-        assertEquals(1,test.getTiles().size());
-        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
-
-        try{
-            test.addTile(new Tile(TilesEnum.CATS, 0));
-        }catch(Exception e){
-        }
-        assertEquals(2,test.getTiles().size());
-        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
-        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
-
-        try{
-            test.addTile(new Tile(TilesEnum.FRAMES, 0));
-        }catch(Exception e){
-        }
-        assertEquals(3,test.getTiles().size());
-        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.BOOKS));
-        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.CATS));
-        assertTrue(test.getTiles().stream().anyMatch(tile -> tile.getTile() == TilesEnum.FRAMES));
+    void getAndSetCommonGoalsRedeemedTest(){
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(0);
+        list.add(1);
+        Player player = new Player("Riccardo", 3);
+        player.setCommonGoalRedeemed(list);
+        assertEquals(list, player.getCommonGoalRedeemed());
     }
 
-    //test that the method edit the size of the array and returns the right value
-    @Test
-    void selectTile() {
-        Player test = new Player("Pietro",3);
-        try {
-            test.addTile(new Tile(TilesEnum.BOOKS, 0));
-            test.addTile(new Tile(TilesEnum.CATS, 0));
-            test.addTile(new Tile(TilesEnum.FRAMES, 0));
-        }catch(Exception e){
-        }
-
-        assertEquals(TilesEnum.BOOKS,test.selectTile(0).getTile());
-        assertEquals(TilesEnum.CATS,test.getTiles().get(0).getTile());
-        assertEquals(TilesEnum.FRAMES,test.getTiles().get(1).getTile());
-        assertEquals(2,test.getTiles().size());
-
-        assertEquals(TilesEnum.CATS,test.selectTile(0).getTile());
-        assertEquals(TilesEnum.FRAMES,test.getTiles().get(0).getTile());
-        assertEquals(1,test.getTiles().size());
-
-        assertEquals(TilesEnum.FRAMES,test.selectTile(0).getTile());
-        assertEquals(0,test.getTiles().size());
-    }
-
-    //tests the set and get methods of pg redeemed
+    /*
+     * Tests if the getter and setter of personaGoalRedeemed attribute works correctly
+     */
     @Test
     void setGetPersonalGoalRedeemed(){
-        Player test = new Player("Pietro",3);
-        PersonalGoal.cleanUsedCodes();
-
-        test.setPersonalGoalRedeemed(true);
-        assertTrue(test.isPersonalGoalRedeemed());
-        test.setPersonalGoalRedeemed(false);
-        assertFalse(test.isPersonalGoalRedeemed());
+        Player player = new Player("Pietro",3);
+        player.setPersonalGoalRedeemed(true);
+        assertTrue(player.isPersonalGoalRedeemed());
+        player.setPersonalGoalRedeemed(false);
+        assertFalse(player.isPersonalGoalRedeemed());
     }
 
-    //tests the set and get methods of cg redeemed
+    /*
+     * Tests if the addCommonGoalReedemed works correctly
+     */
     @Test
-    void setGetCommonGoalRedeemed(){
-        Player test = new Player("Pietro",3);
-        PersonalGoal.cleanUsedCodes();
-
-        test.setCommonGoalRedeemed(true, 0);
-        assertTrue(test.isCommonGoalRedeemed(0));
-        test.setCommonGoalRedeemed(false, 0);
-        assertFalse(test.isCommonGoalRedeemed(0));
-
-        test.setCommonGoalRedeemed(true, 1);
-        assertTrue(test.isCommonGoalRedeemed(1));
-        test.setCommonGoalRedeemed(false, 1);
-        assertFalse(test.isCommonGoalRedeemed(1));
+    void addCommonGoalReedemedTest(){
+        Player player = new Player("Paolo",0);
+        assertEquals(0,player.getCommonGoalRedeemed().size());
+        player.addCommonGoalRedeemed(0);
+        assertEquals(1,player.getCommonGoalRedeemed().size());
+        assertEquals(0,player.getCommonGoalRedeemed().get(0));
     }
 
-    //tests the IllegalArgumentException catch recalculates the personalGoal
+    /**
+     * Test if the method actually adds a tiles in the array temporaryTiles
+     * Tests also if the getter method works correctly
+     */
+    @Test
+    void addValidTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
+        Player player = new Player("Davide",0);
+        Tile tile0 = new Tile(TilesEnum.CATS,0);
+        Tile tile1 = new Tile(TilesEnum.BOOKS,0);
+        Tile tile2 = new Tile(TilesEnum.FRAMES,0);
+        assertEquals(0,player.getTemporaryTiles().size());
+        player.addTile(tile0);
+        assertEquals(1,player.getTemporaryTiles().size());
+        player.addTile(tile1);
+        assertEquals(2,player.getTemporaryTiles().size());
+        player.addTile(tile2);
+        assertEquals(3,player.getTemporaryTiles().size());
+        assertEquals(tile0,player.getTemporaryTiles().get(0));
+        assertEquals(tile1,player.getTemporaryTiles().get(1));
+        assertEquals(tile2,player.getTemporaryTiles().get(2));
+    }
+
+    /*
+     * Tests if the method addTiles thows correctly the EmptyTilesException then adding empty tiles to the array
+     */
+    @Test
+    void addTileExceptionWhenTileIsEmpty() {
+        Player player = new Player("Davide",0);
+        assertThrows(EmptyTilesException.class, () ->
+                player.addTile(new Tile(TilesEnum.EMPTY,0)));
+    }
+
+    /*
+     * Tests if the method addTiles thows correctly the UnusedTilesException then adding unused tiles to the array
+     */
+    @Test
+    void addTileExceptionWhenTileIsUnused() {
+        Player player = new Player("Davide",0);
+        assertThrows(UnusedTilesException.class, () ->
+                player.addTile(new Tile(TilesEnum.UNUSED,0)));
+    }
+
+    /*
+     * Tests if the method addTiles thows correctly the MaximunTilesException when the array already has 3 elements
+     */
+    @Test
+    void addTileExceptionWhenArrayIsFull() throws EmptyTilesException, UnusedTilesException, MaximumTilesException{
+        Player player = new Player("Davide",0);
+        player.addTile(new Tile(TilesEnum.CATS,0));
+        player.addTile(new Tile(TilesEnum.BOOKS,0));
+        player.addTile(new Tile(TilesEnum.GAMES,0));
+        assertThrows(MaximumTilesException.class, () ->
+                player.addTile(new Tile(TilesEnum.UNUSED,0)));
+    }
+
+
+    /*
+     * Tests if the selectTile methods removes correctly the elemens form the list, leaving unchanghed the
+     * orher of the tiles, reducing the size of the list and returning the correct element
+     */
+    @Test
+    void selectTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
+        Player player = new Player("Davide",0);
+        Tile tile0 = new Tile(TilesEnum.CATS,0);
+        Tile tile1 = new Tile(TilesEnum.BOOKS,0);
+        Tile tile2 = new Tile(TilesEnum.FRAMES,0);
+        assertEquals(0,player.getTemporaryTiles().size());
+        player.addTile(tile0);
+        player.addTile(tile1);
+        player.addTile(tile2);
+        //check if elements remains in the correct order and if the size reduces correctly
+        //after removing from the head of the list and from the end. Then it removes the last one
+        assertEquals(3,player.getTemporaryTiles().size());
+        assertEquals(tile0,player.selectTile(0));
+        assertEquals(2,player.getTemporaryTiles().size());
+        assertEquals(tile1,player.getTemporaryTiles().get(0));
+        assertEquals(tile2,player.selectTile(1));
+        assertEquals(1,player.getTemporaryTiles().size());
+        assertEquals(tile1,player.getTemporaryTiles().get(0));
+        assertEquals(tile1,player.selectTile(0));
+        assertEquals(0,player.getTemporaryTiles().size());
+        player.addTile(tile0);
+        player.addTile(tile1);
+        player.addTile(tile2);
+        //check if elements remains in the correct order after removing from the middle
+        assertEquals(tile1,player.selectTile(1));
+        assertEquals(tile2,player.getTemporaryTiles().get(1));
+        assertEquals(tile0,player.getTemporaryTiles().get(0));
+    }
+
+    @Test
+    void selectTilesExceptionWhenIndexIsNegative() {
+        Player player = new Player("Davide",0);
+        assertThrows(IndexOutOfBoundsException.class, () ->
+                player.selectTile(-1));
+    }
+
+    @Test
+    void selectTilesExceptionWhenIndexIsTooBig() {
+        Player player = new Player("Davide",0);
+        assertThrows(IndexOutOfBoundsException.class, () ->
+                player.selectTile(3));
+    }
+
+
+    /*
+     * Test if the constructor of players always create a player with a different
+     * personal goal from the other players already created
+     */
     @Test
     void tryPersonalGoal(){
-        Player test = new Player("Pietro",3);
-        PersonalGoal.cleanUsedCodes();
-
-        PersonalGoal personal5 = new PersonalGoal(4);
-
-        PersonalGoal personal6 = test.tryPersonalGoal(4);
-
-        assertNotEquals(personal5, personal6);
+        Player[] players = new Player[12];
+        PersonalGoal[] personalGoals = new PersonalGoal[12];
+        int matches = 0;
+        for(int i=0;i<12;i++){
+            players[i] = new Player("Davide",0);
+            personalGoals[i] = players[i].getPersonalGoal();
+        }
+        for(int i=0;i<12;i++){
+            for(int j=0;j<12;j++){
+                if(personalGoals[i].equals(personalGoals[j])) matches++;
+            }
+        }
+        //the mathes has to be 12 becouse every personal goal matches with itself
+        assertEquals(12,matches);
     }
 }
