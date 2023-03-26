@@ -4,12 +4,21 @@ import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.*;
 
 public class Engine {
+
+    /**
+     * Initializes the game and the save
+     */
     private Game game;
     public void startGame(){
         this.game = new Game();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, ""); //filepath to be added
     }
 
+    /**
+     * Creates a player object and adds it to the array of players if there's enough room
+     * If the player is the first to join, also sets him as first and current player
+     * @param nickname the nickname of the player to be created
+     */
     public void playerJoin (String nickname){
         int playerLength = game.getPlayers().size();
         Player player = new Player(nickname, playerLength+1);
