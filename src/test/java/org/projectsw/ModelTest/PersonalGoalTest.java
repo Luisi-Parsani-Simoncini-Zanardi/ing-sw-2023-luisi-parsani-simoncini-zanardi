@@ -88,6 +88,16 @@ class PersonalGoalTest {
         assertThrows(IllegalArgumentException.class, () -> new PersonalGoal(0));
     }
 
+    @Test
+    void testInvalidPersonaGoalNegativeCode() {
+        assertThrows(IllegalArgumentException.class, () -> new PersonalGoal(-1));
+    }
+
+    @Test
+    void testInvalidPersonaGoalCodeTooBig() {
+        assertThrows(IllegalArgumentException.class, () -> new PersonalGoal(12));
+    }
+
     /**
      * Tests if the returned personalGoal the correct one
      */
