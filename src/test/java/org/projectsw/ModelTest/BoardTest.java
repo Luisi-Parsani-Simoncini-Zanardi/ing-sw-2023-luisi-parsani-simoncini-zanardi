@@ -114,7 +114,7 @@ class BoardTest {
     }
 
     /**
-     * Tests if the constructor of the board throws correctly the IndexOutOfBoundsException for a number
+     * Tests if the constructor of the board throws correctly the IllegalArgumentException for a number
      * of players higher then expected
      */
     @Test
@@ -123,7 +123,7 @@ class BoardTest {
     }
 
     /**
-     * Tests if the constructor of the board throws correctly the IndexOutOfBoundsException for a number
+     * Tests if the constructor of the board throws correctly the IllegalArgumentException for a number
      * of players lower then expected
      */
     @Test

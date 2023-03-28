@@ -34,10 +34,11 @@ public class PersonalGoal {
      */
     public PersonalGoal(int goalCode){
         try {
-            if (usedCodes.contains(goalCode)) {
+            if (usedCodes.contains(goalCode))
                 throw new IllegalArgumentException("Goal code already used.");
-            }
-            usedCodes.add(goalCode);
+            else if (goalCode < 0 || goalCode > 11)
+                throw new IllegalArgumentException("Invalid goal code");
+            else usedCodes.add(goalCode);
 
             Gson gson = new Gson();
             String[][][] tmpMatrixes = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
