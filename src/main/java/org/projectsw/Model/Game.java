@@ -1,4 +1,5 @@
 package org.projectsw.Model;
+//TODO: sistemare le varie exception
 
 import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.CommonGoal.*;
