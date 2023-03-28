@@ -285,4 +285,13 @@ class PlayerTest {
         //the mathes has to be 12 becouse every personal goal matches with itself
         assertEquals(12,matches);
     }
+
+    /*@Test
+    void tryPersonalGoalNullIfTwelve(){
+        Player[] players = new Player[13];
+        for(int i=0;i<13;i++){
+            players[i] = new Player("Davide",0);
+        }
+        assertNull(players[12].getPersonalGoal());
+    }*/
 }
