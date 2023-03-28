@@ -7,8 +7,14 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * test for the Message class methods
+ */
 public class MessageTest {
 
+    /**
+     * test if the setRecipients method correctly set the recipients list
+     */
     @Test
     public void setRecipientsTest() {
 
@@ -28,5 +34,16 @@ public class MessageTest {
         assertEquals(recipient2, message.getRecipients().get(1));
         assertEquals(recipient3, message.getRecipients().get(2));
 
+    }
+
+    /**
+     * test if the method getContent retrieve the correct content
+     */
+    @Test
+    public void getContentTest() {
+        Message message = new Message(" ", "test content");
+        String contentTest = "test content";
+        String contentAssert = message.getContent();
+        assertEquals(contentTest, contentAssert);
     }
 }
