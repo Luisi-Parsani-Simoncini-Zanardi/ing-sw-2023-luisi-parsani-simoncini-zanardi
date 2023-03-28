@@ -76,7 +76,7 @@ public class Player {
     /**
      * @return the codes of the common goals redeemed by the player.
      */
-    public ArrayList<Integer> getCommonGoalRedeemed() {
+    public ArrayList<Boolean> getCommonGoalRedeemed() {
         return commonGoalRedeemed;
     }
 
@@ -93,7 +93,7 @@ public class Player {
      * @return true if the personal goal has been redeemed, false otherwise
      */
     public boolean isCommonGoalRedeemed(int i){
-        return commonGoalRedeemed.contains(i);
+        return commonGoalRedeemed.get(i);
     }
 
     /**
@@ -132,16 +132,16 @@ public class Player {
      * Sets the commonGoalRedeemed list of the player to the given list of integer.
      * @param commonGoalRedeemed the list of integer to set for the player
      */
-    public void setCommonGoalRedeemed(ArrayList<Integer> commonGoalRedeemed) {
+    public void setCommonGoalRedeemed(ArrayList<Boolean> commonGoalRedeemed) {
         this.commonGoalRedeemed = commonGoalRedeemed;
     }
 
     /**
      * Sets the number i element of the commonGoal array the desired status
-     * @param i the index of the personalGoalArray element to be assigned
+     * @param flag the index of the personalGoalArray element to be assigned
      */
-    public void addCommonGoalRedeemed (int i){
-        commonGoalRedeemed.add(i);
+    public void addCommonGoalRedeemed (boolean flag){
+        commonGoalRedeemed.add(flag);
     }
 
     /**

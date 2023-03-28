@@ -127,9 +127,9 @@ class PlayerTest {
      */
     @Test
     void getAndSetCommonGoalsRedeemedTest(){
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(0);
-        list.add(1);
+        ArrayList<Boolean> list = new ArrayList<>();
+        list.add(true);
+        list.add(false);
         Player player = new Player("Riccardo", 3);
         player.setCommonGoalRedeemed(list);
         assertEquals(list, player.getCommonGoalRedeemed());
@@ -154,9 +154,9 @@ class PlayerTest {
     void addCommonGoalReedemedTest(){
         Player player = new Player("Paolo",0);
         assertEquals(0,player.getCommonGoalRedeemed().size());
-        player.addCommonGoalRedeemed(0);
+        player.addCommonGoalRedeemed(true);
         assertEquals(1,player.getCommonGoalRedeemed().size());
-        assertEquals(0,player.getCommonGoalRedeemed().get(0));
+        assertEquals(true,player.getCommonGoalRedeemed().get(0));
     }
 
     /**
