@@ -1,9 +1,7 @@
 package org.projectsw.Model;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+
 import com.google.gson.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,6 +54,24 @@ public class SaveGameStatus {
             System.out.println("La stringa è stata scritta nel file con successo.");
         } catch (IOException e) {
             System.out.println("Errore durante la scrittura del file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * retrive game status data of the latest save from file and return the game object
+     * updated to the last turn
+     * @return game object updated to the last turn
+     */
+    public Game retriveGame() {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
+            Gson gson = new Gson();
+            Game savedGame = gson.fromJson(br, Game.class);
+            return savedGame;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
