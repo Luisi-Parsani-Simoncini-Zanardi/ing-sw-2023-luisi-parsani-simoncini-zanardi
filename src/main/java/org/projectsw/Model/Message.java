@@ -6,25 +6,21 @@ import java.util.ArrayList;
  * this class represent a single message object with a single sender, the content of the message and a
  * list of all the recipients that needs to receive the message
  */
-public class message {
+public class Message {
 
     private final String sender;
-    private String content;
+    private final String content;
     private ArrayList<String> recipients;
 
     /**
      * construct a message object with the sender.
      * @param sender
      */
-    public message(String sender) {
+    public Message(String sender, String content) {
         this.sender = sender;
+        this.recipients = new ArrayList<>();
+        this.content = content;
     }
-
-    /**
-     * set the content of the message
-     * @param content
-     */
-    public void setContent (String content) {this.content = content; }
 
     /**
      * set the list of recipients of the message
@@ -43,4 +39,6 @@ public class message {
      * @return recipients list
      */
     public ArrayList<String> getRecipients() { return this.recipients; }
+
+    public String getSender() { return this.sender; }
 }

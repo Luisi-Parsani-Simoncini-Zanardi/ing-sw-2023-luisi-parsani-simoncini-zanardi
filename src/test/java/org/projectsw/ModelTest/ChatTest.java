@@ -2,6 +2,8 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Chat;
+import org.projectsw.Model.Message;
+
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,12 +15,12 @@ class ChatTest {
     @Test
     void testAddChatLog(){
         Chat chat = new Chat();
-        chat.addChatLog("Testing");
-        chat.addChatLog("class");
-        chat.addChatLog("chat");
-        assertEquals("Testing", chat.getChat().get(0));
-        assertEquals("class", chat.getChat().get(1));
-        assertEquals("chat", chat.getChat().get(2));
+        chat.addChatLog(new Message(" ", "Testing"));
+        chat.addChatLog(new Message(" ", "class"));
+        chat.addChatLog(new Message(" ", "chat"));
+        assertEquals("Testing", chat.getChat().get(0).getContent());
+        assertEquals("class", chat.getChat().get(1).getContent());
+        assertEquals("chat", chat.getChat().get(2).getContent());
     }
 
     /**
@@ -27,9 +29,9 @@ class ChatTest {
     @Test
     void testGetChat() {
         Chat chat = new Chat();
-        ArrayList<String> prova = new ArrayList<>();
-        chat.addChatLog("Hi i'm Lorenzo and im testing the chat class");
-        prova.add("Hi i'm Lorenzo and im testing the chat class");
+        ArrayList<Message> prova = new ArrayList<>();
+        chat.addChatLog(new Message(" ", "Hi i'm Lorenzo and im testing the chat class"));
+        prova.add(new Message(" ", "Hi i'm Lorenzo and im testing the chat class"));
         assertEquals(prova, chat.getChat());
     }
 }

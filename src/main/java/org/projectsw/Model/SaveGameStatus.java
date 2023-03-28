@@ -43,7 +43,6 @@ public class SaveGameStatus {
 
         String json = gameToJson();
 
-        //write the json opn a file
         try {
             File file = new File(filePath);
             FileWriter fw = new FileWriter(file);
@@ -58,11 +57,11 @@ public class SaveGameStatus {
     }
 
     /**
-     * retrive game status data of the latest save from file and return the game object
+     * retrieve game status data of the latest save from file and return the game object
      * updated to the last turn
      * @return game object updated to the last turn
      */
-    public Game retriveGame() {
+    public Game retrieveGame() {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
