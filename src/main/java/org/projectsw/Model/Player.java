@@ -16,9 +16,8 @@ public class Player {
     private int points;
     private Shelf shelf;
     private PersonalGoal personalGoal;
-    private boolean personalGoalRedeemed;
     private ArrayList<Tile> temporaryTiles;
-    private ArrayList<Integer> commonGoalRedeemed;
+    private ArrayList<Boolean> commonGoalRedeemed;
 
     /**
      * Constructs a new player with the given nickname and position.
@@ -35,7 +34,6 @@ public class Player {
         points=0;
         shelf = new Shelf();
         personalGoal = tryPersonalGoal();
-        personalGoalRedeemed = false;
         temporaryTiles = new ArrayList<>();
         commonGoalRedeemed = new ArrayList<>();
    }
@@ -90,14 +88,6 @@ public class Player {
     }
 
     /**
-     * Returns whether the personal goal has been redeemed or not
-     * @return true if the personal goal has been redeemed, false otherwise
-     */
-    public boolean isPersonalGoalRedeemed(){
-        return personalGoalRedeemed;
-    }
-
-    /**
      * Returns whether the number i common goal has been redeemed or not
      * @param i the index of the personalGoalArray element to be checked
      * @return true if the personal goal has been redeemed, false otherwise
@@ -128,14 +118,6 @@ public class Player {
      */
     public void setPersonalGoal(PersonalGoal personalGoal) {
         this.personalGoal=personalGoal;
-    }
-
-    /**
-     * Sets personalGoalRedeemed to the desired status
-     * @param status the status to be assigned
-     */
-    public void setPersonalGoalRedeemed (boolean status){
-        personalGoalRedeemed = status;
     }
 
     /**
