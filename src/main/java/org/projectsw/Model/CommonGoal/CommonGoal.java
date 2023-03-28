@@ -64,4 +64,6 @@ public abstract class CommonGoal{
 
         return count;
     }
+
+    public int getGoalCode() { return this.commonGoalCode; }
 }
