@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.CommonGoal.*;
 import java.lang.reflect.InvocationTargetException;
@@ -136,8 +137,12 @@ public class Game{
      * @param player the player to be added
      * @throws MaximumPlayerException if the maximum number of players has already been reached (4 players)
      */
-    public void addPlayer(Player player) throws MaximumPlayerException {
+    public void addPlayer(Player player) throws MaximumPlayerException, InvalidNameException {
         int playerLength = getPlayers().size();
+        for (int i = 0; i<playerLength; i++) {
+            if(getPlayers().get(i).getNickname().equals(player.getNickname()))
+                throw new InvalidNameException("invalid name");
+        }
         if (playerLength<4){
             players.add(player);
         }
