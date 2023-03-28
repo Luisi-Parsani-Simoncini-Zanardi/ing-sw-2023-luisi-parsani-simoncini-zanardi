@@ -4,6 +4,7 @@ import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.*;
 
 public class Engine {
+    //TODO: finire metodi
 
     /**
      * Initializes the game and the save
@@ -11,7 +12,8 @@ public class Engine {
     private Game game;
     public void startGame(){
         this.game = new Game();
-        SaveGameStatus saveGameStatus = new SaveGameStatus(game, ""); //filepath to be added
+        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");
+        //TODO: aggiungere filepath
     }
 
     /**
@@ -22,9 +24,11 @@ public class Engine {
     public void playerJoin (String nickname){
         int playerLength = game.getPlayers().size();
         Player player = new Player(nickname, playerLength+1);
+        //TODO: aggiungere vincolo nickname univoco
         if (playerLength==0){
             game.setFirstPlayer(player);
             game.setCurrentPlayer(player);
+            //TODO: aggiungere funzione che chiede al player quanti giocatori ci sono
         }
         try {
             game.addPlayer(player);
