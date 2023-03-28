@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-03-28T13:42:42.836Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="Jvq7jlZyDw51HnRAx7_-" version="21.1.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-28T14:32:40.651Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="SFnoMve4rj013w7z5B05" version="21.1.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="2919" dy="1812" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="2784" dy="1638" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -80,7 +80,7 @@
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-26" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="Mxky3zlpcd0uLPRcEJlR-24" vertex="1">
           <mxGeometry y="60" width="280" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="Mxky3zlpcd0uLPRcEJlR-27" value="+ getPersonalGoal(): Tiles[][]&lt;br&gt;+ getUsedCodes(): List&amp;lt;Integers&amp;gt;&lt;br&gt;+ setUsedCodes(usedCodes:List&amp;lt;Integers&amp;gt;)&lt;br&gt;+ cleanUsedCodes()&lt;br&gt;+ List&amp;lt;Integers&amp;gt; getusedCodes()" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-24" vertex="1">
+        <mxCell id="Mxky3zlpcd0uLPRcEJlR-27" value="+ getPersonalGoal(): Tiles[][]&lt;br&gt;+ getUsedCodes(): List&amp;lt;Integers&amp;gt;&lt;br&gt;+ setUsedCodes(usedCodes:List&amp;lt;Integers&amp;gt;)&lt;br&gt;+ cleanUsedCodes(): void&lt;br&gt;+ getusedCodes(): List&amp;lt;Integers&amp;gt;&amp;nbsp;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-24" vertex="1">
           <mxGeometry y="68" width="280" height="82" as="geometry" />
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-29" value="" style="endArrow=diamondThin;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="Mxky3zlpcd0uLPRcEJlR-24" target="Mxky3zlpcd0uLPRcEJlR-41" edge="1">
