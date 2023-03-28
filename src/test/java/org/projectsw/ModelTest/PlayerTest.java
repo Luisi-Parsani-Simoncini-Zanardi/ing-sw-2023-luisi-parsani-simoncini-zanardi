@@ -52,7 +52,7 @@ class PlayerTest {
         }
         assertTrue(personalGoalFound);
         //Checking if thelast 3 parameters are inizialized correctly
-        assertFalse(player.isPersonalGoalRedeemed());
+        //assertFalse(player.isPersonalGoalRedeemed()); attribute revomed
         assertTrue(player.getTemporaryTiles().isEmpty());
         assertTrue(player.getCommonGoalRedeemed().isEmpty());
 
@@ -137,15 +137,15 @@ class PlayerTest {
 
     /*
      * Tests if the getter and setter of personaGoalRedeemed attribute works correctly
-     */
+
     @Test
     void setGetPersonalGoalRedeemed(){
         Player player = new Player("Pietro",3);
-        player.setPersonalGoalRedeemed(true);
+        player.setPersonalGoalRedeemed(true);                   attribute removed
         assertTrue(player.isPersonalGoalRedeemed());
         player.setPersonalGoalRedeemed(false);
         assertFalse(player.isPersonalGoalRedeemed());
-    }
+    }     */
 
     /*
      * Tests if the addCommonGoalReedemed works correctly

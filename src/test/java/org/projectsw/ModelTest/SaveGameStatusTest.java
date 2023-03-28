@@ -92,7 +92,7 @@ public class SaveGameStatusTest {
         assertEquals(playerTest.getPoints(), playerAssert.getPoints());
         assertEqualsShelf(playerTest.getShelf(), playerAssert.getShelf());
         assertEqualsPersonalGoal(playerTest.getPersonalGoal(), playerAssert.getPersonalGoal());
-        assertEquals(playerTest.isPersonalGoalRedeemed(), playerAssert.isPersonalGoalRedeemed());
+        //assertEquals(playerTest.isPersonalGoalRedeemed(), playerAssert.isPersonalGoalRedeemed()); attribute removed
         assertEquals(playerTest.isCommonGoalRedeemed(0), playerAssert.isCommonGoalRedeemed(0));
         assertEquals(playerTest.isCommonGoalRedeemed(1), playerAssert.isCommonGoalRedeemed(1));
     }
