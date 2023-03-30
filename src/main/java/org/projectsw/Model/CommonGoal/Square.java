@@ -19,20 +19,21 @@ public class Square extends ShapeBehavior {
     public boolean check(Shelf shelf) {
 
         ArrayList<Point> coordinates = new ArrayList<>();
+        coordinates.clear();
 
         for (int y=5; y>0; y--)
         {
-            for (int x=4; x>0; x--)
+            for (int x=0; x<4; x++)
             {
-                if(shelf.getTileShelf(x,y).getTile() == shelf.getTileShelf(x,y-1).getTile() &&
-                        shelf.getTileShelf(x,y).getTile() == shelf.getTileShelf(x-1,y-1).getTile() &&
-                        shelf.getTileShelf(x,y).getTile() == shelf.getTileShelf(x-1, y).getTile() &&
-                        shelf.getTileShelf(x,y).getTile() != TilesEnum.EMPTY)
+                if(shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y-1, x).getTile() &&
+                        shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y-1, x+1).getTile() &&
+                        shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y, x+1).getTile() &&
+                        shelf.getTileShelf(y, x).getTile() != TilesEnum.EMPTY)
                 {
-                    Point upperLeft = new Point(x,y);
+                    Point upperLeft = new Point(x, y);
                     Point lowerLeft = new Point(x,y-1);
-                    Point upperRight = new Point(x-1,y);
-                    Point lowerRight = new Point(x-1,y-1);
+                    Point upperRight = new Point(x+1,y);
+                    Point lowerRight = new Point(x+1,y-1);
 
                     if (coordinates.isEmpty())
                     {
