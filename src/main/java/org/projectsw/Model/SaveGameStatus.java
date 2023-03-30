@@ -19,7 +19,7 @@ public class SaveGameStatus {
     private final String filePath; //The file path where the game should be saved.
 
     /**
-     * Constructs a new `SaveGameStatus` object with the specified `game` and `filePath`.
+     * Constructs a new SaveGameStatus object with the specified game and filePath.
      * @param game the game object to be saved
      * @param filePath the file path where the game should be saved
      */

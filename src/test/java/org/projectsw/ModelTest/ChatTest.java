@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChatTest {
 
     /**
-     * tests if the method addChatLog correctly add a String to the ArrayList chat
+     * Tests if the method addChatLog correctly add a String to the ArrayList chat.
      */
     @Test
     void testAddChatLog(){
@@ -22,7 +22,7 @@ class ChatTest {
     }
 
     /**
-     * tests if the method actually returns an ArrayList containing the right values
+     * Tests if the method actually returns an ArrayList containing the right values.
      */
     @Test
     void testGetChat() {

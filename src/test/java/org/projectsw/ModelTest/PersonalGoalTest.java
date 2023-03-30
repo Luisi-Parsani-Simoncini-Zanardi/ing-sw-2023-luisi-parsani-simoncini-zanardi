@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PersonalGoalTest {
 
     /**
-     * Clean the list of used codes before each test
+     * Cleans the list of used codes before each test.
      */
     @BeforeEach
     void codesCleaner(){
@@ -19,7 +19,7 @@ class PersonalGoalTest {
     }
 
     /**
-     * Test if the empty constructor returns a correct matrix of EMPTY tiles
+     * Tests if the empty constructor returns a correct matrix of EMPTY tiles.
      */
     @Test
     void emptyIntegrityTest(){
@@ -34,7 +34,7 @@ class PersonalGoalTest {
     }
 
     /**
-     * Test if the constructor returns a correct and full matrix of tiles
+     * Tests if the constructor returns a correct and full matrix of tiles.
      */
     @Test
     void integrityTest(){
@@ -74,7 +74,7 @@ class PersonalGoalTest {
 
     /**
      * Tests if the constructor of the PersonalGoal throws correctly the IllegalArgumentException for a code
-     * already used, even if this is setted with an exernal list
+     * already used, even if this is set with an external list.
      */
     @Test
     void testInvalidPersonaGoalCodeUsed() {
@@ -99,7 +99,7 @@ class PersonalGoalTest {
     }
 
     /**
-     * Tests if the returned personalGoal the correct one
+     * Tests if the returned personalGoal is the correct one.
      */
     @Test
     void testGetPersonalGoal(){
@@ -113,7 +113,7 @@ class PersonalGoalTest {
     }
 
     /**
-     * tests if the set, get and clean methods of usedCodes work correctly
+     * Tests if the set, get and clean methods of usedCodes work correctly.
      */
     @Test
     void testSetGetCleanUsedCodes() {

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
     /**
-     * tests if the method sets firstPlayer correctly
+     * Tests if the method sets firstPlayer correctly.
      */
     @Test
     void testSetFirstPlayer() {
@@ -23,7 +23,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method returns firstPlayer correctly
+     * Tests if the method returns firstPlayer correctly.
      */
     @Test
     void testGetFirstPlayer() {
@@ -34,7 +34,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method sets correctly the current player
+     * Tests if the method sets correctly the current player.
      */
     @Test
     void testSetCurrentPlayer() {
@@ -48,7 +48,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method returns the current player correctly
+     * Tests if the method returns the current player correctly.
      */
     @Test
     void testGetCurrentPlayer() {
@@ -59,7 +59,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method sets the players correctly
+     * Tests if the method sets the players correctly.
      */
     @Test
     void testSetPlayers() {
@@ -78,7 +78,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method returns the right players of the game
+     * Tests if the method returns the right players.
      */
     @Test
     void testGetPlayers() {
@@ -97,7 +97,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method updates the board correctly
+     * Tests if the method updates the board correctly.
      */
     @Test
     void testSetBoard(){
@@ -112,7 +112,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method returns the board correctly
+     * Tests if the method returns the board correctly.
      */
     @Test
     void testGetBoard(){
@@ -124,7 +124,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method correctly generates a random commonGoal
+     * Tests if the method correctly generates a random commonGoal.
      */
     @Test
     void testRandomCommonGoal(){

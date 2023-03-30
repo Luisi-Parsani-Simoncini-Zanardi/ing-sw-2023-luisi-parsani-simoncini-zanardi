@@ -11,16 +11,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
 
-    /*
-     * Clean the list of used codes before each test
+    /**
+     * Cleans the list of used codes before each test.
      */
     @BeforeEach
     void codesCleaner(){
         PersonalGoal.cleanUsedCodes();
     }
 
-    /*
-     * Tests if the constructor of player works correctly
+    /**
+     * Tests if the constructor of player works correctly.
      */
     @Test
     void integrityTestPlayer(){
@@ -57,8 +57,8 @@ class PlayerTest {
 
     }
 
-    /*
-     * Tests if the getter of position attribute works correctly
+    /**
+     * Tests if the getter of position attribute works correctly.
      */
     @Test
     void getPositionTest() {
@@ -66,8 +66,8 @@ class PlayerTest {
         assertEquals(2,player.getPosition());
     }
 
-    /*
-     * Tests if the getter of nickname attribute works correctly
+    /**
+     * Tests if the getter of nickname attribute works correctly.
      */
     @Test
     void getNicknameTest() {
@@ -75,8 +75,8 @@ class PlayerTest {
         assertEquals("Paolo",player.getNickname());
     }
 
-    /*
-     * Tests if the getter and setter of points attribute works correctly
+    /**
+     * Tests if the getter and setter of points work correctly.
      */
     @Test
     void getAndSetPointsTest() {
@@ -85,8 +85,8 @@ class PlayerTest {
         assertEquals(57, player.getPoints());
     }
 
-    /*
-     * Tests if the getter and setter of shelf attribute works correctly
+    /**
+     * Tests if the getter and setter of shelf work correctly.
      */
     @Test
     void getAndSetShelfTest() {
@@ -96,8 +96,8 @@ class PlayerTest {
         assertEquals(shelf, player.getShelf());
     }
 
-    /*
-     * Tests if the getter of shelf attribute works correctly
+    /**
+     * Tests if the getter of personalGoal work correctly
      */
     @Test
     void getAndSetPersonalGoalTest(){
@@ -108,8 +108,8 @@ class PlayerTest {
         assertEquals(personalGoal, player.getPersonalGoal());
     }
 
-    /*
-     * Tests if the getter of temporaryTiles attribute works correctly
+    /**
+     * Tests if the getter of temporaryTiles works correctly.
      */
     @Test
     void getAndSetTemporaryTilesTest(){
@@ -121,8 +121,8 @@ class PlayerTest {
         assertEquals(list, player.getTemporaryTiles());
     }
 
-    /*
-     * Tests if the getter and setter of temporaryTiles attribute works correctly
+    /**
+     * Tests if the getter and setter of temporaryTiles work correctly
      */
     @Test
     void getAndSetCommonGoalsRedeemedTest(){
@@ -146,8 +146,8 @@ class PlayerTest {
     }     */
 
     /**
-     * Test if the method actually adds a tiles in the array temporaryTiles
-     * Tests also if the getter method works correctly
+     * Tests if the method actually adds a tiles in the array temporaryTiles;
+     * also tests if the getter method works correctly.
      */
     @Test
     void addValidTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
@@ -167,8 +167,8 @@ class PlayerTest {
         assertEquals(tile2,player.getTemporaryTiles().get(2));
     }
 
-    /*
-     * Tests if the method addTiles thows correctly the EmptyTilesException then adding empty tiles to the array
+    /**
+     * Tests if the method addTiles throws correctly the EmptyTilesException then adding empty tiles to the array.
      */
     @Test
     void addTileExceptionWhenTileIsEmpty() {
@@ -177,8 +177,8 @@ class PlayerTest {
                 player.addTile(new Tile(TilesEnum.EMPTY,0)));
     }
 
-    /*
-     * Tests if the method addTiles thows correctly the UnusedTilesException then adding unused tiles to the array
+    /**
+     * Tests if the method addTiles throws correctly the UnusedTilesException then adding unused tiles to the array.
      */
     @Test
     void addTileExceptionWhenTileIsUnused() {
@@ -187,8 +187,8 @@ class PlayerTest {
                 player.addTile(new Tile(TilesEnum.UNUSED,0)));
     }
 
-    /*
-     * Tests if the method addTiles thows correctly the MaximunTilesException when the array already has 3 elements
+    /**
+     * Tests if the method addTiles throws correctly the MaximumTilesException when the array already has 3 elements
      */
     @Test
     void addTileExceptionWhenArrayIsFull() throws EmptyTilesException, UnusedTilesException, MaximumTilesException{
@@ -201,9 +201,9 @@ class PlayerTest {
     }
 
 
-    /*
-     * Tests if the selectTile methods removes correctly the elemens form the list, leaving unchanghed the
-     * orher of the tiles, reducing the size of the list and returning the correct element
+    /**
+     * Tests if the selectTile methods removes correctly the elements form the list, leaving unchanged the
+     * other tiles, reducing the size of the list and returning the correct element.
      */
     @Test
     void selectTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
@@ -250,9 +250,9 @@ class PlayerTest {
     }
 
 
-    /*
-     * Test if the constructor of players always create a player with a different
-     * personal goal from the other players already created
+    /**
+     * Tests if the constructor of players always create a player with a different
+     * personal goal from the other players already created.
      */
     @Test
     void tryPersonalGoal(){
