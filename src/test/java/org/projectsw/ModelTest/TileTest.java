@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TileTest {
 
     /**
-     * Test for the getters methods of the class
+     * Tests the getters methods of the class.
      */
     @Test
     void gettersTest(){
@@ -18,22 +18,24 @@ public class TileTest {
     }
 
     /**
-     * Tests if the IndexOutOfBoundsException is correctly thrown for a imageNumber higher then expected
+     * Tests if the IndexOutOfBoundsException is correctly thrown for a imageNumber higher than expected.
      */
     @Test
     void testInvalidImageNumberLower() {
         assertThrows(IllegalArgumentException.class, () -> {
             Tile tile = new Tile(TilesEnum.CATS,-1);
+            assertEquals(tile, tile);
         });
     }
 
     /**
-     * Tests if the IndexOutOfBoundsException is correctly thrown for a imageNumber lower then expected
+     * Tests if the IndexOutOfBoundsException is correctly thrown for a imageNumber lower than expected.
      */
     @Test
     void testInvalidPlayersNumberHigher() {
         assertThrows(IllegalArgumentException.class, () -> {
             Tile tile = new Tile(TilesEnum.CATS,3);
+            assertEquals(tile, tile);
         });
     }
 }

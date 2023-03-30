@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShelfTest {
 
     /**
-     * Tests if the empty constructor of shelf actually creates a 6x5 matrix of empty tiles
+     * Tests if the empty constructor of shelf actually creates a 6x5 matrix of empty tiles.
      */
     @Test
     void integrityShelfTest(){
@@ -26,7 +26,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests if the constructor that copies a shelf in another does it correctly
+     * Tests if the constructor that copies a shelf in another does it correctly.
      */
     @Test
     void rightShelfCopy() throws EmptyTilesException, UnusedTilesException {
@@ -47,7 +47,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests if getters and setters of shelf works correctly
+     * Tests if getters and setters of shelf works correctly.
      */
     @Test
     void getAndSetShelfTest() throws EmptyTilesException, UnusedTilesException {
@@ -90,7 +90,7 @@ class ShelfTest {
     }
 
     /**
-     * Tests if the get tile method returns the correct tile
+     * Tests if the get tile method returns the correct tile.
      */
     @Test
     void getTileShelfTest() throws EmptyTilesException, UnusedTilesException {
@@ -122,7 +122,7 @@ class ShelfTest {
 
     /**
      * Tests the correct insertion of a tile in the shelf,
-     * also test if the rest of the shelf remains like iit was before the insertion
+     * also test if the rest of the shelf remains like iit was before the insertion.
      */
 
     @Test
@@ -181,8 +181,8 @@ class ShelfTest {
                 shelf.insertTiles(new Tile(TilesEnum.UNUSED,0),0,0));
     }
 
-    /*
-     * Thest if the Tile functions are well integrated with Shelf class by calling them from the shelf object
+    /**
+     * Tests if the Tile functions are well integrated with Shelf class by calling them from the shelf object.
      */
     @Test
     void correctIntegrationWithTile() throws EmptyTilesException, UnusedTilesException {
