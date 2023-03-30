@@ -1,13 +1,11 @@
 package org.projectsw.Model;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import com.google.gson.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.projectsw.Model.CommonGoal.CommonGoal;
 
 /**
  * This class represents a status for saving a game, including the game itself and the file path
@@ -34,8 +32,7 @@ public class SaveGameStatus {
      */
     public String gameToJson() {
         Gson gson = new Gson();
-        String json = gson.toJson(game);
-        return json;
+        return gson.toJson(game);
     }
 
     /**
@@ -53,9 +50,9 @@ public class SaveGameStatus {
             bw.write(json);
             bw.close();
             fw.close();
-            System.out.println("La stringa è stata scritta nel file con successo.");
+            System.out.println("The string was written successfully on file.");
         } catch (IOException e) {
-            System.out.println("Errore durante la scrittura del file: " + e.getMessage());
+            System.out.println("Error while writing on file: " + e.getMessage());
         }
     }
 }

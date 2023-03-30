@@ -27,9 +27,9 @@ class ChatTest {
     @Test
     void testGetChat() {
         Chat chat = new Chat();
-        ArrayList<String> prova = new ArrayList<>();
+        ArrayList<String> test = new ArrayList<>();
         chat.addChatLog("Hi i'm Lorenzo and im testing the chat class");
-        prova.add("Hi i'm Lorenzo and im testing the chat class");
-        assertEquals(prova, chat.getChat());
+        test.add("Hi i'm Lorenzo and im testing the chat class");
+        assertEquals(test, chat.getChat());
     }
 }
