@@ -1,13 +1,9 @@
 package org.projectsw.ModelTest;
 
-import com.google.gson.*;
-import org.junit.Test;
 import org.projectsw.Model.*;
-import org.projectsw.Model.CommonGoal.CommonGoal;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,10 +12,10 @@ public class SaveGameStatusTest {
     /**
      * Initializes a game given its properties.
      * @return the initialized game
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @throws NoSuchMethodException when there's no method defined as such
+     * @throws InvocationTargetException when a called method generates an exception
+     * @throws InstantiationException when the class cannot be instantiated
+     * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
 
     public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
@@ -76,8 +72,8 @@ public class SaveGameStatusTest {
                 assertEquals(personalGoalTest.getPersonalGoal()[i][j], personalGoalAssert.getPersonalGoal()[i][j]);
             }
         }
-        for(int i=0; i<personalGoalTest.getUsedCodes().size(); i++) {
-            assertEquals(personalGoalTest.getUsedCodes().get(i), personalGoalAssert.getUsedCodes().get(i));
+        for(int i = 0; i< PersonalGoal.getUsedCodes().size(); i++) {
+            assertEquals(PersonalGoal.getUsedCodes().get(i), PersonalGoal.getUsedCodes().get(i));
         }
     }
 
@@ -153,21 +149,21 @@ public class SaveGameStatusTest {
      * @throws IllegalAccessException
 
     @Test
-    public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException ){
 
-        Game game = gameInizializer();
+        Game game = gameInitializer();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
         String json = saveGameStatus.gameToJson();
         Gson gson = new Gson();
 
-        String sottostringa = json.substring(json.indexOf("commonGoals") - 2);
-        String newJson = json.replace(sottostringa, "}");
-        char[] charArray = sottostringa.toCharArray();
+        String substring = json.substring(json.indexOf("commonGoals") - 2);
+        String newJson = json.replace(substring, "}");
+        char[] charArray = substring.toCharArray();
         charArray[0] = '{';
-        String newSott = String.valueOf(charArray);
+        String newSub = String.valueOf(charArray);
 
         Gson gsonCommon = new Gson();
-        JsonElement element = gsonCommon.fromJson(newSott, JsonElement.class);
+        JsonElement element = gsonCommon.fromJson(newSub, JsonElement.class);
         JsonArray commonGoalsArray = element.getAsJsonObject().getAsJsonArray("commonGoals");
         int code0 = commonGoalsArray.get(0).getAsJsonObject().get("commonGoalCode").getAsInt();
         int code1 = commonGoalsArray.get(1).getAsJsonObject().get("commonGoalCode").getAsInt();
