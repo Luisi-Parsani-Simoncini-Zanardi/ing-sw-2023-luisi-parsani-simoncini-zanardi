@@ -1,28 +1,24 @@
 package org.projectsw.ModelTest;
-
-import com.google.gson.*;
-import org.junit.Test;
+//TODO: sistemare questa classe, non è una classe di test
 import org.projectsw.Model.*;
-import org.projectsw.Model.CommonGoal.CommonGoal;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SaveGameStatusTest {
+class SaveGameStatusTest {
 
     /**
-     * initializes a game given its properties
-     * @return intitialized game
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * Initializes a game given its properties.
+     * @return the initialized game
+     * @throws NoSuchMethodException when there's no method defined as such
+     * @throws InvocationTargetException when a called method generates an exception
+     * @throws InstantiationException when the class cannot be instantiated
+     * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
 
-    public Game gameInizializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Game game = new Game();
         game.setCommonGoals(game.randomCommonGoals());
         Player player1 = new Player("Davide", 0);
@@ -43,9 +39,9 @@ public class SaveGameStatusTest {
     }
 
     /**
-     * check if two Tile objects are identical
-     * @param tileTest
-     * @param tileAssert
+     * Checks if two Tile objects are identical.
+     * @param tileTest a test Tile object
+     * @param tileAssert another test Tile object
      */
     public void assertEqualsTile (Tile tileTest, Tile tileAssert) {
         assertEquals(tileTest.getTile(), tileAssert.getTile());
@@ -53,9 +49,9 @@ public class SaveGameStatusTest {
     }
 
     /**
-     * check if two Shelf objects are identical
-     * @param shelfTest
-     * @param shelfAssert
+     * Checks if two Shelf objects are identical.
+     * @param shelfTest a test Shelf object
+     * @param shelfAssert another test Shelf object
      */
     public void assertEqualsShelf (Shelf shelfTest, Shelf shelfAssert) {
         for(int i=0; i<shelfTest.getShelf().length; i++) {
@@ -66,9 +62,9 @@ public class SaveGameStatusTest {
     }
 
     /**
-     * check if two personalGoal objects are identical
-     * @param personalGoalTest
-     * @param personalGoalAssert
+     * Checks if two personalGoal objects are identical.
+     * @param personalGoalTest a test PersonalGoal object
+     * @param personalGoalAssert another test PersonalGoal object
      */
     public void assertEqualsPersonalGoal (PersonalGoal personalGoalTest, PersonalGoal personalGoalAssert) {
         for(int i=0; i<personalGoalTest.getPersonalGoal().length-1; i++){
@@ -76,15 +72,15 @@ public class SaveGameStatusTest {
                 assertEquals(personalGoalTest.getPersonalGoal()[i][j], personalGoalAssert.getPersonalGoal()[i][j]);
             }
         }
-        for(int i=0; i<personalGoalTest.getUsedCodes().size(); i++) {
-            assertEquals(personalGoalTest.getUsedCodes().get(i), personalGoalAssert.getUsedCodes().get(i));
+        for(int i = 0; i< PersonalGoal.getUsedCodes().size(); i++) {
+            assertEquals(PersonalGoal.getUsedCodes().get(i), PersonalGoal.getUsedCodes().get(i));
         }
     }
 
     /**
-     * check if two Player objects are identical
-     * @param playerTest
-     * @param playerAssert
+     * Checks if two Player objects are identical.
+     * @param playerTest a test Player object
+     * @param playerAssert another test Player object
      */
     public void assertEqualsPlayer (Player playerTest, Player playerAssert) {
         assertEquals(playerTest.getNickname(), playerAssert.getNickname());
@@ -99,9 +95,9 @@ public class SaveGameStatusTest {
 
 
     /**
-     * check if two Bag objects are identical
-     * @param bagTest
-     * @param bagAssert
+     * Check if two Bag objects are identical.
+     * @param bagTest a test Bag object
+     * @param bagAssert another test Bag object
      */
     public void assertEqualsBag (Bag bagTest, Bag bagAssert) {
         for(int i=0; i<bagTest.getBag().size(); i++) {
@@ -111,8 +107,8 @@ public class SaveGameStatusTest {
 
     /**
      * check if two Board objects are identical
-     * @param boardTest
-     * @param boardAssert
+     * @param boardTest a test Board object
+     * @param boardAssert another test Board object
      */
     public void assertEqualsBoard (Board boardTest, Board boardAssert) {
         for(int i=0; i<boardTest.getBoard().length; i++) {
@@ -126,8 +122,8 @@ public class SaveGameStatusTest {
 
     /**
      * check if two Chat objects are identical
-     * @param chatTest
-     * @param chatAssert
+     * @param chatTest a test Chat object
+     * @param chatAssert another test Chat object
      */
     public void assertEqualsChat (Chat chatTest, Chat chatAssert) {
         for(int i=0; i<chatTest.getChat().size(); i++) {
@@ -135,9 +131,9 @@ public class SaveGameStatusTest {
         }
     }
 
-    /**
+    /*
      * check if two CommonGoal objects are identical
-     * @param commonGoalTest
+     * @param commonGoalTest a test Common object
      * @param commonGoalAssert
 
     public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
@@ -145,29 +141,29 @@ public class SaveGameStatusTest {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
     }*/
 
-    /**
-     * check if the gameToJson function correctly serialize and deserialize the Game class
+    /*
+     * Checks if the gameToJson function correctly serialize and deserialize the Game class.
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws InstantiationException
      * @throws IllegalAccessException
 
     @Test
-    public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException ){
 
-        Game game = gameInizializer();
+        Game game = gameInitializer();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
         String json = saveGameStatus.gameToJson();
         Gson gson = new Gson();
 
-        String sottostringa = json.substring(json.indexOf("commonGoals") - 2);
-        String newJson = json.replace(sottostringa, "}");
-        char[] charArray = sottostringa.toCharArray();
+        String substring = json.substring(json.indexOf("commonGoals") - 2);
+        String newJson = json.replace(substring, "}");
+        char[] charArray = substring.toCharArray();
         charArray[0] = '{';
-        String newSott = String.valueOf(charArray);
+        String newSub = String.valueOf(charArray);
 
         Gson gsonCommon = new Gson();
-        JsonElement element = gsonCommon.fromJson(newSott, JsonElement.class);
+        JsonElement element = gsonCommon.fromJson(newSub, JsonElement.class);
         JsonArray commonGoalsArray = element.getAsJsonObject().getAsJsonArray("commonGoals");
         int code0 = commonGoalsArray.get(0).getAsJsonObject().get("commonGoalCode").getAsInt();
         int code1 = commonGoalsArray.get(1).getAsJsonObject().get("commonGoalCode").getAsInt();

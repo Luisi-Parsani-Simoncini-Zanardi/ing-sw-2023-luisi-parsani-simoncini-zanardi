@@ -39,7 +39,7 @@ public class Shelf {
     }
 
     /**
-     * Returns a specific tile of the shelf
+     * Returns a specific tile of the shelf.
      * @param row coordinate for the row
      * @param column coordinate for the column
      * @return the tile at the coordinates row x column
@@ -50,8 +50,8 @@ public class Shelf {
     }
 
     /**
-     *Sets the matrix of tiles for the shelf from the given shelf.
-     *@param shelf the shelf where the matrix of tiles is taken from
+     * Sets the matrix of tiles for the shelf from the given shelf.
+     * @param shelf the shelf where the matrix of tiles is taken from
      */
     public void setShelf(Tile[][] shelf){
         if(shelf.length != 6 || shelf[0].length != 5) throw new IllegalArgumentException();
@@ -73,5 +73,6 @@ public class Shelf {
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
         else shelf[row][column] = tile;
+        //TODO: aggiungere OutOfBoundException
     }
 }

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class BoardTest {
     /**
-     * tests if the method updates the board correctly
+     * Tests if the method updates the board correctly.
      */
     @Test
     void testUpdateBoard(){
@@ -19,7 +19,7 @@ class BoardTest {
     }
 
     /**
-     * tests if the board is correct before and after an update
+     * Tests if the board is correct before and after an update.
      */
     @Test
     void testGetBoard(){
@@ -36,7 +36,8 @@ class BoardTest {
     }
 
     /**
-     * tests if the method takes the tile from the board correctly, setting it as EMPTY on the board, and if the returned tile is of the right type
+     * Tests if the method takes the tile from the board correctly,
+     * setting it as EMPTY on the board, and if the returned tile is of the right type.
      */
     @Test
     void testGetTileFromBoard(){
@@ -50,7 +51,7 @@ class BoardTest {
     }
 
     /**
-     * tests that the method sets correctly the board to the endGame
+     * Tests that the method sets correctly the board to the endGame.
      */
     @Test
     void testEndGame(){
@@ -78,8 +79,8 @@ class BoardTest {
     }
 
     /**
-     * tests that the Board constructor returns a correctly initialized matrix of tiles for everi king of game,
-     * from 2 to 4 players, it also checks if the number of empty and unused tiles is correct
+     * Tests that the Board constructor returns a correctly initialized matrix of tiles for every kind of game,
+     * from 2 to 4 players, it also checks if the number of empty and unused tiles is correct.
      */
     @Test
     void integrityTestBoards(){
@@ -115,7 +116,7 @@ class BoardTest {
 
     /**
      * Tests if the constructor of the board throws correctly the IllegalArgumentException for a number
-     * of players higher then expected
+     * of players higher than expected.
      */
     @Test
     void testInvalidPlayersNumberHigher() {
@@ -124,7 +125,7 @@ class BoardTest {
 
     /**
      * Tests if the constructor of the board throws correctly the IllegalArgumentException for a number
-     * of players lower then expected
+     * of players lower than expected.
      */
     @Test
     void testInvalidPlayersNumberLower() {
@@ -132,7 +133,7 @@ class BoardTest {
     }
 
     /**
-     * Tests if the constructor that copies a board in another does it correctly
+     * Tests if the constructor that copies a board in another does it correctly.
      */
     @Test
     void integrityTestCopiedBoard(){
@@ -156,8 +157,8 @@ class BoardTest {
     }
 
     /**
-     * test if the method copy the tile from the board setting it as EMPTY, if
-     * the returned tile is of the right type and if the rest of the board remains like it was
+     * Tests if the method copy the tile from the board setting it as EMPTY, if
+     * the returned tile is of the right type and if the rest of the board remains as it was.
      */
     @Test
     void getTileFromBoard(){
@@ -186,7 +187,7 @@ class BoardTest {
     }
 
     /**
-     * Tests if the getTileFromBoard method throws an IndexOutOfBoundsException when given an invalid Column index.
+     * Tests if the getTileFromBoard method throws an IndexOutOfBoundsException when given an invalid column index.
      */
     @Test
     public void testGetTileFromBoardInvalidColumn() {
@@ -195,7 +196,7 @@ class BoardTest {
     }
 
     /**
-     * test if isAndGame and setEndGame works correctly
+     * Tests if isEndGame and setEndGame work correctly.
      */
     @Test
     void inAndSetEndGame(){
@@ -207,7 +208,7 @@ class BoardTest {
     }
 
     /**
-     * test if the method unpdateBoard works correctly, leaving unchanghed the rest of the board
+     * Tests if the method updateBoard works correctly, leaving unchanged the rest of the board.
      */
     @Test
     void updateBoardTest(){
@@ -240,8 +241,8 @@ class BoardTest {
         assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 0, 9));
     }
 
-    /*
-     * Thest if the Bag functions are well integrated with Board class by calling them from the shelf object
+    /**
+     * Tests if the Bag functions are well integrated with Board class by calling them from the shelf object.
      */
     @Test
     public void integrationWithBagTest(){

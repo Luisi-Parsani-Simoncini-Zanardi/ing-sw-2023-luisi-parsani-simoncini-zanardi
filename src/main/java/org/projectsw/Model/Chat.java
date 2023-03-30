@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * The Chat class represents a chat log.
  */
 public class Chat {
-    private ArrayList<String> chat;
+    private final ArrayList<String> chat;
 
     /**
      * Constructs a Chat object with an empty chat log.

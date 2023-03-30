@@ -1,7 +1,7 @@
 package org.projectsw.Model;
 
 /**
- * Class representing a single tile
+ * Class representing a single tile.
  */
 public class Tile {
     private final TilesEnum tile;

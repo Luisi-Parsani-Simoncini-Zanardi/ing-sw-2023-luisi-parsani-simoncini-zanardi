@@ -1,13 +1,14 @@
 package org.projectsw.Controller;
-
 import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.*;
-
+/**
+ * The class contains the application logic methods of the game.
+ */
 public class Engine {
     //TODO: finire metodi controller
 
     /**
-     * Initializes the game and the save
+     * Initializes the game and his save.
      */
     private Game game;
     public void startGame(){
@@ -17,7 +18,7 @@ public class Engine {
     }
 
     /**
-     * Creates a player object and adds it to the array of players if there's enough room
+     * Creates a player object and adds it to the array of players if there's enough room.
      * If the player is the first to join, also sets him as first and current player
      * @param nickname the nickname of the player to be created
      */
