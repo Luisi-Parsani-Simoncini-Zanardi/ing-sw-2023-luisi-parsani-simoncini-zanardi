@@ -154,7 +154,6 @@ class PlayerTest {
     void addCommonGoalReedemedTest(){
         Player player = new Player("Paolo",0);
         assertEquals(0,player.getCommonGoalRedeemed().size());
-        player.addCommonGoalRedeemed(true);
         assertEquals(1,player.getCommonGoalRedeemed().size());
         assertEquals(true,player.getCommonGoalRedeemed().get(0));
     }
