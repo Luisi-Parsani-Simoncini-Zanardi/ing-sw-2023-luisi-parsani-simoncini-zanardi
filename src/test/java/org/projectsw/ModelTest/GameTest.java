@@ -3,8 +3,9 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
-import java.io.IOException;
+
 import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
@@ -14,10 +15,10 @@ class GameTest {
     @Test
     void testSetFirstPlayer() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
+        Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
-        game.setFirstPlayer(jhon);
-        assertEquals(jhon, game.getFirstPlayer());
+        game.setFirstPlayer(john);
+        assertEquals(john, game.getFirstPlayer());
         game.setFirstPlayer(elizabeth);
         assertEquals(elizabeth,game.getFirstPlayer());
     }
@@ -28,9 +29,9 @@ class GameTest {
     @Test
     void testGetFirstPlayer() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
-        game.setFirstPlayer(jhon);
-        assertEquals(jhon, game.getFirstPlayer());
+        Player john = new Player("John", 1);
+        game.setFirstPlayer(john);
+        assertEquals(john, game.getFirstPlayer());
     }
 
     /**
@@ -64,12 +65,12 @@ class GameTest {
     @Test
     void testSetPlayers() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
+        Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
         Player ronald = new Player("Ronald", 3);
         Player enzo = new Player("Enzo", 4);
         ArrayList<Player> players = new ArrayList<>();
-        players.add(jhon);
+        players.add(john);
         players.add(elizabeth);
         players.add(ronald);
         players.add(enzo);
@@ -83,12 +84,12 @@ class GameTest {
     @Test
     void testGetPlayers() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
+        Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
         Player ronald = new Player("Ronald", 3);
         Player enzo = new Player("Enzo", 4);
         ArrayList<Player> players = new ArrayList<>();
-        players.add(jhon);
+        players.add(john);
         players.add(elizabeth);
         players.add(ronald);
         players.add(enzo);
@@ -134,7 +135,7 @@ class GameTest {
             test = game.randomCommonGoals();
         } catch(Exception e){}
         game.setCommonGoals(test);
-        assertTrue(game.getCommonGoals().get(0) instanceof CommonGoal);
-        assertTrue(game.getCommonGoals().get(1) instanceof CommonGoal);
+        assertNotNull(game.getCommonGoals().get(0));
+        assertNotNull(game.getCommonGoals().get(1));
     }
 }
