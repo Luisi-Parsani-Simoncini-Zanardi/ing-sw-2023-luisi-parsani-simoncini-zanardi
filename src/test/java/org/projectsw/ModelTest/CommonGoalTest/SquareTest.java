@@ -11,6 +11,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class SquareTest {
 
     /**
+     * Tests if the method returns false when there is only a square.
+     */
+    @Test
+    void checkOne() {
+        CommonGoal commonGoal = new Square();
+        Shelf shelf = new Shelf();
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 1);
+        }catch(Exception e){}
+        assertFalse(commonGoal.check(shelf));
+    }
+
+    /**
      * tests if the method returns true when there are two squares with the same type of tiles
      */
     @Test
@@ -29,6 +45,26 @@ class SquareTest {
         }catch(Exception e){}
         assertTrue(commonGoal.check(shelf));
     }
+
+    /**
+     * tests if the method returns false when one of the two squares is missing a tile
+     */
+    @Test
+    void checkDeformed() {
+        CommonGoal commonGoal = new Square();
+        Shelf shelf = new Shelf();
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 4);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 3);
+        }catch(Exception e){}
+        assertFalse(commonGoal.check(shelf));
+    }
+
 
     /**
      * tests if the method returns false when there are two squares with different type of tiles from each other
@@ -149,6 +185,16 @@ class SquareTest {
                 assertFalse(commonGoal.check(shelf));
             }
         }
+    }
+
+    /**
+     * tests if the method returns false when the board is empty
+     */
+    @Test
+    void checkEmpty() {
+        CommonGoal commonGoal = new Square();
+        Shelf shelf = new Shelf();
+        assertFalse(commonGoal.check(shelf));
     }
 
 }

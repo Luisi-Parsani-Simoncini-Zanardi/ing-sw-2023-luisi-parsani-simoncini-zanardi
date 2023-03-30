@@ -17,13 +17,13 @@ public class Player {
     private Shelf shelf;
     private PersonalGoal personalGoal;
     private ArrayList<Tile> temporaryTiles;
-    private ArrayList<Boolean> commonGoalRedeemed;
+    private final ArrayList<Boolean> commonGoalRedeemed;
 
     /**
      * Constructs a new player with the given nickname and position.
-     * points are set 0 as default
-     * shelf is instanced as an empty shelf
-     * the personal goal is given randomly
+     * Points are set 0 by default.
+     * Shelf is instanced as an empty shelf.
+     * The personal goal is assigned randomly.
      * @param nickname the nickname of the player
      * @param position the position of the player
      */
@@ -40,7 +40,7 @@ public class Player {
     }
 
     /**
-     * Returns the position of the player
+     * Returns the position of the player.
      * @return the position of the player
      */
     public int getPosition(){
@@ -48,7 +48,7 @@ public class Player {
     }
 
     /**
-     * Returns the nickname of the player
+     * Returns the nickname of the player.
      * @return the nickname of the player
      */
     public String getNickname(){
@@ -56,7 +56,7 @@ public class Player {
     }
 
     /**
-     * Returns the points scored by the player
+     * Returns the points scored by the player.
      * @return the points scored by the player
      */
     public int getPoints(){
@@ -64,7 +64,7 @@ public class Player {
     }
 
     /**
-     * Returns the shelf of the player
+     * Returns the shelf of the player.
      * @return the shelf of the player
      */
     public Shelf getShelf() {
@@ -72,7 +72,7 @@ public class Player {
     }
 
     /**
-     * Returns the temporary tiles of the player
+     * Returns the temporary tiles of the player.
      * @return the temporary tiles of the player
      */
     public ArrayList<Tile> getTemporaryTiles() {
@@ -81,7 +81,7 @@ public class Player {
 
 
     /**
-     * Returns the personal goal of the player
+     * Returns the personal goal of the player.
      * @return the personal goal of the player
      */
     public PersonalGoal getPersonalGoal() {
@@ -89,7 +89,7 @@ public class Player {
     }
 
     /**
-     * Returns whether the number i common goal has been redeemed or not
+     * Returns whether the number i common goal has been redeemed or not.
      * @param i the index of the personalGoalArray element to be checked
      * @return true if the personal goal has been redeemed, false otherwise
      */
@@ -140,10 +140,10 @@ public class Player {
 
     /**
      * Adds the given tile to the player's temporary tiles.
-     * @param tile the tile to add to the player's temporary tiles
+     * @param tile the tile to be added to the player's temporary tiles
      * @throws MaximumTilesException if the player already has the maximum number of tiles (i.e., 3)
-     * @throws EmptyTilesException if the tile is empty
-     * @throws UnusedTilesException if the tile is unused
+     * @throws EmptyTilesException if the tile is EMPTY
+     * @throws UnusedTilesException if the tile is UNUSED
      */
     public void addTile(Tile tile) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
         if(temporaryTiles.size()>2) throw new MaximumTilesException("Maximum number of tiles reached");
@@ -167,7 +167,7 @@ public class Player {
 
     /**
      * Tries to instance a PersonalGoal object, and iterates in case of IllegalArgumentException,
-     * each time generating a new random code
+     * each time generating a new random code.
      * @return a PersonalGoal which isn't used by any of the others players
      */
     public PersonalGoal tryPersonalGoal(){
