@@ -73,5 +73,6 @@ public class Shelf {
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
         else shelf[row][column] = tile;
+        //TODO: aggiungere OutOfBoundException
     }
 }
