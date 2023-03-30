@@ -29,7 +29,7 @@ public class SaveGameStatus {
     }
 
     /**
-     * serialize the game class into a json string
+     * Serializes the game class into a json string.
      * @return json string
      */
     public String gameToJson() {
@@ -39,7 +39,7 @@ public class SaveGameStatus {
     }
 
     /**
-     * save the serialized game state into a file
+     * Saves the serialized game state into a file.
      */
     public void saveGame() {
 

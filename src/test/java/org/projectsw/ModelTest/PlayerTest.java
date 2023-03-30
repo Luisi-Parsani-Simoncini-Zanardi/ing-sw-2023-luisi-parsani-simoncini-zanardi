@@ -51,10 +51,9 @@ class PlayerTest {
             if(!different) personalGoalFound = true;
         }
         assertTrue(personalGoalFound);
-        //Checking if thelast 3 parameters are inizialized correctly
-        //assertFalse(player.isPersonalGoalRedeemed()); attribute revomed
+        assertFalse(player.isCommonGoalRedeemed(0));
+        assertFalse(player.isCommonGoalRedeemed(1));
         assertTrue(player.getTemporaryTiles().isEmpty());
-        assertTrue(player.getCommonGoalRedeemed().isEmpty());
 
     }
 
@@ -127,12 +126,11 @@ class PlayerTest {
      */
     @Test
     void getAndSetCommonGoalsRedeemedTest(){
-        ArrayList<Boolean> list = new ArrayList<>();
-        list.add(true);
-        list.add(false);
         Player player = new Player("Riccardo", 3);
-        player.setCommonGoalRedeemed(list);
-        assertEquals(list, player.getCommonGoalRedeemed());
+        player.setCommonGoalRedeemed(0, true);
+        assertTrue(player.getCommonGoalRedeemed(0));
+        player.setCommonGoalRedeemed(1, true);
+        assertTrue(player.getCommonGoalRedeemed(1));
     }
 
     /*
@@ -146,17 +144,6 @@ class PlayerTest {
         player.setPersonalGoalRedeemed(false);
         assertFalse(player.isPersonalGoalRedeemed());
     }     */
-
-    /*
-     * Tests if the addCommonGoalReedemed works correctly
-     */
-    @Test
-    void addCommonGoalReedemedTest(){
-        Player player = new Player("Paolo",0);
-        assertEquals(0,player.getCommonGoalRedeemed().size());
-        assertEquals(1,player.getCommonGoalRedeemed().size());
-        assertEquals(true,player.getCommonGoalRedeemed().get(0));
-    }
 
     /**
      * Test if the method actually adds a tiles in the array temporaryTiles

@@ -30,4 +30,24 @@ class SquareTest {
         }catch(Exception e){}
         assertTrue(commonGoal.check(shelf));
     }
+
+    /**
+     * tests if the method returns false when there are two squares with different type of tiles from each other
+     */
+    @Test
+    void checkBasicDiff() {
+        CommonGoal commonGoal = new Square();
+        Shelf shelf = new Shelf();
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 1);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), 4, 4);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), 4, 3);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), 3, 4);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), 3, 3);
+        }catch(Exception e){}
+        assertFalse(commonGoal.check(shelf));
+    }
 }

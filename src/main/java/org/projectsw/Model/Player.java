@@ -40,6 +40,7 @@ public class Player {
     }
 
     /**
+     * Returns the position of the player
      * @return the position of the player
      */
     public int getPosition(){
@@ -47,6 +48,7 @@ public class Player {
     }
 
     /**
+     * Returns the nickname of the player
      * @return the nickname of the player
      */
     public String getNickname(){
@@ -54,6 +56,7 @@ public class Player {
     }
 
     /**
+     * Returns the points scored by the player
      * @return the points scored by the player
      */
     public int getPoints(){
@@ -61,6 +64,7 @@ public class Player {
     }
 
     /**
+     * Returns the shelf of the player
      * @return the shelf of the player
      */
     public Shelf getShelf() {
@@ -68,20 +72,16 @@ public class Player {
     }
 
     /**
+     * Returns the temporary tiles of the player
      * @return the temporary tiles of the player
      */
     public ArrayList<Tile> getTemporaryTiles() {
         return temporaryTiles;
     }
 
-    /**
-     * @return the codes of the common goals redeemed by the player.
-     */
-    public ArrayList<Boolean> getCommonGoalRedeemed() {
-        return commonGoalRedeemed;
-    }
 
     /**
+     * Returns the personal goal of the player
      * @return the personal goal of the player
      */
     public PersonalGoal getPersonalGoal() {
@@ -130,11 +130,12 @@ public class Player {
     }
 
     /**
-     * Sets the commonGoalRedeemed list of the player to the given list of integer.
-     * @param commonGoalRedeemed the list of integer to set for the player
+     * Sets the commonGoalRedeemed at the desired index to the desired status.
+     * @param index the index of the position to be set
+     * @param status the status to be set
      */
-    public void setCommonGoalRedeemed(ArrayList<Boolean> commonGoalRedeemed) {
-        this.commonGoalRedeemed = commonGoalRedeemed;
+    public void setCommonGoalRedeemed(int index, Boolean status) {
+        this.commonGoalRedeemed.set(index, status);
     }
 
     /**
