@@ -35,8 +35,9 @@ public class Player {
         personalGoal = tryPersonalGoal();
         temporaryTiles = new ArrayList<>();
         commonGoalRedeemed = new ArrayList<>();
-        //TODO: aggiungere inizializzazione commonGoalRedeemed
-   }
+        commonGoalRedeemed.add(false);
+        commonGoalRedeemed.add(false);
+    }
 
     /**
      * @return the position of the player
@@ -134,14 +135,6 @@ public class Player {
      */
     public void setCommonGoalRedeemed(ArrayList<Boolean> commonGoalRedeemed) {
         this.commonGoalRedeemed = commonGoalRedeemed;
-    }
-
-    /**
-     * Sets the number i element of the commonGoal array the desired status
-     * @param flag the index of the personalGoalArray element to be assigned
-     */
-    public void addCommonGoalRedeemed (boolean flag){
-        commonGoalRedeemed.add(flag);
     }
 
     /**
