@@ -2,7 +2,9 @@ package org.projectsw.Controller;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.*;
-//TODO: aggiungere javadoc intestazione engine
+/**
+ * The class contains the application logic methods of the game.
+ */
 public class Engine {
     //TODO: finire metodi controller
 
