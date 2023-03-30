@@ -255,29 +255,20 @@ class PlayerTest {
      * personal goal from the other players already created.
      */
     @Test
-    void tryPersonalGoal(){
+    void tryPersonalGoal() {
         Player[] players = new Player[12];
         PersonalGoal[] personalGoals = new PersonalGoal[12];
         int matches = 0;
-        for(int i=0;i<12;i++){
-            players[i] = new Player("Davide",0);
+        for (int i = 0; i < 12; i++) {
+            players[i] = new Player("Davide", 0);
             personalGoals[i] = players[i].getPersonalGoal();
         }
-        for(int i=0;i<12;i++){
-            for(int j=0;j<12;j++){
-                if(personalGoals[i].equals(personalGoals[j])) matches++;
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 12; j++) {
+                if (personalGoals[i].equals(personalGoals[j])) matches++;
             }
         }
-        //the mathes has to be 12 becouse every personal goal matches with itself
-        assertEquals(12,matches);
+        //the matches have to be 12 because every personal goal matches with itself
+        assertEquals(12, matches);
     }
-
-    /*@Test
-    void tryPersonalGoalNullIfTwelve(){
-        Player[] players = new Player[13];
-        for(int i=0;i<13;i++){
-            players[i] = new Player("Davide",0);
-        }
-        assertNull(players[12].getPersonalGoal());
-    }*/
 }
