@@ -128,9 +128,9 @@ class PlayerTest {
     void getAndSetCommonGoalsRedeemedTest(){
         Player player = new Player("Riccardo", 3);
         player.setCommonGoalRedeemed(0, true);
-        assertTrue(player.getCommonGoalRedeemed(0));
+        assertTrue(player.isCommonGoalRedeemed(0));
         player.setCommonGoalRedeemed(1, true);
-        assertTrue(player.getCommonGoalRedeemed(1));
+        assertTrue(player.isCommonGoalRedeemed(1));
     }
 
     /*
