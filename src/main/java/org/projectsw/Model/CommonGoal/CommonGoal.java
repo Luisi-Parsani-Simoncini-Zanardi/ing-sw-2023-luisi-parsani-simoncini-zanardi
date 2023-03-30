@@ -4,7 +4,7 @@ import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
-//TODO: sistemare javadoc common goal
+//TODO: sistemare javadoc common goal dopo aver sistemato la sua struttura
 public abstract class CommonGoal{
     private int redeemedNumber;
     protected int commonGoalCode;
