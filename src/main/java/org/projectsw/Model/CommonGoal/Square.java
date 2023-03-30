@@ -1,6 +1,7 @@
 package org.projectsw.Model.CommonGoal;
 
 import org.projectsw.Model.Shelf;
+import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -19,44 +20,56 @@ public class Square extends ShapeBehavior {
     public boolean check(Shelf shelf) {
 
         ArrayList<Point> coordinates = new ArrayList<>();
-        coordinates.clear();
+        TilesEnum[] tilesEnums = TilesEnum.values();
 
-        for (int y=5; y>0; y--)
-        {
-            for (int x=0; x<4; x++)
-            {
-                if(shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y-1, x).getTile() &&
-                        shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y-1, x+1).getTile() &&
-                        shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y, x+1).getTile() &&
-                        shelf.getTileShelf(y, x).getTile() != TilesEnum.EMPTY)
-                {
-                    Point upperLeft = new Point(x, y);
-                    Point lowerLeft = new Point(x,y-1);
-                    Point upperRight = new Point(x+1,y);
-                    Point lowerRight = new Point(x+1,y-1);
+        for (TilesEnum tileType : tilesEnums) {
+            coordinates.clear();
+            for (int y = 5; y > 0; y--) {
+                for (int x = 0; x < 4; x++) {
+                    if (shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x).getTile() &&
+                            shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x + 1).getTile() &&
+                            shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y, x + 1).getTile() &&
+                            shelf.getTileShelf(y, x).getTile() != TilesEnum.EMPTY &&
+                            shelf.getTileShelf(y, x).getTile() == tileType) {
+                        Point upperLeft = new Point(x, y);
+                        Point lowerLeft = new Point(x, y - 1);
+                        Point upperRight = new Point(x + 1, y);
+                        Point lowerRight = new Point(x + 1, y - 1);
 
-                    if (coordinates.isEmpty())
-                    {
-                        coordinates.add(upperLeft);
-                        coordinates.add(lowerLeft);
-                        coordinates.add(upperRight);
-                        coordinates.add(lowerRight);
-                    }
-                    else
-                    {
-                        if (coordinates.contains(upperLeft)||
-                                coordinates.contains(lowerLeft)||
-                                coordinates.contains(upperRight)||
-                                coordinates.contains(lowerRight))
-                        {
+                        if (coordinates.isEmpty()) {
                             coordinates.add(upperLeft);
                             coordinates.add(lowerLeft);
                             coordinates.add(upperRight);
                             coordinates.add(lowerRight);
-                        }
-                        else
-                        {
-                            return true;
+                            try {coordinates.add(new Point(x, y+1));}catch (IndexOutOfBoundsException e){}
+                            try {coordinates.add(new Point(x+1, y+1));}catch (IndexOutOfBoundsException e){}
+                            try {coordinates.add(new Point(x+2, y));}catch (IndexOutOfBoundsException e){}
+                            try {coordinates.add(new Point(x+2, y-1));}catch (IndexOutOfBoundsException e){}
+                            try {coordinates.add(new Point(x, y-2));}catch (IndexOutOfBoundsException e){}
+                            try {coordinates.add(new Point(x+1, y-2));}catch (IndexOutOfBoundsException e){}
+                            try {coordinates.add(new Point(x-1, y));}catch (IndexOutOfBoundsException e){}
+                            try {coordinates.add(new Point(x-1, y-1));}catch (IndexOutOfBoundsException e){}
+
+                        } else {
+                            if (coordinates.contains(upperLeft) ||
+                                    coordinates.contains(lowerLeft) ||
+                                    coordinates.contains(upperRight) ||
+                                    coordinates.contains(lowerRight)) {
+                                coordinates.add(upperLeft);
+                                coordinates.add(lowerLeft);
+                                coordinates.add(upperRight);
+                                coordinates.add(lowerRight);
+                                try {coordinates.add(new Point(x, y+1));}catch (IndexOutOfBoundsException e){}
+                                try {coordinates.add(new Point(x+1, y+1));}catch (IndexOutOfBoundsException e){}
+                                try {coordinates.add(new Point(x+2, y));}catch (IndexOutOfBoundsException e){}
+                                try {coordinates.add(new Point(x+2, y-1));}catch (IndexOutOfBoundsException e){}
+                                try {coordinates.add(new Point(x, y-2));}catch (IndexOutOfBoundsException e){}
+                                try {coordinates.add(new Point(x+1, y-2));}catch (IndexOutOfBoundsException e){}
+                                try {coordinates.add(new Point(x-1, y));}catch (IndexOutOfBoundsException e){}
+                                try {coordinates.add(new Point(x-1, y-1));}catch (IndexOutOfBoundsException e){}
+                            } else {
+                                return true;
+                            }
                         }
                     }
                 }
