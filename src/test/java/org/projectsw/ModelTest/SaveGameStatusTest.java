@@ -14,15 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SaveGameStatusTest {
 
     /**
-     * initializes a game given its properties
-     * @return intitialized game
+     * Initializes a game given its properties.
+     * @return the initialized game
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
 
-    public Game gameInizializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Game game = new Game();
         game.setCommonGoals(game.randomCommonGoals());
         Player player1 = new Player("Davide", 0);
@@ -43,9 +43,9 @@ public class SaveGameStatusTest {
     }
 
     /**
-     * check if two Tile objects are identical
-     * @param tileTest
-     * @param tileAssert
+     * Checks if two Tile objects are identical.
+     * @param tileTest a test Tile object
+     * @param tileAssert another test Tile object
      */
     public void assertEqualsTile (Tile tileTest, Tile tileAssert) {
         assertEquals(tileTest.getTile(), tileAssert.getTile());
@@ -53,9 +53,9 @@ public class SaveGameStatusTest {
     }
 
     /**
-     * check if two Shelf objects are identical
-     * @param shelfTest
-     * @param shelfAssert
+     * Checks if two Shelf objects are identical.
+     * @param shelfTest a test Shelf object
+     * @param shelfAssert another test Shelf object
      */
     public void assertEqualsShelf (Shelf shelfTest, Shelf shelfAssert) {
         for(int i=0; i<shelfTest.getShelf().length; i++) {
@@ -66,9 +66,9 @@ public class SaveGameStatusTest {
     }
 
     /**
-     * check if two personalGoal objects are identical
-     * @param personalGoalTest
-     * @param personalGoalAssert
+     * Checks if two personalGoal objects are identical.
+     * @param personalGoalTest a test PersonalGoal object
+     * @param personalGoalAssert another test PersonalGoal object
      */
     public void assertEqualsPersonalGoal (PersonalGoal personalGoalTest, PersonalGoal personalGoalAssert) {
         for(int i=0; i<personalGoalTest.getPersonalGoal().length-1; i++){
@@ -82,9 +82,9 @@ public class SaveGameStatusTest {
     }
 
     /**
-     * check if two Player objects are identical
-     * @param playerTest
-     * @param playerAssert
+     * Checks if two Player objects are identical.
+     * @param playerTest a test Player object
+     * @param playerAssert another test Player object
      */
     public void assertEqualsPlayer (Player playerTest, Player playerAssert) {
         assertEquals(playerTest.getNickname(), playerAssert.getNickname());
@@ -99,9 +99,9 @@ public class SaveGameStatusTest {
 
 
     /**
-     * check if two Bag objects are identical
-     * @param bagTest
-     * @param bagAssert
+     * Check if two Bag objects are identical.
+     * @param bagTest a test Bag object
+     * @param bagAssert another test Bag object
      */
     public void assertEqualsBag (Bag bagTest, Bag bagAssert) {
         for(int i=0; i<bagTest.getBag().size(); i++) {
@@ -111,8 +111,8 @@ public class SaveGameStatusTest {
 
     /**
      * check if two Board objects are identical
-     * @param boardTest
-     * @param boardAssert
+     * @param boardTest a test Board object
+     * @param boardAssert another test Board object
      */
     public void assertEqualsBoard (Board boardTest, Board boardAssert) {
         for(int i=0; i<boardTest.getBoard().length; i++) {
@@ -126,8 +126,8 @@ public class SaveGameStatusTest {
 
     /**
      * check if two Chat objects are identical
-     * @param chatTest
-     * @param chatAssert
+     * @param chatTest a test Chat object
+     * @param chatAssert another test Chat object
      */
     public void assertEqualsChat (Chat chatTest, Chat chatAssert) {
         for(int i=0; i<chatTest.getChat().size(); i++) {
@@ -135,9 +135,9 @@ public class SaveGameStatusTest {
         }
     }
 
-    /**
+    /*
      * check if two CommonGoal objects are identical
-     * @param commonGoalTest
+     * @param commonGoalTest a test Common object
      * @param commonGoalAssert
 
     public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
@@ -145,8 +145,8 @@ public class SaveGameStatusTest {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
     }*/
 
-    /**
-     * check if the gameToJson function correctly serialize and deserialize the Game class
+    /*
+     * Checks if the gameToJson function correctly serialize and deserialize the Game class.
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws InstantiationException
