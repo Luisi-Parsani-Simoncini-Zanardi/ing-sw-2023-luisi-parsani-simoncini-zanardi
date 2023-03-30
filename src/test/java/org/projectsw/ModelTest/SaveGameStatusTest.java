@@ -1,5 +1,5 @@
 package org.projectsw.ModelTest;
-
+//TODO: sistemare questa classe, non è una classe di test
 import org.projectsw.Model.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SaveGameStatusTest {
+class SaveGameStatusTest {
 
     /**
      * Initializes a game given its properties.
