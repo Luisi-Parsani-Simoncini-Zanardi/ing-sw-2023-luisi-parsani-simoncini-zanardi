@@ -22,9 +22,8 @@ public class Player {
     /**
      * Constructs a new player with the given nickname and position.
      * points are set 0 as default
-     * personalGoalRedeemed is set false as default
      * shelf is instanced as an empty shelf
-     * the personal goal given randomly
+     * the personal goal is given randomly
      * @param nickname the nickname of the player
      * @param position the position of the player
      */
@@ -36,6 +35,7 @@ public class Player {
         personalGoal = tryPersonalGoal();
         temporaryTiles = new ArrayList<>();
         commonGoalRedeemed = new ArrayList<>();
+        //TODO: aggiungere inizializzazione commonGoalRedeemed
    }
 
     /**
