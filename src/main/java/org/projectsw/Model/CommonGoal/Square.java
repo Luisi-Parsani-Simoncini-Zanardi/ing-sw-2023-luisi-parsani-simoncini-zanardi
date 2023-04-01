@@ -29,7 +29,9 @@ public class Square extends ShapeBehavior {
                             shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x + 1).getTile() &&
                             shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y, x + 1).getTile() &&
                             shelf.getTileShelf(y, x).getTile() != TilesEnum.EMPTY &&
-                            shelf.getTileShelf(y, x).getTile() == tileType) {
+                            shelf.getTileShelf(y, x).getTile() == tileType)
+
+                    {
                         Point upperLeft = new Point(x, y);
                         Point lowerLeft = new Point(x, y - 1);
                         Point upperRight = new Point(x + 1, y);
@@ -40,33 +42,12 @@ public class Square extends ShapeBehavior {
                             coordinates.add(lowerLeft);
                             coordinates.add(upperRight);
                             coordinates.add(lowerRight);
-                            coordinates.add(new Point(x, y+1));
-                            coordinates.add(new Point(x+1, y+1));
-                            coordinates.add(new Point(x+2, y));
-                            coordinates.add(new Point(x+2, y-1));
-                            coordinates.add(new Point(x, y-2));
-                            coordinates.add(new Point(x+1, y-2));
-                            coordinates.add(new Point(x-1, y));
-                            coordinates.add(new Point(x-1, y-1));
 
                         } else {
-                            if (coordinates.contains(upperLeft) ||
+                            if (!(coordinates.contains(upperLeft) ||
                                     coordinates.contains(lowerLeft) ||
                                     coordinates.contains(upperRight) ||
-                                    coordinates.contains(lowerRight)) {
-                                coordinates.add(upperLeft);
-                                coordinates.add(lowerLeft);
-                                coordinates.add(upperRight);
-                                coordinates.add(lowerRight);
-                                coordinates.add(new Point(x, y+1));
-                                coordinates.add(new Point(x+1, y+1));
-                                coordinates.add(new Point(x+2, y));
-                                coordinates.add(new Point(x+2, y-1));
-                                coordinates.add(new Point(x, y-2));
-                                coordinates.add(new Point(x+1, y-2));
-                                coordinates.add(new Point(x-1, y));
-                                coordinates.add(new Point(x-1, y-1));
-                            } else {
+                                    coordinates.contains(lowerRight))) {
                                 return true;
                             }
                         }
