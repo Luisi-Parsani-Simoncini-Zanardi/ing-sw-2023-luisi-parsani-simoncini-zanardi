@@ -40,14 +40,6 @@ public class Square extends ShapeBehavior {
                             coordinates.add(lowerLeft);
                             coordinates.add(upperRight);
                             coordinates.add(lowerRight);
-                            coordinates.add(new Point(x, y+1));
-                            coordinates.add(new Point(x+1, y+1));
-                            coordinates.add(new Point(x+2, y));
-                            coordinates.add(new Point(x+2, y-1));
-                            coordinates.add(new Point(x, y-2));
-                            coordinates.add(new Point(x+1, y-2));
-                            coordinates.add(new Point(x-1, y));
-                            coordinates.add(new Point(x-1, y-1));
 
                         } else {
                             if (coordinates.contains(upperLeft) ||
@@ -58,14 +50,6 @@ public class Square extends ShapeBehavior {
                                 coordinates.add(lowerLeft);
                                 coordinates.add(upperRight);
                                 coordinates.add(lowerRight);
-                                coordinates.add(new Point(x, y+1));
-                                coordinates.add(new Point(x+1, y+1));
-                                coordinates.add(new Point(x+2, y));
-                                coordinates.add(new Point(x+2, y-1));
-                                coordinates.add(new Point(x, y-2));
-                                coordinates.add(new Point(x+1, y-2));
-                                coordinates.add(new Point(x-1, y));
-                                coordinates.add(new Point(x-1, y-1));
                             } else {
                                 return true;
                             }

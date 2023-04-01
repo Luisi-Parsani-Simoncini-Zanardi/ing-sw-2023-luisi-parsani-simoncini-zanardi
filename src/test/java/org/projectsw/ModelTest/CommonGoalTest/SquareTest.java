@@ -107,7 +107,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns false when there are two squares with a shared half side
+     * tests if the method returns true when there are two squares with a shared half side
      */
     @Test
     void checkHalfSide() {
@@ -123,11 +123,11 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 1);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
         }catch(Exception e){}
-        assertFalse(commonGoal.check(shelf));
+        assertTrue(commonGoal.check(shelf));
     }
 
     /**
-     * tests if the method returns false when there are two squares with a shared full side
+     * tests if the method returns true when there are two squares with a shared full side
      */
     @Test
     void checkFullSide() {
@@ -143,7 +143,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 1);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
         }catch(Exception e){}
-        assertFalse(commonGoal.check(shelf));
+        assertTrue(commonGoal.check(shelf));
     }
 
     /**
@@ -171,7 +171,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns true when there are two squares with a shared half side and a separate valid square
+     * tests if the method returns true when then boards is full of the same type of tiles
      */
     @Test
     void checkWhole() {
@@ -182,7 +182,7 @@ class SquareTest {
                 try {
                     shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, j);
                 }catch(Exception e){}
-                assertFalse(commonGoal.check(shelf));
+                assertTrue(commonGoal.check(shelf));
             }
         }
     }
