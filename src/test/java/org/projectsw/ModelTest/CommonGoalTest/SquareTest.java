@@ -22,7 +22,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 1);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 1);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertFalse(commonGoal.check(shelf));
     }
 
@@ -42,7 +42,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 4);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 3);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertTrue(commonGoal.check(shelf));
     }
 
@@ -61,7 +61,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 4);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 3);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertFalse(commonGoal.check(shelf));
     }
 
@@ -82,7 +82,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), 4, 3);
             shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), 3, 4);
             shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), 3, 3);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertFalse(commonGoal.check(shelf));
     }
 
@@ -102,7 +102,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 3);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 2);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 3);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertTrue(commonGoal.check(shelf));
     }
 
@@ -122,7 +122,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 2);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 1);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertTrue(commonGoal.check(shelf));
     }
 
@@ -142,7 +142,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 1);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertTrue(commonGoal.check(shelf));
     }
 
@@ -166,7 +166,7 @@ class SquareTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 4);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 3);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertTrue(commonGoal.check(shelf));
     }
 
@@ -178,13 +178,13 @@ class SquareTest {
         CommonGoal commonGoal = new Square();
         Shelf shelf = new Shelf();
         for (int i=0; i<6; i++){
-            for (int j=0; j<6; j++){
+            for (int j=0; j<5; j++){
                 try {
                     shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, j);
-                }catch(Exception e){}
-                assertTrue(commonGoal.check(shelf));
+                }catch(Exception ignored){}
             }
         }
+        assertTrue(commonGoal.check(shelf));
     }
 
     /**
@@ -195,6 +195,67 @@ class SquareTest {
         CommonGoal commonGoal = new Square();
         Shelf shelf = new Shelf();
         assertFalse(commonGoal.check(shelf));
+    }
+
+    /**
+     * tests if the method returns false when there are two squares with a common tile
+     */
+    @Test
+    void checkOneInCommon() {
+        CommonGoal commonGoal = new Square();
+        Shelf shelf = new Shelf();
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
+        }catch(Exception ignored){}
+        assertFalse(commonGoal.check(shelf));
+    }
+
+    /**
+     * tests if the method returns false when there are two squares with two common tiles
+     */
+    @Test
+    void checkTwoInCommon() {
+        CommonGoal commonGoal = new Square();
+        Shelf shelf = new Shelf();
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
+        }catch(Exception ignored){}
+        assertFalse(commonGoal.check(shelf));
+    }
+
+
+    /**
+     * tests if the method returns true when there are two squares with a common tile and another square
+     */
+    @Test
+    void checkOneInCommonAndAnother() {
+        CommonGoal commonGoal = new Square();
+        Shelf shelf = new Shelf();
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 1, 2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 4);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 4);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 3);
+        }catch(Exception ignored){}
+        assertTrue(commonGoal.check(shelf));
     }
 
 }
