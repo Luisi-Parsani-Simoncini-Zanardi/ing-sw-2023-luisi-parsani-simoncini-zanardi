@@ -1,19 +1,25 @@
 package org.projectsw.Model.CommonGoal;
 import org.projectsw.Exceptions.MaximumRedeemedPointsException;
 import org.projectsw.Model.Shelf;
-import org.projectsw.Model.TilesEnum;
 
-import java.util.ArrayList;
-//TODO: sistemare la struttura di CommonGoal e i conseguenti javadoc
-public abstract class CommonGoal{
+public class CommonGoal{
     private int redeemedNumber;
-    protected int commonGoalCode;
 
-    public CommonGoal(){
+    private final CommonGoalStrategy strategy;
+
+    public CommonGoal(CommonGoalStrategy strategy){
         this.redeemedNumber = 0;
+        this.strategy = strategy;
     }
 
     /**
+     * Method that returns the control strategy chosen for the commonGoal
+     * @return the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
+     */
+    public CommonGoalStrategy getStrategy(){return this.strategy;}
+
+    /**
+     * Method that returns the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
      * @return the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
      */
     public int getRedeemedNumber(){
@@ -21,8 +27,8 @@ public abstract class CommonGoal{
     }
 
     /**
-     * increase the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
-     * @throws MaximumRedeemedPointsException thrown if there are no more points to redeem on this CommonGoal
+     * Increase the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
+     * @throws MaximumRedeemedPointsException when there are no more points to redeem on this CommonGoal
      */
     public void increaseRedeemedNumber() throws MaximumRedeemedPointsException{
         if(getRedeemedNumber()<4)
@@ -31,12 +37,12 @@ public abstract class CommonGoal{
     }
 
     /**
+     * Method that checks if the commonGoal requirements are met by the player library
      * @param shelf is the player's shelf
-     * @return true after the override by the subclasses if the player's shelf match the requirements of the
-     * specific commonGoal, false otherwise
+     * @return true if the implementation of the check method of the chosen strategy is verified
      */
     public boolean check(Shelf shelf){
-        return false;
+        return this.strategy.check(shelf);
     }
 
 }
