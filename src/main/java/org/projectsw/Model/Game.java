@@ -213,6 +213,7 @@ public class Game{
         commonGoalIst = new CommonGoal(strategyIst);
         commonGoals.add(commonGoalIst);
         randomStrategyClasses.remove(index);
+
         index = random.nextInt(randomStrategyClasses.size());
         randomClass = randomStrategyClasses.get(index);
         strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor().newInstance();
