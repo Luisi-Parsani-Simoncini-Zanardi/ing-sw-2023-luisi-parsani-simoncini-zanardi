@@ -8,15 +8,15 @@ import java.util.ArrayList;
  */
 public class Message {
 
-    private final String sender;
+    private final Player sender;
     private final String content;
-    private ArrayList<String> recipients;
+    private ArrayList<Player> recipients;
 
     /**
      * construct a message object with the sender.
      * @param sender
      */
-    public Message(String sender, String content) {
+    public Message(Player sender, String content) {
         this.sender = sender;
         this.recipients = new ArrayList<>();
         this.content = content;
@@ -26,7 +26,7 @@ public class Message {
      * set the list of recipients of the message
      * @param recipients
      */
-    public void setRecipients (ArrayList<String> recipients) { this.recipients = recipients; }
+    public void setRecipients (ArrayList<Player> recipients) { this.recipients = recipients; }
 
     /**
      * return the content of the message
@@ -38,7 +38,7 @@ public class Message {
      * return the list of the recipients of the message
      * @return recipients list
      */
-    public ArrayList<String> getRecipients() { return this.recipients; }
+    public ArrayList<Player> getRecipients() { return this.recipients; }
 
-    public String getSender() { return this.sender; }
+    public Player getSender() { return this.sender; }
 }
