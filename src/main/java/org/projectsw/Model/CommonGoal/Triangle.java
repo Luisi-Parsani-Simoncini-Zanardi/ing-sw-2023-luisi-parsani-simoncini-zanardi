@@ -5,11 +5,7 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class Triangle extends ShapeBehavior {
-    public Triangle(){
-        super();
-        this.commonGoalCode = 12;
-    }
+public class Triangle implements CommonGoalStrategy {
 
     /**
      * @param shelf is the player's shelf

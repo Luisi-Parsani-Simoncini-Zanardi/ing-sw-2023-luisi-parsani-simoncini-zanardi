@@ -5,11 +5,7 @@ import org.projectsw.Model.TilesEnum;
 import java.awt.Point;
 import java.util.ArrayList;
 
-public class Square extends ShapeBehavior {
-    public Square(){
-        super();
-        this.commonGoalCode = 1;
-    }
+public class Square implements CommonGoalStrategy {
 
     /**
      * @param shelf is the player shelf

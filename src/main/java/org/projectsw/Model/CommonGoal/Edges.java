@@ -3,11 +3,7 @@ package org.projectsw.Model.CommonGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
-public class Edges extends ShapeBehavior{
-    public Edges(){
-        super();
-        this.commonGoalCode = 8;
-    }
+public class Edges implements CommonGoalStrategy{
 
     /**
      * @param shelf is the player shelf

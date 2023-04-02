@@ -5,11 +5,7 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class DifferentColumn extends ColumnBehavior {
-    public DifferentColumn(){
-        super();
-        this.commonGoalCode = 2;
-    }
+public class DifferentColumn extends TileControl {
 
     /**
      * @param shelf is the player's shelf
