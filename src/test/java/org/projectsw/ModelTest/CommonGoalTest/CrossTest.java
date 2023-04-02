@@ -2,6 +2,7 @@ package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Cross;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
@@ -17,7 +18,8 @@ class CrossTest {
      */
     @Test
     void checkTrue() {
-        CommonGoal cross = new Cross();
+        CommonGoalStrategy strategy = new Cross();
+        CommonGoal cross = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
             try {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
@@ -26,7 +28,7 @@ class CrossTest {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 1);
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
             }catch(Exception e){}
-        assertTrue(cross.check(shelf));
+        assertTrue(cross.checkRequirements(shelf));
     }
 
     /**
@@ -34,7 +36,8 @@ class CrossTest {
      */
     @Test
     void noCross() {
-        CommonGoal cross = new Cross();
+        CommonGoalStrategy strategy = new Cross();
+        CommonGoal cross = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
             try {
@@ -45,6 +48,6 @@ class CrossTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
             }catch(Exception e){}
-        assertFalse(cross.check(shelf));
+        assertFalse(cross.checkRequirements(shelf));
     }
 }

@@ -41,7 +41,7 @@ public class CommonGoal{
      * @param shelf is the player's shelf
      * @return true if the implementation of the check method of the chosen strategy is verified
      */
-    public boolean check(Shelf shelf){
+    public boolean checkRequirements(Shelf shelf){
         return this.strategy.check(shelf);
     }
 
