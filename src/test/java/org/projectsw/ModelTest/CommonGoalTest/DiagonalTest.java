@@ -2,6 +2,8 @@ package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
+import org.projectsw.Model.CommonGoal.Cross;
 import org.projectsw.Model.CommonGoal.Diagonal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
@@ -15,7 +17,8 @@ class DiagonalTest {
      */
     @Test
     void checkTrue1() {
-        CommonGoal diagonal = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
                 try {
@@ -25,7 +28,7 @@ class DiagonalTest {
                     shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, i);
                     shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, i);
                 }catch(Exception e){}
-        assertTrue(diagonal.check(shelf));
+        assertTrue(diagonal.checkRequirements(shelf));
     }
 
     /**
@@ -33,7 +36,8 @@ class DiagonalTest {
      */
     @Test
     void checkTrue2() {
-        CommonGoal diagonal = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
             try {
@@ -43,7 +47,7 @@ class DiagonalTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i+1, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i+1, i);
             }catch(Exception e){}
-        assertTrue(diagonal.check(shelf));
+        assertTrue(diagonal.checkRequirements(shelf));
     }
 
     /**
@@ -51,7 +55,8 @@ class DiagonalTest {
      */
     @Test
     void checkFalse() {
-        CommonGoal diagonal = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -61,7 +66,7 @@ class DiagonalTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
-        assertFalse(diagonal.check(shelf));
+        assertFalse(diagonal.checkRequirements(shelf));
     }
 
     /**
@@ -69,7 +74,8 @@ class DiagonalTest {
      */
     @Test
     void checkEmpty() {
-        CommonGoal diagonal = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -79,6 +85,6 @@ class DiagonalTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
-        assertFalse(diagonal.check(shelf));
+        assertFalse(diagonal.checkRequirements(shelf));
     }
 }
