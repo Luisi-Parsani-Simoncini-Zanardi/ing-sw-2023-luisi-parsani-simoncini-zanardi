@@ -3,6 +3,7 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 
 import java.util.ArrayList;
 
@@ -133,7 +134,7 @@ class GameTest {
         ArrayList<CommonGoal> test= new ArrayList<>();
         try{
             test = game.randomCommonGoals();
-        } catch(Exception e){}
+        } catch(Exception ignore){}
         game.setCommonGoals(test);
         assertNotNull(game.getCommonGoals().get(0).getStrategy());
         assertNotNull(game.getCommonGoals().get(1).getStrategy());
