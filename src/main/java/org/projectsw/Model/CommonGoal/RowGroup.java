@@ -6,12 +6,7 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class RowGroup extends RowBehavior{
-
-    public RowGroup(){
-        super();
-        this.commonGoalCode = 7;
-    }
+public class RowGroup extends TileControl{
 
     /**
      * @param shelf is the player shelf

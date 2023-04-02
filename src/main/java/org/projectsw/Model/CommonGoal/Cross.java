@@ -5,11 +5,7 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class Cross extends ShapeBehavior {
-    public Cross(){
-        super();
-        this.commonGoalCode = 10;
-    }
+public class Cross extends TileControl {
 
     /**
      * @param shelf is the player shelf
