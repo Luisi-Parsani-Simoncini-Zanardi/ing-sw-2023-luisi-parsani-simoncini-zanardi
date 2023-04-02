@@ -133,9 +133,9 @@ class GameTest {
         ArrayList<CommonGoal> test= new ArrayList<>();
         try{
             test = game.randomCommonGoals();
-        } catch(Exception e){}
+        } catch(Exception ignore){}
         game.setCommonGoals(test);
-        assertNotNull(game.getCommonGoals().get(0));
-        assertNotNull(game.getCommonGoals().get(1));
+        assertNotNull(game.getCommonGoals().get(0).getStrategy());
+        assertNotNull(game.getCommonGoals().get(1).getStrategy());
     }
 }
