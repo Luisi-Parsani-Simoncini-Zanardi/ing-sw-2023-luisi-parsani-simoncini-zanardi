@@ -135,7 +135,7 @@ class GameTest {
             test = game.randomCommonGoals();
         } catch(Exception e){}
         game.setCommonGoals(test);
-        assertNotNull(game.getCommonGoals().get(0));
-        assertNotNull(game.getCommonGoals().get(1));
+        assertNotNull(game.getCommonGoals().get(0).getStrategy());
+        assertNotNull(game.getCommonGoals().get(1).getStrategy());
     }
 }
