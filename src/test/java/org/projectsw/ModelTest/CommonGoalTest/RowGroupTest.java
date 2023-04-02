@@ -2,6 +2,7 @@ package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.RowGroup;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
@@ -16,7 +17,8 @@ class RowGroupTest {
      */
     @Test
     void checkTrue() {
-        CommonGoal commonRow = new RowGroup();
+        CommonGoalStrategy strategy = new RowGroup();
+        CommonGoal rowGroup = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -26,7 +28,7 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
-        assertTrue(commonRow.check(shelf));
+        assertTrue(rowGroup.checkRequirements(shelf));
     }
 
     /**
@@ -34,7 +36,8 @@ class RowGroupTest {
      */
     @Test
     void tooMuchTypes() {
-        CommonGoal commonRow = new RowGroup();
+        CommonGoalStrategy strategy = new RowGroup();
+        CommonGoal rowGroup = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -44,7 +47,7 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
-        assertFalse(commonRow.check(shelf));
+        assertFalse(rowGroup.checkRequirements(shelf));
     }
 
     /**
@@ -52,7 +55,8 @@ class RowGroupTest {
      */
     @Test
     void emptyTiles(){
-        CommonGoal commonRow = new RowGroup();
+        CommonGoalStrategy strategy = new RowGroup();
+        CommonGoal rowGroup = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -62,7 +66,7 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
-        assertFalse(commonRow.check(shelf));
+        assertFalse(rowGroup.checkRequirements(shelf));
     }
 
     /**
@@ -70,7 +74,8 @@ class RowGroupTest {
      */
     @Test
     void fewRows(){
-        CommonGoal commonRow = new RowGroup();
+        CommonGoalStrategy strategy = new RowGroup();
+        CommonGoal rowGroup = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=2; i>-1; i--)
             try {
@@ -80,6 +85,6 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
-        assertFalse(commonRow.check(shelf));
+        assertFalse(rowGroup.checkRequirements(shelf));
     }
 }
