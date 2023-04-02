@@ -6,6 +6,7 @@ import org.projectsw.Model.TilesEnum;
 public class EightEquals implements CommonGoalStrategy {
 
     /**
+     * Checks that there are at least 8 identical tiles in the shelf
      * @param shelf is the player shelf
      * @return true if there is at least eight equal tiles in the shelf
      */

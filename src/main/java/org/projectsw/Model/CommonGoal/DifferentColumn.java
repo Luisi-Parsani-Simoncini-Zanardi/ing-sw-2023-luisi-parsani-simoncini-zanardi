@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class DifferentColumn extends TileControl {
 
     /**
+     * Checks that at least 2 columns are made up of all different tiles
      * @param shelf is the player's shelf
      * @return true if there are at least 2 columns with all different Tiles, false otherwise
      */

@@ -2,7 +2,7 @@ package org.projectsw.Model.CommonGoal;
 
 import org.projectsw.Model.Shelf;
 
-public class ColumnEqualsTwo extends TileControl {
+public class GroupOfTwo extends TileControl {
 
     //TODO: manca implementazione
     @Override

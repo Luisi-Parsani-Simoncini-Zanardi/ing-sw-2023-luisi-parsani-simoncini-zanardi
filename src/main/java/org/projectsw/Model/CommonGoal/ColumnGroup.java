@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class ColumnGroup extends TileControl {
 
     /**
+     * Checks that at least 3 columns are not composed of more than 3 different types of Tiles
      * @param shelf is the player shelf
      * @return true if there are at least 3 columns with at most 3 different tile types, returns false otherwise
      */

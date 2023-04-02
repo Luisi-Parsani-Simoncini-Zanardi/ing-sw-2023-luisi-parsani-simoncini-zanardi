@@ -8,6 +8,8 @@ import java.util.ArrayList;
 public class Square implements CommonGoalStrategy {
 
     /**
+     * Checks that there are at least 2 separate 2x2 squares with tiles of the same type,
+     * and that the tiles of the two squares are of the same type
      * @param shelf is the player shelf
      * @return true in the shelf there are two separate squares of the same tiles
      */

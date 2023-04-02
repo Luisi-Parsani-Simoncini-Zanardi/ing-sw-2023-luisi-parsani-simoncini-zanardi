@@ -4,8 +4,10 @@ import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
 public class Diagonal implements CommonGoalStrategy {
+//TODO inserire tutte le possibili diagonali
 
     /**
+     * check that there is at least 1 diagonal pattern in the shelf
      * @param shelf is the player shelf
      * @return true if there is a diagonal of Tiles equals to each other, false otherwise
      */

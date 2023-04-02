@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Cross extends TileControl {
 
     /**
+     * Checks that there is at least 1 cross pattern in the shelf
      * @param shelf is the player shelf
      * @return true if there is at least one cross pattern formed by equal tiles
      */

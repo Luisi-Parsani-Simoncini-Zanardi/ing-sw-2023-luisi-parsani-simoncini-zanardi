@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class DifferentRow extends TileControl {
 
     /**
+     * Checks that there are at least 2 rows all made up of all different tiles
      * @param shelf is the player shelf
      * @return true if there are at least 2 rows with at most 5 different tile types that aren't UNUSED or EMPTY tiles, returns false otherwise
      */

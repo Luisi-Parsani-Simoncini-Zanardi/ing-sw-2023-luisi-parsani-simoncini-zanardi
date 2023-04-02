@@ -8,6 +8,8 @@ import java.util.ArrayList;
 public class Triangle implements CommonGoalStrategy {
 
     /**
+     * Checks that there are 5 columns of increasing or descending height starting from the first column on the left or right,
+     * and that each subsequent column is formed by one more tile than the previous one
      * @param shelf is the player's shelf
      * @return true if the columns are decreasing in height from left to right or from right to left and differ in height by one,
      * returns false otherwise
