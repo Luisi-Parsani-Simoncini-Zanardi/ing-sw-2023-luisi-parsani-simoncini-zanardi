@@ -150,7 +150,7 @@ public class Game{
      * Returns an ArrayList of generic classes containing all CommonGoal children classes.
      * @return an ArrayList of generic classes containing all CommonGoal children classes
      */
-    private ArrayList<Class<?>> fillCommonGoalsArray(){
+    private ArrayList<Class<?>> fillCommonGoalsStrategyArray(){
         ArrayList<Class<?>> randomGoalsClasses = new ArrayList<>();
 
         randomGoalsClasses.add(Square.class);
@@ -181,7 +181,7 @@ public class Game{
      */
     public ArrayList<CommonGoal> getCommonGoalsByCode(int code0, int code1) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ArrayList<Class<?>> allCommon;
-        allCommon = fillCommonGoalsArray();
+        allCommon = fillCommonGoalsStrategyArray();
         ArrayList<CommonGoal> commonGoals = new ArrayList<>();
         commonGoals.add((CommonGoal)allCommon.get(code0-1).getDeclaredConstructor().newInstance());
         commonGoals.add((CommonGoal)allCommon.get(code1-1).getDeclaredConstructor().newInstance());
@@ -200,22 +200,24 @@ public class Game{
 
     public ArrayList<CommonGoal> randomCommonGoals() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        CommonGoal singleIst;
+        CommonGoalStrategy strategyIst;
+        CommonGoal commonGoalIst;
         ArrayList<CommonGoal> commonGoals = new ArrayList<>();
-        ArrayList<Class<?>> randomGoalsClasses;
-        randomGoalsClasses = fillCommonGoalsArray();
+        ArrayList<Class<?>> randomStrategyClasses;
+        randomStrategyClasses = fillCommonGoalsStrategyArray();
 
         Random random = new Random();
-        int index1 = random.nextInt(randomGoalsClasses.size());
-        Class<?> randomClass = randomGoalsClasses.get(index1);
-        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(singleIst);
-        randomGoalsClasses.remove(index1);
-
-        index1 = random.nextInt(randomGoalsClasses.size());
-        randomClass = randomGoalsClasses.get(index1);
-        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(singleIst);
+        int index = random.nextInt(randomStrategyClasses.size());
+        Class<?> randomClass = randomStrategyClasses.get(index);
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor().newInstance();
+        commonGoalIst = new CommonGoal(strategyIst);
+        commonGoals.add(commonGoalIst);
+        randomStrategyClasses.remove(index);
+        index = random.nextInt(randomStrategyClasses.size());
+        randomClass = randomStrategyClasses.get(index);
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor().newInstance();
+        commonGoalIst = new CommonGoal(strategyIst);
+        commonGoals.add(commonGoalIst);
 
         return commonGoals;
 
