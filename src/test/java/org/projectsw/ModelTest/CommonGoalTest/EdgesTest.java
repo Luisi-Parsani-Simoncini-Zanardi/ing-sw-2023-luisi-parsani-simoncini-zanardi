@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class EdgesTest {
 
     /**
-     * tests if the method returns true when the edges are of the same TileEnum type
+     * Tests if the method returns true when the edges are of the same TileEnum type
      */
     @Test
     void checkTrue() {
@@ -30,7 +30,7 @@ class EdgesTest {
     }
 
     /**
-     * tests if the method returns true when the edges are of a different TileEnum type
+     * Tests if the method returns true when the edges are of a different TileEnum type
      */
     @Test
     void checkDifferentType(){
@@ -47,7 +47,7 @@ class EdgesTest {
     }
 
     /**
-     * tests if the method returns false when the edges are not of only TilesEnum allowed types
+     * Tests if the method returns false when the edges are not of only TilesEnum allowed types
      */
     @Test
     void checkAllowed(){

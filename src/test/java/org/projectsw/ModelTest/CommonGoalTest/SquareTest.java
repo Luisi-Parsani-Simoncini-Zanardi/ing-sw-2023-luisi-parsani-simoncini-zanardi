@@ -29,7 +29,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns true when there are two squares with the same type of tiles
+     * Tests if the method returns true when there are two squares with the same type of tiles
      */
     @Test
     void checkBasic() {
@@ -50,7 +50,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns false when one of the two squares is missing a tile
+     * Tests if the method returns false when one of the two squares is missing a tile
      */
     @Test
     void checkDeformed() {
@@ -71,7 +71,7 @@ class SquareTest {
 
 
     /**
-     * tests if the method returns false when there are two squares with different type of tiles from each other
+     * Tests if the method returns false when there are two squares with different type of tiles from each other
      */
     @Test
     void checkBasicDiff() {
@@ -92,7 +92,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns true when there are two squares with the same tile type in diagonal
+     * Tests if the method returns true when there are two squares with the same tile type in diagonal
      */
     @Test
     void checkCorner() {
@@ -113,7 +113,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns true when there are two squares with a shared half side
+     * Tests if the method returns true when there are two squares with a shared half side
      */
     @Test
     void checkHalfSide() {
@@ -134,7 +134,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns true when there are two squares with a shared full side
+     * Tests if the method returns true when there are two squares with a shared full side
      */
     @Test
     void checkFullSide() {
@@ -155,7 +155,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns true when there are two squares with a shared full side and a separate valid square
+     * Tests if the method returns true when there are two squares with a shared full side and a separate valid square
      */
     @Test
     void checkFullSideAndAnother() {
@@ -180,7 +180,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns true when then boards is full of the same type of tiles
+     * Tests if the method returns true when then boards is full of the same type of tiles
      */
     @Test
     void checkWhole() {
@@ -198,7 +198,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns false when the board is empty
+     * Tests if the method returns false when the board is empty
      */
     @Test
     void checkEmpty() {
@@ -209,7 +209,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns false when there are two squares with a common tile
+     * Tests if the method returns false when there are two squares with a common tile
      */
     @Test
     void checkOneInCommon() {
@@ -229,7 +229,7 @@ class SquareTest {
     }
 
     /**
-     * tests if the method returns false when there are two squares with two common tiles
+     * Tests if the method returns false when there are two squares with two common tiles
      */
     @Test
     void checkTwoInCommon() {
@@ -249,7 +249,7 @@ class SquareTest {
 
 
     /**
-     * tests if the method returns true when there are two squares with a common tile and another square
+     * Tests if the method returns true when there are two squares with a common tile and another square
      */
     @Test
     void checkOneInCommonAndAnother() {

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TriangleTest {
 
     /**
-     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal in
+     * Tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal in
      * every possible combination
      */
     @Test
@@ -62,7 +62,7 @@ class TriangleTest {
     }
 
     /**
-     *     tests that the algorithm returns false when the shelf has wrong columns height
+     * Tests that the algorithm returns false when the shelf has wrong columns height
      */
     @Test
     void checkFalse() {

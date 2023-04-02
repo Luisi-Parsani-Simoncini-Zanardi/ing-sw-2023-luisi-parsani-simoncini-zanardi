@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ColumnGroupTest {
 
     /**
-     * tests if the algorithm successfully checks that the shelf has at least 3 columns with all different tiles
+     * Tests if the algorithm successfully checks that the shelf has at least 3 columns with all different tiles
      */
     @Test
     void checkTrue() {
@@ -33,7 +33,7 @@ class ColumnGroupTest {
     }
 
     /**
-     *     tests that the algorithm returns false when the shelf has too much types in the columns
+     * Tests that the algorithm returns false when the shelf has too much types in the columns
      */
     @Test
     void fewTypes() {
@@ -53,7 +53,7 @@ class ColumnGroupTest {
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf used not allowed types
+     * Tests if the algorithm successfully checks that the shelf used not allowed types
      */
     @Test
     void emptyTiles(){
@@ -73,7 +73,7 @@ class ColumnGroupTest {
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf has too few columns of the right kind
+     * Tests if the algorithm successfully checks that the shelf has too few columns of the right kind
      */
     @Test
     void fewRows(){

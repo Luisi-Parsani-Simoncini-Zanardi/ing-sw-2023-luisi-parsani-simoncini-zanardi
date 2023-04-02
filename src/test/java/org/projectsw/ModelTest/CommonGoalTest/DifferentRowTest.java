@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DifferentRowTest {
 
     /**
-     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal
+     * Tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal
      */
     @Test
     void checkTrue() {
@@ -32,7 +32,7 @@ class DifferentRowTest {
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf has too much types in the rows
+     * Tests if the algorithm successfully checks that the shelf has too much types in the rows
      */
     @Test
     void fewTypes() {
@@ -51,7 +51,7 @@ class DifferentRowTest {
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf used not allowed types
+     * Tests if the algorithm successfully checks that the shelf used not allowed types
      */
     @Test
     void emptyTiles(){
@@ -70,7 +70,7 @@ class DifferentRowTest {
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf has few rows of the right kind
+     * Tests if the algorithm successfully checks that the shelf has few rows of the right kind
      */
     @Test
     void fewRows(){

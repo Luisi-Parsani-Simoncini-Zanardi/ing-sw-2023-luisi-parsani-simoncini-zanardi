@@ -14,7 +14,7 @@ class CrossTest {
 
 
     /**
-     * tests if the algorithm successfully checks that the shelf has at least one cross pattern formed by equal tiles
+     * Tests if the algorithm successfully checks that the shelf has at least one cross pattern formed by equal tiles
      */
     @Test
     void checkTrue() {
@@ -32,7 +32,7 @@ class CrossTest {
     }
 
     /**
-     *     tests that the algorithm returns false when the shelf has no cross pattern inside
+     * Tests that the algorithm returns false when the shelf has no cross pattern inside
      */
     @Test
     void noCross() {

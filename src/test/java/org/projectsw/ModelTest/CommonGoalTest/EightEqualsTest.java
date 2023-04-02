@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class EightEqualsTest {
 
     /**
-     * tests if the algorithm successfully checks that there are eight equal tiles inside the shelf
+     * Tests if the algorithm successfully checks that there are eight equal tiles inside the shelf
      */
     @Test
     void checkTrue() {
@@ -32,7 +32,7 @@ class EightEqualsTest {
     }
 
     /**
-     *     tests that the algorithm returns false when the shelf has less than eight equal tiles
+     * Tests that the algorithm returns false when the shelf has less than eight equal tiles
      */
     @Test
     void checkFalse() {
