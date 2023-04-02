@@ -2,6 +2,7 @@ package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.DifferentColumn;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
@@ -16,7 +17,8 @@ class DifferentColumnTest {
      */
     @Test
     void checkTrue() {
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<2; i++)
             try {
@@ -27,7 +29,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
             }catch(Exception e){}
-        assertTrue(differentColumn.check(shelf));
+        assertTrue(differentColumn.checkRequirements(shelf));
     }
 
     /**
@@ -35,7 +37,8 @@ class DifferentColumnTest {
      */
     @Test
     void fewTypes() {
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
             try {
@@ -46,7 +49,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
             }catch(Exception e){}
-        assertFalse(differentColumn.check(shelf));
+        assertFalse(differentColumn.checkRequirements(shelf));
     }
 
     /**
@@ -54,7 +57,8 @@ class DifferentColumnTest {
      */
     @Test
     void emptyTiles(){
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
             try {
@@ -65,7 +69,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
             }catch(Exception e){}
-        assertFalse(differentColumn.check(shelf));
+        assertFalse(differentColumn.checkRequirements(shelf));
     }
 
     /**
@@ -73,7 +77,8 @@ class DifferentColumnTest {
      */
     @Test
     void fewRows(){
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<1; i++)
             try {
@@ -84,6 +89,6 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
             }catch(Exception e){}
-        assertFalse(differentColumn.check(shelf));
+        assertFalse(differentColumn.checkRequirements(shelf));
     }
 }
