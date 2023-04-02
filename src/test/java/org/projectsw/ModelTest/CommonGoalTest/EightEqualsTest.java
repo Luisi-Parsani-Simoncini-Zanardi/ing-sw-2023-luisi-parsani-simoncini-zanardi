@@ -2,6 +2,7 @@ package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.EightEquals;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
@@ -16,7 +17,8 @@ class EightEqualsTest {
      */
     @Test
     void checkTrue() {
-        CommonGoal eightEquals = new EightEquals();
+        CommonGoalStrategy strategy = new EightEquals();
+        CommonGoal eightEquals = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
             try {
@@ -26,7 +28,7 @@ class EightEqualsTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
             }catch(Exception e){}
-        assertTrue(eightEquals.check(shelf));
+        assertTrue(eightEquals.checkRequirements(shelf));
     }
 
     /**
@@ -34,7 +36,8 @@ class EightEqualsTest {
      */
     @Test
     void checkFalse() {
-        CommonGoal eightEquals = new EightEquals();
+        CommonGoalStrategy strategy = new EightEquals();
+        CommonGoal eightEquals = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
             try {
@@ -45,6 +48,6 @@ class EightEqualsTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
             }catch(Exception e){}
-        assertFalse(eightEquals.check(shelf));
+        assertFalse(eightEquals.checkRequirements(shelf));
     }
 }
