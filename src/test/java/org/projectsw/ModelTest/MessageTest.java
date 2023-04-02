@@ -2,6 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.Test;
 import org.projectsw.Model.Message;
+import org.projectsw.Model.Player;
 
 import java.util.ArrayList;
 
@@ -18,12 +19,13 @@ public class MessageTest {
     @Test
     public void setRecipientsTest() {
 
-        Message message = new Message(" ", "test Content");
+        Player sender = new Player("Pippo", 1);
+        Message message = new Message(sender, "test Content");
 
-        ArrayList<String> recipients = new ArrayList<>();
-        String recipient1 = "Pippo";
-        String recipient2 = "Mimmo";
-        String recipient3 = "Giacobbe";
+        ArrayList<Player> recipients = new ArrayList<>();
+        Player recipient1 = new Player("Nabbus", 2);
+        Player recipient2 = new Player("Mimmo", 3);
+        Player recipient3 = new Player("Giacobbe", 2);
 
         recipients.add(recipient1);
         recipients.add(recipient2);
@@ -41,9 +43,20 @@ public class MessageTest {
      */
     @Test
     public void getContentTest() {
-        Message message = new Message(" ", "test content");
+
+        Player sender = new Player("Pippo", 1);
+        Message message = new Message(sender, "test content");
         String contentTest = "test content";
         String contentAssert = message.getContent();
         assertEquals(contentTest, contentAssert);
+    }
+
+    @Test
+    public void getSenderTest() {
+        Player sender = new Player("Pippo", 1);
+        Message message = new Message(sender, "test content");
+        String senderTest = "Pippo";
+        Player senderAssert = message.getSender();
+        assertEquals(senderTest, senderAssert.getNickname());
     }
 }
