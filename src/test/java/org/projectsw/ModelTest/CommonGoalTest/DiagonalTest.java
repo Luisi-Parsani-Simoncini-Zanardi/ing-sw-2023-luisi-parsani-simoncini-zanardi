@@ -11,27 +11,24 @@ import org.projectsw.Model.TilesEnum;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DiagonalTest {
+
     /**
-     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal on the first diagonal
+     * Tests that the algorithm properly checks that the tiles in the first main diagonal are equal
      */
     @Test
     void checkTrue1() {
         CommonGoalStrategy strategy = new Diagonal();
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        for(int i=0; i<6; i++)
+        for(int i=0; i<5; i++)
                 try {
                     shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i);
-                    shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), i, i);
-                    shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), i, i);
-                    shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, i);
-                    shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, i);
                 }catch(Exception ignored){}
         assertTrue(diagonal.checkRequirements(shelf));
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal on the second diagonal
+     * Tests that the algorithm properly checks that the tiles in the second main diagonal are equal
      */
     @Test
     void checkTrue2() {
@@ -41,48 +38,91 @@ class DiagonalTest {
         for(int i=0; i<5; i++)
             try {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), i+1, i);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), i+1, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), i+1, i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i+1, i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i+1, i);
             }catch(Exception ignored){}
         assertTrue(diagonal.checkRequirements(shelf));
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf has too much types in the rows
+     * Tests that the algorithm properly checks that the tiles in the first secondary diagonal are equal
+     */
+    @Test
+    void checkTrue3() {
+        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoal diagonal = new CommonGoal(strategy);
+        Shelf shelf = new Shelf();
+        int k = 0;
+        for(int i=4; i>-1; i--) {
+            try {
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, k);
+            } catch (Exception ignored) {
+            }
+            k++;
+        }
+        assertTrue(diagonal.checkRequirements(shelf));
+    }
+
+    /**
+     * Tests that the algorithm properly checks that the tiles in the second secondary diagonal are equal
+     */
+    @Test
+    void checkTrue4() {
+        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoal diagonal = new CommonGoal(strategy);
+        Shelf shelf = new Shelf();
+        int k = 0;
+        for(int i=5; i>-1; i--) {
+            try {
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, k);
+            } catch (Exception ignored) {
+            }
+            k++;
+        }
+        assertTrue(diagonal.checkRequirements(shelf));
+    }
+
+
+
+    /**
+     * Tests if the algorithm successfully checks that the diagonal isn't composed by equal tiles
      */
     @Test
     void checkFalse() {
         CommonGoalStrategy strategy = new Diagonal();
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        for(int i=0; i<6; i++)
+        for(int i=0; i<4; i++)
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, 0);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), i, 1);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), i, 2);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i);
             }catch(Exception ignored){}
+
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), 4, 4);
+        }catch(Exception ignored){}
         assertFalse(diagonal.checkRequirements(shelf));
     }
 
     /**
-     * tests if the algorithm successfully checks that the empty shelf does not satisfy the requirements
+     * Tests if the algorithm successfully checks that the empty shelf does not satisfy the requirements
      */
     @Test
     void checkEmpty() {
         CommonGoalStrategy strategy = new Diagonal();
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        for(int i=0; i<6; i++)
+        assertFalse(diagonal.checkRequirements(shelf));
+    }
+
+    /**
+     * Test that in the diagonal there cannot be an empty tile
+     */
+    @Test
+    void checkEmptyTile() {
+        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoal diagonal = new CommonGoal(strategy);
+        Shelf shelf = new Shelf();
+        for(int i=0; i<4; i++)
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, 0);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), i, 1);
-                shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), i, 2);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i);
             }catch(Exception ignored){}
         assertFalse(diagonal.checkRequirements(shelf));
     }

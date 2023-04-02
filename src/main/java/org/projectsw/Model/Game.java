@@ -156,7 +156,7 @@ public class Game{
         randomGoalsClasses.add(Square.class);
         randomGoalsClasses.add(DifferentColumn.class);
         randomGoalsClasses.add(ColumnEqualsFour.class);
-        randomGoalsClasses.add(ColumnEqualsTwo.class);
+        randomGoalsClasses.add(GroupOfTwo.class);
         randomGoalsClasses.add(ColumnGroup.class);
         randomGoalsClasses.add(DifferentRow.class);
         randomGoalsClasses.add(RowGroup.class);
