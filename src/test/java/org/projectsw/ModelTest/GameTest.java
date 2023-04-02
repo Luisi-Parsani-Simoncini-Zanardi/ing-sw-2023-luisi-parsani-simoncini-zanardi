@@ -3,7 +3,6 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
-import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 
 import java.util.ArrayList;
 
