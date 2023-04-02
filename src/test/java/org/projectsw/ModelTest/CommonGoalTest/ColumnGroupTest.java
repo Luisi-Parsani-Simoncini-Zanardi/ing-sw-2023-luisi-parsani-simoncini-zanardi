@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.ColumnGroup;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
-import org.projectsw.Model.CommonGoal.DifferentColumn;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
@@ -29,7 +28,7 @@ class ColumnGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertTrue(columnGroup.checkRequirements(shelf));
     }
 
@@ -49,7 +48,7 @@ class ColumnGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(columnGroup.checkRequirements(shelf));
     }
 
@@ -69,7 +68,7 @@ class ColumnGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(columnGroup.checkRequirements(shelf));
     }
 
@@ -89,7 +88,7 @@ class ColumnGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(columnGroup.checkRequirements(shelf));
     }
 }

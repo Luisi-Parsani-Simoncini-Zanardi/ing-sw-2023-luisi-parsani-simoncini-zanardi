@@ -27,7 +27,7 @@ class EightEqualsTest {
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertTrue(eightEquals.checkRequirements(shelf));
     }
 
@@ -47,7 +47,7 @@ class EightEqualsTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(eightEquals.checkRequirements(shelf));
     }
 }

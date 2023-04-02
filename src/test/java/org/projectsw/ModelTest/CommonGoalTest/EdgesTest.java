@@ -1,4 +1,5 @@
 package org.projectsw.ModelTest.CommonGoalTest;
+
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Edges;
@@ -24,7 +25,7 @@ class EdgesTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 4);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 4);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertTrue(edge.checkRequirements(shelf));
     }
 
@@ -41,7 +42,7 @@ class EdgesTest {
             shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), 0, 4);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 4);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertFalse(edge.checkRequirements(shelf));
     }
 
@@ -58,7 +59,7 @@ class EdgesTest {
             shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), 0, 4);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 4);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
         assertFalse(edge.checkRequirements(shelf));
     }
 }

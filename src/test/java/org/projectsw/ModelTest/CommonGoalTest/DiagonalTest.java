@@ -3,7 +3,6 @@ package org.projectsw.ModelTest.CommonGoalTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
-import org.projectsw.Model.CommonGoal.Cross;
 import org.projectsw.Model.CommonGoal.Diagonal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
@@ -27,7 +26,7 @@ class DiagonalTest {
                     shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), i, i);
                     shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, i);
                     shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, i);
-                }catch(Exception e){}
+                }catch(Exception ignored){}
         assertTrue(diagonal.checkRequirements(shelf));
     }
 
@@ -46,7 +45,7 @@ class DiagonalTest {
                 shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), i+1, i);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i+1, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i+1, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertTrue(diagonal.checkRequirements(shelf));
     }
 
@@ -65,7 +64,7 @@ class DiagonalTest {
                 shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(diagonal.checkRequirements(shelf));
     }
 
@@ -84,7 +83,7 @@ class DiagonalTest {
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(diagonal.checkRequirements(shelf));
     }
 }

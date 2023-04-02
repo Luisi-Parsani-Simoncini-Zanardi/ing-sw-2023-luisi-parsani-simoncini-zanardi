@@ -28,7 +28,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertTrue(differentColumn.checkRequirements(shelf));
     }
 
@@ -48,7 +48,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(differentColumn.checkRequirements(shelf));
     }
 
@@ -68,7 +68,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(differentColumn.checkRequirements(shelf));
     }
 
@@ -88,7 +88,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(differentColumn.checkRequirements(shelf));
     }
 }

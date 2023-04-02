@@ -27,7 +27,7 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertTrue(rowGroup.checkRequirements(shelf));
     }
 
@@ -46,7 +46,7 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.BOOKS,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(rowGroup.checkRequirements(shelf));
     }
 
@@ -65,7 +65,7 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(rowGroup.checkRequirements(shelf));
     }
 
@@ -84,7 +84,7 @@ class RowGroupTest {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, 2);
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), i, 3);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), i, 4);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(rowGroup.checkRequirements(shelf));
     }
 }

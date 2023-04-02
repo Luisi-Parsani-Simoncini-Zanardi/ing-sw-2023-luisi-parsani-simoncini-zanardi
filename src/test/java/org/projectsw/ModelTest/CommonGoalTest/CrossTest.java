@@ -27,7 +27,7 @@ class CrossTest {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 2);
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 1);
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertTrue(cross.checkRequirements(shelf));
     }
 
@@ -47,7 +47,7 @@ class CrossTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
+            }catch(Exception ignored){}
         assertFalse(cross.checkRequirements(shelf));
     }
 }
