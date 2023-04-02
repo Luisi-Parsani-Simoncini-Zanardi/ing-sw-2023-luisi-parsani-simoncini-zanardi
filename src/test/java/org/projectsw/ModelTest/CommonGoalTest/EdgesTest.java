@@ -1,5 +1,6 @@
 package org.projectsw.ModelTest.CommonGoalTest;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Edges;
 import org.projectsw.Model.Shelf;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,8 @@ class EdgesTest {
      */
     @Test
     void checkTrue() {
-        CommonGoal commonGoal = new Edges();
+        CommonGoalStrategy strategy = new Edges();
+        CommonGoal edge = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
@@ -23,7 +25,7 @@ class EdgesTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 4);
         }catch(Exception e){}
-        assertTrue(commonGoal.check(shelf));
+        assertTrue(edge.checkRequirements(shelf));
     }
 
     /**
@@ -31,7 +33,8 @@ class EdgesTest {
      */
     @Test
     void checkDifferentType(){
-        CommonGoal commonGoal = new Edges();
+        CommonGoalStrategy strategy = new Edges();
+        CommonGoal edge = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
@@ -39,7 +42,7 @@ class EdgesTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 4);
         }catch(Exception e){}
-        assertFalse(commonGoal.check(shelf));
+        assertFalse(edge.checkRequirements(shelf));
     }
 
     /**
@@ -47,7 +50,8 @@ class EdgesTest {
      */
     @Test
     void checkAllowed(){
-        CommonGoal commonGoal = new Edges();
+        CommonGoalStrategy strategy = new Edges();
+        CommonGoal edge = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 0, 0);
@@ -55,6 +59,6 @@ class EdgesTest {
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 0);
             shelf.insertTiles(new Tile(TilesEnum.CATS,0), 5, 4);
         }catch(Exception e){}
-        assertFalse(commonGoal.check(shelf));
+        assertFalse(edge.checkRequirements(shelf));
     }
 }
