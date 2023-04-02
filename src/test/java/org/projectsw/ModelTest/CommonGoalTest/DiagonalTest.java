@@ -9,7 +9,7 @@ import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
 
 import static org.junit.jupiter.api.Assertions.*;
-//TODO controllare il comportamento di questo test --> algoritmo cambiato
+
 class DiagonalTest {
     /**
      * tests if the algorithm successfully checks that the shelf meets the requirements of the chosen CommonGoal on the first diagonal
