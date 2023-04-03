@@ -44,5 +44,4 @@ public class CommonGoal{
     public boolean checkRequirements(Shelf shelf){
         return this.strategy.check(shelf);
     }
-
 }

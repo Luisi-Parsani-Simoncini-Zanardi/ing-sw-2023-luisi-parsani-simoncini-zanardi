@@ -1,4 +1,7 @@
 package org.projectsw.Controller;
+
+import org.projectsw.Exceptions.InvalidNameException;
+
 import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.*;
 /**
@@ -34,6 +37,8 @@ public class Engine {
         try {
             game.addPlayer(player);
         } catch (MaximumPlayerException e) {
+            //send message
+        } catch (InvalidNameException e) {
             //send message
         }
     }
