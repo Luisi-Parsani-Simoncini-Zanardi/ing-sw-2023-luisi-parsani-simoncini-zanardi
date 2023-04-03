@@ -1,4 +1,5 @@
 package org.projectsw.Model;
+//TODO: sistemare le varie exception
 
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.MaximumPlayerException;
@@ -9,7 +10,7 @@ import java.util.Random;
 
 /**
  * The class contains information about the game state,
- * including the board, players (the current playing one and the first one), chat, and common goals.
+ * including the board, players (with info on the currently playing one and the first one), chat, and common goals.
  */
 public class Game{
     private Player firstPlayer;
@@ -29,7 +30,6 @@ public class Game{
         setBoard(board);
         Chat chat = new Chat();
         setChat(chat);
-
         ArrayList<Player>players = new ArrayList<>();
         setPlayers(players);
 
@@ -37,7 +37,7 @@ public class Game{
 
     /**
      * Returns the first player of the game.
-     * @return the first player of the game.
+     * @return the first player of the game
      */
     public Player getFirstPlayer(){
         return firstPlayer;
@@ -45,7 +45,7 @@ public class Game{
 
     /**
      * Returns the current player of the game.
-     * @return the current player of the game.
+     * @return the current player of the game
      */
     public Player getCurrentPlayer(){
         return currentPlayer;
@@ -53,7 +53,7 @@ public class Game{
 
     /**
      * Returns the list of players in the game.
-     * @return the list of players in the game.
+     * @return the list of players in the game
      */
     public ArrayList<Player> getPlayers() {
         return players;
@@ -61,7 +61,7 @@ public class Game{
 
     /**
      * Returns the game board.
-     * @return the game board.
+     * @return the game board
      */
     public Board getBoard() {
         return board;
@@ -69,7 +69,7 @@ public class Game{
 
     /**
      * Returns the common goals for the game.
-     * @return the common goals for the game.
+     * @return the common goals for the game
      */
     public ArrayList<CommonGoal> getCommonGoals() {
         return commonGoals;
@@ -78,7 +78,7 @@ public class Game{
 
     /**
      * Returns the chat of the game.
-     * @return the chat of the game.
+     * @return the chat of the game
      */
     public Chat getChat() {
         return chat;
@@ -86,7 +86,7 @@ public class Game{
 
     /**
      * Sets the first player of the game.
-     * @param firstPlayer the first player of the game.
+     * @param firstPlayer the first player of the game
      */
     public void setFirstPlayer(Player firstPlayer){
         this.firstPlayer=firstPlayer;
@@ -94,7 +94,7 @@ public class Game{
 
     /**
      * Sets the current player of the game.
-     * @param currentPlayer the current player of the game.
+     * @param currentPlayer the current player of the game
      */
     public void setCurrentPlayer(Player currentPlayer){
         this.currentPlayer=currentPlayer;
@@ -102,7 +102,7 @@ public class Game{
 
     /**
      * Sets the list of players in the game from a given list of players.
-     * @param players the list of players to copy.
+     * @param players the list of players to copy
      */
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;
@@ -110,7 +110,7 @@ public class Game{
 
     /**
      * Sets the game board.
-     * @param board the game board.
+     * @param board the game board
      */
     public void setBoard(Board board) {
         this.board = board;
@@ -118,7 +118,7 @@ public class Game{
 
     /**
      * Sets the game chat.
-     * @param chat the new game chat.
+     * @param chat the new game chat
      */
     public void setChat(Chat chat) {
         this.chat = chat;
@@ -126,7 +126,7 @@ public class Game{
 
     /**
      * Sets the common goals of the game.
-     * @param commonGoals the common goals of the game.
+     * @param commonGoals the common goals of the game
      */
     public void setCommonGoals(ArrayList<CommonGoal> commonGoals) {
         this.commonGoals = commonGoals;
@@ -152,15 +152,16 @@ public class Game{
     }
 
     /**
-     * @return method that return an ArrayList of generic classes containing all CommonGoal children classes
+     * Returns an ArrayList of generic classes containing all CommonGoal children classes.
+     * @return an ArrayList of generic classes containing all CommonGoal children classes
      */
-    private ArrayList<Class<?>> fillCommonGoalsArray(){
+    private ArrayList<Class<?>> fillCommonGoalsStrategyArray(){
         ArrayList<Class<?>> randomGoalsClasses = new ArrayList<>();
 
         randomGoalsClasses.add(Square.class);
         randomGoalsClasses.add(DifferentColumn.class);
         randomGoalsClasses.add(ColumnEqualsFour.class);
-        randomGoalsClasses.add(ColumnEqualsTwo.class);
+        randomGoalsClasses.add(GroupOfTwo.class);
         randomGoalsClasses.add(ColumnGroup.class);
         randomGoalsClasses.add(DifferentRow.class);
         randomGoalsClasses.add(RowGroup.class);
@@ -174,18 +175,18 @@ public class Game{
     }
 
     /**
-     * create a custom 2 elements CommonGoal array given their code
-     * @param code0
-     * @param code1
-     * @return custom CommonGoal array
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * Creates a custom 2 elements CommonGoal array given their code.
+     * @param code0 the first code
+     * @param code1 the second code
+     * @return a custom CommonGoal array
+     * @throws NoSuchMethodException when there's no method defined as such
+     * @throws InvocationTargetException when a called method generates an exception
+     * @throws InstantiationException when the class cannot be instantiated
+     * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
     public ArrayList<CommonGoal> getCommonGoalsByCode(int code0, int code1) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ArrayList<Class<?>> allCommon;
-        allCommon = fillCommonGoalsArray();
+        allCommon = fillCommonGoalsStrategyArray();
         ArrayList<CommonGoal> commonGoals = new ArrayList<>();
         commonGoals.add((CommonGoal)allCommon.get(code0-1).getDeclaredConstructor().newInstance());
         commonGoals.add((CommonGoal)allCommon.get(code1-1).getDeclaredConstructor().newInstance());
@@ -194,33 +195,35 @@ public class Game{
     }
     
     /**
-     *
-     * @return the ArrayList of commonGoals containing two random commonGoals chosen by the children of CommonGoal
-     * @throws NoSuchMethodException thrown if getDeclaredConstructor doesn't find the method constructor of the class
-     * @throws InvocationTargetException wraps an exception thrown by the target constructor
-     * @throws InstantiationException thrown if newInstance() try to instantiate an object that can't be instantiated
-     * @throws IllegalAccessException thrown when newInstance() tries to reflectively create an instance but randomCommonGoals
-     * does not have access to the definition of the specified constructor
+     * Returns the ArrayList of commonGoals containing two random commonGoals chosen from the children of CommonGoal.
+     * @return the ArrayList of commonGoals containing two random commonGoals chosen from the children of CommonGoal
+     * @throws NoSuchMethodException when there's no method defined as such
+     * @throws InvocationTargetException when a called method generates an exception
+     * @throws InstantiationException when the class cannot be instantiated
+     * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
 
     public ArrayList<CommonGoal> randomCommonGoals() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
-        CommonGoal singleIst;
+        CommonGoalStrategy strategyIst;
+        CommonGoal commonGoalIst;
         ArrayList<CommonGoal> commonGoals = new ArrayList<>();
-        ArrayList<Class<?>> randomGoalsClasses;
-        randomGoalsClasses = fillCommonGoalsArray();
+        ArrayList<Class<?>> randomStrategyClasses;
+        randomStrategyClasses = fillCommonGoalsStrategyArray();
 
         Random random = new Random();
-        int index1 = random.nextInt(randomGoalsClasses.size());
-        Class<?> randomClass = randomGoalsClasses.get(index1);
-        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(singleIst);
-        randomGoalsClasses.remove(index1);
+        int index = random.nextInt(randomStrategyClasses.size());
+        Class<?> randomClass = randomStrategyClasses.get(index);
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor().newInstance();
+        commonGoalIst = new CommonGoal(strategyIst);
+        commonGoals.add(commonGoalIst);
+        randomStrategyClasses.remove(index);
 
-        index1 = random.nextInt(randomGoalsClasses.size());
-        randomClass = randomGoalsClasses.get(index1);
-        singleIst = (CommonGoal)randomClass.getDeclaredConstructor().newInstance();
-        commonGoals.add(singleIst);
+        index = random.nextInt(randomStrategyClasses.size());
+        randomClass = randomStrategyClasses.get(index);
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor().newInstance();
+        commonGoalIst = new CommonGoal(strategyIst);
+        commonGoals.add(commonGoalIst);
 
         return commonGoals;
 

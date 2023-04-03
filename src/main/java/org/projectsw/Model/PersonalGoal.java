@@ -41,12 +41,12 @@ public class PersonalGoal {
             else usedCodes.add(goalCode);
 
             Gson gson = new Gson();
-            String[][][] tmpMatrixes = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
+            String[][][] tmpMatrix = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
 
             personalGoal = new TilesEnum[6][5];
             for (int i = 0; i < 6; i++) {
                 for (int j = 0; j < 5; j++) {
-                    String str = tmpMatrixes[goalCode][i][j];
+                    String str = tmpMatrix[goalCode][i][j];
                     switch (str) {
                         case "EMPTY" -> personalGoal[i][j] = TilesEnum.EMPTY;
                         case "PLANTS" -> personalGoal[i][j] = TilesEnum.PLANTS;

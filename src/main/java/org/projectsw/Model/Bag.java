@@ -27,6 +27,7 @@ public class Bag {
     }
 
     /**
+     * Returns the size of the bag
      * @return the size of the bag
      */
     public int getBagSize(){

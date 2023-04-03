@@ -1,11 +1,20 @@
 package org.projectsw.Model;
 
+
 import java.io.*;
 
 import com.google.gson.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 /**
  * This class represents a status for saving a game, including the game itself and the file path
@@ -17,7 +26,7 @@ public class SaveGameStatus {
     private final String filePath; //The file path where the game should be saved.
 
     /**
-     * Constructs a new `SaveGameStatus` object with the specified `game` and `filePath`.
+     * Constructs a new SaveGameStatus object with the specified game and filePath.
      * @param game the game object to be saved
      * @param filePath the file path where the game should be saved
      */
@@ -27,17 +36,16 @@ public class SaveGameStatus {
     }
 
     /**
-     * serialize the game class into a json string
+     * Serializes the game class into a json string.
      * @return json string
      */
     public String gameToJson() {
         Gson gson = new Gson();
-        String json = gson.toJson(game);
-        return json;
+        return gson.toJson(game);
     }
 
     /**
-     * save the serialized game state into a file
+     * Saves the serialized game state into a file.
      */
     public void saveGame() {
 
@@ -50,9 +58,9 @@ public class SaveGameStatus {
             bw.write(json);
             bw.close();
             fw.close();
-            System.out.println("La stringa è stata scritta nel file con successo.");
+            System.out.println("The string was written successfully on file.");
         } catch (IOException e) {
-            System.out.println("Errore durante la scrittura del file: " + e.getMessage());
+            System.out.println("Error while writing on file: " + e.getMessage());
         }
     }
 

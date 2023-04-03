@@ -3,38 +3,39 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
-import java.io.IOException;
+
 import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
     /**
-     * tests if the method sets firstPlayer correctly
+     * Tests if the method sets firstPlayer correctly.
      */
     @Test
     void testSetFirstPlayer() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
+        Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
-        game.setFirstPlayer(jhon);
-        assertEquals(jhon, game.getFirstPlayer());
+        game.setFirstPlayer(john);
+        assertEquals(john, game.getFirstPlayer());
         game.setFirstPlayer(elizabeth);
         assertEquals(elizabeth,game.getFirstPlayer());
     }
 
     /**
-     * tests if the method returns firstPlayer correctly
+     * Tests if the method returns firstPlayer correctly.
      */
     @Test
     void testGetFirstPlayer() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
-        game.setFirstPlayer(jhon);
-        assertEquals(jhon, game.getFirstPlayer());
+        Player john = new Player("John", 1);
+        game.setFirstPlayer(john);
+        assertEquals(john, game.getFirstPlayer());
     }
 
     /**
-     * tests if the method sets correctly the current player
+     * Tests if the method sets correctly the current player.
      */
     @Test
     void testSetCurrentPlayer() {
@@ -48,7 +49,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method returns the current player correctly
+     * Tests if the method returns the current player correctly.
      */
     @Test
     void testGetCurrentPlayer() {
@@ -59,17 +60,17 @@ class GameTest {
     }
 
     /**
-     * tests if the method sets the players correctly
+     * Tests if the method sets the players correctly.
      */
     @Test
     void testSetPlayers() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
+        Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
         Player ronald = new Player("Ronald", 3);
         Player enzo = new Player("Enzo", 4);
         ArrayList<Player> players = new ArrayList<>();
-        players.add(jhon);
+        players.add(john);
         players.add(elizabeth);
         players.add(ronald);
         players.add(enzo);
@@ -78,17 +79,17 @@ class GameTest {
     }
 
     /**
-     * tests if the method returns the right players of the game
+     * Tests if the method returns the right players.
      */
     @Test
     void testGetPlayers() {
         Game game = new Game();
-        Player jhon = new Player("Jhon", 1);
+        Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
         Player ronald = new Player("Ronald", 3);
         Player enzo = new Player("Enzo", 4);
         ArrayList<Player> players = new ArrayList<>();
-        players.add(jhon);
+        players.add(john);
         players.add(elizabeth);
         players.add(ronald);
         players.add(enzo);
@@ -97,7 +98,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method updates the board correctly
+     * Tests if the method updates the board correctly.
      */
     @Test
     void testSetBoard(){
@@ -112,7 +113,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method returns the board correctly
+     * Tests if the method returns the board correctly.
      */
     @Test
     void testGetBoard(){
@@ -124,7 +125,7 @@ class GameTest {
     }
 
     /**
-     * tests if the method correctly generates a random commonGoal
+     * Tests if the method correctly generates a random commonGoal.
      */
     @Test
     void testRandomCommonGoal(){
@@ -132,9 +133,9 @@ class GameTest {
         ArrayList<CommonGoal> test= new ArrayList<>();
         try{
             test = game.randomCommonGoals();
-        } catch(Exception e){}
+        } catch(Exception ignore){}
         game.setCommonGoals(test);
-        assertTrue(game.getCommonGoals().get(0) instanceof CommonGoal);
-        assertTrue(game.getCommonGoals().get(1) instanceof CommonGoal);
+        assertNotNull(game.getCommonGoals().get(0).getStrategy());
+        assertNotNull(game.getCommonGoals().get(1).getStrategy());
     }
 }

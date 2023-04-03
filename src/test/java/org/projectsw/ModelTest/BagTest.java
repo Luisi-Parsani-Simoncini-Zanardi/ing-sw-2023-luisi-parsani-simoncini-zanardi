@@ -10,7 +10,7 @@ class BagTest {
 
     /**
      * Tests if the bag is well created,
-     * that is formed by 22 tiles of each type and that every imageNumber is used
+     * that is formed by 22 tiles of each type and that every imageNumber is used.
      */
     @Test
     void integrityBagTest(){
@@ -62,7 +62,7 @@ class BagTest {
     }
 
     /**
-     * Tests if get size always returns the right size of the bag afer every pop
+     * Tests if getSize always returns the right size of the bag after every pop.
      */
     @Test
     void getSizeTest(){
@@ -74,8 +74,8 @@ class BagTest {
     }
 
     /**
-     * test if the Tiles returned from the pop method are of the right type
-     * also tests if popping when the bag is empty always returns an EMPTY tile
+     * Tests if the Tiles returned from the pop method are of the right type;
+     * also tests if popping when the bag is empty always returns an EMPTY tile.
      */
     @Test
     void correctPopTest() {
@@ -93,6 +93,4 @@ class BagTest {
         tile = bag.pop();
         assertEquals(TilesEnum.EMPTY,tile.getTile());
     }
-
-    //actually we dont test if the shuffle method actually randomize our bag
 }

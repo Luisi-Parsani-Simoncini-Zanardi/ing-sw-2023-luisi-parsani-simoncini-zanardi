@@ -3,13 +3,10 @@ package org.projectsw.Model.CommonGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
-public class Edges extends ShapeBehavior{
-    public Edges(){
-        super();
-        this.commonGoalCode = 8;
-    }
+public class Edges implements CommonGoalStrategy{
 
     /**
+     * Checks that the corners of the shelf are all the same type
      * @param shelf is the player shelf
      * @return true if the edges of the shelf are the same TileEnum type and not EMPTY type
      */

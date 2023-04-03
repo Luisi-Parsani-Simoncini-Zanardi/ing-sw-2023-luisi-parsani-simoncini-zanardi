@@ -3,14 +3,10 @@ package org.projectsw.Model.CommonGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
-public class EightEquals extends ShapeBehavior {
-
-    public EightEquals(){
-        super();
-        this.commonGoalCode = 9;
-    }
+public class EightEquals implements CommonGoalStrategy {
 
     /**
+     * Checks that there are at least 8 identical tiles in the shelf
      * @param shelf is the player shelf
      * @return true if there is at least eight equal tiles in the shelf
      */

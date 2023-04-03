@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChatTest {
 
     /**
-     * tests if the method addChatLog correctly add a String to the ArrayList chat
+     * Tests if the method addChatLog correctly add a String to the ArrayList chat.
      */
     @Test
     void testAddChatLog(){
@@ -38,7 +38,7 @@ class ChatTest {
     }
 
     /**
-     * tests if the method actually returns an ArrayList containing the right values
+     * Tests if the method actually returns an ArrayList containing the right values.
      */
     @Test
     void testGetChat() {
@@ -50,5 +50,6 @@ class ChatTest {
         prova.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class", time));
         for (int i=0; i<chat.getChat().size(); i++)
             assertEqualMessage(prova.get(i), chat.getChat().get(i));
+
     }
 }

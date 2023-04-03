@@ -6,14 +6,10 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class RowGroup extends RowBehavior{
-
-    public RowGroup(){
-        super();
-        this.commonGoalCode = 7;
-    }
+public class RowGroup extends TileControl{
 
     /**
+     * Checks that there are at least 4 columns with at most 3 different tile types
      * @param shelf is the player shelf
      * @return true if there are at least 4 rows with at most 3 different tile types, returns false otherwise
      */

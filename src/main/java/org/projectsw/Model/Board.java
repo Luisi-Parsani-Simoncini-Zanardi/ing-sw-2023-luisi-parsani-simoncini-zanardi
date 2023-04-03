@@ -13,7 +13,7 @@ public class Board{
     private Bag bag;
 
     /**
-     * Constructs a Board full of unused tiles
+     * Constructs a Board full of unused tiles.
      */
     public Board(){
         board = new Tile[9][9];
@@ -27,10 +27,7 @@ public class Board{
     }
 
     /**
-     * Constructs a Board object from a json file
-     * initializes the board for the numer of players requested
-     * thows IOException if comes an error opening the file, thows IndexOutOfBoundsExeption if
-     * the number of players is not 2,3 or 4
+     * Constructs a Board object from a json file, initializing the board for the number of players requested.
      * @param playersNumber the number of players playing the game
      */
     public Board(int playersNumber) {

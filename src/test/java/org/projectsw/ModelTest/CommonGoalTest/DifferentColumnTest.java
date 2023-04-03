@@ -2,6 +2,7 @@ package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.DifferentColumn;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
@@ -12,11 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class DifferentColumnTest {
 
     /**
-     * tests if the algorithm successfully checks that the shelf has at least 2 columns with all different tiles
+     * Tests if the algorithm successfully checks that the shelf has at least 2 columns with all different tiles
      */
     @Test
     void checkTrue() {
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<2; i++)
             try {
@@ -26,16 +28,17 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
-        assertTrue(differentColumn.check(shelf));
+            }catch(Exception ignored){}
+        assertTrue(differentColumn.checkRequirements(shelf));
     }
 
     /**
-     *     tests that the algorithm returns false when the shelf has few types in the columns
+     * Tests that the algorithm returns false when the shelf has few types in the columns
      */
     @Test
     void fewTypes() {
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
             try {
@@ -45,16 +48,17 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
-        assertFalse(differentColumn.check(shelf));
+            }catch(Exception ignored){}
+        assertFalse(differentColumn.checkRequirements(shelf));
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf used not allowed types
+     * Tests if the algorithm successfully checks that the shelf used not allowed types
      */
     @Test
     void emptyTiles(){
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
             try {
@@ -64,16 +68,17 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
-        assertFalse(differentColumn.check(shelf));
+            }catch(Exception ignored){}
+        assertFalse(differentColumn.checkRequirements(shelf));
     }
 
     /**
-     * tests if the algorithm successfully checks that the shelf has too few columns of the right kind
+     * Tests if the algorithm successfully checks that the shelf has too few columns of the right kind
      */
     @Test
     void fewRows(){
-        CommonGoal differentColumn = new DifferentColumn();
+        CommonGoalStrategy strategy = new DifferentColumn();
+        CommonGoal differentColumn = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<1; i++)
             try {
@@ -83,7 +88,7 @@ class DifferentColumnTest {
                 shelf.insertTiles(new Tile(TilesEnum.FRAMES,0), 3, i);
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS,0), 4, i);
                 shelf.insertTiles(new Tile(TilesEnum.GAMES,0), 5, i);
-            }catch(Exception e){}
-        assertFalse(differentColumn.check(shelf));
+            }catch(Exception ignored){}
+        assertFalse(differentColumn.checkRequirements(shelf));
     }
 }
