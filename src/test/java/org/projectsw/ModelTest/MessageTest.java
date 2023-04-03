@@ -53,6 +53,9 @@ public class MessageTest {
         assertEquals(contentTest, contentAssert);
     }
 
+    /**
+     * test if the method getSender retrieve the correct sender
+     */
     @Test
     public void getSenderTest() {
         LocalTime time = LocalTime.now();
@@ -63,6 +66,9 @@ public class MessageTest {
         assertEquals(senderTest, senderAssert.getNickname());
     }
 
+    /**
+     * test if the method getTime retrieve the correct time
+     */
     @Test
     public void getTimeTest() {
         LocalTime time = LocalTime.now();

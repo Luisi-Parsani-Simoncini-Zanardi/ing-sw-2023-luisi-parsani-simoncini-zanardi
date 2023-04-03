@@ -44,7 +44,15 @@ public class Message {
      */
     public ArrayList<Player> getRecipients() { return this.recipients; }
 
+    /**
+     * return the sender of the message
+     * @return sender
+     */
     public Player getSender() { return this.sender; }
 
+    /**
+     * return the time of the message
+     * @return time
+     */
     public LocalTime getTime() { return this.time; }
 }
