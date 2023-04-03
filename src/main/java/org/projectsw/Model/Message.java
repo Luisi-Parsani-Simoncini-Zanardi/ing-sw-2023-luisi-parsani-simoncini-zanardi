@@ -1,6 +1,7 @@
 package org.projectsw.Model;
 
 import java.util.ArrayList;
+import java.time.LocalTime;
 
 /**
  * this class represent a single message object with a single sender, the content of the message and a
@@ -12,14 +13,17 @@ public class Message {
     private final String content;
     private ArrayList<Player> recipients;
 
+    private final LocalTime time;
+
     /**
      * construct a message object with the sender.
      * @param sender
      */
-    public Message(Player sender, String content) {
+    public Message(Player sender, String content, LocalTime time) {
         this.sender = sender;
         this.recipients = new ArrayList<>();
         this.content = content;
+        this.time = time;
     }
 
     /**
@@ -41,4 +45,6 @@ public class Message {
     public ArrayList<Player> getRecipients() { return this.recipients; }
 
     public Player getSender() { return this.sender; }
+
+    public LocalTime getTime() { return this.time; }
 }

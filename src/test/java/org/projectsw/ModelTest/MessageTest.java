@@ -3,6 +3,8 @@ package org.projectsw.ModelTest;
 import org.junit.Test;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;
+import java.time.LocalTime;
+
 
 import java.util.ArrayList;
 
@@ -18,9 +20,9 @@ public class MessageTest {
      */
     @Test
     public void setRecipientsTest() {
-
+        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test Content");
+        Message message = new Message(sender, "test Content", time);
 
         ArrayList<Player> recipients = new ArrayList<>();
         Player recipient1 = new Player("Nabbus", 2);
@@ -43,9 +45,9 @@ public class MessageTest {
      */
     @Test
     public void getContentTest() {
-
+        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test content");
+        Message message = new Message(sender, "test content", time);
         String contentTest = "test content";
         String contentAssert = message.getContent();
         assertEquals(contentTest, contentAssert);
@@ -53,10 +55,19 @@ public class MessageTest {
 
     @Test
     public void getSenderTest() {
+        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test content");
+        Message message = new Message(sender, "test content", time);
         String senderTest = "Pippo";
         Player senderAssert = message.getSender();
         assertEquals(senderTest, senderAssert.getNickname());
+    }
+
+    @Test
+    public void getTimeTest() {
+        LocalTime time = LocalTime.now();
+        Player sender = new Player("Pippo", 1);
+        Message message = new Message(sender, "test content", time);
+        assertEquals(time, message.getTime());
     }
 }

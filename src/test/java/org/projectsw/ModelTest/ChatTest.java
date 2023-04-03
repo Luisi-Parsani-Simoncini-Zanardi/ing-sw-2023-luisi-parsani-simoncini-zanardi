@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Chat;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;
+import java.time.LocalTime;
 
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,11 +16,12 @@ class ChatTest {
      */
     @Test
     void testAddChatLog(){
+        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
         Chat chat = new Chat();
-        chat.addChatLog(new Message(sender, "Testing"));
-        chat.addChatLog(new Message(sender, "class"));
-        chat.addChatLog(new Message(sender, "chat"));
+        chat.addChatLog(new Message(sender, "Testing", time));
+        chat.addChatLog(new Message(sender, "class", time));
+        chat.addChatLog(new Message(sender, "chat", time));
         assertEquals("Testing", chat.getChat().get(0).getContent());
         assertEquals("class", chat.getChat().get(1).getContent());
         assertEquals("chat", chat.getChat().get(2).getContent());
@@ -40,11 +42,12 @@ class ChatTest {
      */
     @Test
     void testGetChat() {
+        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
         Chat chat = new Chat();
         ArrayList<Message> prova = new ArrayList<>();
-        chat.addChatLog(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
-        prova.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
+        chat.addChatLog(new Message(sender, "Hi i'm Lorenzo and im testing the chat class",time));
+        prova.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class", time));
         for (int i=0; i<chat.getChat().size(); i++)
             assertEqualMessage(prova.get(i), chat.getChat().get(i));
     }
