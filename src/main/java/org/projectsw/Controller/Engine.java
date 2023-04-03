@@ -28,7 +28,6 @@ public class Engine {
     public void playerJoin (String nickname){
         int playerLength = game.getPlayers().size();
         Player player = new Player(nickname, playerLength+1);
-        //TODO: aggiungere vincolo nickname univoco
         if (playerLength==0){
             game.setFirstPlayer(player);
             game.setCurrentPlayer(player);
