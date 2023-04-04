@@ -17,7 +17,7 @@ class EightEqualsTest {
      */
     @Test
     void checkTrue() {
-        CommonGoalStrategy strategy = new EightEquals();
+        CommonGoalStrategy strategy = new EightEquals(9);
         CommonGoal eightEquals = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<6; i++)
@@ -36,7 +36,7 @@ class EightEqualsTest {
      */
     @Test
     void checkFalse() {
-        CommonGoalStrategy strategy = new EightEquals();
+        CommonGoalStrategy strategy = new EightEquals(9);
         CommonGoal eightEquals = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)

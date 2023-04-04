@@ -3,7 +3,15 @@ package org.projectsw.Model.CommonGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
-public class EightEquals implements CommonGoalStrategy {
+public class EightEquals extends CommonGoalStrategy {
+
+    /**
+     * Creates a new instance of the EightEquals class using the unique code of the CommonGoal
+     * @param strategyCode is the unique code of the CommonGoal instance to be created
+     */
+    public EightEquals(int strategyCode){
+        super(strategyCode);
+    }
 
     /**
      * Checks that there are at least 8 identical tiles in the shelf

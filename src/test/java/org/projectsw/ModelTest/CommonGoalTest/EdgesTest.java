@@ -17,7 +17,7 @@ class EdgesTest {
      */
     @Test
     void checkTrue() {
-        CommonGoalStrategy strategy = new Edges();
+        CommonGoalStrategy strategy = new Edges(8);
         CommonGoal edge = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -34,7 +34,7 @@ class EdgesTest {
      */
     @Test
     void checkDifferentType(){
-        CommonGoalStrategy strategy = new Edges();
+        CommonGoalStrategy strategy = new Edges(8);
         CommonGoal edge = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -51,7 +51,7 @@ class EdgesTest {
      */
     @Test
     void checkAllowed(){
-        CommonGoalStrategy strategy = new Edges();
+        CommonGoalStrategy strategy = new Edges(8);
         CommonGoal edge = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {

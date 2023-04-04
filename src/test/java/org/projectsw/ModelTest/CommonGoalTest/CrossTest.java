@@ -18,7 +18,7 @@ class CrossTest {
      */
     @Test
     void checkTrue() {
-        CommonGoalStrategy strategy = new Cross();
+        CommonGoalStrategy strategy = new Cross(10);
         CommonGoal cross = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
             try {
@@ -36,7 +36,7 @@ class CrossTest {
      */
     @Test
     void noCross() {
-        CommonGoalStrategy strategy = new Cross();
+        CommonGoalStrategy strategy = new Cross(10);
         CommonGoal cross = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)

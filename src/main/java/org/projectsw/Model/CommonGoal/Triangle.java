@@ -5,7 +5,7 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class Triangle implements CommonGoalStrategy {
+public class Triangle extends CommonGoalStrategy {
 
     /**
      * Checks that there are 5 columns of increasing or descending height starting from the first column on the left or right,

@@ -3,7 +3,7 @@ package org.projectsw.Model.CommonGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
-public class Diagonal implements CommonGoalStrategy {
+public class Diagonal extends CommonGoalStrategy {
 
     /**
      * check that there is at least 1 diagonal pattern in the shelf
@@ -30,12 +30,10 @@ public class Diagonal implements CommonGoalStrategy {
                 shelf.getTileShelf(0,4).getTile().equals(shelf.getTileShelf(3,1).getTile())&&
                 shelf.getTileShelf(0,4).getTile().equals(shelf.getTileShelf(4,0).getTile()))
             return true;
-        else if(shelf.getTileShelf(1,4).getTile() != TilesEnum.EMPTY &&
-                shelf.getTileShelf(1,4).getTile().equals(shelf.getTileShelf(2,3).getTile())&&
-                shelf.getTileShelf(1,4).getTile().equals(shelf.getTileShelf(3,2).getTile())&&
-                shelf.getTileShelf(1,4).getTile().equals(shelf.getTileShelf(4,1).getTile())&&
-                shelf.getTileShelf(1,4).getTile().equals(shelf.getTileShelf(5,0).getTile()))
-            return true;
-        return false;
+        else return shelf.getTileShelf(1, 4).getTile() != TilesEnum.EMPTY &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(2, 3).getTile()) &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(3, 2).getTile()) &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(4, 1).getTile()) &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(5, 0).getTile());
     }
 }
