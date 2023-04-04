@@ -142,7 +142,7 @@ public class Game{
         int playerLength = getPlayers().size();
         for (int i = 0; i<playerLength; i++) {
             if(getPlayers().get(i).getNickname().equals(player.getNickname()))
-                throw new InvalidNameException("Invalid name");
+                throw new InvalidNameException("Invalid name, must be unique");
         }
         if (playerLength<4){
             players.add(player);

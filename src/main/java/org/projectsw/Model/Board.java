@@ -31,8 +31,8 @@ public class Board{
      * @param playersNumber the number of players playing the game
      * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
      */
-    public Board(int playersNumber) {
-        if(playersNumber<2 || playersNumber>4) throw new IllegalArgumentException();
+    public Board(int playersNumber) throws IllegalArgumentException{
+        if(playersNumber<2 || playersNumber>4) throw new IllegalArgumentException("Number of players not between 2 and 4");
         try{
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
@@ -83,7 +83,7 @@ public class Board{
      * @return the Tile at the given position
      * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
      */
-    public Tile getTileFromBoard(int row, int column){
+    public Tile getTileFromBoard(int row, int column) throws IndexOutOfBoundsException{
         if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
         else {
             Tile tmp = board[row][column];
@@ -115,7 +115,7 @@ public class Board{
      * @param column the column index of the position to place the Tile at
      * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
      */
-    public void updateBoard(Tile tile, int row, int column){
+    public void updateBoard(Tile tile, int row, int column) throws IndexOutOfBoundsException{
         if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
     }

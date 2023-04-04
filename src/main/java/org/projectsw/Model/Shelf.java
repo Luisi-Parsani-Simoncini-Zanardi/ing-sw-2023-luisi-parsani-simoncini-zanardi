@@ -44,7 +44,7 @@ public class Shelf {
      * @param column coordinate for the column
      * @return the tile at the coordinates row x column
      */
-    public Tile getTileShelf(int row, int column){
+    public Tile getTileShelf(int row, int column) throws IndexOutOfBoundsException{
         if( row > 5 || column > 4) throw new IndexOutOfBoundsException();
         return shelf[row][column];
     }
@@ -53,7 +53,7 @@ public class Shelf {
      * Sets the matrix of tiles for the shelf from the given shelf.
      * @param shelf the shelf where the matrix of tiles is taken from
      */
-    public void setShelf(Tile[][] shelf){
+    public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
         if(shelf.length != 6 || shelf[0].length != 5) throw new IllegalArgumentException();
         this.shelf = shelf;
     }
@@ -68,7 +68,7 @@ public class Shelf {
      * @throws UnusedTilesException if the tile is unused
      * @throws IndexOutOfBoundsException if the row or column is out of bounds
      */
-    public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException {
+    public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException, IndexOutOfBoundsException {
         if(row>5 || column > 4) throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
