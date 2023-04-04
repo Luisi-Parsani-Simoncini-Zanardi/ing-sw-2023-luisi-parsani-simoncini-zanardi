@@ -2,6 +2,9 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.MaximumPlayerException;
+import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 
@@ -147,5 +150,44 @@ class GameTest {
         game.setCommonGoals(test);
         assertNotNull(game.getCommonGoals().get(0).getStrategy());
         assertNotNull(game.getCommonGoals().get(1).getStrategy());
+    }
+
+    /**
+     * Tests if the method correctly returns the chat.
+     */
+    @Test
+    void testSetGetChat(){
+        Game game = new Game();
+        Chat chat = new Chat();
+        game.setChat(chat);
+        assertEquals(chat, game.getChat());
+    }
+
+    /**
+     * Tests if the method correctly adds players to the game.
+     */
+    @Test
+    void testAddPlayer(){
+        Game game = new Game();
+        Player james = new Player("James", 1);
+        Player kirk = new Player("Kirk", 2);
+        Player cliff = new Player("Cliff", 3);
+        Player lars = new Player("Lars", 4);
+        Player jason = new Player("Jason", 5);
+        Player cliff2 = new Player("Cliff", 5);
+        try {
+            game.addPlayer(james);
+            game.addPlayer(kirk);
+            game.addPlayer(cliff);
+            game.addPlayer(lars);
+        } catch (MaximumPlayerException ignore) {
+        } catch (InvalidNameException ignore) {;
+        }
+        assertEquals(james, game.getPlayers().get(0));
+        assertEquals(kirk, game.getPlayers().get(1));
+        assertEquals(cliff, game.getPlayers().get(2));
+        assertEquals(lars, game.getPlayers().get(3));
+        assertThrows(MaximumPlayerException.class, () -> game.addPlayer(jason));
+        assertThrows(InvalidNameException.class, () -> game.addPlayer(cliff2));
     }
 }
