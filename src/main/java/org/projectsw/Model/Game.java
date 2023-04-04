@@ -174,26 +174,6 @@ public class Game{
 
         return randomGoalsClasses;
     }
-
-    /**
-     * Creates a custom 2 elements CommonGoal array given their code.
-     * @param code0 the first code
-     * @param code1 the second code
-     * @return a custom CommonGoal array
-     * @throws NoSuchMethodException when there's no method defined as such
-     * @throws InvocationTargetException when a called method generates an exception
-     * @throws InstantiationException when the class cannot be instantiated
-     * @throws IllegalAccessException when the caller cannot access the method or parameter
-     */
-    public ArrayList<CommonGoal> getCommonGoalsByCode(int code0, int code1) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        ArrayList<Class<?>> allCommon;
-        allCommon = fillCommonGoalsStrategyArray();
-        ArrayList<CommonGoal> commonGoals = new ArrayList<>();
-        commonGoals.add((CommonGoal)allCommon.get(code0-1).getDeclaredConstructor().newInstance());
-        commonGoals.add((CommonGoal)allCommon.get(code1-1).getDeclaredConstructor().newInstance());
-
-        return commonGoals;
-    }
     
     /**
      * Returns the ArrayList of commonGoals containing two random commonGoals chosen from the children of CommonGoal.
