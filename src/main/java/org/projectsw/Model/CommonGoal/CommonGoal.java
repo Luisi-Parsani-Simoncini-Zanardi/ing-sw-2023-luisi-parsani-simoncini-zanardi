@@ -4,7 +4,6 @@ import org.projectsw.Model.Shelf;
 
 public class CommonGoal{
     private int redeemedNumber;
-
     private final CommonGoalStrategy strategy;
 
     public CommonGoal(CommonGoalStrategy strategy){
