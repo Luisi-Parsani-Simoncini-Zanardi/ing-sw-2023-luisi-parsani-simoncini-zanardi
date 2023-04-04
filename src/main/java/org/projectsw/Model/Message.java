@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.time.LocalTime;
 
 /**
- * this class represent a single message object with a single sender, the content of the message and a
- * list of all the recipients that needs to receive the message
+ * This class represent a single message object with a single sender, the content of the message and a
+ * list of all the recipients that needs to receive the message.
  */
 public class Message {
 
@@ -18,9 +18,9 @@ public class Message {
 
 
     /**
-     * Construct a message object with the sender and the content.
-     * @param sender player who sent the message
-     * @param content message content
+     * Constructs a message object with the sender and the content.
+     * @param sender the player who sent the message
+     * @param content the content of the message
      */
     public Message(Player sender, String content) {
         this.sender = sender;
@@ -29,8 +29,8 @@ public class Message {
     }
 
     /**
-     * set the list of recipients of the message
-     * @param recipients
+     * Sets the list of recipients of the message.
+     * @param recipients the recipients of the message
      */
     public void setRecipients (ArrayList<Player> recipients) throws InvalidNameException {
         ArrayList<String> recipientName = new ArrayList<>();
@@ -42,20 +42,20 @@ public class Message {
     }
 
     /**
-     * return the content of the message
-     * @return message content
+     * Returns the content of the message.
+     * @return the content of the message
      */
     public String getContent() { return this.content; }
 
     /**
-     * return the list of the recipients of the message
-     * @return recipients list
+     * Returns the list of the recipients of the message.
+     * @return the recipients list
      */
     public ArrayList<Player> getRecipients() { return this.recipients; }
 
     /**
-     * return the sender of the message
-     * @return sender
+     * Returns the sender of the message.
+     * @return the sender of the message
      */
     public Player getSender() { return this.sender; }
 
