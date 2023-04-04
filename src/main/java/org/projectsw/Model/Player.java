@@ -158,7 +158,7 @@ public class Player {
      *@return the selected tile
      *@throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= temporaryTiles.size())
      */
-    public Tile selectTile(int i){
+    public Tile selectTile(int i) throws IndexOutOfBoundsException {
         if(i < 0 || i >= temporaryTiles.size()) throw new IndexOutOfBoundsException();
         Tile temp = temporaryTiles.get(i);
         temporaryTiles.remove(i);

@@ -60,7 +60,7 @@ public class PersonalGoal {
                 }
             }
         }catch (IOException e){
-            System.out.println("Error opening the file:"+e.getMessage());
+            System.out.println("Error opening the file:"+ e.getMessage());
         }
 
     }
