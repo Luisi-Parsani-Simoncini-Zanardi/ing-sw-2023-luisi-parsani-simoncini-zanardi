@@ -6,6 +6,14 @@ import org.projectsw.Model.TilesEnum;
 public class Diagonal extends CommonGoalStrategy {
 
     /**
+     * Creates a new instance of the Diagonal class using the unique code of the CommonGoal
+     * @param strategyCode is the unique code of the CommonGoal instance to be created
+     */
+    public Diagonal(int strategyCode){
+        super(strategyCode);
+    }
+
+    /**
      * check that there is at least 1 diagonal pattern in the shelf
      * @param shelf is the player shelf
      * @return true if there is a diagonal of Tiles equals to each other, false otherwise

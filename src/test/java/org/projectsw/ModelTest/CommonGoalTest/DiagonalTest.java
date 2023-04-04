@@ -17,7 +17,7 @@ class DiagonalTest {
      */
     @Test
     void checkTrue1() {
-        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
@@ -32,7 +32,7 @@ class DiagonalTest {
      */
     @Test
     void checkTrue2() {
-        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<5; i++)
@@ -47,7 +47,7 @@ class DiagonalTest {
      */
     @Test
     void checkTrue3() {
-        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         int k = 0;
@@ -66,7 +66,7 @@ class DiagonalTest {
      */
     @Test
     void checkTrue4() {
-        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         int k = 0;
@@ -87,7 +87,7 @@ class DiagonalTest {
      */
     @Test
     void checkFalse() {
-        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<4; i++)
@@ -106,7 +106,7 @@ class DiagonalTest {
      */
     @Test
     void checkEmpty() {
-        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         assertFalse(diagonal.checkRequirements(shelf));
@@ -117,7 +117,7 @@ class DiagonalTest {
      */
     @Test
     void checkEmptyTile() {
-        CommonGoalStrategy strategy = new Diagonal();
+        CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for(int i=0; i<4; i++)

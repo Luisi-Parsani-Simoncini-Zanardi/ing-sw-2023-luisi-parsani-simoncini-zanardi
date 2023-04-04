@@ -168,8 +168,8 @@ public class Game{
         randomGoalsClasses.add(Edges.class);
         randomGoalsClasses.add(EightEquals.class);
         randomGoalsClasses.add(Cross.class);
-        randomGoalsClasses.add(DiagonalTriangle.class);
-        randomGoalsClasses.add(DiagonalTriangle.class);
+        randomGoalsClasses.add(Diagonal.class);
+        randomGoalsClasses.add(Triangle.class);
 
         return randomGoalsClasses;
     }

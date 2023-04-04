@@ -11,11 +11,11 @@ public class RowColumn extends CommonGoalStrategy{
 
     /**
      * Creates a new instance of the RowColumn class using the unique code of the CommonGoal to be created to correctly initialize the parameters
-     * @param code is the unique code of the CommonGoal instance to be created
+     * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public RowColumn(int code){
-        super(code);
-        switch (code) {
+    public RowColumn(int strategyCode){
+        super(strategyCode);
+        switch (strategyCode) {
             case 2 -> {
                 this.numObjects = 2;
                 this.RowColumn = false;
