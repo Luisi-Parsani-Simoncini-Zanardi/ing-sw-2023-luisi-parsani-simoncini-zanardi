@@ -4,6 +4,9 @@ import org.projectsw.Exceptions.InvalidNameException;
 
 import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.*;
+
+import java.util.ArrayList;
+
 /**
  * The class contains the application logic methods of the game.
  */
@@ -59,7 +62,17 @@ public class Engine {
 
     public void resetGame(){}
 
-    public void sayInChat(){}
+    /**
+     * create a message with sender, content and recipients and add it to the chat
+     * @param sender message sender
+     * @param content message content
+     * @param recipients message recipients
+     */
+    public void sayInChat(Player sender, String content, ArrayList<Player> recipients){
+        Message message = new Message(sender, content);
+        message.setRecipients(recipients);
+        game.getChat().addChatLog(message);
+    }
 
     public void fillBoard(){}
 

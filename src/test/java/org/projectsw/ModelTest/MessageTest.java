@@ -20,9 +20,8 @@ public class MessageTest {
      */
     @Test
     public void setRecipientsTest() {
-        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test Content", time);
+        Message message = new Message(sender, "test Content");
 
         ArrayList<Player> recipients = new ArrayList<>();
         Player recipient1 = new Player("Nabbus", 2);
@@ -45,9 +44,8 @@ public class MessageTest {
      */
     @Test
     public void getContentTest() {
-        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test content", time);
+        Message message = new Message(sender, "test content");
         String contentTest = "test content";
         String contentAssert = message.getContent();
         assertEquals(contentTest, contentAssert);
@@ -58,22 +56,10 @@ public class MessageTest {
      */
     @Test
     public void getSenderTest() {
-        LocalTime time = LocalTime.now();
         Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test content", time);
+        Message message = new Message(sender, "test content");
         String senderTest = "Pippo";
         Player senderAssert = message.getSender();
         assertEquals(senderTest, senderAssert.getNickname());
     }
-
-    /**
-     * test if the method getTime retrieve the correct time
-     */
- /*   @Test
-    public void getTimeTest() {
-        LocalTime time = LocalTime.now();
-        Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test content", time);
-        assertEquals(time, message.getTime());
-    }*/
 }

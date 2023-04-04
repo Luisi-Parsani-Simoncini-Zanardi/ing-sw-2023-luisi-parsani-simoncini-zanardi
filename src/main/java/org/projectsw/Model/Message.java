@@ -13,17 +13,16 @@ public class Message {
     private final String content;
     private ArrayList<Player> recipients;
 
-   // private final LocalTime time;
 
     /**
-     * construct a message object with the sender.
-     * @param sender
+     * Construct a message object with the sender and the content.
+     * @param sender player who sent the message
+     * @param content message content
      */
-    public Message(Player sender, String content, LocalTime time) {
+    public Message(Player sender, String content) {
         this.sender = sender;
         this.recipients = new ArrayList<>();
         this.content = content;
-       // this.time = time;
     }
 
     /**
@@ -50,9 +49,4 @@ public class Message {
      */
     public Player getSender() { return this.sender; }
 
-    /**
-     * return the time of the message
-     * @return time
-     */
-//    public LocalTime getTime() { return this.time; }
 }

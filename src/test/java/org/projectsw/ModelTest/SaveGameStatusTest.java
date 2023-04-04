@@ -92,7 +92,6 @@ class SaveGameStatusTest {
         assertEquals(playerTest.getPoints(), playerAssert.getPoints());
         assertEqualsShelf(playerTest.getShelf(), playerAssert.getShelf());
         assertEqualsPersonalGoal(playerTest.getPersonalGoal(), playerAssert.getPersonalGoal());
-        //assertEquals(playerTest.isPersonalGoalRedeemed(), playerAssert.isPersonalGoalRedeemed()); attribute removed
         assertEquals(playerTest.isCommonGoalRedeemed(0), playerAssert.isCommonGoalRedeemed(0));
         assertEquals(playerTest.isCommonGoalRedeemed(1), playerAssert.isCommonGoalRedeemed(1));
     }
@@ -161,21 +160,21 @@ class SaveGameStatusTest {
         Gson gson = new Gson();
         System.out.println(json);
 
-        /*String substring = json.substring(json.indexOf("commonGoals") - 2);
+        String substring = json.substring(json.indexOf("commonGoals") - 2);
         String newJson = json.replace(substring, "}");
         char[] charArray = substring.toCharArray();
         charArray[0] = '{';
         String newSub = String.valueOf(charArray);
 
-        Gson gsonCommon = new Gson();
+        /*Gson gsonCommon = new Gson();
         JsonElement element = gsonCommon.fromJson(newSub, JsonElement.class);
         JsonArray commonGoalsArray = element.getAsJsonObject().getAsJsonArray("commonGoals");
         int code0 = commonGoalsArray.get(0).getAsJsonObject().get("commonGoalCode").getAsInt();
-        int code1 = commonGoalsArray.get(1).getAsJsonObject().get("commonGoalCode").getAsInt();
+        int code1 = commonGoalsArray.get(1).getAsJsonObject().get("commonGoalCode").getAsInt();*/
 
         Game data = gson.fromJson(newJson, Game.class);
-        data.setCommonGoals(data.getCommonGoalsByCode(code0, code1));*/
-        Game data = gson.fromJson(json, Game.class);
+        // data.setCommonGoals(data.getCommonGoalsByCode(code0, code1));*/
+        // Game data = gson.fromJson(json, Game.class);
 
 
         assertEqualsPlayer(game.getFirstPlayer(), data.getFirstPlayer());
