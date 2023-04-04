@@ -45,7 +45,7 @@ public class Board{
                 }
                 endGame = false;
                 bag = new Bag();
-            }catch (IOException e){
+            }catch (IOException e){ //TODO: aggiungere casi di test per l'exception qui sotto
                 System.out.println("Error opening the json"+e.getMessage());
             }
     }
