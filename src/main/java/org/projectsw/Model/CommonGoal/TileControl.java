@@ -4,7 +4,9 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public abstract class TileControl implements CommonGoalStrategy{
+public abstract class TileControl extends CommonGoalStrategy{
+
+    public TileControl(){}
 
     /**
      * Returns the number of different Type of tiles in the row and checks that there aren't UNUSED or EMPTY Tiles

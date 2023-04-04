@@ -16,7 +16,7 @@ public class RowGroup extends TileControl{
     @Override
     public boolean check(Shelf shelf){
         ArrayList<TilesEnum> tiles = new ArrayList<TilesEnum>();
-        int rightRows=0;
+        int rightFind=0;
         for(int i=5; i>-1; i--) {
             for (int j = 0; j < 5; j++) {
                 tiles.add(shelf.getTileShelf(i, j).getTile());
@@ -24,9 +24,9 @@ public class RowGroup extends TileControl{
             if(this.differentTiles(tiles)==-1)
                 return false;
             else if(this.differentTiles(tiles)<4)
-                rightRows++;
+                rightFind++;
             tiles.clear();
-            if(rightRows == 4)
+            if(rightFind == 4)
                 return true;
         }
         return false;
