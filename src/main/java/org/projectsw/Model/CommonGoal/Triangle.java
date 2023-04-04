@@ -13,6 +13,13 @@ public class Triangle extends CommonGoalStrategy{
     public Triangle(int strategyCode){
         super(strategyCode);
     }
+
+    /**
+     * Returns true if the player's shelf has columns ascending or descending from left to right
+     * @param shelf is the player shelf
+     * @return true if the player's shelf has columns ascending or descending from left to right.
+     * Returns false otherwise
+     */
     @Override
     public boolean check(Shelf shelf){
 

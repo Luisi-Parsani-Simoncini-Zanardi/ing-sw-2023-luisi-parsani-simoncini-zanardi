@@ -39,7 +39,7 @@ public class RowColumn extends CommonGoalStrategy{
      * Checks that the player's shelf meets the CommonGoal requirements
      * @param shelf is the player shelf
      * @return true if the player shelf meets the requirements of the CommonGoal
-     * associated with GoalCode
+     * associated with strategyCode
      */
     @Override
     public boolean check(Shelf shelf) {

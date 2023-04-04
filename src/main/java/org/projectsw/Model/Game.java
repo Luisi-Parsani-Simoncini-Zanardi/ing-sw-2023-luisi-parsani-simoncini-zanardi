@@ -165,8 +165,8 @@ public class Game{
         randomGoalsClasses.add(RowColumn.class);
         randomGoalsClasses.add(RowColumn.class);
         randomGoalsClasses.add(RowColumn.class);
-        randomGoalsClasses.add(Edges.class);
-        randomGoalsClasses.add(EightEquals.class);
+        randomGoalsClasses.add(EdgesEightEquals.class);
+        randomGoalsClasses.add(EdgesEightEquals.class);
         randomGoalsClasses.add(Cross.class);
         randomGoalsClasses.add(Diagonal.class);
         randomGoalsClasses.add(Triangle.class);
