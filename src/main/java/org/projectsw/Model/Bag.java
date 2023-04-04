@@ -49,6 +49,7 @@ public class Bag {
     }
 
     public ArrayList<Tile> getBag() {
-        return tiles;
+        ArrayList<Tile> tmp = (ArrayList<Tile>) tiles.clone();
+        return tmp;
     }
 }

@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Bag;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
+
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BagTest {
@@ -92,5 +95,18 @@ class BagTest {
         }
         tile = bag.pop();
         assertEquals(TilesEnum.EMPTY,tile.getTile());
+    }
+
+    /**
+     * Tests if getBag returns the array correctly.
+     */
+    @Test
+    void testGetBag() {
+        Bag bag = new Bag();
+        ArrayList<Tile> tmp = bag.getBag();
+        for (int i=0; i<tmp.size(); i++)
+        {
+            assertEquals(tmp.get(i), bag.pop());
+        }
     }
 }
