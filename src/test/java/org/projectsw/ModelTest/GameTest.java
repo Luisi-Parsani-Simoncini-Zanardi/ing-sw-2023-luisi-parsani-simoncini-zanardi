@@ -1,5 +1,6 @@
 package org.projectsw.ModelTest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
@@ -9,6 +10,15 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
+
+    /**
+     * Cleans the list of used codes before each test.
+     */
+    @BeforeEach
+    void codesCleaner(){
+        PersonalGoal.cleanUsedCodes();
+    }
+
     /**
      * Tests if the method sets firstPlayer correctly.
      */
