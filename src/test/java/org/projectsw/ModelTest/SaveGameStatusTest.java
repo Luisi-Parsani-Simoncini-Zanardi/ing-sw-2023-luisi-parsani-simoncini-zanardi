@@ -1,10 +1,14 @@
 package org.projectsw.ModelTest;
 //TODO: sistemare questa classe, non è una classe di test
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import org.projectsw.Model.*;
+import java.lang.reflect.AccessibleObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SaveGameStatusTest {
@@ -141,22 +145,23 @@ class SaveGameStatusTest {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
     }*/
 
-    /*
-     * Checks if the gameToJson function correctly serialize and deserialize the Game class.
+
+     /** Checks if the gameToJson function correctly serialize and deserialize the Game class.
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws InstantiationException
      * @throws IllegalAccessException
-
+     */
     @Test
-    public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException ){
+    public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException{
 
         Game game = gameInitializer();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
         String json = saveGameStatus.gameToJson();
         Gson gson = new Gson();
+        System.out.println(json);
 
-        String substring = json.substring(json.indexOf("commonGoals") - 2);
+        /*String substring = json.substring(json.indexOf("commonGoals") - 2);
         String newJson = json.replace(substring, "}");
         char[] charArray = substring.toCharArray();
         charArray[0] = '{';
@@ -169,7 +174,8 @@ class SaveGameStatusTest {
         int code1 = commonGoalsArray.get(1).getAsJsonObject().get("commonGoalCode").getAsInt();
 
         Game data = gson.fromJson(newJson, Game.class);
-        data.setCommonGoals(data.getCommonGoalsByCode(code0, code1));
+        data.setCommonGoals(data.getCommonGoalsByCode(code0, code1));*/
+        Game data = gson.fromJson(json, Game.class);
 
 
         assertEqualsPlayer(game.getFirstPlayer(), data.getFirstPlayer());
@@ -179,10 +185,10 @@ class SaveGameStatusTest {
         }
         assertEqualsBoard(game.getBoard(), data.getBoard());
         assertEqualsChat(game.getChat(), data.getChat());
-        for(int i=0; i<game.getCommonGoals().size(); i++) {
+        /*for(int i=0; i<game.getCommonGoals().size(); i++) {
             assertEqualsCommonGoal(game.getCommonGoals().get(i), data.getCommonGoals().get(i));
-        }
-    }*/
+        }*/
+    }
 }
 
 
