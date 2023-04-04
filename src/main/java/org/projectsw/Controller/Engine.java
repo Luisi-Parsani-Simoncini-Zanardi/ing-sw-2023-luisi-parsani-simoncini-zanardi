@@ -17,6 +17,12 @@ public class Engine {
      * Initializes the game and his save.
      */
     private Game game;
+
+    /**
+     * get the game on which the controller is running
+     * @return current game
+     */
+    public Game getGame() { return this.game; }
     public void startGame(){
         this.game = new Game();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");
@@ -68,7 +74,7 @@ public class Engine {
      * @param content message content
      * @param recipients message recipients
      */
-    public void sayInChat(Player sender, String content, ArrayList<Player> recipients){
+    public void sayInChat(Player sender, String content, ArrayList<Player> recipients) throws InvalidNameException {
         Message message = new Message(sender, content);
         message.setRecipients(recipients);
         game.getChat().addChatLog(message);

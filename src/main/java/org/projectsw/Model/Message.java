@@ -1,5 +1,8 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.MaximumPlayerException;
+
 import java.util.ArrayList;
 import java.time.LocalTime;
 
@@ -29,7 +32,14 @@ public class Message {
      * set the list of recipients of the message
      * @param recipients
      */
-    public void setRecipients (ArrayList<Player> recipients) { this.recipients = recipients; }
+    public void setRecipients (ArrayList<Player> recipients) throws InvalidNameException {
+        ArrayList<String> recipientName = new ArrayList<>();
+        getRecipients().forEach((element) -> recipientName.add(element.getNickname()));
+        if (recipientName.contains(sender.getNickname())) {
+            throw new InvalidNameException("sender can't be recipients");
+        }
+        this.recipients = recipients;
+    }
 
     /**
      * return the content of the message
