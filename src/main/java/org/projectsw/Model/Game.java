@@ -1,5 +1,4 @@
 package org.projectsw.Model;
-//TODO: sistemare le varie exception
 
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.MaximumPlayerException;

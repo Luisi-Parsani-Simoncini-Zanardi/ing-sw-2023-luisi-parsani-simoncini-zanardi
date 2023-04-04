@@ -1,5 +1,5 @@
 package org.projectsw.ModelTest;
-//TODO: sistemare questa classe, non è una classe di test
+//TODO: !!!POST!!! sistemare questa classe una volta sistemato SaveGameStatus
 import org.projectsw.Model.*;
 
 import java.lang.reflect.InvocationTargetException;
