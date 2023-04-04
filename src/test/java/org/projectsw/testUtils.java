@@ -84,6 +84,19 @@ public class testUtils {
     }
 
     /**
+     * check if two Message objects are identical
+     * @param messageTest
+     * @param messageAssert
+     */
+    public void assertEqualsMessage (Message messageTest, Message messageAssert) {
+        assertEquals(messageTest.getContent(), messageAssert.getContent());
+        assertEqualsPlayer(messageTest.getSender(), messageAssert.getSender());
+        for (int i = 0; i<messageTest.getRecipients().size(); i++) {
+            assertEqualsPlayer(messageTest.getRecipients().get(i), messageAssert.getRecipients().get(i));
+        }
+    }
+
+    /**
      * check if two Chat objects are identical
      * @param chatTest a test Chat object
      * @param chatAssert another test Chat object

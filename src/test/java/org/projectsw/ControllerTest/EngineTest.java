@@ -6,12 +6,13 @@ import org.projectsw.Model.Game;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;
+import org.projectsw.testUtils;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EngineTest {
+class EngineTest extends testUtils {
 
     @Test
     void startGame() {
@@ -59,12 +60,12 @@ class EngineTest {
         Player recipient = new Player("Pipo", 2);
         ArrayList<Player> recipients = new ArrayList<>();
         recipients.add(recipient);
+        Message messageTest = new Message(sender, content);
+        messageTest.setRecipients(recipients);
         engine.sayInChat(sender, content, recipients);
 
         game.getChat().getChat().forEach((element) -> {
-            assertEquals(content, element.getContent());
-            assertEquals(sender, element.getSender());
-            assertEquals();
+            assertEqualsMessage(element, messageTest);
         });
 
     }
