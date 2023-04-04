@@ -57,7 +57,7 @@ public class PersonalGoal {
                         case "BOOKS" -> personalGoal[i][j] = TilesEnum.BOOKS;
                         default -> throw new IllegalArgumentException("Invalid tile value: " + str);
                     }
-                }
+                }//TODO: aggiungere casi di test per il default qui sopra e l'exception qui sotto
             }
         }catch (IOException e){
             System.out.println("Error opening the file:"+ e.getMessage());

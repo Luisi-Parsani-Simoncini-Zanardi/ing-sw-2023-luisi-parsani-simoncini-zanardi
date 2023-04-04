@@ -26,7 +26,7 @@ public class Engine {
     public void startGame(){
         this.game = new Game();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");
-        //TODO: aggiungere filepath
+        //TODO: !!!POST!!! aggiungere filepath
     }
 
     /**
@@ -40,7 +40,7 @@ public class Engine {
         if (playerLength==0){
             game.setFirstPlayer(player);
             game.setCurrentPlayer(player);
-            //TODO: aggiungere funzione che chiede al player quanti giocatori ci sono
+            //TODO: !!!POST!!! aggiungere funzione che chiede al player quanti giocatori ci sono
         }
         try {
             game.addPlayer(player);
