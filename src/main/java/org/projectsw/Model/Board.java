@@ -29,6 +29,7 @@ public class Board{
     /**
      * Constructs a Board object from a json file, initializing the board for the number of players requested.
      * @param playersNumber the number of players playing the game
+     * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
      */
     public Board(int playersNumber) {
         if(playersNumber<2 || playersNumber>4) throw new IllegalArgumentException();
@@ -80,10 +81,10 @@ public class Board{
      * @param row the row index of the Tile
      * @param column the column index of the Tile
      * @return the Tile at the given position
-     * @throws IndexOutOfBoundsException if the given row or column index is out of bounds
+     * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
      */
     public Tile getTileFromBoard(int row, int column){
-        if(row>8 || column>8) throw new IndexOutOfBoundsException();
+        if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
         else {
             Tile tmp = board[row][column];
             board[row][column] = new Tile(TilesEnum.EMPTY, 0);
@@ -112,10 +113,10 @@ public class Board{
      * @param tile the Tile to place on the board
      * @param row the row index of the position to place the Tile at
      * @param column the column index of the position to place the Tile at
-     * @throws IndexOutOfBoundsException if the given row or column index is out of bounds
+     * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
      */
     public void updateBoard(Tile tile, int row, int column){
-        if(row>8 || column>8) throw new IndexOutOfBoundsException();
+        if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
     }
 }

@@ -136,12 +136,13 @@ public class Game{
      * Adds a new player to the game.
      * @param player the player to be added
      * @throws MaximumPlayerException if the maximum number of players has already been reached (4 players)
+     * @throws InvalidNameException if the nickname is not unique
      */
     public void addPlayer(Player player) throws MaximumPlayerException, InvalidNameException {
         int playerLength = getPlayers().size();
         for (int i = 0; i<playerLength; i++) {
             if(getPlayers().get(i).getNickname().equals(player.getNickname()))
-                throw new InvalidNameException("invalid name");
+                throw new InvalidNameException("Invalid name");
         }
         if (playerLength<4){
             players.add(player);
