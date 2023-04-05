@@ -6,10 +6,13 @@ import org.projectsw.Model.TilesEnum;
 import java.awt.*;
 import java.util.ArrayList;
 
-//TODO: implementazione
 public class Groups extends CommonGoalStrategy{
 
+    //TODO: c'è qualcosa di strato nell'iteratore
+
     private final int groupDim;
+
+    private ArrayList<Point> coordinates;
 
     /**
      * Creates a new instance of the Groups class using the unique code of the CommonGoal.
@@ -19,6 +22,7 @@ public class Groups extends CommonGoalStrategy{
      */
     public Groups(int strategyCode){
         super(strategyCode);
+        this.coordinates = new ArrayList<>();
         if(this.StrategyCode == 3) {
             this.numObjects = 4;
             this.groupDim = 4;
@@ -40,16 +44,18 @@ public class Groups extends CommonGoalStrategy{
         boolean [][]matrix = new boolean[6][5];
 
         int rightGroup=0;
+        int dim;
 
         for(int i=5; i>-1; i--){
-            int dim=0;
             for (int j = 0; j < 5; j++) {
-                dim = this.customShelfIterator(shelf, matrix, shelf.getTileShelf(i,j).getTile(), i, j);
+                dim=0;
+                if(!matrix[i][j])
+                    dim = this.customShelfIterator(shelf, matrix, shelf.getTileShelf(i,j).getTile(), i, j);
+                if(dim >= this.groupDim)
+                    rightGroup++;
+                if(rightGroup == 5)//this.numObjects)
+                    return true;
             }
-            if(dim >= this.groupDim)
-                rightGroup++;
-            if(rightGroup == this.numObjects)
-                return true;
         }
         return false;
     }
@@ -64,20 +70,25 @@ public class Groups extends CommonGoalStrategy{
      * @return returns the size of the found group
      */
     private int customShelfIterator(Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
-        ArrayList<Point> coordinates = new ArrayList<>();
-
+        Point nextPoint;
+        //sopra
         if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type)
-            coordinates.add(new Point(row-1,column));
+            this.coordinates.add(new Point(row-1,column));
+        //sotto
         if(row+1 < 6 && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type)
-            coordinates.add(new Point(row+1,column));
+            this.coordinates.add(new Point(row+1,column));
+        //sinistra
         if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type)
-            coordinates.add(new Point(row,column-1));
+            this.coordinates.add(new Point(row,column-1));
+        //destra
         if(column+1 < 5 && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type)
-            coordinates.add(new Point(row,column+1));
+            this.coordinates.add(new Point(row,column+1));
 
-        for (Point coordinate : coordinates){
-            matrix[row][column]=true;
-            return 1 + customShelfIterator(shelf, matrix, type,(int)coordinate.getX(),(int)coordinate.getY());
+        matrix[row][column]=true;
+        if(this.coordinates.size()!=0) {
+            nextPoint = this.coordinates.get(0);
+            this.coordinates.remove(0);
+            return 1 + customShelfIterator(shelf, matrix, type, (int) nextPoint.getX(), (int) nextPoint.getY());
         }
         return 1;
     }
