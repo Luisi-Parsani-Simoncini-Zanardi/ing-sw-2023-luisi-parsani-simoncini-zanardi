@@ -70,11 +70,49 @@ public class Engine {
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
-        //chiama il metodo di inizio turno
+
     }
 
+    //turno
+        //chiama selectTiles/deselectTiles ad ogni click su board
+        //confermo la mia scelta, chiamo comfirmSelectedtiles
+        //chiama select column
+        //chiama placeTiles
+        //chiama endTurn
+            //chiama checkCommonGoal
+            //chiama endGame
+                //controlla di non essere già in endgame
+                //controlla che il giocatore abbia riempito la shelf
+                    // se vero, setta endGame e assegna punto
+            //chiama saveGameStatus
+            //passa il turno al giocatore successivo
+
     //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class
-    public void selctTiles(){}
+    public void selctTiles(int row, int column){
+        //checkSelectableTile(), eccede il numero fornito da checkRemaningColumnSpace
+        //butta in array coordinate (controllando se ha raggiunto il massimo)
+    }
+
+    public void deselectTiles(int row, int column){
+        //rimuove da array coordinate
+    }
+
+    private boolean checkSelectableTile(){
+        //la tile è selezionabile?
+        //la tile è adiacente alle altre nell'array?
+        return true;
+    }
+
+    public int checkRemaningColumnSpace() {
+        return 0;
+    }
+
+    public void comfirmSelectedTiles(){
+        //rimuove da board addTiles di player
+
+    }
+
+    public void selectColumn(){}
 
     public void placeTiles(){}
 
