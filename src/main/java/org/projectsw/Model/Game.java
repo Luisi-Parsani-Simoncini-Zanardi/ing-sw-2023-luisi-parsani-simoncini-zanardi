@@ -12,6 +12,8 @@ import java.util.Random;
  * including the board, players (with info on the currently playing one and the first one), chat, and common goals.
  */
 public class Game{
+
+    private GameStates gameState;
     private Player firstPlayer;
     private Player currentPlayer;
     private ArrayList<Player> players;
@@ -21,17 +23,36 @@ public class Game{
 
 
     /**
-     * Creates a new instance of the Game class with a new chat and an empty player list,
-     * first and current player are not set yet.
+     * Creates a new instance of an EMPTY Game, with a new chat, an empty player list,
+     * a full-unused board and an empty commonGals list. First and current player are not set yet.
      */
     public Game(){
-        Board board = new Board();
-        setBoard(board);
-        Chat chat = new Chat();
-        setChat(chat);
-        ArrayList<Player>players = new ArrayList<>();
-        setPlayers(players);
+        gameState = GameStates.EMPTY;
+        board = new Board();
+        chat = new Chat();
+        players = new ArrayList<>();
+        commonGoals = new ArrayList<>();
+    }
 
+    /**
+     * Creates a new instance of a Game, puts it in the LOBBY state, creating it with a new chat, an empty player list,
+     * a board set for the right number of players and an empty commonGals list.
+     * First and current player are not set yet.
+     */
+    public Game(int gameDimensions){
+        gameState = GameStates.LOBBY;
+        board = new Board(gameDimensions);
+        chat = new Chat();
+        players = new ArrayList<>();
+        commonGoals = new ArrayList<>();
+    }
+
+    /**
+     * Returns the current state of the game.
+     * @return the current state of the game.
+     */
+    public GameStates getGameState() {
+        return gameState;
     }
 
     /**
@@ -81,6 +102,14 @@ public class Game{
      */
     public Chat getChat() {
         return chat;
+    }
+
+    /**
+     * Sets the game state as the passed parameter.
+     * @param gameState the game state to set.
+     */
+    public void setGameState(GameStates gameState) {
+        this.gameState = gameState;
     }
 
     /**
