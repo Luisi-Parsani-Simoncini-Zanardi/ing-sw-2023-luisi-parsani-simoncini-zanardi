@@ -15,7 +15,7 @@ public class EdgesEightEquals extends CommonGoalStrategy{
      * If strategyCode is equal to 9 the player shelf must have at least 8 Tiles of the same tYpe
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public EdgesEightEquals(int strategyCode){
+    public EdgesEightEquals(Integer strategyCode){
         super(strategyCode);
         this.edge = this.StrategyCode == 8;
     }

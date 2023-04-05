@@ -18,7 +18,7 @@ public class Groups extends CommonGoalStrategy{
      * If strategyCode = 4 the player's shelf must have at least 6 groups of 2 Tiles made up of the same Tile types
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public Groups(int strategyCode){
+    public Groups(Integer strategyCode){
         super(strategyCode);
         this.coordinates = new ArrayList<>();
         if(this.StrategyCode == 3) {
