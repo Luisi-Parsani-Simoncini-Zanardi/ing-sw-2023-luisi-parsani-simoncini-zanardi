@@ -6,11 +6,11 @@ import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.Game;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;
-import org.projectsw.testUtils;
+import org.projectsw.TestUtils;
 
 import java.util.ArrayList;
 
-class EngineTest extends testUtils {
+class EngineTest extends TestUtils {
 
     @Test
     void playerJoin() {

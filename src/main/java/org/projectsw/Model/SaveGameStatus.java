@@ -1,19 +1,9 @@
 package org.projectsw.Model;
 //TODO: !!!POST!!! sistemare questa classe una volta finiti model e controller
 
+import com.google.gson.Gson;
+
 import java.io.*;
-
-import com.google.gson.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.projectsw.Model.CommonGoal.CommonGoal;
-
-import com.google.gson.Gson;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 
 /**
@@ -74,8 +64,7 @@ public class SaveGameStatus {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
             Gson gson = new Gson();
-            Game savedGame = gson.fromJson(br, Game.class);
-            return savedGame;
+            return gson.fromJson(br, Game.class);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

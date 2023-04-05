@@ -33,21 +33,21 @@ public class Board{
      */
     public Board(int playersNumber) throws IllegalArgumentException{
         if(playersNumber<2 || playersNumber>4) throw new IllegalArgumentException("Number of players not between 2 and 4");
-            try{
-                Gson gson = new Gson();
-                String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
-                board = new Tile[9][9];
-                for(int i=0;i<9;i++){
-                    for(int j=0;j<9;j++){
-                        if(tmpMatrix[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
-                        if(tmpMatrix[playersNumber-2][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
-                    }
+        try{
+            Gson gson = new Gson();
+            String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
+            board = new Tile[9][9];
+            for(int i=0;i<9;i++){
+                for(int j=0;j<9;j++){
+                    if(tmpMatrix[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
+                    if(tmpMatrix[playersNumber-2][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
                 }
-                endGame = false;
-                bag = new Bag();
-            }catch (IOException e){
-                System.out.println("Error opening the json"+e.getMessage());
             }
+            endGame = false;
+            bag = new Bag();
+        }catch (IOException e){
+            System.out.println("Error opening the json"+e.getMessage());
+        }
     }
 
     /**
