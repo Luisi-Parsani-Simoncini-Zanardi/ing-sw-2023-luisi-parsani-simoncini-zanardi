@@ -159,14 +159,14 @@ public class Game{
         ArrayList<Class<?>> randomGoalsClasses = new ArrayList<>();
 
         randomGoalsClasses.add(Square.class);
-        randomGoalsClasses.add(DifferentColumn.class);
-        randomGoalsClasses.add(ColumnEqualsFour.class);
-        randomGoalsClasses.add(GroupOfTwo.class);
-        randomGoalsClasses.add(ColumnGroup.class);
-        randomGoalsClasses.add(DifferentRow.class);
-        randomGoalsClasses.add(RowGroup.class);
-        randomGoalsClasses.add(Edges.class);
-        randomGoalsClasses.add(EightEquals.class);
+        randomGoalsClasses.add(RowColumn.class);
+        randomGoalsClasses.add(Groups.class);
+        randomGoalsClasses.add(Groups.class);
+        randomGoalsClasses.add(RowColumn.class);
+        randomGoalsClasses.add(RowColumn.class);
+        randomGoalsClasses.add(RowColumn.class);
+        randomGoalsClasses.add(EdgesEightEquals.class);
+        randomGoalsClasses.add(EdgesEightEquals.class);
         randomGoalsClasses.add(Cross.class);
         randomGoalsClasses.add(Diagonal.class);
         randomGoalsClasses.add(Triangle.class);

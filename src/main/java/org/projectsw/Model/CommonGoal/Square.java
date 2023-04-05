@@ -5,7 +5,15 @@ import org.projectsw.Model.TilesEnum;
 import java.awt.Point;
 import java.util.ArrayList;
 
-public class Square implements CommonGoalStrategy {
+public class Square extends CommonGoalStrategy {
+
+    /**
+     * Creates a new instance of the Square class using the unique code of the CommonGoal
+     * @param strategyCode is the unique code of the CommonGoal instance to be created
+     */
+    public Square(int strategyCode){
+        super(strategyCode);
+    }
 
     /**
      * Checks that there are at least 2 separate 2x2 squares with tiles of the same type,
