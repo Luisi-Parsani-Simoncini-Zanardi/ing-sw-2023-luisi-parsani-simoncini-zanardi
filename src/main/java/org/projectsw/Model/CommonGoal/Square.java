@@ -4,7 +4,6 @@ import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Square implements CommonGoalStrategy {
 
@@ -70,12 +69,10 @@ public class Square implements CommonGoalStrategy {
      * @return false if the array contains the coordinates, true if not
      */
     private boolean notContainsCoords(ArrayList<Point> coordinates, int x, int y){
-        if (coordinates.contains(new Point(x, y)) ||
-                coordinates.contains(new Point(x, y - 1)) ||
-                coordinates.contains(new Point(x + 1, y)) ||
-                coordinates.contains(new Point(x + 1, y - 1)))
-            return false;
-        else return true;
+        return !coordinates.contains(new Point(x, y)) &&
+                !coordinates.contains(new Point(x, y - 1)) &&
+                !coordinates.contains(new Point(x + 1, y)) &&
+                !coordinates.contains(new Point(x + 1, y - 1));
     }
 
     /**
@@ -85,16 +82,14 @@ public class Square implements CommonGoalStrategy {
      * @param tileType the type of the tile
      * @param x the x coordinate of the upper left square of the square
      * @param y the y coordinate of the upper left square of the square
-     * @return true if the quare is valid, false if not
+     * @return true if the square is valid, false if not
      */
     private boolean isValidSquare(Shelf shelf, TilesEnum tileType, int x, int y){
-        if (shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x).getTile() &&
+        return shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x).getTile() &&
                 shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x + 1).getTile() &&
                 shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y, x + 1).getTile() &&
                 shelf.getTileShelf(y, x).getTile() != TilesEnum.EMPTY &&
                 shelf.getTileShelf(y, x).getTile() != TilesEnum.UNUSED &&
-                shelf.getTileShelf(y, x).getTile() == tileType)
-            return true;
-        else return false;
+                shelf.getTileShelf(y, x).getTile() == tileType;
     }
 }
