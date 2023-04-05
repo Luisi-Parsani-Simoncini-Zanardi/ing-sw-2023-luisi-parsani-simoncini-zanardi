@@ -11,8 +11,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ChatTest {
-    TestUtils testUtils = new TestUtils();
+class ChatTest extends TestUtils {
 
     /**
      * Tests if the method addChatLog correctly add a String to the ArrayList chat.
@@ -40,7 +39,7 @@ class ChatTest {
         chat.addChatLog(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
         test.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
         for (int i=0; i<chat.getChat().size(); i++)
-            testUtils.assertEqualsMessage(test.get(i), chat.getChat().get(i));
+            assertEqualsMessage(test.get(i), chat.getChat().get(i));
 
     }
 }
