@@ -16,6 +16,7 @@ public class Player {
     private int points;
     private Shelf shelf;
     private PersonalGoal personalGoal;
+
     private ArrayList<Tile> temporaryTiles;
     private final ArrayList<Boolean> commonGoalRedeemed;
 
@@ -137,6 +138,8 @@ public class Player {
     public void setCommonGoalRedeemed(int index, Boolean status) {
         this.commonGoalRedeemed.set(index, status);
     }
+
+    //TODO aggiungere clearTemporaryTiles e removeTemporaryTile
 
     /**
      * Adds the given tile to the player's temporary tiles.

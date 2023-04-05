@@ -1,7 +1,6 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.CommonGoal.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -12,6 +11,9 @@ import java.util.Random;
  * including the board, players (with info on the currently playing one and the first one), chat, and common goals.
  */
 public class Game{
+
+    private GameStates gameState;
+    private final int numberOfPlayers;
     private Player firstPlayer;
     private Player currentPlayer;
     private ArrayList<Player> players;
@@ -21,18 +23,54 @@ public class Game{
 
 
     /**
-     * Creates a new instance of the Game class with a new chat and an empty player list,
-     * first and current player are not set yet.
+     * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
+     * a full-unused board and an empty commonGals list. First and current player are not set yet.
+     * This is a silly constructor, so the number of players is set to 0;
      */
     public Game(){
-        Board board = new Board();
-        setBoard(board);
-        Chat chat = new Chat();
-        setChat(chat);
-        ArrayList<Player>players = new ArrayList<>();
-        setPlayers(players);
-
+        gameState = GameStates.SILLY;
+        numberOfPlayers = 0;
+        board = new Board();
+        chat = new Chat();
+        players = new ArrayList<>();
+        commonGoals = new ArrayList<>();
     }
+
+    /**
+     * Creates a new instance of a Game in LOBBY state, creating it with a new chat, an empty player list,
+     * a board set for the right number of players, the correct number of players and an empty commonGals list.
+     * Also sets the given first player to current and first player.
+     * @param firstPlayer the first player joining the game.
+     * @param numberOfPlayers the number of players selected by the first player.
+     * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
+     *                                  between 2 and 4
+     */
+    public Game(Player firstPlayer, int numberOfPlayers){
+        //TODO creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
+        if(numberOfPlayers<2 || numberOfPlayers>4) throw new IllegalArgumentException("Number of players not between 2 and 4");
+        if(firstPlayer.getPosition() != 0) throw new IllegalArgumentException("The first player you want insert has a !=0 position");
+        gameState = GameStates.LOBBY;
+        this.numberOfPlayers = numberOfPlayers;
+        board = new Board(numberOfPlayers);
+        chat = new Chat();
+        players = new ArrayList<>();
+        players.add(firstPlayer);
+        this.firstPlayer = firstPlayer;
+        this.currentPlayer = firstPlayer;
+        commonGoals = new ArrayList<>();
+    }
+
+    /**
+     * Returns the current state of the game.
+     * @return the current state of the game.
+     */
+    public GameStates getGameState() {return gameState;}
+
+    /**
+     * Returns the number of players of the game.
+     * @return the number of players of the game.
+     */
+    public int getNumberOfPlayers() {return numberOfPlayers;}
 
     /**
      * Returns the first player of the game.
@@ -84,6 +122,12 @@ public class Game{
     }
 
     /**
+     * Sets the game state as the passed parameter.
+     * @param gameState the game state to set.
+     */
+    public void setGameState(GameStates gameState) {this.gameState = gameState;}
+
+    /**
      * Sets the first player of the game.
      * @param firstPlayer the first player of the game
      */
@@ -99,6 +143,7 @@ public class Game{
         this.currentPlayer=currentPlayer;
     }
 
+    //TODO sistemare questa funzione con nuove eccezioni, la lista di players deve essere lunga quanto numberOfPlayers e i nomi non devono essere duplicati
     /**
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy
@@ -134,21 +179,15 @@ public class Game{
     /**
      * Adds a new player to the game.
      * @param player the player to be added
-     * @throws MaximumPlayerException if the maximum number of players has already been reached (4 players)
      * @throws InvalidNameException if the nickname is not unique
      */
-    public void addPlayer(Player player) throws MaximumPlayerException, InvalidNameException {
+    public void addPlayer(Player player) throws InvalidNameException {
         int playerLength = getPlayers().size();
         for (int i = 0; i<playerLength; i++) {
             if(getPlayers().get(i).getNickname().equals(player.getNickname()))
                 throw new InvalidNameException("Invalid name, must be unique");
         }
-        if (playerLength<4){
-            players.add(player);
-        }
-        else {
-            throw new MaximumPlayerException("Maximum number of players reached");
-        }
+        players.add(player);
     }
 
     /**

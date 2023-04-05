@@ -3,16 +3,14 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.MaximumPlayerException;
-import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.TestUtils;
 
 import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameTest {
+class GameTest extends TestUtils{
 
     /**
      * Cleans the list of used codes before each test.
@@ -20,6 +18,71 @@ class GameTest {
     @BeforeEach
     void codesCleaner(){
         PersonalGoal.cleanUsedCodes();
+    }
+
+    /**
+     * Tests the correct creation of a silly game istance
+     */
+    @Test
+    void integritySillyGameTest(){
+        Game sillyGame = new Game();
+        assertEquals(GameStates.SILLY,sillyGame.getGameState());
+        assertEquals(0,sillyGame.getNumberOfPlayers());
+        assertEqualsBoard(new Board(),sillyGame.getBoard());
+        assertEqualsChat(new Chat(),sillyGame.getChat());
+        assertEquals(new ArrayList<>(),sillyGame.getCommonGoals());
+        assertEquals(new ArrayList<>(),sillyGame.getPlayers());
+        assertNull(sillyGame.getFirstPlayer());
+        assertNull(sillyGame.getCurrentPlayer());
+    }
+
+    /**
+     * Tests the correct creation of a game istance
+     */
+    @Test
+    void integrityGameTest(){
+        Player firstPlayer = new Player("Davide",0);
+        for(int i=2;i<5;i++){
+            Game game = new Game(firstPlayer,i);
+            assertEquals(GameStates.LOBBY,game.getGameState());
+            assertEquals(i,game.getNumberOfPlayers());
+            assertEqualsBoard(new Board(i),game.getBoard());
+            assertEqualsChat(new Chat(),game.getChat());
+            assertEquals(new ArrayList<>(),game.getCommonGoals());
+            ArrayList<Player> fakeList = new ArrayList<>();
+            fakeList.add(firstPlayer);
+            assertEquals(fakeList,game.getPlayers());
+            assertEquals(firstPlayer,game.getFirstPlayer());
+            assertEquals(firstPlayer,game.getCurrentPlayer());
+        }
+    }
+
+    /**
+     * Tests if the constructor of game correctly throws the IllegalArgumentException when the number of players
+     * is too low
+     */
+    @Test
+    void invalidNumberOfPlayersTooLowTest(){
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",0),1));
+    }
+
+    /**
+     * Tests if the constructor of game correctly throws the IllegalArgumentException when the number of players
+     * is too high
+     */
+    @Test
+    void invalidNumberOfPlayersTooHighTest(){
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",0),5));
+    }
+
+    /**
+     * Tests if the constructor of game correctly throws the IllegalArgumentException when the position of the
+     * first player is not 0
+     */
+    @Test
+    void invalidPositionOfFirstPlayerTest(){
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",-1),2));
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",1),2));
     }
 
     /**
@@ -164,30 +227,29 @@ class GameTest {
     }
 
     /**
-     * Tests if the method correctly adds players to the game.
+     * Tests if the method addPlayer correctly adds players to the game.
      */
     @Test
-    void testAddPlayer(){
+    void testAddPlayer() throws InvalidNameException{
         Game game = new Game();
-        Player james = new Player("James", 1);
-        Player kirk = new Player("Kirk", 2);
-        Player cliff = new Player("Cliff", 3);
-        Player lars = new Player("Lars", 4);
-        Player jason = new Player("Jason", 5);
-        Player cliff2 = new Player("Cliff", 5);
-        try {
-            game.addPlayer(james);
-            game.addPlayer(kirk);
-            game.addPlayer(cliff);
-            game.addPlayer(lars);
-        } catch (MaximumPlayerException ignore) {
-        } catch (InvalidNameException ignore) {;
-        }
-        assertEquals(james, game.getPlayers().get(0));
-        assertEquals(kirk, game.getPlayers().get(1));
-        assertEquals(cliff, game.getPlayers().get(2));
-        assertEquals(lars, game.getPlayers().get(3));
-        assertThrows(MaximumPlayerException.class, () -> game.addPlayer(jason));
-        assertThrows(InvalidNameException.class, () -> game.addPlayer(cliff2));
+        assertEquals(0,game.getPlayers().size());
+        game.addPlayer(new Player("James", 0));
+        assertEquals(1,game.getPlayers().size());
+        assertEquals("James",game.getPlayers().get(0).getNickname());
+        assertEquals(0,game.getPlayers().get(0).getPosition());
+        game.addPlayer(new Player("Kirk", 1));
+        assertEquals(2,game.getPlayers().size());
+        assertEquals("Kirk",game.getPlayers().get(1).getNickname());
+        assertEquals(1,game.getPlayers().get(1).getPosition());
+    }
+
+    /**
+     * Tests if the method addPlayer correctly throws the InvalidNameException when the user chose a duplicated nickname.
+     */
+    @Test
+    void testInvalidNicknameNotUniqueTest() throws InvalidNameException {
+        Game game = new Game();
+        game.addPlayer(new Player("James", 0));
+        assertThrows(InvalidNameException.class, () -> game.addPlayer(new Player("James", 1)));
     }
 }
