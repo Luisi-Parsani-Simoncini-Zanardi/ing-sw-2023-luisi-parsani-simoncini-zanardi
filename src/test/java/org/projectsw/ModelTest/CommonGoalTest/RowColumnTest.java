@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RowColumnTest {
 
     /**
-     * Returns true if there are enough columns with all different tiles
+     * Checks if there are enough columns with all different tiles
      */
     @Test
     void trueDifferentColumn() {
@@ -35,7 +35,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are not enough columns with all different tiles
+     * Checks if there are not enough columns with all different tiles
      */
     @Test
     void falseDifferentColumn() {
@@ -57,7 +57,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are too much Tile types in the columns
+     * Checks if there are too much Tile types in the columns
      */
     @Test
     void fewTilesTypesDifferentColumn() {
@@ -79,7 +79,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are empty Tile types in the columns
+     * Checks if there are empty Tile types in the columns
      */
     @Test
     void emptyTypesDifferentColumn() {
@@ -101,7 +101,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if the player's shelf is empty
+     * Checks if the player's shelf is empty
      */
     @Test
     void emptyShelfDifferentColumn() {
@@ -113,7 +113,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns true if there are at least 3 columns with at most 3 different tile types
+     * Checks if there are at least 3 columns with at most 3 different tile types
      */
     @Test
     void trueColumnGroup() {
@@ -135,7 +135,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are less than 3 columns with at most 3 different tile types
+     * Checks if there are less than 3 columns with at most 3 different tile types
      */
     @Test
     void falseColumnGroup() {
@@ -157,7 +157,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if the columns have more than 3 Tiles type
+     * Checks if the columns have more than 3 Tiles type
      */
     @Test
     void tooMuchTypesTypesColumnGroup() {
@@ -179,7 +179,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if the columns have empty Tiles
+     * Checks if the columns have empty Tiles
      */
     @Test
     void emptyTypesColumnGroup() {
@@ -201,7 +201,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if the player's shelf is empty
+     * Checks if the player's shelf is empty
      */
     @Test
     void emptyShelfTypesColumnGroup() {
@@ -213,7 +213,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns true if there are at least 2 row with all different Tiles types
+     * Checks if there are at least 2 row with all different Tiles types
      */
     @Test
     void trueDifferentRows() {
@@ -234,7 +234,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are less than 2 rows that all have different tiles
+     * Checks if there are less than 2 rows that all have different tiles
      */
     @Test
     void falseDifferentRows() {
@@ -255,7 +255,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are too much Tiles types in the shelf rows
+     * Checks if there are too much Tiles types in the shelf rows
      */
     @Test
     void fewTilesTypesDifferentRows() {
@@ -276,7 +276,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are empty Tiles types in the shelf rows
+     * Checks if there are empty Tiles types in the shelf rows
      */
     @Test
     void emptyTilesDifferentRows() {
@@ -297,7 +297,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if the player's shelf is empty
+     * Checks if the player's shelf is empty
      */
     @Test
     void emptyShelfDifferentRows() {
@@ -309,7 +309,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns true if there are at least 4 row with at most 3 different tile types
+     * Checks if there are at least 4 row with at most 3 different tile types
      */
     @Test
     void trueRowGroups() {
@@ -330,7 +330,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are less than 4 rows row with at most 3 different tile types
+     * Checks if there are less than 4 rows row with at most 3 different tile types
      */
     @Test
     void falseRowGroups() {
@@ -351,7 +351,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are less than 4 rows, but they have more than 4 Tiles types
+     * Checks if there are less than 4 rows, but they have more than 4 Tiles types
      */
     @Test
     void tooMuchTilesTypesRowGroups() {
@@ -372,7 +372,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if there are empty tiles in the rows
+     * Checks if there are empty tiles in the rows
      */
     @Test
     void emptyTilesTypesRowGroups() {
@@ -393,7 +393,7 @@ class RowColumnTest {
     }
 
     /**
-     * Returns false if the player's shelf is empty
+     * Checks if the player's shelf is empty
      */
     @Test
     void emptyShelfTypesRowGroups() {
