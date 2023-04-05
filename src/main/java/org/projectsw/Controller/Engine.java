@@ -20,17 +20,8 @@ public class Engine {
     //TODO: finire metodi controller
 
     /**
-     * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
-     */
-    public void startGame(){
-        game.setGameState(GameStates.RUNNING);
-        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
-        //chiama il metodo di inizio turno
-    }
-
-    /**
-     * Creates a player object with position 0 and create a new game using the game constructor (the one that also sets the first player)
-     * the game is initialized using the first player and the number of players selected, the state of the game at the end of the
+     * Creates a player object with position 0 and create a new game using the game constructor (the one that also sets the first player).
+     * The game is initialized using the first player and the number of players selected, the state of the game at the end of the
      * execution is LOBBY.
      * @param nicknameFirstPlayer the nickname of the first player joining in the game
      * @param numberOfPlayers the number of players selected by the first player
@@ -42,7 +33,8 @@ public class Engine {
 
     /**
      * If the game state isn't LOBBY the join request is negated. If the game state is LOBBY it creates a new
-     * player object with the right position checking if the lobby is fulled: if it is, calls the method to start the game,
+     * player object with the right position and puts it in the arrayList of players.
+     * Then checks if the lobby is fulled: if it is, calls the method to start the game,
      * if it isn't the game state remains LOBBY, waiting for new join requests.
      * @param nickname the nickname of the player to be created
      */
@@ -60,6 +52,15 @@ public class Engine {
             }
         }
         else System.out.println("Player join failed, the game isn't in the lobby state");
+    }
+
+    /**
+     * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
+     */
+    public void startGame(){
+        game.setGameState(GameStates.RUNNING);
+        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
+        //chiama il metodo di inizio turno
     }
 
     //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class

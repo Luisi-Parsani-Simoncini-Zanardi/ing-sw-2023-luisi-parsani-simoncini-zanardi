@@ -37,9 +37,9 @@ public class Game{
     }
 
     /**
-     * Creates a new instance of a Game, puts it in the LOBBY state, creating it with a new chat, an empty player list,
+     * Creates a new instance of a Game in LOBBY state, creating it with a new chat, an empty player list,
      * a board set for the right number of players, the correct number of players and an empty commonGals list.
-     * First and current player are not set yet.
+     * Also sets the given first player to current and first player.
      * @param firstPlayer the first player joining the game.
      * @param numberOfPlayers the number of players selected by the first player.
      */
