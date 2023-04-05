@@ -42,9 +42,11 @@ public class Game{
      * Also sets the given first player to current and first player.
      * @param firstPlayer the first player joining the game.
      * @param numberOfPlayers the number of players selected by the first player.
+     * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
+     *                                  between 2 and 4
      */
     public Game(Player firstPlayer, int numberOfPlayers){
-        //TODO: creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
+        //TODO creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
         if(numberOfPlayers<2 || numberOfPlayers>4) throw new IllegalArgumentException("Number of players not between 2 and 4");
         if(firstPlayer.getPosition() != 0) throw new IllegalArgumentException("The first player you want insert has a !=0 position");
         gameState = GameStates.LOBBY;
@@ -141,6 +143,7 @@ public class Game{
         this.currentPlayer=currentPlayer;
     }
 
+    //TODO sistemare questa funzione con nuove eccezioni, la lista di players deve essere lunga quanto numberOfPlayers e i nomi non devono essere duplicati
     /**
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy

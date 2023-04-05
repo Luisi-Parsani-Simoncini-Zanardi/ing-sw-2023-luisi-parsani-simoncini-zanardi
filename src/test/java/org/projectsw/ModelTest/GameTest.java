@@ -55,7 +55,34 @@ class GameTest extends TestUtils{
             assertEquals(firstPlayer,game.getFirstPlayer());
             assertEquals(firstPlayer,game.getCurrentPlayer());
         }
+    }
 
+    /**
+     * Tests if the constructor of game correctly throws the IllegalArgumentException when the number of players
+     * is too low
+     */
+    @Test
+    void invalidNumberOfPlayersTooLowTest(){
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",0),1));
+    }
+
+    /**
+     * Tests if the constructor of game correctly throws the IllegalArgumentException when the number of players
+     * is too high
+     */
+    @Test
+    void invalidNumberOfPlayersTooHighTest(){
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",0),5));
+    }
+
+    /**
+     * Tests if the constructor of game correctly throws the IllegalArgumentException when the position of the
+     * first player is not 0
+     */
+    @Test
+    void invalidPositionOfFirstPlayerTest(){
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",-1),2));
+        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",1),2));
     }
 
     /**
