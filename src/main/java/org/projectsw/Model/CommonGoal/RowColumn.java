@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class RowColumn extends CommonGoalStrategy{
 
-    private boolean RowColumn;  //true Row, false Column
+    private int diffTiles;
+    private boolean rowColumn;  //true Row, false Column
 
     /**
      * Creates a new instance of the RowColumn class using the unique code of the CommonGoal to be created to correctly initialize the parameters
@@ -18,19 +19,23 @@ public class RowColumn extends CommonGoalStrategy{
         switch (strategyCode) {
             case 2 -> {
                 this.numObjects = 2;
-                this.RowColumn = false;
+                this.diffTiles = 6;
+                this.rowColumn = false;
             }
             case 5 -> {
                 this.numObjects = 3;
-                this.RowColumn = false;
+                this.diffTiles = 3;
+                this.rowColumn = false;
             }
             case 6 -> {
                 this.numObjects = 2;
-                this.RowColumn = true;
+                this.diffTiles = 5;
+                this.rowColumn = true;
             }
             case 7 -> {
                 this.numObjects = 4;
-                this.RowColumn = true;
+                this.diffTiles = 3;
+                this.rowColumn = true;
             }
         }
     }
@@ -57,27 +62,16 @@ public class RowColumn extends CommonGoalStrategy{
      */
     private boolean shelfVerifier(int code, ArrayList<Integer> numDiffTiles){
         int counter=0;
-        switch (code) {
-            case 2 -> {
-                for (int i = 0; i < 5; i++)
-                    if (numDiffTiles.get(i) == 1)
-                        counter++;
-            }
-            case 5 -> {
-                for (int i = 0; i < 5; i++)
-                    if (numDiffTiles.get(i) < 4)
-                        counter++;
-            }
-            case 6 -> {
-                for (int i = 0; i < 6; i++)
-                    if (numDiffTiles.get(i) == 1)
-                        counter++;
-            }
-            case 7 -> {
-                for (int i = 0; i < 6; i++)
-                    if (numDiffTiles.get(i) < 4)
-                        counter++;
-            }
+
+        if(code == 2 || code == 6){
+            for (Integer numDiffTile : numDiffTiles)
+                if (numDiffTile == this.diffTiles)
+                    counter++;
+        }
+        else{
+            for (Integer numDiffTile : numDiffTiles)
+                if (numDiffTile <= this.diffTiles)
+                    counter++;
         }
         return counter >= this.numObjects;
     }
@@ -92,13 +86,13 @@ public class RowColumn extends CommonGoalStrategy{
         ArrayList<TilesEnum> tiles = new ArrayList<>();
         ArrayList<Integer> tilesCounted = new ArrayList<>();
 
-        if(this.RowColumn){
+        if(this.rowColumn){
             for (int i = 5; i > -1; i--) {
                 for (int j = 0; j < 5; j++) {
                     tiles.add(shelf.getTileShelf(i, j).getTile());
                 }
                 if(this.differentTiles(tiles)!=-1)
-                    tilesCounted.add(i, this.differentTiles(tiles));
+                    tilesCounted.add(this.differentTiles(tiles));
                 tiles.clear();
             }
         }else{
@@ -107,7 +101,7 @@ public class RowColumn extends CommonGoalStrategy{
                     tiles.add(shelf.getTileShelf(j, i).getTile());
                 }
                 if(this.differentTiles(tiles)!=-1)
-                    tilesCounted.add(i, this.differentTiles(tiles));
+                    tilesCounted.add(this.differentTiles(tiles));
                 tiles.clear();
             }
         }
