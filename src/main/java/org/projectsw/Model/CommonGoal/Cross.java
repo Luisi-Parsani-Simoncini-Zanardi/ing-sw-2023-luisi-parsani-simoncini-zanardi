@@ -5,7 +5,13 @@ import org.projectsw.Model.TilesEnum;
 
 import java.util.ArrayList;
 
-public class Cross extends TileControl {
+public class Cross extends CommonGoalStrategy{
+
+    /**
+     * Creates a new instance of the Cross class using the unique code of the CommonGoal
+     * @param strategyCode is the unique code of the CommonGoal instance to be created
+     */
+    public Cross(int strategyCode){super(strategyCode);}
 
     /**
      * Checks that there is at least 1 cross pattern in the shelf
@@ -14,7 +20,7 @@ public class Cross extends TileControl {
      */
     @Override
     public boolean check(Shelf shelf) {
-        ArrayList<TilesEnum> tile = new ArrayList<TilesEnum>();
+        ArrayList<TilesEnum> tile = new ArrayList<>();
         for(int i=1; i<5; i++){
             for(int j=1; j<4; j++) {
                 tile.add(shelf.getTileShelf(i, j).getTile());

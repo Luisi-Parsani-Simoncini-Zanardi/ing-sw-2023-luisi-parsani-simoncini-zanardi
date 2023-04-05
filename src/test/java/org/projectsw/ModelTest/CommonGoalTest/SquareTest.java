@@ -16,7 +16,7 @@ class SquareTest {
      */
     @Test
     void checkOne() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -33,7 +33,7 @@ class SquareTest {
      */
     @Test
     void checkBasic() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -54,7 +54,7 @@ class SquareTest {
      */
     @Test
     void checkDeformed() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -75,7 +75,7 @@ class SquareTest {
      */
     @Test
     void checkBasicDiff() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -96,7 +96,7 @@ class SquareTest {
      */
     @Test
     void checkCorner() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -117,7 +117,7 @@ class SquareTest {
      */
     @Test
     void checkHalfSide() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -138,7 +138,7 @@ class SquareTest {
      */
     @Test
     void checkFullSide() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -159,7 +159,7 @@ class SquareTest {
      */
     @Test
     void checkFullSideAndAnother() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -184,7 +184,7 @@ class SquareTest {
      */
     @Test
     void checkWhole() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         for (int i=0; i<6; i++){
@@ -202,7 +202,7 @@ class SquareTest {
      */
     @Test
     void checkEmpty() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         assertFalse(square.checkRequirements(shelf));
@@ -213,7 +213,7 @@ class SquareTest {
      */
     @Test
     void checkOneInCommon() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -233,7 +233,7 @@ class SquareTest {
      */
     @Test
     void checkTwoInCommon() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {
@@ -253,7 +253,7 @@ class SquareTest {
      */
     @Test
     void checkOneInCommonAndAnother() {
-        CommonGoalStrategy strategy = new Square();
+        CommonGoalStrategy strategy = new Square(1);
         CommonGoal square = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         try {

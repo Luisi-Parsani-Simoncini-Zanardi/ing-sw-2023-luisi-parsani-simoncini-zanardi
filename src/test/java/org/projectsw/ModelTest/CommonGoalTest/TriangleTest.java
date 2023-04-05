@@ -18,7 +18,7 @@ class TriangleTest {
      */
     @Test
     void checkTrue() {
-        CommonGoalStrategy strategy = new Triangle();
+        CommonGoalStrategy strategy = new Triangle(12);
         CommonGoal triangle = new CommonGoal(strategy);
         Shelf shelf1 = new Shelf();
         for(int i=0; i<5; i++) {
@@ -66,7 +66,7 @@ class TriangleTest {
      */
     @Test
     void checkFalse() {
-        CommonGoalStrategy strategy = new Triangle();
+        CommonGoalStrategy strategy = new Triangle(12);
         CommonGoal triangle = new CommonGoal(strategy);
         Shelf shelf1 = new Shelf();
         for(int i=0; i<5; i++) {

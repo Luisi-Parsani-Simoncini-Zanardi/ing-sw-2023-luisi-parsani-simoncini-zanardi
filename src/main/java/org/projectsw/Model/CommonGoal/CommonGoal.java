@@ -1,5 +1,4 @@
 package org.projectsw.Model.CommonGoal;
-//TODO: raggruppare commonGoal, sistemare coverage dei suoi test e verificare la correttezza dei metodi che controllano i "gruppi separati"
 import org.projectsw.Exceptions.MaximumRedeemedPointsException;
 import org.projectsw.Model.Shelf;
 
