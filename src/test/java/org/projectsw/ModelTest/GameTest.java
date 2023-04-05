@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.TestUtils;
 
 import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameTest {
+class GameTest extends TestUtils{
 
     /**
      * Cleans the list of used codes before each test.
@@ -18,6 +18,44 @@ class GameTest {
     @BeforeEach
     void codesCleaner(){
         PersonalGoal.cleanUsedCodes();
+    }
+
+    /**
+     * Tests the correct creation of a silly game istance
+     */
+    @Test
+    void integritySillyGameTest(){
+        Game sillyGame = new Game();
+        assertEquals(GameStates.SILLY,sillyGame.getGameState());
+        assertEquals(0,sillyGame.getNumberOfPlayers());
+        assertEqualsBoard(new Board(),sillyGame.getBoard());
+        assertEqualsChat(new Chat(),sillyGame.getChat());
+        assertEquals(new ArrayList<>(),sillyGame.getCommonGoals());
+        assertEquals(new ArrayList<>(),sillyGame.getPlayers());
+        assertNull(sillyGame.getFirstPlayer());
+        assertNull(sillyGame.getCurrentPlayer());
+    }
+
+    /**
+     * Tests the correct creation of a game istance
+     */
+    @Test
+    void integrityGameTest(){
+        Player firstPlayer = new Player("Davide",0);
+        for(int i=2;i<5;i++){
+            Game game = new Game(firstPlayer,i);
+            assertEquals(GameStates.LOBBY,game.getGameState());
+            assertEquals(i,game.getNumberOfPlayers());
+            assertEqualsBoard(new Board(i),game.getBoard());
+            assertEqualsChat(new Chat(),game.getChat());
+            assertEquals(new ArrayList<>(),game.getCommonGoals());
+            ArrayList<Player> fakeList = new ArrayList<>();
+            fakeList.add(firstPlayer);
+            assertEquals(fakeList,game.getPlayers());
+            assertEquals(firstPlayer,game.getFirstPlayer());
+            assertEquals(firstPlayer,game.getCurrentPlayer());
+        }
+
     }
 
     /**
