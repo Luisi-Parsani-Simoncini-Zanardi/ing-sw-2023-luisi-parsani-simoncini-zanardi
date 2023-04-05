@@ -55,6 +55,39 @@ class EngineTest extends TestUtils {
         assertEquals(GameStates.RUNNING,engine.getGame().getGameState());
     }
 
+    /**
+     * Tests if firstPlayerJoin correctly throws the FirstJoinFailedException when is passed a too low number of players
+     */
+    @Test
+    void invalidNumberOfPlayersTooLowJoinTest() {
+        Engine engine = new Engine();
+        assertThrows(FirstJoinFailedException.class, () -> engine.firstPlayerJoin("Davide",1));
+    }
+
+    /**
+     * Tests if firstPlayerJoin correctly throws the FirstJoinFailedException when is passed a too big number of players
+     */
+    @Test
+    void invalidNumberOfPlayersTooBigJoinTest() {
+        Engine engine = new Engine();
+        assertThrows(FirstJoinFailedException.class, () -> engine.firstPlayerJoin("Davide",5));
+    }
+
+    @Test
+    void invalidNicknameAlreadyUsedTest() throws FirstJoinFailedException{
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        assertThrows(JoinFailedException.class, () -> engine.playerJoin("Davide"));
+    }
+
+    @Test
+    void invalidJoinAttemptTest() throws FirstJoinFailedException,JoinFailedException{
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Lore");
+        assertThrows(JoinFailedException.class, () -> engine.playerJoin("Lollo"));
+    }
+
     @Test
     void selectTiles() {
     }
