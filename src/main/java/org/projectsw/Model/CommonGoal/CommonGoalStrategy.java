@@ -9,7 +9,7 @@ public abstract class CommonGoalStrategy {
     protected int numObjects;
     protected int StrategyCode;
 
-    public CommonGoalStrategy(int code){
+    public CommonGoalStrategy(Integer code){
         this.StrategyCode= code;
     }
 

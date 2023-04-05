@@ -233,14 +233,14 @@ public class Game{
         Random random = new Random();
         int index = random.nextInt(randomStrategyClasses.size());
         Class<?> randomClass = randomStrategyClasses.get(index);
-        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor().newInstance();
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index+1);
         commonGoalIst = new CommonGoal(strategyIst);
         commonGoals.add(commonGoalIst);
         randomStrategyClasses.remove(index);
 
         index = random.nextInt(randomStrategyClasses.size());
         randomClass = randomStrategyClasses.get(index);
-        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor().newInstance();
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index+1);
         commonGoalIst = new CommonGoal(strategyIst);
         commonGoals.add(commonGoalIst);
 

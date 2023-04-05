@@ -12,7 +12,7 @@ public class Square extends CommonGoalStrategy {
      * Creates a new instance of the Square class using the unique code of the CommonGoal
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public Square(int strategyCode){
+    public Square(Integer strategyCode){
         super(strategyCode);
     }
 

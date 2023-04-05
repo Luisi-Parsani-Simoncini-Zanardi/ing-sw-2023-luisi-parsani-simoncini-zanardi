@@ -10,7 +10,7 @@ public class Triangle extends CommonGoalStrategy{
      * Creates a new instance of the Triangle class using the unique code of the CommonGoal
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public Triangle(int strategyCode){
+    public Triangle(Integer strategyCode){
         super(strategyCode);
     }
 

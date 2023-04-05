@@ -8,11 +8,9 @@ import java.util.ArrayList;
 
 public class Groups extends CommonGoalStrategy{
 
-    //TODO: c'è qualcosa di strato nell'iteratore
-
     private final int groupDim;
 
-    private ArrayList<Point> coordinates;
+    private final ArrayList<Point> coordinates;
 
     /**
      * Creates a new instance of the Groups class using the unique code of the CommonGoal.
@@ -20,7 +18,7 @@ public class Groups extends CommonGoalStrategy{
      * If strategyCode = 4 the player's shelf must have at least 6 groups of 2 Tiles made up of the same Tile types
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public Groups(int strategyCode){
+    public Groups(Integer strategyCode){
         super(strategyCode);
         this.coordinates = new ArrayList<>();
         if(this.StrategyCode == 3) {
@@ -48,13 +46,15 @@ public class Groups extends CommonGoalStrategy{
 
         for(int i=5; i>-1; i--){
             for (int j = 0; j < 5; j++) {
-                dim=0;
-                if(!matrix[i][j])
-                    dim = this.customShelfIterator(shelf, matrix, shelf.getTileShelf(i,j).getTile(), i, j);
-                if(dim >= this.groupDim)
-                    rightGroup++;
-                if(rightGroup == 5)//this.numObjects)
-                    return true;
+                if(shelf.getTileShelf(i,j).getTile() != TilesEnum.EMPTY){
+                    dim = 0;
+                    if (!matrix[i][j])
+                        dim = this.customShelfIterator(shelf, matrix, shelf.getTileShelf(i, j).getTile(), i, j);
+                    if (dim >= this.groupDim)
+                        rightGroup++;
+                    if (rightGroup == this.numObjects)
+                        return true;
+                }
             }
         }
         return false;
@@ -71,17 +71,14 @@ public class Groups extends CommonGoalStrategy{
      */
     private int customShelfIterator(Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
         Point nextPoint;
-        //sopra
-        if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type)
+
+        if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type && !this.coordinates.contains(new Point(row-1,column)))
             this.coordinates.add(new Point(row-1,column));
-        //sotto
-        if(row+1 < 6 && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type)
+        if(row+1 < 6 && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type && !this.coordinates.contains(new Point(row+1,column)))
             this.coordinates.add(new Point(row+1,column));
-        //sinistra
-        if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type)
+        if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type && !this.coordinates.contains(new Point(row,column-1)))
             this.coordinates.add(new Point(row,column-1));
-        //destra
-        if(column+1 < 5 && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type)
+        if(column+1 < 5 && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !this.coordinates.contains(new Point(row,column+1)))
             this.coordinates.add(new Point(row,column+1));
 
         matrix[row][column]=true;

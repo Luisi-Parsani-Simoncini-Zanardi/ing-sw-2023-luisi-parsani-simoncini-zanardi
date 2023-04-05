@@ -11,7 +11,7 @@ public class Cross extends CommonGoalStrategy{
      * Creates a new instance of the Cross class using the unique code of the CommonGoal
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public Cross(int strategyCode){super(strategyCode);}
+    public Cross(Integer strategyCode){super(strategyCode);}
 
     /**
      * Checks that there is at least 1 cross pattern in the shelf

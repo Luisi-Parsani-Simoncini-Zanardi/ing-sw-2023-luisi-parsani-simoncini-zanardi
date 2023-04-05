@@ -18,7 +18,7 @@ public class RowColumn extends CommonGoalStrategy{
      * If strategyCode is equal to 7, the player's shelf must contain at least 4 columns made up of at most 3 types of tiles
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public RowColumn(int strategyCode){
+    public RowColumn(Integer strategyCode){
         super(strategyCode);
         switch (strategyCode) {
             case 2 -> {

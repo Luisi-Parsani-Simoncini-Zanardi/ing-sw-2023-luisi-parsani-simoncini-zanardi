@@ -9,7 +9,7 @@ public class Diagonal extends CommonGoalStrategy {
      * Creates a new instance of the Diagonal class using the unique code of the CommonGoal
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
-    public Diagonal(int strategyCode){
+    public Diagonal(Integer strategyCode){
         super(strategyCode);
     }
 
