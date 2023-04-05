@@ -34,8 +34,8 @@ public class Engine {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
             game = new Game(firstPlayer,numberOfPlayers);
         } catch (IllegalArgumentException e) {
-            if (numberOfPlayers<2 || numberOfPlayers>4) throw new FirstJoinFailedException("Invalid Position");
-            else throw new FirstJoinFailedException("Invalid number of players");
+            if (numberOfPlayers<2 || numberOfPlayers>4) throw new FirstJoinFailedException("Invalid number of players");
+            else throw new FirstJoinFailedException("Invalid Position");
         }
     }
 
