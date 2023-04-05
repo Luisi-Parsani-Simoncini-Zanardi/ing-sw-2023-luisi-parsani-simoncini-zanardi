@@ -227,28 +227,29 @@ class GameTest extends TestUtils{
     }
 
     /**
-     * Tests if the method correctly adds players to the game.
+     * Tests if the method addPlayer correctly adds players to the game.
      */
     @Test
-    void testAddPlayer(){
+    void testAddPlayer() throws InvalidNameException{
         Game game = new Game();
-        Player james = new Player("James", 1);
-        Player kirk = new Player("Kirk", 2);
-        Player cliff = new Player("Cliff", 3);
-        Player lars = new Player("Lars", 4);
-        Player jason = new Player("Jason", 5);
-        Player cliff2 = new Player("Cliff", 5);
-        try {
-            game.addPlayer(james);
-            game.addPlayer(kirk);
-            game.addPlayer(cliff);
-            game.addPlayer(lars);
-        } catch (InvalidNameException ignore) {
-        }
-        assertEquals(james, game.getPlayers().get(0));
-        assertEquals(kirk, game.getPlayers().get(1));
-        assertEquals(cliff, game.getPlayers().get(2));
-        assertEquals(lars, game.getPlayers().get(3));
-        assertThrows(InvalidNameException.class, () -> game.addPlayer(cliff2));
+        assertEquals(0,game.getPlayers().size());
+        game.addPlayer(new Player("James", 0));
+        assertEquals(1,game.getPlayers().size());
+        assertEquals("James",game.getPlayers().get(0).getNickname());
+        assertEquals(0,game.getPlayers().get(0).getPosition());
+        game.addPlayer(new Player("Kirk", 1));
+        assertEquals(2,game.getPlayers().size());
+        assertEquals("Kirk",game.getPlayers().get(1).getNickname());
+        assertEquals(1,game.getPlayers().get(1).getPosition());
+    }
+
+    /**
+     * Tests if the method addPlayer correctly throws the InvalidNameException when the user chose a duplicated nickname.
+     */
+    @Test
+    void testInvalidNicknameNotUniqueTest() throws InvalidNameException {
+        Game game = new Game();
+        game.addPlayer(new Player("James", 0));
+        assertThrows(InvalidNameException.class, () -> game.addPlayer(new Player("James", 1)));
     }
 }
