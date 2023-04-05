@@ -1,7 +1,6 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.CommonGoal.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ import java.util.Random;
 public class Game{
 
     private GameStates gameState;
+    private final int numberOfPlayers;
     private Player firstPlayer;
     private Player currentPlayer;
     private ArrayList<Player> players;
@@ -23,11 +23,13 @@ public class Game{
 
 
     /**
-     * Creates a new instance of an EMPTY Game, with a new chat, an empty player list,
+     * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
      * a full-unused board and an empty commonGals list. First and current player are not set yet.
+     * This is a silly constructor, so the number of players is set to 0;
      */
     public Game(){
-        gameState = GameStates.EMPTY;
+        gameState = GameStates.SILLY;
+        numberOfPlayers = 0;
         board = new Board();
         chat = new Chat();
         players = new ArrayList<>();
@@ -36,14 +38,20 @@ public class Game{
 
     /**
      * Creates a new instance of a Game, puts it in the LOBBY state, creating it with a new chat, an empty player list,
-     * a board set for the right number of players and an empty commonGals list.
+     * a board set for the right number of players, the correct number of players and an empty commonGals list.
      * First and current player are not set yet.
+     * @param firstPlayer the first player joining the game.
+     * @param numberOfPlayers the number of players selected by the first player.
      */
-    public Game(int gameDimensions){
+    public Game(Player firstPlayer, int numberOfPlayers){
         gameState = GameStates.LOBBY;
-        board = new Board(gameDimensions);
+        this.numberOfPlayers = numberOfPlayers;
+        board = new Board(numberOfPlayers);
         chat = new Chat();
         players = new ArrayList<>();
+        players.add(firstPlayer);
+        this.firstPlayer = firstPlayer;
+        this.currentPlayer = firstPlayer;
         commonGoals = new ArrayList<>();
     }
 
@@ -51,9 +59,13 @@ public class Game{
      * Returns the current state of the game.
      * @return the current state of the game.
      */
-    public GameStates getGameState() {
-        return gameState;
-    }
+    public GameStates getGameState() {return gameState;}
+
+    /**
+     * Returns the number of players of the game.
+     * @return the number of players of the game.
+     */
+    public int getNumberOfPlayers() {return numberOfPlayers;}
 
     /**
      * Returns the first player of the game.
@@ -108,9 +120,7 @@ public class Game{
      * Sets the game state as the passed parameter.
      * @param gameState the game state to set.
      */
-    public void setGameState(GameStates gameState) {
-        this.gameState = gameState;
-    }
+    public void setGameState(GameStates gameState) {this.gameState = gameState;}
 
     /**
      * Sets the first player of the game.
@@ -163,21 +173,15 @@ public class Game{
     /**
      * Adds a new player to the game.
      * @param player the player to be added
-     * @throws MaximumPlayerException if the maximum number of players has already been reached (4 players)
      * @throws InvalidNameException if the nickname is not unique
      */
-    public void addPlayer(Player player) throws MaximumPlayerException, InvalidNameException {
+    public void addPlayer(Player player) throws InvalidNameException {
         int playerLength = getPlayers().size();
         for (int i = 0; i<playerLength; i++) {
             if(getPlayers().get(i).getNickname().equals(player.getNickname()))
                 throw new InvalidNameException("Invalid name, must be unique");
         }
-        if (playerLength<4){
-            players.add(player);
-        }
-        else {
-            throw new MaximumPlayerException("Maximum number of players reached");
-        }
+        players.add(player);
     }
 
     /**

@@ -1,21 +1,14 @@
 package org.projectsw.Controller;
 
 import org.projectsw.Exceptions.InvalidNameException;
-
-import org.projectsw.Exceptions.MaximumPlayerException;
 import org.projectsw.Model.*;
-
 import java.util.ArrayList;
 
 /**
  * The class contains the application logic methods of the game.
  */
 public class Engine {
-    //TODO: finire metodi controller
 
-    /**
-     * Initializes the game and his save.
-     */
     private Game game;
 
     /**
@@ -23,6 +16,11 @@ public class Engine {
      * @return current game
      */
     public Game getGame() { return this.game; }
+
+    //TODO: finire metodi controller
+    /**
+     * Initializes the game and his save.
+     */
     public void startGame(){
         this.game = new Game();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");
@@ -44,8 +42,6 @@ public class Engine {
         }
         try {
             game.addPlayer(player);
-        } catch (MaximumPlayerException e) {
-            //send message
         } catch (InvalidNameException e) {
             //send message
         }
