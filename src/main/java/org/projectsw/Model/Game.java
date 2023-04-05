@@ -44,6 +44,9 @@ public class Game{
      * @param numberOfPlayers the number of players selected by the first player.
      */
     public Game(Player firstPlayer, int numberOfPlayers){
+        //TODO: creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
+        if(numberOfPlayers<2 || numberOfPlayers>4) throw new IllegalArgumentException("Number of players not between 2 and 4");
+        if(firstPlayer.getPosition() != 0) throw new IllegalArgumentException("The first player you want insert has a !=0 position");
         gameState = GameStates.LOBBY;
         this.numberOfPlayers = numberOfPlayers;
         board = new Board(numberOfPlayers);

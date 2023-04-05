@@ -1,6 +1,8 @@
 package org.projectsw.Controller;
 
+import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Model.*;
 import java.util.ArrayList;
 
@@ -23,12 +25,18 @@ public class Engine {
      * Creates a player object with position 0 and create a new game using the game constructor (the one that also sets the first player).
      * The game is initialized using the first player and the number of players selected, the state of the game at the end of the
      * execution is LOBBY.
-     * @param nicknameFirstPlayer the nickname of the first player joining in the game
-     * @param numberOfPlayers the number of players selected by the first player
+     * @param nicknameFirstPlayer the nickname of the first player joining in the game.
+     * @param numberOfPlayers the number of players selected by the first player.
+     * @throws FirstJoinFailedException if the position of player is not 0 of if the number of players is not correctly chosen.
      */
-    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers){
-        Player firstPlayer = new Player(nicknameFirstPlayer,0);
-        game = new Game(firstPlayer,numberOfPlayers);
+    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws FirstJoinFailedException{
+        try {
+            Player firstPlayer = new Player(nicknameFirstPlayer,0);
+            game = new Game(firstPlayer,numberOfPlayers);
+        } catch (IllegalArgumentException e) {
+            if (numberOfPlayers<2 || numberOfPlayers>4) throw new FirstJoinFailedException("Invalid Position");
+            else throw new FirstJoinFailedException("Invalid number of players");
+        }
     }
 
     /**
@@ -36,9 +44,11 @@ public class Engine {
      * player object with the right position and puts it in the arrayList of players.
      * Then checks if the lobby is fulled: if it is, calls the method to start the game,
      * if it isn't the game state remains LOBBY, waiting for new join requests.
-     * @param nickname the nickname of the player to be created
+     * @param nickname the nickname of the player to be created.
+     * @throws JoinFailedException if the name of the player is already used
+     *                             of if the function is called when the lobby is closed
      */
-    public void playerJoin (String nickname){
+    public void playerJoin (String nickname) throws JoinFailedException {
         if(game.getGameState().equals(GameStates.LOBBY)){
             try {
                 int newPlayerPosition = game.getPlayers().size();
@@ -48,10 +58,10 @@ public class Engine {
                     startGame();
                 }
             } catch (InvalidNameException e) {
-                System.out.println("Player join failed, the nickname is already used");
+                throw new JoinFailedException("Name already used");
             }
         }
-        else System.out.println("Player join failed, the game isn't in the lobby state");
+        else throw new JoinFailedException("The lobby is closed");
     }
 
     /**

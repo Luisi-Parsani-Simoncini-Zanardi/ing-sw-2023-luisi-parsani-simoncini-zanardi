@@ -2,7 +2,9 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Controller.Engine;
+import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Model.*;
 import org.projectsw.TestUtils;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +17,7 @@ class EngineTest extends TestUtils {
      * works correctly and if the state of the game changes after the last join
      */
     @Test
-    void startingGameSimulation() {
+    void startingGameSimulation() throws FirstJoinFailedException, JoinFailedException {
         //creates a new engine and checks if it has an empty game
         Engine engine = new Engine();
         assertNull(engine.getGame());
