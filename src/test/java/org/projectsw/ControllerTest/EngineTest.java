@@ -15,10 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class EngineTest extends testUtils {
 
     @Test
-    void startGame() {
-    }
-
-    @Test
     void playerJoin() {
     }
 
@@ -52,8 +48,8 @@ class EngineTest extends testUtils {
 
     @Test
     void sayInChatTest() throws InvalidNameException {
-
         Engine engine = new Engine();
+        engine.startGame();
         Game game = engine.getGame();
         String content = "content test for sayInChat";
         Player sender = new Player("Popi", 1);
