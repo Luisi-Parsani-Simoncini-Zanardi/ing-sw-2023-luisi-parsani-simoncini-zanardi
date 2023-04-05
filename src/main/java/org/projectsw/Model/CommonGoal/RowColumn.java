@@ -11,7 +11,11 @@ public class RowColumn extends CommonGoalStrategy{
     private boolean rowColumn;  //true Row, false Column
 
     /**
-     * Creates a new instance of the RowColumn class using the unique code of the CommonGoal to be created to correctly initialize the parameters
+     * Creates a new instance of the RowColumn class using the unique code of the CommonGoal.
+     * If strategyCode is equal to 2, the player's shelf must contain at least 2 columns made up of all different types of Tiles
+     * If strategyCode is equal to 5, the player's shelf must contain at least 3 columns made up of at most 3 types of tiles
+     * If strategyCode is equal to 6, the player's shelf must contain at least 2 rows made up of all different types of Tiles
+     * If strategyCode is equal to 7, the player's shelf must contain at least 4 columns made up of at most 3 types of tiles
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
     public RowColumn(int strategyCode){

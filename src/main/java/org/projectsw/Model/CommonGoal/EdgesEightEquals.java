@@ -10,7 +10,9 @@ public class EdgesEightEquals extends CommonGoalStrategy{
     private final boolean edge;
 
     /**
-     * Creates a new instance of the EdgesEightEquals class using the unique code of the CommonGoal to be created to correctly initialize the parameters
+     * Creates a new instance of the EdgesEightEquals class using the unique code of the CommonGoal.
+     * If strategyCode is equal to 8 the player shelf must have the edges of the same type of tiles
+     * If strategyCode is equal to 9 the player shelf must have at least 8 Tiles of the same tYpe
      * @param strategyCode is the unique code of the CommonGoal instance to be created
      */
     public EdgesEightEquals(int strategyCode){
