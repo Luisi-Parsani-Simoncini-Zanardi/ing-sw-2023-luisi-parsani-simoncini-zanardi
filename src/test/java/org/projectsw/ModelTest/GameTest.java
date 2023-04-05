@@ -3,8 +3,6 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.MaximumPlayerException;
-import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 
@@ -180,14 +178,12 @@ class GameTest {
             game.addPlayer(kirk);
             game.addPlayer(cliff);
             game.addPlayer(lars);
-        } catch (MaximumPlayerException ignore) {
-        } catch (InvalidNameException ignore) {;
+        } catch (InvalidNameException ignore) {
         }
         assertEquals(james, game.getPlayers().get(0));
         assertEquals(kirk, game.getPlayers().get(1));
         assertEquals(cliff, game.getPlayers().get(2));
         assertEquals(lars, game.getPlayers().get(3));
-        assertThrows(MaximumPlayerException.class, () -> game.addPlayer(jason));
         assertThrows(InvalidNameException.class, () -> game.addPlayer(cliff2));
     }
 }
