@@ -6,7 +6,7 @@ import java.util.Collections;
 /**
  * The Bag class represents the bag of tiles that can be drawn from.
  */
-public class Bag {
+public class Bag implements Cloneable{
     private final ArrayList<Tile> tiles;
 
     /**
@@ -50,5 +50,14 @@ public class Bag {
 
     public ArrayList<Tile> getBag() {
         return (ArrayList<Tile>) tiles.clone();
+    }
+
+    /**
+     * Clones an object.
+     * @return the cloned object
+     * @throws CloneNotSupportedException if clone is not supported
+     */
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
