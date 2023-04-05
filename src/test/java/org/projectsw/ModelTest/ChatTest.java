@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Chat;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;
-import java.time.LocalTime;
+import org.projectsw.TestUtils;
+
 
 import java.util.ArrayList;
-import static org.junit.jupiter.api.Assertions.*;
 
-class ChatTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ChatTest extends TestUtils {
 
     /**
      * Tests if the method addChatLog correctly add a String to the ArrayList chat.
@@ -27,27 +29,17 @@ class ChatTest {
     }
 
     /**
-     * check if two Message objects are identical
-     * @param MessageTest
-     * @param MessageAssert
-     */
-    void assertEqualMessage(Message MessageTest, Message MessageAssert) {
-        assertEquals(MessageTest.getSender().getNickname(), MessageAssert.getSender().getNickname());
-        assertEquals(MessageTest.getContent(), MessageAssert.getContent());;
-    }
-
-    /**
      * Tests if the method actually returns an ArrayList containing the right values.
      */
     @Test
     void testGetChat() {
         Player sender = new Player("Pippo", 1);
         Chat chat = new Chat();
-        ArrayList<Message> prova = new ArrayList<>();
+        ArrayList<Message> test = new ArrayList<>();
         chat.addChatLog(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
-        prova.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
+        test.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
         for (int i=0; i<chat.getChat().size(); i++)
-            assertEqualMessage(prova.get(i), chat.getChat().get(i));
+            assertEqualsMessage(test.get(i), chat.getChat().get(i));
 
     }
 }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Chat {
 
-    private ArrayList<Message> chat;
+    private final ArrayList<Message> chat;
 
 
     /**

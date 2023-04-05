@@ -4,7 +4,7 @@ import org.projectsw.Model.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class testUtils {
+public class TestUtils {
 
 
     public void assertEqualsTile (Tile tileTest, Tile tileAssert) {
@@ -85,8 +85,8 @@ public class testUtils {
 
     /**
      * check if two Message objects are identical
-     * @param messageTest
-     * @param messageAssert
+     * @param messageTest a test Message object
+     * @param messageAssert another test Message object
      */
     public void assertEqualsMessage (Message messageTest, Message messageAssert) {
         assertEquals(messageTest.getContent(), messageAssert.getContent());
