@@ -13,9 +13,6 @@ import java.util.ArrayList;
 public class Engine {
     //TODO: finire metodi controller
 
-    /**
-     * Initializes the game and his save.
-     */
     private Game game;
 
     /**
@@ -23,6 +20,10 @@ public class Engine {
      * @return current game
      */
     public Game getGame() { return this.game; }
+
+    /**
+     * Initializes the game and the save.
+     */
     public void startGame(){
         this.game = new Game();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");

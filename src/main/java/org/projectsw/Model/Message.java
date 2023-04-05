@@ -1,10 +1,8 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.MaximumPlayerException;
 
 import java.util.ArrayList;
-import java.time.LocalTime;
 
 /**
  * This class represent a single message object with a single sender, the content of the message and a

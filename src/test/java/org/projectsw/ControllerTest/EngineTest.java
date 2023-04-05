@@ -1,29 +1,23 @@
 package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.Test;
+import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.Game;
-import org.projectsw.Controller.Engine;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;
-import org.projectsw.testUtils;
+import org.projectsw.TestUtils;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class EngineTest extends testUtils {
-
-    @Test
-    void startGame() {
-    }
+class EngineTest extends TestUtils {
 
     @Test
     void playerJoin() {
     }
 
     @Test
-    void selctTiles() {
+    void selectTiles() {
     }
 
     @Test
@@ -52,8 +46,8 @@ class EngineTest extends testUtils {
 
     @Test
     void sayInChatTest() throws InvalidNameException {
-
         Engine engine = new Engine();
+        engine.startGame();
         Game game = engine.getGame();
         String content = "content test for sayInChat";
         Player sender = new Player("Popi", 1);
@@ -64,9 +58,7 @@ class EngineTest extends testUtils {
         messageTest.setRecipients(recipients);
         engine.sayInChat(sender, content, recipients);
 
-        game.getChat().getChat().forEach((element) -> {
-            assertEqualsMessage(element, messageTest);
-        });
+        game.getChat().getChat().forEach((element) -> assertEqualsMessage(element, messageTest));
 
     }
 

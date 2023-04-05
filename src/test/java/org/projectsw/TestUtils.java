@@ -4,7 +4,7 @@ import org.projectsw.Model.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class testUtils {
+public class TestUtils {
 
 
     public void assertEqualsTile (Tile tileTest, Tile tileAssert) {

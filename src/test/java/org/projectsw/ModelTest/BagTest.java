@@ -104,9 +104,8 @@ class BagTest {
     void testGetBag() {
         Bag bag = new Bag();
         ArrayList<Tile> tmp = bag.getBag();
-        for (int i=0; i<tmp.size(); i++)
-        {
-            assertEquals(tmp.get(i), bag.pop());
+        for (Tile tile : tmp) {
+            assertEquals(tile, bag.pop());
         }
     }
 }
