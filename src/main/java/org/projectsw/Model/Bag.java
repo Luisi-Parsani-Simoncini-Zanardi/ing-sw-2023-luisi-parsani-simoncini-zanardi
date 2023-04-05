@@ -48,6 +48,10 @@ public class Bag implements Cloneable{
         return tile;
     }
 
+    /**
+     * Returns the bag array.
+     * @return the bag array
+     */
     public ArrayList<Tile> getBag() {
         return (ArrayList<Tile>) tiles.clone();
     }
