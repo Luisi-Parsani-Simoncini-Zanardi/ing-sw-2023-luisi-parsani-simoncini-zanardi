@@ -4,6 +4,7 @@ import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Square extends CommonGoalStrategy {
 
@@ -25,7 +26,7 @@ public class Square extends CommonGoalStrategy {
     public boolean check(Shelf shelf) {
 
         ArrayList<Point> coordinates = new ArrayList<>();
-        TilesEnum[] tilesEnums = TilesEnum.values();
+        ArrayList<TilesEnum> tilesEnums = new ArrayList<>(Arrays.asList(TilesEnum.values()));
 
         for (TilesEnum tileType : tilesEnums) {
             coordinates.clear();
