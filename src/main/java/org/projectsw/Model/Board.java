@@ -3,6 +3,7 @@ package org.projectsw.Model;
 import com.google.gson.Gson;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
@@ -11,6 +12,8 @@ public class Board{
     private Tile[][] board;
     private boolean endGame;
     private Bag bag;
+    private ArrayList<Coordinates> temporaryCoordinates;
+    private ArrayList<Coordinates> selectableCoordinates;
 
     /**
      * Constructs a Board full of unused tiles.
@@ -19,6 +22,7 @@ public class Board{
         board = new Tile[9][9];
         bag = new Bag();
         endGame = false;
+        temporaryCoordinates = new ArrayList<>();
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
@@ -45,6 +49,7 @@ public class Board{
             }
             endGame = false;
             bag = new Bag();
+            temporaryCoordinates = new ArrayList<>();
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
@@ -55,9 +60,10 @@ public class Board{
      * @param board the Board object to copy from
      */
     public Board(Board board){
-        this.board = board.board;
-        this.endGame = board.endGame;
-        this.bag = board.bag;
+        this.board = board.getBoard();
+        this.endGame = board.isEndGame();
+        this.bag = board.getBag();
+        this.temporaryCoordinates = board.getTemporaryCoordinates();
     }
 
     /**
@@ -93,6 +99,14 @@ public class Board{
     }
 
     /**
+     * Returns the temporary Coordinates of selected tiles vector.
+     * @return the Coordinates vector.
+     */
+    public ArrayList<Coordinates> getTemporaryCoordinates() {
+        return temporaryCoordinates;
+    }
+
+    /**
      * Returns the flag endGame.
      * @return true if the game has ended, false otherwise
      */
@@ -109,6 +123,14 @@ public class Board{
     }
 
     /**
+     * Sets the temporaryCoordinates arrayList as a given arrayList of Coordinates.
+     * @param temporaryCoordinates the arrayList of Coordinates to set.
+     */
+    public void setTemporaryCoordinates(ArrayList<Coordinates> temporaryCoordinates) {
+        this.temporaryCoordinates = temporaryCoordinates;
+    }
+
+    /**
      * Updates the board by placing the given Tile at the specified position.
      * @param tile the Tile to place on the board
      * @param row the row index of the position to place the Tile at
@@ -118,5 +140,20 @@ public class Board{
     public void updateBoard(Tile tile, int row, int column) throws IndexOutOfBoundsException{
         if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
+    }
+
+    /**
+     * Adds a new Coordinates object to the temporaryCoordinates arrayList
+     * @param coordinates the Coordinates to add.
+     */
+    public void addTemporaryCoordinate (Coordinates coordinates){
+        temporaryCoordinates.add(coordinates);
+    }
+
+    /**
+     * Cleans the arrayList of temporaryCoordinates (remove all the elements).
+     */
+    public void cleanTemporaryTiles() {
+        temporaryCoordinates.clear();
     }
 }
