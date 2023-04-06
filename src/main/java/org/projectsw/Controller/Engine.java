@@ -70,7 +70,7 @@ public class Engine {
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
-
+        //notifica a view
     }
 
     //turno
