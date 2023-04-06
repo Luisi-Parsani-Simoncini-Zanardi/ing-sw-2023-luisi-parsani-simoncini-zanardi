@@ -20,6 +20,7 @@ public class Game{
     private Board board;
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
+    private ArrayList<Coordinates> temporaryCoordinates;
 
 
     /**
@@ -112,13 +113,20 @@ public class Game{
         return commonGoals;
     }
 
-
     /**
      * Returns the chat of the game.
      * @return the chat of the game
      */
     public Chat getChat() {
         return chat;
+    }
+
+    /**
+     * Returns the temporary Coordinates of selected tiles vector.
+     * @return the Coordinates vector.
+     */
+    public ArrayList<Coordinates> getTemporaryCoordinates() {
+        return temporaryCoordinates;
     }
 
     /**
@@ -177,6 +185,14 @@ public class Game{
     }
 
     /**
+     * Sets the temporaryCoordinates arrayList as a given arrayList of Coordinates.
+     * @param temporaryCoordinates the arrayList of Coordinates to set.
+     */
+    public void setTemporaryCoordinates(ArrayList<Coordinates> temporaryCoordinates) {
+        this.temporaryCoordinates = temporaryCoordinates;
+    }
+
+    /**
      * Adds a new player to the game.
      * @param player the player to be added
      * @throws InvalidNameException if the nickname is not unique
@@ -188,6 +204,21 @@ public class Game{
                 throw new InvalidNameException("Invalid name, must be unique");
         }
         players.add(player);
+    }
+
+    /**
+     * Adds a new Coordinates object to the temporaryCoordinates arrayList
+     * @param coordinates the Coordinates to add.
+     */
+    public void addTemporaryCoordinate (Coordinates coordinates){
+        temporaryCoordinates.add(coordinates);
+    }
+
+    /**
+     * Cleans the arrayList of temporaryCoordinates (remove all the elements).
+     */
+    public void cleanTemporaryTiles() {
+        temporaryCoordinates.clear();
     }
 
     /**
