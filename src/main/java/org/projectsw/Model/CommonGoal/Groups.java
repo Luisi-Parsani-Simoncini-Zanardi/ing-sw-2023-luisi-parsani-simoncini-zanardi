@@ -21,7 +21,7 @@ public class Groups extends CommonGoalStrategy{
     public Groups(Integer strategyCode){
         super(strategyCode);
         this.coordinates = new ArrayList<>();
-        if(this.StrategyCode == 3) {
+        if(this.strategyCode == 3) {
             this.numObjects = 4;
             this.groupDim = 4;
         }

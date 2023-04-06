@@ -7,10 +7,10 @@ import java.util.ArrayList;
 
 public abstract class CommonGoalStrategy {
     protected int numObjects;
-    protected int StrategyCode;
+    protected int strategyCode;
 
     public CommonGoalStrategy(Integer code){
-        this.StrategyCode= code;
+        this.strategyCode= code;
     }
 
     /**

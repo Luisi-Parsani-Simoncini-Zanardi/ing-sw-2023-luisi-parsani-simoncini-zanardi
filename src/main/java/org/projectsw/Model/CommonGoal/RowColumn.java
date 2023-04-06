@@ -54,7 +54,7 @@ public class RowColumn extends CommonGoalStrategy{
     public boolean check(Shelf shelf) {
         ArrayList<Integer> numDiffTiles;
         numDiffTiles = this.rowColumnCounter(shelf);
-        return shelfVerifier(this.StrategyCode, numDiffTiles);
+        return shelfVerifier(this.strategyCode, numDiffTiles);
     }
 
     /**
