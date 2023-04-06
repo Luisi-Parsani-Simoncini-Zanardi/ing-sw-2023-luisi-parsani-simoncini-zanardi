@@ -17,7 +17,7 @@ public class EdgesEightEquals extends CommonGoalStrategy{
      */
     public EdgesEightEquals(Integer strategyCode){
         super(strategyCode);
-        this.edge = this.StrategyCode == 8;
+        this.edge = this.strategyCode == 8;
     }
 
     /**

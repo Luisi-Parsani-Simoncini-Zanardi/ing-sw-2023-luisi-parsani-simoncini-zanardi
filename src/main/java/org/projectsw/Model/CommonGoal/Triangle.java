@@ -23,7 +23,7 @@ public class Triangle extends CommonGoalStrategy{
     @Override
     public boolean check(Shelf shelf){
 
-        int [] height = this.columnHeight(shelf);
+        int [] height = this.columnsHeight(shelf);
         return this.ascending(height) || this.descending(height);
     }
 
@@ -34,7 +34,7 @@ public class Triangle extends CommonGoalStrategy{
      * @return a vector with the heights of the columns from left to right.
      * If the height of a column is 0 it returns -1 in columnHeight[0] to interrupt the algorithm
      */
-    private int[] columnHeight(Shelf shelf){
+    private int[] columnsHeight(Shelf shelf){
         int [] columnHeight = new int[5];
         for(int i=0;i<5;i++) {
             for (int j = 0; j < 6; j++) {
