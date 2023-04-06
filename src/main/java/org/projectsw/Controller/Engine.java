@@ -79,16 +79,18 @@ public class Engine {
         //chiama select column
         //chiama placeTiles
         //chiama endTurn
-            //chiama checkCommonGoal
-            //chiama endGame
-                //controlla di non essere già in endgame
-                //controlla che il giocatore abbia riempito la shelf
-                    // se vero, setta endGame e assegna punto
-            //chiama saveGameStatus
-            //passa il turno al giocatore successivo
+    //            //chiama checkCommonGoal
+    //            //chiama checkEndGame
+    //                //controlla di non essere già in endgame
+    //                //controlla che il giocatore abbia riempito la shelf
+    //                    // se vero, setta endGame e assegna punto
+    //            //chiama saveGameStatus
+    //            //controlla se la board e' "vuota", e in caso chiama fillBoard
+    //            //passa il turno al giocatore successivo, o se era l'ultimo giocatore chiama endGame
+    //                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
 
     //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class
-    public void selctTiles(int row, int column){
+    public void selectTiles(int row, int column){
         //checkSelectableTile(), eccede il numero fornito da checkRemaningColumnSpace
         //butta in array coordinate (controllando se ha raggiunto il massimo)
     }
@@ -121,7 +123,11 @@ public class Engine {
 
     public void checkPersonalGoal(){}
 
+    public void checkEndgameGoal(){}
+
     public void endTurn(){}
+
+    public void checkEndGame(){}
 
     public void endGame(){}
 
