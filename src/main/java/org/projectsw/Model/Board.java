@@ -156,4 +156,51 @@ public class Board{
     public void cleanTemporaryTiles() {
         temporaryCoordinates.clear();
     }
+
+
+
+    /**
+     * Returns the coordinates of all the selectable tiles without checking if temporaryCoordinates contains something,
+     * so the result is correct only if called when the user hasn't selected any tile yet.
+     * @return an ArrayList containing the coordinates of all the selectable tiles
+     */
+    public ArrayList<Coordinate> getFirstSelectableCoordinates() {
+        ArrayList<Coordinate> selectableCoordinates = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                Tile currentTile1 = board[i][j];
+                if (currentTile1.getTile().equals(TilesEnum.CATS ) || currentTile1.getTile().equals(TilesEnum.BOOKS)
+                        || currentTile1.getTile().equals(TilesEnum.FRAMES) || currentTile1.getTile().equals(TilesEnum.GAMES)
+                        || currentTile1.getTile().equals(TilesEnum.PLANTS) || currentTile1.getTile().equals(TilesEnum.TROPHIES)) {
+                    ArrayList<Coordinate> adjacentCoordinates = getAdjacentCoordinates(new Coordinate(i,j));
+                    boolean emptyEdgeFound = false;
+                    for(Coordinate coordinate : adjacentCoordinates){
+                        Tile currentTile2 = board[coordinate.getRow()][coordinate.getColumn()];
+                        if(currentTile2.getTile().equals(TilesEnum.EMPTY) || currentTile2.getTile().equals(TilesEnum.UNUSED)){
+                            emptyEdgeFound = true;
+                            break;
+                        }
+                    }
+                    if(emptyEdgeFound) selectableCoordinates.add(new Coordinate(i,j));
+                }
+            }
+        }
+        return selectableCoordinates;
+    }
+
+    /**
+     * Returns the coordinates adjacent to a given coordinate
+     * @param middle the coordinate whose adjacent coordinates are desired
+     * @return an ArrayList of coordinates, all adjacent to the given coordinate
+     */
+    public ArrayList<Coordinate> getAdjacentCoordinates(Coordinate middle){
+        ArrayList<Coordinate> adjacentCoordinates = new ArrayList<>();
+        int middleRow = middle.getRow();
+        int middleColumn = middle.getColumn();
+        if(middleRow != 0) adjacentCoordinates.add(new Coordinate(middleRow-1,middleColumn));
+        if(middleColumn != 0) adjacentCoordinates.add(new Coordinate(middleRow,middleColumn-1));
+        if(middleColumn != 8) adjacentCoordinates.add(new Coordinate(middleRow,middleColumn+1));
+        if(middleRow != 8) adjacentCoordinates.add(new Coordinate(middleRow+1,middleColumn));
+        return adjacentCoordinates;
+    }
 }
