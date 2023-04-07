@@ -146,8 +146,29 @@ public class Engine {
 
     public void endTurn(){}
 
+    /**
+     * Checks if a player has completed his shelf and if so sets endGame and adds the point to the player
+     */
     public void checkEndGame(){
+        if(!this.getGame().getBoard().isEndGame()){
+            if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
+                this.getGame().getBoard().setEndGame(true);
+                this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
+            }
+        }
+    }
 
+    /**
+     * Auxiliary method that returns true if the player shelf is full, false otherwise
+     * @param shelf is the player shelf
+     * @return true if the player shelf is true, false otherwise
+     */
+    private boolean fullShelf(Shelf shelf){
+        for(int i=0; i<6; i++)
+            for(int j=0; j<5; j++)
+                if(shelf.getTileShelf(i,j).getTile()==TilesEnum.EMPTY)
+                    return false;
+        return true;
     }
 
     public void endGame(){}
