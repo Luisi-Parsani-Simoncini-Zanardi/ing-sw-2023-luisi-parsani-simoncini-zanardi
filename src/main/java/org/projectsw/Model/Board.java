@@ -12,8 +12,8 @@ public class Board{
     private Tile[][] board;
     private boolean endGame;
     private Bag bag;
-    private ArrayList<Coordinates> temporaryCoordinates;
-    private ArrayList<Coordinates> selectableCoordinates;
+    private ArrayList<Coordinate> temporaryCoordinates;
+    private ArrayList<Coordinate> selectableCoordinates;
 
     /**
      * Constructs a Board full of unused tiles.
@@ -102,7 +102,7 @@ public class Board{
      * Returns the temporary Coordinates of selected tiles vector.
      * @return the Coordinates vector.
      */
-    public ArrayList<Coordinates> getTemporaryCoordinates() {
+    public ArrayList<Coordinate> getTemporaryCoordinates() {
         return temporaryCoordinates;
     }
 
@@ -126,7 +126,7 @@ public class Board{
      * Sets the temporaryCoordinates arrayList as a given arrayList of Coordinates.
      * @param temporaryCoordinates the arrayList of Coordinates to set.
      */
-    public void setTemporaryCoordinates(ArrayList<Coordinates> temporaryCoordinates) {
+    public void setTemporaryCoordinates(ArrayList<Coordinate> temporaryCoordinates) {
         this.temporaryCoordinates = temporaryCoordinates;
     }
 
@@ -146,7 +146,7 @@ public class Board{
      * Adds a new Coordinates object to the temporaryCoordinates arrayList
      * @param coordinates the Coordinates to add.
      */
-    public void addTemporaryCoordinate (Coordinates coordinates){
+    public void addTemporaryCoordinate (Coordinate coordinates){
         temporaryCoordinates.add(coordinates);
     }
 
