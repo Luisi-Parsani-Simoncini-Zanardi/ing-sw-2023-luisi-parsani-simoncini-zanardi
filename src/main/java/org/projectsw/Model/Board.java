@@ -1,6 +1,8 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
+
+import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,8 +14,8 @@ public class Board{
     private Tile[][] board;
     private boolean endGame;
     private Bag bag;
-    private ArrayList<Coordinate> temporaryCoordinates;
-    private ArrayList<Coordinate> selectableCoordinates;
+    private ArrayList<Point> temporaryPoints;
+    private ArrayList<Point> selectablePoints;
 
     /**
      * Constructs a Board full of unused tiles.
@@ -22,7 +24,7 @@ public class Board{
         board = new Tile[9][9];
         bag = new Bag();
         endGame = false;
-        temporaryCoordinates = new ArrayList<>();
+        temporaryPoints = new ArrayList<>();
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
@@ -49,7 +51,7 @@ public class Board{
             }
             endGame = false;
             bag = new Bag();
-            temporaryCoordinates = new ArrayList<>();
+            temporaryPoints = new ArrayList<>();
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
@@ -63,7 +65,8 @@ public class Board{
         this.board = board.getBoard();
         this.endGame = board.isEndGame();
         this.bag = board.getBag();
-        this.temporaryCoordinates = board.getTemporaryCoordinates();
+        this.temporaryPoints = board.getTemporaryPoints();
+        this.getSelectablePoints();
     }
 
     /**
@@ -99,11 +102,11 @@ public class Board{
     }
 
     /**
-     * Returns the temporary Coordinates of selected tiles vector.
-     * @return the Coordinates vector.
+     * Returns the temporary Points of selected tiles vector.
+     * @return the Points vector.
      */
-    public ArrayList<Coordinate> getTemporaryCoordinates() {
-        return temporaryCoordinates;
+    public ArrayList<Point> getTemporaryPoints() {
+        return temporaryPoints;
     }
 
     /**
@@ -123,11 +126,11 @@ public class Board{
     }
 
     /**
-     * Sets the temporaryCoordinates arrayList as a given arrayList of Coordinates.
-     * @param temporaryCoordinates the arrayList of Coordinates to set.
+     * Sets the temporaryPoints arrayList as a given arrayList of Points.
+     * @param temporaryPoints the arrayList of Points to set.
      */
-    public void setTemporaryCoordinates(ArrayList<Coordinate> temporaryCoordinates) {
-        this.temporaryCoordinates = temporaryCoordinates;
+    public void setTemporaryPoints(ArrayList<Point> temporaryPoints) {
+        this.temporaryPoints = temporaryPoints;
     }
 
     /**
@@ -143,64 +146,89 @@ public class Board{
     }
 
     /**
-     * Adds a new Coordinates object to the temporaryCoordinates arrayList
-     * @param coordinates the Coordinates to add.
+     * Adds a new Point object to the temporaryPoints arrayList
+     * @param point the Point to add.
      */
-    public void addTemporaryCoordinate (Coordinate coordinates){
-        temporaryCoordinates.add(coordinates);
+    public void addTemporaryPoints(Point point){
+        temporaryPoints.add(point);
     }
 
     /**
-     * Cleans the arrayList of temporaryCoordinates (remove all the elements).
+     * Cleans the arrayList of temporaryPoints (remove all the elements).
      */
-    public void cleanTemporaryTiles() {
-        temporaryCoordinates.clear();
+    public void cleanTemporaryPoints() {
+        temporaryPoints.clear();
     }
 
-
+    public void getSelectablePoints() {
+        if(temporaryPoints.isEmpty()) selectablePoints = getFirstSelectablePoints();
+        //if(temporaryPoints.
+    }
 
     /**
-     * Returns the coordinates of all the selectable tiles without checking if temporaryCoordinates contains something,
+     * Returns the points of all the selectable tiles without checking if temporaryPoints contains something,
      * so the result is correct only if called when the user hasn't selected any tile yet.
-     * @return an ArrayList containing the coordinates of all the selectable tiles
+     * @return an ArrayList containing the points of all the selectable tiles
      */
-    public ArrayList<Coordinate> getFirstSelectableCoordinates() {
-        ArrayList<Coordinate> selectableCoordinates = new ArrayList<>();
+    public ArrayList<Point> getFirstSelectablePoints() {
+        ArrayList<Point> selectablePoints = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 Tile currentTile1 = board[i][j];
                 if (currentTile1.getTile().equals(TilesEnum.CATS ) || currentTile1.getTile().equals(TilesEnum.BOOKS)
                         || currentTile1.getTile().equals(TilesEnum.FRAMES) || currentTile1.getTile().equals(TilesEnum.GAMES)
                         || currentTile1.getTile().equals(TilesEnum.PLANTS) || currentTile1.getTile().equals(TilesEnum.TROPHIES)) {
-                    ArrayList<Coordinate> adjacentCoordinates = getAdjacentCoordinates(new Coordinate(i,j));
+                    ArrayList<Point> adjacentPoints = GetAdjacentPoints(new Point(i,j));
                     boolean emptyEdgeFound = false;
-                    for(Coordinate coordinate : adjacentCoordinates){
-                        Tile currentTile2 = board[coordinate.getRow()][coordinate.getColumn()];
+                    for(Point point : adjacentPoints){
+                        Tile currentTile2 = board[(int) point.getX()][(int) point.getY()];
                         if(currentTile2.getTile().equals(TilesEnum.EMPTY) || currentTile2.getTile().equals(TilesEnum.UNUSED)){
                             emptyEdgeFound = true;
                             break;
                         }
                     }
-                    if(emptyEdgeFound) selectableCoordinates.add(new Coordinate(i,j));
+                    if(emptyEdgeFound) selectablePoints.add(new Point(i,j));
                 }
             }
         }
-        return selectableCoordinates;
+        return selectablePoints;
     }
 
+    
+
     /**
-     * Returns the coordinates adjacent to a given coordinate
-     * @param middle the coordinate whose adjacent coordinates are desired
-     * @return an ArrayList of coordinates, all adjacent to the given coordinate
+     * Returns the points adjacent to a given point
+     * @param middle the point whose adjacent points are desired
+     * @return an ArrayList of points, all adjacent to the given point
      */
-    public ArrayList<Coordinate> getAdjacentCoordinates(Coordinate middle){
-        ArrayList<Coordinate> adjacentCoordinates = new ArrayList<>();
-        int middleRow = middle.getRow();
-        int middleColumn = middle.getColumn();
-        if(middleRow != 0) adjacentCoordinates.add(new Coordinate(middleRow-1,middleColumn));
-        if(middleColumn != 0) adjacentCoordinates.add(new Coordinate(middleRow,middleColumn-1));
-        if(middleColumn != 8) adjacentCoordinates.add(new Coordinate(middleRow,middleColumn+1));
-        if(middleRow != 8) adjacentCoordinates.add(new Coordinate(middleRow+1,middleColumn));
-        return adjacentCoordinates;
+    public ArrayList<Point> GetAdjacentPoints(Point middle){
+        ArrayList<Point> adjacentPoints = new ArrayList<>();
+        int middleRow = (int) middle.getX();
+        int middleColumn = (int) middle.getY();
+        System.out.println(middleRow+" "+middleColumn);
+        if(middleRow != 0) adjacentPoints.add(new Point(middleRow-1,middleColumn));
+        if(middleColumn != 0) adjacentPoints.add(new Point(middleRow,middleColumn-1));
+        if(middleColumn != 8) adjacentPoints.add(new Point(middleRow,middleColumn+1));
+        if(middleRow != 8) adjacentPoints.add(new Point(middleRow+1,middleColumn));
+        return adjacentPoints;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -5,6 +5,8 @@ import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import java.awt.*;
+import java.util.ArrayList;
 
 class BoardTest {
     /**
@@ -256,4 +258,34 @@ class BoardTest {
         assertEquals(TilesEnum.EMPTY,board.getBag().pop().getTile());
     }
 
+    @Test
+    public void getAdjacentPointsTest(){
+        Board board = new Board(4);
+        ArrayList<Point> points;
+        points = board.GetAdjacentPoints(new Point(0,5));
+        System.out.println(points.size());
+        for(Point point :points){
+            System.out.println(point.toString());
+        }
+    }
+
+    @Test
+    public void getSelectablePointsTest(){
+        Board board = new Board(4);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,4);
+
+        ArrayList<Point> selectablePoints;
+        selectablePoints = board.getFirstSelectablePoints();
+        System.out.println(selectablePoints.size());
+        for(Point point : selectablePoints){
+            System.out.println(point.toString());
+        }
+    }
 }
