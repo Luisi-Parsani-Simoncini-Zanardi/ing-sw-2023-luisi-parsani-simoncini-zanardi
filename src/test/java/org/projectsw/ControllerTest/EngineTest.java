@@ -6,6 +6,8 @@ import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Model.*;
+import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.RowColumn;
 import org.projectsw.TestUtils;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
@@ -96,6 +98,11 @@ class EngineTest extends TestUtils {
     void placeTiles() {
     }
 
+    /**
+     * Test if the players get points for CommonGoals they have achieved,
+     * test if no points are awarded if a CommonGoal has already been achieved by a player.
+     * Test if the redeemedNumber is updated if the CommonGoal achieved.
+     */
     @Test
     void checkCommonGoals() {
         Engine engine = new Engine();
@@ -103,12 +110,59 @@ class EngineTest extends TestUtils {
             engine.firstPlayerJoin("Davide", 2);
             engine.playerJoin("Lorenzo");
         }catch(Exception ignore){}
+        //manually setting CommonGoal otherwise they are random and the test result will be influenced
+        CommonGoal commonGoal1 = new CommonGoal(new RowColumn(2));
+        CommonGoal commonGoal2 = new CommonGoal(new RowColumn(7));
+        ArrayList<CommonGoal> common= new ArrayList<>();
+        common.add(0,commonGoal1);
+        common.add(1,commonGoal2);
+        engine.getGame().setCommonGoals(common);
 
+        //setting custom shelf for both players
+        Shelf shelf = new Shelf();
+        Shelf shelf1 = new Shelf();
+        for(int i=0; i<2; i++){
+            try{
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
+                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+                shelf1.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
+                shelf1.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
+                shelf1.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
+                shelf1.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
+                shelf1.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
+                shelf1.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+            }catch(Exception ignore){}
+        }
+        engine.getGame().getPlayers().get(0).setShelf(shelf);
+        for(int i=0; i<5; i++){
+            try{
+                shelf1.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
+                shelf1.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
+                shelf1.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
+                shelf1.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+            }catch(Exception ignore){}
+        }
+        engine.getGame().getPlayers().get(1).setShelf(shelf1);
 
+        //behaviour of the method tested
+        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(0));
+        engine.checkCommonGoals();
+        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(1));
+        engine.checkCommonGoals();
+        engine.checkCommonGoals();
 
-
-
-
+        assertEquals(8, engine.getGame().getPlayers().get(0).getPoints());
+        assertEquals(14, engine.getGame().getPlayers().get(1).getPoints());
+        assertEquals(2, engine.getGame().getCommonGoals().get(0).getRedeemedNumber());
+        assertEquals(3, engine.getGame().getCommonGoals().get(1).getRedeemedNumber());
+        assertTrue(engine.getGame().getPlayers().get(0).isCommonGoalRedeemed(0));
+        assertFalse(engine.getGame().getPlayers().get(0).isCommonGoalRedeemed(1));
+        assertTrue(engine.getGame().getPlayers().get(1).isCommonGoalRedeemed(0));
+        assertTrue(engine.getGame().getPlayers().get(1).isCommonGoalRedeemed(1));
     }
 
     @Test
