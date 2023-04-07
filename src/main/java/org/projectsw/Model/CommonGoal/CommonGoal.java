@@ -1,5 +1,5 @@
 package org.projectsw.Model.CommonGoal;
-import org.projectsw.Exceptions.MaximumRedeemedPointsException;
+import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.Shelf;
 
 public class CommonGoal{
@@ -7,7 +7,7 @@ public class CommonGoal{
     private final CommonGoalStrategy strategy;
 
     public CommonGoal(CommonGoalStrategy strategy){
-        this.redeemedNumber = 0;
+        this.redeemedNumber = 4;
         this.strategy = strategy;
     }
 
@@ -26,13 +26,13 @@ public class CommonGoal{
     }
 
     /**
-     * Increase the redeemedNumber that shows how many times a specific CommonGoal has been redeemed
-     * @throws MaximumRedeemedPointsException when there are no more points to redeem on this CommonGoal
+     * Decrease the redeemedNumber that shows how many times a CommonGoal can be redeemed
+     * @throws MinimumRedeemedPointsException when there are no more points to redeem on this CommonGoal
      */
-    public void increaseRedeemedNumber() throws MaximumRedeemedPointsException{
-        if(getRedeemedNumber()<4)
-            redeemedNumber++;
-        else throw  new MaximumRedeemedPointsException("There are no more points to redeem");
+    public void decreaseRedeemedNumber() throws MinimumRedeemedPointsException{
+        if(getRedeemedNumber()>0)
+            redeemedNumber--;
+        else throw  new MinimumRedeemedPointsException("There are no more points to redeem");
     }
 
     /**
