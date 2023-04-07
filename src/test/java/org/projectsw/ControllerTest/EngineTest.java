@@ -98,6 +98,17 @@ class EngineTest extends TestUtils {
 
     @Test
     void checkCommonGoals() {
+        Engine engine = new Engine();
+        try {
+            engine.firstPlayerJoin("Davide", 2);
+            engine.playerJoin("Lorenzo");
+        }catch(Exception ignore){}
+
+
+
+
+
+
     }
 
     @Test

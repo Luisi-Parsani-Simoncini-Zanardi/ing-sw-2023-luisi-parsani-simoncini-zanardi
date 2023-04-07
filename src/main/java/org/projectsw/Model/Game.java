@@ -58,6 +58,10 @@ public class Game{
         this.firstPlayer = firstPlayer;
         this.currentPlayer = firstPlayer;
         commonGoals = new ArrayList<>();
+        try {
+            commonGoals = this.randomCommonGoals();
+        }catch(Exception e){System.err.println(e.getMessage());}
+
     }
 
     /**

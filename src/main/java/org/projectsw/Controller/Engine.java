@@ -3,7 +3,10 @@ package org.projectsw.Controller;
 import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.JoinFailedException;
+import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.*;
+import org.projectsw.Model.CommonGoal.CommonGoal;
+
 import java.util.ArrayList;
 
 /**
@@ -118,8 +121,24 @@ public class Engine {
 
     public void placeTiles(){}
 
-    //implemented with strategy pattern
-    public void checkCommonGoals(){}
+    /**
+     * Function that checks if the player has the requirements of the commonGoals in the game.
+     * In the positive case it assigns the points and marks that the player has obtained
+     * the points of the CommonGoal in question
+     */
+    public void checkCommonGoals(){
+        for(int i=0; i<2; i++){
+            if(this.getGame().getCommonGoals().get(i).checkRequirements(this.getGame().getCurrentPlayer().getShelf()) &&
+                !this.getGame().getCurrentPlayer().isCommonGoalRedeemed(i)){
+                try {
+                    int earnedPoints = this.getGame().getCommonGoals().get(i).getRedeemedNumber() * 2;
+                    this.getGame().getCommonGoals().get(i).decreaseRedeemedNumber();
+                    this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + earnedPoints);
+                    this.getGame().getCurrentPlayer().setCommonGoalRedeemed(i,true);
+                }catch(MinimumRedeemedPointsException ignore){}
+            }
+        }
+    }
 
     public void checkPersonalGoal(){}
 
@@ -127,7 +146,9 @@ public class Engine {
 
     public void endTurn(){}
 
-    public void checkEndGame(){}
+    public void checkEndGame(){
+
+    }
 
     public void endGame(){}
 
