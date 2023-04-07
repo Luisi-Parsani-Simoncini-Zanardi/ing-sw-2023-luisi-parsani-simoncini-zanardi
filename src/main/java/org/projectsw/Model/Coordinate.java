@@ -4,7 +4,7 @@ package org.projectsw.Model;
  * The Coordinates class represents the row and column coordinates of a 2-dimensional space,
  * it can be a shelf or a board.
  */
-public class Coordinates {
+public class Coordinate {
     private int row;
     private int column;
 
@@ -13,7 +13,7 @@ public class Coordinates {
      * @param row the row coordinate.
      * @param column the column coordinate.
      */
-    public Coordinates(int row, int column) {
+    public Coordinate(int row, int column) {
         this.row = row;
         this.column = column;
     }
@@ -48,5 +48,10 @@ public class Coordinates {
      */
     public void setColumn(int column) {
         this.column = column;
+    }
+
+    @Override
+    public String toString() {
+        return  "row=" + row + ", column=" + column;
     }
 }
