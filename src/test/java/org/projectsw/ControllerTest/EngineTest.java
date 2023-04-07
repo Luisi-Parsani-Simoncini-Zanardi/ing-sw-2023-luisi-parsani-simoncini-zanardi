@@ -203,4 +203,36 @@ class EngineTest extends TestUtils {
     @Test
     void fillBoard() {
     }
+
+    /**
+     * Test if endGame switches from false to true and that only the first player to complete his shelf gets the point
+     */
+    @Test
+    public void checkEndGame(){
+        Engine engine = new Engine();
+        try {
+            engine.firstPlayerJoin("Davide", 2);
+            engine.playerJoin("Lorenzo");
+        }catch(Exception ignore){}
+        Shelf shelf = new Shelf();
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++ )
+                try{
+                    shelf.insertTiles(new Tile(TilesEnum.CATS,0),i,j);
+                }catch(Exception ignore){}
+        }
+        assertFalse(engine.getGame().getBoard().isEndGame());
+
+        engine.getGame().getPlayers().get(0).setShelf(shelf);
+        engine.getGame().getPlayers().get(1).setShelf(shelf);
+        engine.checkEndGame();
+
+        assertTrue(engine.getGame().getBoard().isEndGame());
+
+        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(1));
+        engine.checkEndGame();
+
+        assertEquals(1,engine.getGame().getPlayers().get(0).getPoints());
+        assertEquals(0,engine.getGame().getPlayers().get(1).getPoints());
+    }
 }
