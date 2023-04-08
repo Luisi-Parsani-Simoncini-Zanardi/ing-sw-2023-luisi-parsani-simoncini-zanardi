@@ -6,7 +6,6 @@ import org.projectsw.Model.TilesEnum;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
-import java.util.ArrayList;
 
 class BoardTest {
     /**
@@ -258,34 +257,49 @@ class BoardTest {
         assertEquals(TilesEnum.EMPTY,board.getBag().pop().getTile());
     }
 
-    @Test
-    public void getAdjacentPointsTest(){
-        Board board = new Board(4);
-        ArrayList<Point> points;
-        points = board.GetAdjacentPoints(new Point(0,5));
-        System.out.println(points.size());
-        for(Point point :points){
-            System.out.println(point.toString());
-        }
-    }
 
     @Test
-    public void getSelectablePointsTest(){
+    public void getFirstSelectablePointsTest(){
         Board board = new Board(4);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
         board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,4);
-
-        ArrayList<Point> selectablePoints;
-        selectablePoints = board.getFirstSelectablePoints();
-        System.out.println(selectablePoints.size());
-        for(Point point : selectablePoints){
+        System.out.println("\nTest 0:");
+        System.out.println(board.getTemporaryPoints().size());
+        System.out.println("\nTest 1:");
+        board.updateSelectablePoints();
+        System.out.println(board.getSelectablePoints().size());
+        for(Point point : board.getSelectablePoints()){
             System.out.println(point.toString());
         }
+        System.out.println("\nTest 2:");
+        board.addTemporaryPoints(new Point( 1,3));
+        board.updateSelectablePoints();
+        System.out.println(board.getSelectablePoints().size());
+        for(Point point : board.getSelectablePoints()){
+            System.out.println(point.toString());
+        }
+        System.out.println("\nTest 3:");
+        board.addTemporaryPoints(new Point( 2,3));
+        board.updateSelectablePoints();
+        System.out.println(board.getSelectablePoints().size());
+        for(Point point : board.getSelectablePoints()){
+            System.out.println(point.toString());
+        }
+        System.out.println("\nTest 4:");
+        board.addTemporaryPoints(new Point( 3,3));
+        board.updateSelectablePoints();
+        System.out.println(board.getSelectablePoints().size());
+
+        System.out.println("\nTest 4:");
+        board.cleanTemporaryPoints();
+        board.updateSelectablePoints();
+        System.out.println(board.getSelectablePoints().size());
     }
 }

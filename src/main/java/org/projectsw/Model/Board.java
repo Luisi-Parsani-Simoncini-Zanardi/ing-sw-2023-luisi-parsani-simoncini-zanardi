@@ -25,6 +25,7 @@ public class Board{
         bag = new Bag();
         endGame = false;
         temporaryPoints = new ArrayList<>();
+        selectablePoints = new ArrayList<>();
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
@@ -52,6 +53,7 @@ public class Board{
             endGame = false;
             bag = new Bag();
             temporaryPoints = new ArrayList<>();
+            updateSelectablePoints();
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
@@ -66,7 +68,7 @@ public class Board{
         this.endGame = board.isEndGame();
         this.bag = board.getBag();
         this.temporaryPoints = board.getTemporaryPoints();
-        this.getSelectablePoints();
+        this.updateSelectablePoints();
     }
 
     /**
@@ -107,6 +109,14 @@ public class Board{
      */
     public ArrayList<Point> getTemporaryPoints() {
         return temporaryPoints;
+    }
+
+    /**
+     * Returns the selectable Points of the board.
+     * @return the selectable Points vector.
+     */
+    public ArrayList<Point> getSelectablePoints() {
+        return selectablePoints;
     }
 
     /**
@@ -160,25 +170,47 @@ public class Board{
         temporaryPoints.clear();
     }
 
-    public void getSelectablePoints() {
-        if(temporaryPoints.isEmpty()) selectablePoints = getFirstSelectablePoints();
-        //if(temporaryPoints.
+    public void updateSelectablePoints() {
+        ArrayList<Point> newSelectablePoints = new ArrayList<>();
+
+        switch (temporaryPoints.size()) {
+            case 0 -> newSelectablePoints = getFreeEdgesPoints();
+            case 1 -> newSelectablePoints = getAdjacentSelectablePoints();
+            case 2 -> newSelectablePoints = getSelectablePointsInStraightLine();
+
+        }
+        selectablePoints = newSelectablePoints;
     }
 
     /**
-     * Returns the points of all the selectable tiles without checking if temporaryPoints contains something,
-     * so the result is correct only if called when the user hasn't selected any tile yet.
-     * @return an ArrayList containing the points of all the selectable tiles
+     * Returns the points adjacent to a given point
+     * @param middle the point whose adjacent points are desired
+     * @return an ArrayList of points, all adjacent to the given point
      */
-    public ArrayList<Point> getFirstSelectablePoints() {
-        ArrayList<Point> selectablePoints = new ArrayList<>();
+    private ArrayList<Point> getAdjacentPoints(Point middle){
+        ArrayList<Point> adjacentPoints = new ArrayList<>();
+        int middleRow = (int) middle.getX();
+        int middleColumn = (int) middle.getY();
+        if(middleRow != 0) adjacentPoints.add(new Point(middleRow-1,middleColumn));
+        if(middleColumn != 0) adjacentPoints.add(new Point(middleRow,middleColumn-1));
+        if(middleColumn != 8) adjacentPoints.add(new Point(middleRow,middleColumn+1));
+        if(middleRow != 8) adjacentPoints.add(new Point(middleRow+1,middleColumn));
+        return adjacentPoints;
+    }
+
+    /**
+     * Returns the points of all the game-tiles which have free edges.
+     * @return an arrayList containing the points of all the game-tiles which have free edges
+     */
+    private ArrayList<Point> getFreeEdgesPoints() {
+        ArrayList<Point> newSelectablePoints = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 Tile currentTile1 = board[i][j];
-                if (currentTile1.getTile().equals(TilesEnum.CATS ) || currentTile1.getTile().equals(TilesEnum.BOOKS)
+                if(currentTile1.getTile().equals(TilesEnum.CATS ) || currentTile1.getTile().equals(TilesEnum.BOOKS)
                         || currentTile1.getTile().equals(TilesEnum.FRAMES) || currentTile1.getTile().equals(TilesEnum.GAMES)
                         || currentTile1.getTile().equals(TilesEnum.PLANTS) || currentTile1.getTile().equals(TilesEnum.TROPHIES)) {
-                    ArrayList<Point> adjacentPoints = GetAdjacentPoints(new Point(i,j));
+                    ArrayList<Point> adjacentPoints = getAdjacentPoints(new Point(i,j));
                     boolean emptyEdgeFound = false;
                     for(Point point : adjacentPoints){
                         Tile currentTile2 = board[(int) point.getX()][(int) point.getY()];
@@ -187,48 +219,61 @@ public class Board{
                             break;
                         }
                     }
-                    if(emptyEdgeFound) selectablePoints.add(new Point(i,j));
+                    if(emptyEdgeFound) newSelectablePoints.add(new Point(i,j));
                 }
             }
         }
-        return selectablePoints;
+        return newSelectablePoints;
     }
-
-    
 
     /**
-     * Returns the points adjacent to a given point
-     * @param middle the point whose adjacent points are desired
-     * @return an ArrayList of points, all adjacent to the given point
+     * Returns all the selectable points next to the one present in temporaryPoints.
+     * @return an arrayList containing all the selectable points next to the one present in temporaryPoints.
      */
-    public ArrayList<Point> GetAdjacentPoints(Point middle){
-        ArrayList<Point> adjacentPoints = new ArrayList<>();
-        int middleRow = (int) middle.getX();
-        int middleColumn = (int) middle.getY();
-        System.out.println(middleRow+" "+middleColumn);
-        if(middleRow != 0) adjacentPoints.add(new Point(middleRow-1,middleColumn));
-        if(middleColumn != 0) adjacentPoints.add(new Point(middleRow,middleColumn-1));
-        if(middleColumn != 8) adjacentPoints.add(new Point(middleRow,middleColumn+1));
-        if(middleRow != 8) adjacentPoints.add(new Point(middleRow+1,middleColumn));
-        return adjacentPoints;
+    private ArrayList<Point> getAdjacentSelectablePoints(){
+        ArrayList<Point> newSelectablePoints = new ArrayList<>();
+        selectablePoints = getFreeEdgesPoints();
+
+        Point selectedPoint = temporaryPoints.get(0);
+        ArrayList<Point> adjacentToSelectedPoint = getAdjacentPoints(selectedPoint);
+        for (Point point : adjacentToSelectedPoint) {
+            if (selectablePoints.contains(point)) newSelectablePoints.add(point);
+        }
+        return newSelectablePoints;
+    }
+
+    /**
+     * Returns all the selectable points in straight line with the two present in the temporaryPoints.
+     * @return an arrayList containing all the selectable points in straight line with the two present in the temporaryPoints.
+     */
+    private ArrayList<Point> getSelectablePointsInStraightLine(){
+        ArrayList<Point> newSelectablePoints = new ArrayList<>();
+        Point selectedPoint0 = temporaryPoints.get(0);
+        Point selectedPoint1 = temporaryPoints.get(1);
+        selectablePoints = getFreeEdgesPoints();
+        if (selectedPoint0.getX() == selectedPoint1.getX() + 1) {
+            if(selectablePoints.contains(new Point((int) selectedPoint0.getX()+1,(int) selectedPoint0.getY())))
+                newSelectablePoints.add(new Point((int) selectedPoint0.getX()+1,(int) selectedPoint0.getY()));
+            if(selectablePoints.contains(new Point((int) selectedPoint1.getX()-1,(int) selectedPoint1.getY())))
+                newSelectablePoints.add(new Point((int) selectedPoint1.getX()-1,(int) selectedPoint1.getY()));
+        } else if (selectedPoint0.getX() == selectedPoint1.getX() - 1) {
+            if(selectablePoints.contains(new Point((int) selectedPoint0.getX()-1,(int) selectedPoint0.getY())))
+                newSelectablePoints.add(new Point((int) selectedPoint0.getX()-1,(int) selectedPoint0.getY()));
+            if(selectablePoints.contains(new Point((int) selectedPoint1.getX()+1,(int) selectedPoint1.getY())))
+                newSelectablePoints.add(new Point((int) selectedPoint1.getX()+1,(int) selectedPoint1.getY()));
+        } else if (selectedPoint0.getY() == selectedPoint1.getY() + 1){
+            if(selectablePoints.contains(new Point((int) selectedPoint0.getX(),(int) selectedPoint0.getY()+1)))
+                newSelectablePoints.add(new Point((int) selectedPoint0.getX(),(int) selectedPoint0.getY()+1));
+            if(selectablePoints.contains(new Point((int) selectedPoint1.getX(),(int) selectedPoint1.getY()-1)))
+                newSelectablePoints.add(new Point((int) selectedPoint1.getX(),(int) selectedPoint1.getY()-1));
+        }
+        else if (selectedPoint0.getY() == selectedPoint1.getY() - 1) {
+            if (selectablePoints.contains(new Point((int) selectedPoint0.getX(), (int) selectedPoint0.getY() - 1)))
+                newSelectablePoints.add(new Point((int) selectedPoint0.getX(), (int) selectedPoint0.getY() - 1));
+            if (selectablePoints.contains(new Point((int) selectedPoint1.getX(), (int) selectedPoint1.getY() + 1)))
+                newSelectablePoints.add(new Point((int) selectedPoint1.getX(), (int) selectedPoint1.getY() + 1));
+        }
+        return  newSelectablePoints;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
