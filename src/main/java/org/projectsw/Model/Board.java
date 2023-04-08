@@ -53,6 +53,7 @@ public class Board{
             endGame = false;
             bag = new Bag();
             temporaryPoints = new ArrayList<>();
+            selectablePoints = new ArrayList<>();
             updateSelectablePoints();
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
@@ -141,6 +142,7 @@ public class Board{
      */
     public void setTemporaryPoints(ArrayList<Point> temporaryPoints) {
         this.temporaryPoints = temporaryPoints;
+        updateSelectablePoints();
     }
 
     /**
@@ -153,6 +155,7 @@ public class Board{
     public void updateBoard(Tile tile, int row, int column) throws IndexOutOfBoundsException{
         if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
+        updateSelectablePoints();
     }
 
     /**
@@ -161,6 +164,7 @@ public class Board{
      */
     public void addTemporaryPoints(Point point){
         temporaryPoints.add(point);
+        updateSelectablePoints();
     }
 
     /**
@@ -168,9 +172,10 @@ public class Board{
      */
     public void cleanTemporaryPoints() {
         temporaryPoints.clear();
+        updateSelectablePoints();
     }
 
-    public void updateSelectablePoints() {
+    private void updateSelectablePoints() {
         ArrayList<Point> newSelectablePoints = new ArrayList<>();
 
         switch (temporaryPoints.size()) {
