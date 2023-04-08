@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+//TODO x Davide: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
+
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
  */
