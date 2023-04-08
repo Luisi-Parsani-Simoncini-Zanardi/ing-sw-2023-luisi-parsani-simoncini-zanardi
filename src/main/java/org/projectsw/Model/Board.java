@@ -26,6 +26,7 @@ public class Board{
         endGame = false;
         temporaryPoints = new ArrayList<>();
         selectablePoints = new ArrayList<>();
+        updateSelectablePoints();
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
@@ -89,22 +90,6 @@ public class Board{
     }
 
     /**
-     * Returns the Tile at the given position on the board and replaces it with an empty Tile.
-     * @param row the row index of the Tile
-     * @param column the column index of the Tile
-     * @return the Tile at the given position
-     * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
-     */
-    public Tile getTileFromBoard(int row, int column) throws IndexOutOfBoundsException{
-        if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
-        else {
-            Tile tmp = board[row][column];
-            board[row][column] = new Tile(TilesEnum.EMPTY, 0);
-            return tmp;
-        }
-    }
-
-    /**
      * Returns the temporary Points of selected tiles vector.
      * @return the Points vector.
      */
@@ -143,6 +128,25 @@ public class Board{
     public void setTemporaryPoints(ArrayList<Point> temporaryPoints) {
         this.temporaryPoints = temporaryPoints;
         updateSelectablePoints();
+    }
+
+    /**
+     * Returns the Tile at the given position on the board and replaces it with an empty Tile.
+     * @param row the row index of the Tile
+     * @param column the column index of the Tile
+     * @return the Tile at the given position
+     * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
+     */
+    public Tile getTileFromBoard(int row, int column) throws IndexOutOfBoundsException{
+        if(row>8 || column>8){
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        else {
+            Tile tmp = board[row][column];
+            board[row][column] = new Tile(TilesEnum.EMPTY, 0);
+            updateSelectablePoints();
+            return tmp;
+        }
     }
 
     /**
