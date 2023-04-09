@@ -3,7 +3,10 @@ package org.projectsw.Controller;
 import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.JoinFailedException;
+import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.*;
+import org.projectsw.Model.CommonGoal.CommonGoal;
+
 import java.util.ArrayList;
 
 import static org.projectsw.Model.TilesEnum.EMPTY;
@@ -121,8 +124,24 @@ public class Engine {
 
     public void placeTiles(){}
 
-    //implemented with strategy pattern
-    public void checkCommonGoals(){}
+    /**
+     * Function that checks if the player has the requirements of the commonGoals in the game.
+     * In the positive case it assigns the points and marks that the player has obtained
+     * the points of the CommonGoal in question
+     */
+    public void checkCommonGoals(){
+        for(int i=0; i<2; i++){
+            if(this.getGame().getCommonGoals().get(i).checkRequirements(this.getGame().getCurrentPlayer().getShelf()) &&
+                !this.getGame().getCurrentPlayer().isCommonGoalRedeemed(i)){
+                try {
+                    int earnedPoints = this.getGame().getCommonGoals().get(i).getRedeemedNumber() * 2;
+                    this.getGame().getCommonGoals().get(i).decreaseRedeemedNumber();
+                    this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + earnedPoints);
+                    this.getGame().getCurrentPlayer().setCommonGoalRedeemed(i,true);
+                }catch(MinimumRedeemedPointsException ignore){}
+            }
+        }
+    }
 
     public void checkPersonalGoal(){}
 
@@ -130,7 +149,30 @@ public class Engine {
 
     public void endTurn(){}
 
-    public void checkEndGame(){}
+    /**
+     * Checks if a player has completed his shelf and if so sets endGame and adds the point to the player
+     */
+    public void checkEndGame(){
+        if(!this.getGame().getBoard().isEndGame()){
+            if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
+                this.getGame().getBoard().setEndGame(true);
+                this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
+            }
+        }
+    }
+
+    /**
+     * Auxiliary method that returns true if the player shelf is full, false otherwise
+     * @param shelf is the player shelf
+     * @return true if the player shelf is true, false otherwise
+     */
+    private boolean fullShelf(Shelf shelf){
+        for(int i=0; i<6; i++)
+            for(int j=0; j<5; j++)
+                if(shelf.getTileShelf(i,j).getTile()==TilesEnum.EMPTY)
+                    return false;
+        return true;
+    }
 
     public void endGame(){}
 
