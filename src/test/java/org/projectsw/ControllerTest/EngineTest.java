@@ -288,6 +288,7 @@ class EngineTest extends TestUtils {
 
     }
 
+
     /**
      * Test if endGame switches from false to true and that only the first player to complete his shelf gets the point
      */

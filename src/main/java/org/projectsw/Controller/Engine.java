@@ -5,7 +5,6 @@ import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.*;
-import org.projectsw.Model.CommonGoal.CommonGoal;
 
 import java.util.ArrayList;
 
