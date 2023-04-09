@@ -100,9 +100,9 @@ class EngineTest extends TestUtils {
     }
 
     /**
-     * Test if the players get points for CommonGoals they have achieved,
-     * test if no points are awarded if a CommonGoal has already been achieved by a player.
-     * Test if the redeemedNumber is updated if the CommonGoal achieved.
+     * Tests if the players get points for CommonGoals they have achieved.
+     * Tests if no points are awarded if a CommonGoal has already been achieved by a player.
+     * Tests if the redeemedNumber is updated if the CommonGoal achieved.
      */
     @Test
     void checkCommonGoals() {
@@ -201,20 +201,20 @@ class EngineTest extends TestUtils {
 
     }
 
-    //TODO: capire perche' non funziona
+    //TODO: capire perche' non funziona (e successivamente scrivere casi di test)
     @Test
-    void fillBoardFalse1() {
+    void checkFillBoardFalse() {
         Game game = new Game();
         Tile[][] matrix = {
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
                 {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
                 {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.CATS, 0), new Tile(TilesEnum.CATS, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)}};
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
+                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
+                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)}};
 
         Board board = new Board();
         for (int i = 0; i < 9; i++) {

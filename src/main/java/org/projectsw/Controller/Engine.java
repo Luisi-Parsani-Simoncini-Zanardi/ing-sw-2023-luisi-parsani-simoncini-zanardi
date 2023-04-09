@@ -190,6 +190,9 @@ public class Engine {
         game.getChat().addChatLog(message);
     }
 
+    /**
+     * Fills the board if the board contains only tiles with no other adjacent tiles.
+     */
     public void fillBoard(){
         if (!(isBoardValid())){
             for(int i=0; i<9; i++){
@@ -202,7 +205,10 @@ public class Engine {
         }
     }
 
-
+    /**
+     * Returns false if the board contains only tiles with no other adjacent tiles, true otherwise.
+     * @return false if the board contains only tiles with no other adjacent tiles, true otherwise
+     */
     private boolean isBoardValid(){
         for(int i=0; i<9; i++){
             for (int j=0; j<9; j++) {
@@ -219,9 +225,15 @@ public class Engine {
         return false;
     }
 
-    private boolean isEmptyOrUnusedBoard (int i, int j){
-        return (game.getBoard().getTileFromBoard(i, j).getTile() != EMPTY) ||
-                (game.getBoard().getTileFromBoard(i, j).getTile() != UNUSED);
+    /**
+     * Returns true if the selected tile is either EMPTY or UNUSED.
+     * @param x the x coordinate of the tile on the board
+     * @param y the y coordinate of the tile on the board
+     * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
+     */
+    private boolean isEmptyOrUnusedBoard (int x, int y){
+        return (game.getBoard().getTileFromBoard(x, y).getTile() != EMPTY) ||
+                (game.getBoard().getTileFromBoard(x, y).getTile() != UNUSED);
     }
 
 }
