@@ -116,7 +116,7 @@ class EngineTest extends TestUtils {
     void resetGame() {
     }
 
-    //the function start game is changed and now this test doesen't work
+    //TODO: sistemare questo test, dopo il cambiamento di startGame non funziona piu'
     @Test
     void sayInChatTest() throws InvalidNameException {
         Engine engine = new Engine();
