@@ -143,7 +143,48 @@ public class Engine {
         }
     }
 
-    public void checkPersonalGoal(){}
+    /**
+     * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
+     */
+    public void checkPersonalGoal(){
+        for (Player player : game.getPlayers()) {
+            int numberRedeemed = 0;
+            TilesEnum[][] shelf = tileToTilesEnum(player.getShelf());
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (player.getPersonalGoal().getPersonalGoal()[i][j] == shelf[i][j] &&
+                            player.getPersonalGoal().getPersonalGoal()[i][j] != EMPTY)
+                        numberRedeemed++;
+                }
+            }
+            switch (numberRedeemed) {
+                case 0 -> player.setPoints(player.getPoints());
+                case 1 -> player.setPoints(player.getPoints() + 1);
+                case 2 -> player.setPoints(player.getPoints() + 2);
+                case 3 -> player.setPoints(player.getPoints() + 4);
+                case 4 -> player.setPoints(player.getPoints() + 6);
+                case 5 -> player.setPoints(player.getPoints() + 9);
+                case 6 -> player.setPoints(player.getPoints() + 12);
+
+                default -> throw new IllegalArgumentException("Invalid tile value: " + numberRedeemed);
+            }
+        }
+    }
+
+    /**
+     * Auxiliary method that transforms a shelf in a matrix of TilesEnum.
+     * @param shelf the shelf to be transformed
+     * @return the correspondent matrix of TilesEnum
+     */
+    private TilesEnum[][] tileToTilesEnum (Shelf shelf){
+        TilesEnum[][] tmp = new TilesEnum[6][5];
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+                tmp[i][j] = shelf.getTileShelf(i, j).getTile();
+            }
+        }
+        return tmp;
+    }
 
     public void checkEndgameGoal(){}
 
@@ -179,7 +220,7 @@ public class Engine {
     public void resetGame(){}
 
     /**
-     * create a message with sender, content and recipients and add it to the chat
+     * Creates a message with sender, content and recipients and adds it to the chat.
      * @param sender message sender
      * @param content message content
      * @param recipients message recipients
