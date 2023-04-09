@@ -8,6 +8,7 @@ import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Model.*;
 import org.projectsw.TestUtils;
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 
 class EngineTest extends TestUtils {
@@ -135,7 +136,30 @@ class EngineTest extends TestUtils {
 
     }
 
+    //TODO: capire perche' non funziona
     @Test
-    void fillBoard() {
+    void fillBoardFalse1() {
+        Game game = new Game();
+        Tile[][] matrix = {
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.CATS, 0), new Tile(TilesEnum.CATS, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
+                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)}};
+
+        Board board = new Board();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                board.updateBoard(matrix[i][j], i, j);
+            }
+        }
+
+        assertEquals(board.getBoard(), matrix);
+
     }
+
 }
