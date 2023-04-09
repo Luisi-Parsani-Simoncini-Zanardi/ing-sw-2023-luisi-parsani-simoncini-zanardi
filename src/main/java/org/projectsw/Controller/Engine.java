@@ -143,7 +143,48 @@ public class Engine {
         }
     }
 
-    public void checkPersonalGoal(){}
+    /**
+     * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
+     */
+    public void checkPersonalGoal(){
+        for (Player player : game.getPlayers()) {
+            int numberRedeemed = 0;
+            TilesEnum[][] shelf = tileToTilesEnum(player.getShelf());
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (player.getPersonalGoal().getPersonalGoal()[i][j] == shelf[i][j] &&
+                            player.getPersonalGoal().getPersonalGoal()[i][j] != EMPTY)
+                        numberRedeemed++;
+                }
+            }
+            switch (numberRedeemed) {
+                case 0 -> player.setPoints(player.getPoints());
+                case 1 -> player.setPoints(player.getPoints() + 1);
+                case 2 -> player.setPoints(player.getPoints() + 2);
+                case 3 -> player.setPoints(player.getPoints() + 4);
+                case 4 -> player.setPoints(player.getPoints() + 6);
+                case 5 -> player.setPoints(player.getPoints() + 9);
+                case 6 -> player.setPoints(player.getPoints() + 12);
+
+                default -> throw new IllegalArgumentException("Invalid tile value: " + numberRedeemed);
+            }
+        }
+    }
+
+    /**
+     * Auxiliary method that transforms a shelf in a matrix of TilesEnum.
+     * @param shelf the shelf to be transformed
+     * @return the correspondent matrix of TilesEnum
+     */
+    private TilesEnum[][] tileToTilesEnum (Shelf shelf){
+        TilesEnum[][] tmp = new TilesEnum[6][5];
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+                tmp[i][j] = shelf.getTileShelf(i, j).getTile();
+            }
+        }
+        return tmp;
+    }
 
     public void checkEndgameGoal(){}
 
@@ -179,7 +220,7 @@ public class Engine {
     public void resetGame(){}
 
     /**
-     * create a message with sender, content and recipients and add it to the chat
+     * Creates a message with sender, content and recipients and adds it to the chat.
      * @param sender message sender
      * @param content message content
      * @param recipients message recipients
@@ -190,6 +231,9 @@ public class Engine {
         game.getChat().addChatLog(message);
     }
 
+    /**
+     * Fills the board if the board contains only tiles with no other adjacent tiles.
+     */
     public void fillBoard(){
         if (!(isBoardValid())){
             for(int i=0; i<9; i++){
@@ -202,7 +246,10 @@ public class Engine {
         }
     }
 
-
+    /**
+     * Returns false if the board contains only tiles with no other adjacent tiles, true otherwise.
+     * @return false if the board contains only tiles with no other adjacent tiles, true otherwise
+     */
     private boolean isBoardValid(){
         for(int i=0; i<9; i++){
             for (int j=0; j<9; j++) {
@@ -219,9 +266,15 @@ public class Engine {
         return false;
     }
 
-    private boolean isEmptyOrUnusedBoard (int i, int j){
-        return (game.getBoard().getTileFromBoard(i, j).getTile() != EMPTY) ||
-                (game.getBoard().getTileFromBoard(i, j).getTile() != UNUSED);
+    /**
+     * Returns true if the selected tile is either EMPTY or UNUSED.
+     * @param x the x coordinate of the tile on the board
+     * @param y the y coordinate of the tile on the board
+     * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
+     */
+    private boolean isEmptyOrUnusedBoard (int x, int y){
+        return (game.getBoard().getTileFromBoard(x, y).getTile() != EMPTY) ||
+                (game.getBoard().getTileFromBoard(x, y).getTile() != UNUSED);
     }
 
 }
