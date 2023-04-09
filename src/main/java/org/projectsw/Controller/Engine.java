@@ -6,6 +6,9 @@ import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Model.*;
 import java.util.ArrayList;
 
+import static org.projectsw.Model.TilesEnum.EMPTY;
+import static org.projectsw.Model.TilesEnum.UNUSED;
+
 /**
  * The class contains the application logic methods of the game.
  */
@@ -145,6 +148,38 @@ public class Engine {
         game.getChat().addChatLog(message);
     }
 
-    public void fillBoard(){}
+    public void fillBoard(){
+        if (!(isBoardValid())){
+            for(int i=0; i<9; i++){
+                for (int j=0; j<9; j++) {
+                    if (game.getBoard().getTileFromBoard(i, j).getTile()!=EMPTY){
+                        game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
+                    }
+                }
+            }
+        }
+    }
+
+
+    private boolean isBoardValid(){
+        for(int i=0; i<9; i++){
+            for (int j=0; j<9; j++) {
+                try {
+                    if (!(isEmptyOrUnusedBoard(i, j)) &&
+                            (!(isEmptyOrUnusedBoard(i - 1, j)) ||
+                            !(isEmptyOrUnusedBoard(i, j - 1)) ||
+                            !(isEmptyOrUnusedBoard(i + 1, j)) ||
+                            !(isEmptyOrUnusedBoard(i, j + 1))))
+                        return true;
+                } catch (IndexOutOfBoundsException ignore) {}
+            }
+        }
+        return false;
+    }
+
+    private boolean isEmptyOrUnusedBoard (int i, int j){
+        return (game.getBoard().getTileFromBoard(i, j).getTile() != EMPTY) ||
+                (game.getBoard().getTileFromBoard(i, j).getTile() != UNUSED);
+    }
 
 }
