@@ -256,4 +256,17 @@ class BoardTest {
         assertEquals(TilesEnum.EMPTY,board.getBag().pop().getTile());
     }
 
+    /**
+     * Test if the isBoardEmpty method correctly retrieve the board status
+     */
+    @Test
+    public void isBoardEmptyTest(){
+        Board board = new Board(3);
+        assertEquals(true, board.isBoardEmpty());
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
+        assertEquals(false, board.isBoardEmpty());
+    }
+
 }

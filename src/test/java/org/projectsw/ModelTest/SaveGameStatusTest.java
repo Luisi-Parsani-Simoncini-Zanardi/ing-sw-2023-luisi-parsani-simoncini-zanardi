@@ -7,6 +7,7 @@ import org.projectsw.TestUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SaveGameStatusTest extends TestUtils {
 
@@ -37,17 +38,6 @@ class SaveGameStatusTest extends TestUtils {
         return game;
     }
 
-    /*
-     * check if two CommonGoal objects are identical
-     * @param commonGoalTest a test Common object
-     * @param commonGoalAssert
-
-    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
-        assertEquals(commonGoalTest.getGoalCode(), commonGoalAssert.getGoalCode());
-        assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
-    }*/
-
-
      /** Checks if the gameToJson function correctly serialize and deserialize the Game class.
       * @throws NoSuchMethodException when there's no method defined as such
       * @throws InvocationTargetException when a called method generates an exception
@@ -73,6 +63,8 @@ class SaveGameStatusTest extends TestUtils {
         // Game data = gson.fromJson(json, Game.class);
 
 
+        assertEquals(game.getGameState(), data.getGameState());
+        assertEquals(game.getNumberOfPlayers(), data.getNumberOfPlayers());
         assertEqualsPlayer(game.getFirstPlayer(), data.getFirstPlayer());
         assertEqualsPlayer(game.getCurrentPlayer(), data.getCurrentPlayer());
         for(int i=0; i<game.getPlayers().size(); i++) {
@@ -80,6 +72,8 @@ class SaveGameStatusTest extends TestUtils {
         }
         assertEqualsBoard(game.getBoard(), data.getBoard());
         assertEqualsChat(game.getChat(), data.getChat());
+        assertEqualsCommonGoal(game.getCommonGoals().get(0), data.getCommonGoals().get(0));
+        assertEqualsCommonGoal(game.getCommonGoals().get(1), data.getCommonGoals().get(1));
     }
 }
 

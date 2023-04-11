@@ -169,16 +169,108 @@ class EngineTest extends TestUtils {
     void checkPersonalGoal() {
     }
 
+    /**
+     * Test if the end turn method correctly set the next player to the current one
+     *
+     * Test if the end turn method correctly set the endGame status to true if the current
+     * player shelf is full
+     */
     @Test
     void endTurn() {
+        Engine engine = new Engine();
+        try {
+            engine.firstPlayerJoin("Santa", 2);
+            engine.playerJoin("Claus");
+        }catch(Exception ignore){}
+        Shelf shelf = new Shelf();
+        Shelf shelf1 = new Shelf();
+        for(int i=0; i<2; i++){
+            try{
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
+                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+            }catch(Exception ignore){}
+        }
+        engine.getGame().getPlayers().get(0).setShelf(shelf);
+        Player nextPlayer = engine.getGame().getNextPlayer();
+        engine.endTurn();
+        assertEqualsPlayer(engine.getGame().getCurrentPlayer(), nextPlayer);
+        assertEquals(false, engine.getGame().getBoard().isEndGame());
+        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(0));
+        for(int i=0; i<5; i++){
+            try{
+                shelf1.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
+                shelf1.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
+                shelf1.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
+                shelf1.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
+                shelf1.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
+                shelf1.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+            }catch(Exception ignore){}
+        }
+        engine.getGame().getCurrentPlayer().setShelf(shelf1);
+        engine.endTurn();
+        engine.getGame().setCurrentPlayer(engine.getGame().getNextPlayer());
+        assertEquals(true, engine.getGame().getBoard().isEndGame());
+        assertEqualsPlayer(engine.getGame().getPlayers().get(0), engine.getGame().getCurrentPlayer());
     }
 
+    /**
+     * Test if the getWinner method correctly retrieve the player with the most points
+     */
+    @Test
+    void getWinnerTest() {
+        Engine engine = new Engine();
+        try {
+            engine.firstPlayerJoin("Lynx", 2);
+            engine.playerJoin("Owl");
+        }catch(Exception ignore){}
+        engine.getGame().getCurrentPlayer().setPoints(10);
+        engine.getGame().getNextPlayer().setPoints(30);
+        assertEqualsPlayer(engine.getGame().getNextPlayer(), engine.getWinner());
+    }
     @Test
     void endGame() {
+        Engine engine = new Engine();
+        try {
+            engine.firstPlayerJoin("Eric", 2);
+            engine.playerJoin("MrMackey");
+        }catch(Exception ignore){}
+        engine.getGame().getCurrentPlayer().setPoints(10);
+        engine.getGame().getNextPlayer().setPoints(100);
+        assertEqualsPlayer(engine.getGame().getPlayers().get(1), engine.endGame());
     }
 
+    /**
+     * check if the resetGame method correctly reset the game
+     */
     @Test
     void resetGame() {
+        Engine engine = new Engine();
+        try {
+            engine.firstPlayerJoin("Glop", 2);
+            engine.playerJoin("Broop");
+        }catch(Exception ignore){}
+        Shelf shelf = new Shelf();
+        for(int i=0; i<2; i++){
+            try{
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
+                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+            }catch(Exception ignore){}
+        }
+        engine.getGame().getPlayers().get(0).setShelf(shelf);
+        assertEqualsPlayer(engine.getGame().getPlayers().get(0), engine.getGame().getCurrentPlayer());
+        assertEqualsPlayer(engine.getGame().getPlayers().get(1), engine.getGame().getNextPlayer());
+        assertEqualsShelf(shelf, engine.getGame().getPlayers().get(0).getShelf());
+        engine.resetGame();
+        assertEquals(null, engine.getGame());
+
     }
 
     //the function start game is changed and now this test doesen't work

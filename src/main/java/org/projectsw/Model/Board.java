@@ -119,4 +119,18 @@ public class Board{
         if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
     }
+
+    /**
+     * check if a board is only composed of EMPTY or UNUSED tiles
+     * @return whether the board is empty or not
+     */
+    public boolean isBoardEmpty() {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (!(board[i][j].getTile() == TilesEnum.EMPTY || board[i][j].getTile() == TilesEnum.UNUSED))
+                    return false;
+            }
+        }
+        return true;
+    }
 }

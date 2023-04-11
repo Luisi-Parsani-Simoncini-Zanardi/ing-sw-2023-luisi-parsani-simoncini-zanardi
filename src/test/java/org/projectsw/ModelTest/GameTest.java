@@ -252,4 +252,22 @@ class GameTest extends TestUtils{
         game.addPlayer(new Player("James", 0));
         assertThrows(InvalidNameException.class, () -> game.addPlayer(new Player("James", 1)));
     }
+
+    /**
+     * test if correctly retrieve the next player
+     * @throws InvalidNameException duplicate or invalid name
+     */
+    @Test
+    void getNextPlayerTest() throws InvalidNameException {
+        Player current = new Player("Renala", 0);
+        Player next1 = new Player("Gravius", 1);
+        Player next2 = new Player("Lusat", 2);
+        Game game = new Game(current, 3);
+        game.addPlayer(next1);
+        game.addPlayer(next2);
+        game.setCurrentPlayer(current);
+        assertEqualsPlayer(next1, game.getNextPlayer());
+        System.out.println(game.getNumberOfPlayers());
+        assertEqualsPlayer(current, game.getNextPlayer());
+    }
 }
