@@ -98,23 +98,29 @@ public class Engine {
     //                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
 
     //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class
-    public void selectTiles(int row, int column){
-        //checkSelectableTile(), eccede il numero fornito da checkRemaningColumnSpace
-        //butta in array coordinate (controllando se ha raggiunto il massimo)
+    public void selectTiles(Point selectedPoint){
+        Board board = game.getBoard();
+        if(board.getTemporaryPoints().size() < checkRemainingColumnSpace()){
+            game.getBoard().addTemporaryPoints(selectedPoint);
+        }
     }
 
-    public void deselectTiles(int row, int column){
-        //rimuove da array coordinate
+    public void deselectTiles(Point point){
+        game.getBoard().removeTemporaryPoints(point);
     }
 
-    private boolean checkSelectableTile(){
-        //la tile è selezionabile?
-        //la tile è adiacente alle altre nell'array?
-        return true;
-    }
-
-    public int checkRemaningColumnSpace() {
-        return 0;
+    public int checkRemainingColumnSpace() {
+        Tile[][] shelf = game.getCurrentPlayer().getShelf().getShelf();
+        int maxLength = 0;
+        for(int i=0;i<5;i++){
+            for(int j=0;j<6;j++){
+                if(!shelf[j][i].getTile().equals(EMPTY)){
+                    if(maxLength < j-1) maxLength = j-1;
+                    break;
+                }
+            }
+        }
+        return maxLength;
     }
 
     public void comfirmSelectedTiles(){
