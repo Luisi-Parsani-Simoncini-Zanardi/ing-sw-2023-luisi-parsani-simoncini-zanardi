@@ -411,8 +411,7 @@ class EngineTest extends TestUtils {
     }
 
     /**
-     * Checks if the personalGoal method correctly assigns the points.
-
+     * Checks if the EndgameGoal method correctly assigns the points.
      */
     @Test
     void testCheckEndGameGoal() throws EmptyTilesException, UnusedTilesException {
