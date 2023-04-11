@@ -1,11 +1,7 @@
 package org.projectsw.Controller;
 
-import org.projectsw.Exceptions.FirstJoinFailedException;
-import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.JoinFailedException;
-import org.projectsw.Exceptions.MinimumRedeemedPointsException;
+import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
-
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -96,34 +92,88 @@ public class Engine {
     //            //passa il turno al giocatore successivo, o se era l'ultimo giocatore chiama endGame
     //                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
 
-    //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class
-    public void selectTiles(int row, int column){
-        //checkSelectableTile(), eccede il numero fornito da checkRemaningColumnSpace
-        //butta in array coordinate (controllando se ha raggiunto il massimo)
+
+    /**
+     * Add a point to the temporaryPoints list after checking if the size of temporaryPoints is smaller than
+     * the maximum remaining space in player's columns.
+     * @param selectedPoint the point that the player wants to select.
+     */
+    public void selectTiles(Point selectedPoint){
+        Board board = game.getBoard();
+        if(board.getTemporaryPoints().size() < checkRemainingColumnSpace()){
+            game.getBoard().addTemporaryPoints(selectedPoint);
+        }
     }
 
-    public void deselectTiles(int row, int column){
-        //rimuove da array coordinate
+    /**
+     * Remove the given point from the temporaryPoints list.
+     * @param point the point to remove.
+     */
+    public void deselectTiles(Point point){
+        game.getBoard().removeTemporaryPoints(point);
     }
 
-    private boolean checkSelectableTile(){
-        //la tile è selezionabile?
-        //la tile è adiacente alle altre nell'array?
-        return true;
+    /**
+     * Checks the remaining space from each column of the current player's shelf and return the maximum value found.
+     * @return the maximum value found of free spaces in the current player's shelf.
+     */
+    public int checkRemainingColumnSpace() {
+        Tile[][] shelf = game.getCurrentPlayer().getShelf().getShelf();
+        int maxLength = 0;
+        for(int i=0;i<5;i++){
+            for(int j=0;j<6;j++){
+                if(!shelf[j][i].getTile().equals(EMPTY) || j == 5){
+                    if(maxLength < j) maxLength = j;
+                    break;
+                }
+            }
+        }
+        return maxLength;
     }
 
-    public int checkRemaningColumnSpace() {
-        return 0;
+    /**
+     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles and cleans the
+     * temporaryPoints list after the copying
+     */
+    public void confirmSelectedTiles() throws MaximumTilesException, EmptyTilesException, UnusedTilesException{
+        ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
+        for(Point point : selectedPoints){
+            Tile tile = game.getBoard().getTileFromBoard(point);
+            game.getCurrentPlayer().addTemporaryTile(tile);
+        }
+        game.getBoard().cleanTemporaryPoints();
     }
 
-    public void comfirmSelectedTiles(){
-        //rimuove da board addTiles di player
-
+    /**
+     * Checks if the column selected by the player is selectable by calling getSelectableColumns.
+     * @param index The index of column that player wants to select.
+     * @throws NonSelectableColumnException if the column is not selectable.
+     */
+    public void selectColumn(int index) throws NonSelectableColumnException{
+        ArrayList<Integer> selectableColumns = game.getCurrentPlayer().getShelf().getSelectableColumns(game.getCurrentPlayer().getTemporaryTiles().size());
+        if(selectableColumns.contains(index)){
+            game.getCurrentPlayer().getShelf().setSelectedColumnIndex(index);
+        }
+        else throw new NonSelectableColumnException();
     }
 
-    public void selectColumn(){}
-
-    public void placeTiles(){}
+    /**
+     * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
+     * @param temporaryIndex the selected index of temporaryTiles.
+     */
+    public void placeTiles(int temporaryIndex) throws EmptyTilesException, UnusedTilesException {
+        Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
+        for(int i=0;i<6;i++){
+            if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i-1,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+                break;
+            }
+            if(i == 5){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+                break;
+            }
+        }
+    }
 
     /**
      * Function that checks if the player has the requirements of the commonGoals in the game.
@@ -297,7 +347,7 @@ public class Engine {
         if (!(isBoardValid())){
             for(int i=0; i<9; i++){
                 for (int j=0; j<9; j++) {
-                    if (game.getBoard().getBoard()[i][j].getTile()==EMPTY){
+                    if (game.getBoard().getTileFromBoard(new Point(i,j)).getTile()!=EMPTY){
                         game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
                     }
                 }
@@ -332,8 +382,8 @@ public class Engine {
      * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
      */
     private boolean isEmptyOrUnusedBoard (int x, int y){
-        return (game.getBoard().getBoard()[x][y].getTile() == EMPTY) ||
-                (game.getBoard().getBoard()[x][y].getTile() == UNUSED);
+        return (game.getBoard().getTileFromBoard(new Point(x,y)).getTile() != EMPTY) ||
+                (game.getBoard().getTileFromBoard(new Point(x,y)).getTile() != UNUSED);
     }
 
 }
