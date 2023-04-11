@@ -148,7 +148,7 @@ public class Player {
      * @throws EmptyTilesException if the tile is EMPTY
      * @throws UnusedTilesException if the tile is UNUSED
      */
-    public void addTile(Tile tile) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
+    public void addTemporaryTile(Tile tile) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
         if(temporaryTiles.size()>2) throw new MaximumTilesException("Maximum number of tiles reached");
         else if(tile.getTile() == TilesEnum.EMPTY) throw new EmptyTilesException("You can't add an EMPTY tile");
         else if(tile.getTile() == TilesEnum.UNUSED) throw new UnusedTilesException("You can't add an UNUSED tile");

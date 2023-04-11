@@ -156,11 +156,11 @@ class PlayerTest {
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);
         Tile tile2 = new Tile(TilesEnum.FRAMES,0);
         assertEquals(0,player.getTemporaryTiles().size());
-        player.addTile(tile0);
+        player.addTemporaryTile(tile0);
         assertEquals(1,player.getTemporaryTiles().size());
-        player.addTile(tile1);
+        player.addTemporaryTile(tile1);
         assertEquals(2,player.getTemporaryTiles().size());
-        player.addTile(tile2);
+        player.addTemporaryTile(tile2);
         assertEquals(3,player.getTemporaryTiles().size());
         assertEquals(tile0,player.getTemporaryTiles().get(0));
         assertEquals(tile1,player.getTemporaryTiles().get(1));
@@ -174,7 +174,7 @@ class PlayerTest {
     void addTileExceptionWhenTileIsEmpty() {
         Player player = new Player("Davide",0);
         assertThrows(EmptyTilesException.class, () ->
-                player.addTile(new Tile(TilesEnum.EMPTY,0)));
+                player.addTemporaryTile(new Tile(TilesEnum.EMPTY,0)));
     }
 
     /**
@@ -184,7 +184,7 @@ class PlayerTest {
     void addTileExceptionWhenTileIsUnused() {
         Player player = new Player("Davide",0);
         assertThrows(UnusedTilesException.class, () ->
-                player.addTile(new Tile(TilesEnum.UNUSED,0)));
+                player.addTemporaryTile(new Tile(TilesEnum.UNUSED,0)));
     }
 
     /**
@@ -193,11 +193,11 @@ class PlayerTest {
     @Test
     void addTileExceptionWhenArrayIsFull() throws EmptyTilesException, UnusedTilesException, MaximumTilesException{
         Player player = new Player("Davide",0);
-        player.addTile(new Tile(TilesEnum.CATS,0));
-        player.addTile(new Tile(TilesEnum.BOOKS,0));
-        player.addTile(new Tile(TilesEnum.GAMES,0));
+        player.addTemporaryTile(new Tile(TilesEnum.CATS,0));
+        player.addTemporaryTile(new Tile(TilesEnum.BOOKS,0));
+        player.addTemporaryTile(new Tile(TilesEnum.GAMES,0));
         assertThrows(MaximumTilesException.class, () ->
-                player.addTile(new Tile(TilesEnum.UNUSED,0)));
+                player.addTemporaryTile(new Tile(TilesEnum.UNUSED,0)));
     }
 
 
@@ -212,9 +212,9 @@ class PlayerTest {
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);
         Tile tile2 = new Tile(TilesEnum.FRAMES,0);
         assertEquals(0,player.getTemporaryTiles().size());
-        player.addTile(tile0);
-        player.addTile(tile1);
-        player.addTile(tile2);
+        player.addTemporaryTile(tile0);
+        player.addTemporaryTile(tile1);
+        player.addTemporaryTile(tile2);
         //check if elements remains in the correct order and if the size reduces correctly
         //after removing from the head of the list and from the end. Then it removes the last one
         assertEquals(3,player.getTemporaryTiles().size());
@@ -226,9 +226,9 @@ class PlayerTest {
         assertEquals(tile1,player.getTemporaryTiles().get(0));
         assertEquals(tile1,player.selectTile(0));
         assertEquals(0,player.getTemporaryTiles().size());
-        player.addTile(tile0);
-        player.addTile(tile1);
-        player.addTile(tile2);
+        player.addTemporaryTile(tile0);
+        player.addTemporaryTile(tile1);
+        player.addTemporaryTile(tile2);
         //check if elements remains in the correct order after removing from the middle
         assertEquals(tile1,player.selectTile(1));
         assertEquals(tile2,player.getTemporaryTiles().get(1));

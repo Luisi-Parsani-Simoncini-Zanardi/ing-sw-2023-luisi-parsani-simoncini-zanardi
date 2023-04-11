@@ -1,15 +1,10 @@
 package org.projectsw.Controller;
 
-import org.projectsw.Exceptions.FirstJoinFailedException;
-import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.JoinFailedException;
-import org.projectsw.Exceptions.MinimumRedeemedPointsException;
+import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.OptionalInt;
+
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
 
@@ -123,9 +118,12 @@ public class Engine {
         return maxLength;
     }
 
-    public void comfirmSelectedTiles(){
-        //rimuove da board addTiles di player
-
+    public void confirmSelectedTiles() throws MaximumTilesException, EmptyTilesException, UnusedTilesException{
+        ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
+        for(Point point : selectedPoints){
+            Tile tile = game.getBoard().getTileFromBoard(point);
+            game.getCurrentPlayer().addTemporaryTile(tile);
+        }
     }
 
     public void selectColumn(){}
