@@ -347,7 +347,7 @@ public class Engine {
         if (!(isBoardValid())){
             for(int i=0; i<9; i++){
                 for (int j=0; j<9; j++) {
-                    if (game.getBoard().getBoard()[i][j].getTile()!=EMPTY){
+                    if (game.getBoard().getBoard()[i][j].getTile()==EMPTY){
                         game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
                     }
                 }
@@ -365,9 +365,9 @@ public class Engine {
                 try {
                     if (!(isEmptyOrUnusedBoard(i, j)) &&
                             (!(isEmptyOrUnusedBoard(i - 1, j)) ||
-                            !(isEmptyOrUnusedBoard(i, j - 1)) ||
-                            !(isEmptyOrUnusedBoard(i + 1, j)) ||
-                            !(isEmptyOrUnusedBoard(i, j + 1))))
+                                    !(isEmptyOrUnusedBoard(i, j - 1)) ||
+                                    !(isEmptyOrUnusedBoard(i + 1, j)) ||
+                                    !(isEmptyOrUnusedBoard(i, j + 1))))
                         return true;
                 } catch (IndexOutOfBoundsException ignore) {}
             }
@@ -382,8 +382,8 @@ public class Engine {
      * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
      */
     private boolean isEmptyOrUnusedBoard (int x, int y){
-        return (game.getBoard().getBoard()[x][y].getTile() != EMPTY) ||
-                (game.getBoard().getBoard()[x][y].getTile() != UNUSED);
+        return (game.getBoard().getBoard()[x][y].getTile() == EMPTY) ||
+                (game.getBoard().getBoard()[x][y].getTile() == UNUSED);
     }
 
 }
