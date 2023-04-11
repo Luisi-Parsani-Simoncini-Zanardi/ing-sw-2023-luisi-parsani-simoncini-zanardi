@@ -98,13 +98,35 @@ public class Shelf {
         ArrayList<Integer> selectableColumns = new ArrayList<>();
         for(int i=0;i<5;i++){
             for(int j=0;j<6;j++){
-                if(!shelf[j][i].getTile().equals(EMPTY)){
-                    System.out.println(temporaryTilesDimension+"<="+j);
+                if(!shelf[j][i].getTile().equals(EMPTY) || j == 5){
                     if(temporaryTilesDimension <= j) selectableColumns.add(i);
                     break;
                 }
             }
         }
         return selectableColumns;
+    }
+
+    /**
+     * Prints the shelf.
+     */
+    public void printShelf(){
+       for(int i=0;i<6;i++){
+           for(int j=0;j<5;j++){
+               Tile current = shelf[i][j];
+               switch(current.getTile()){
+                   case EMPTY -> System.out.print("EMPTY\t");
+                   case UNUSED -> System.out.print("UNUSED\t");
+                   case CATS -> System.out.print("CATS\t");
+                   case TROPHIES -> System.out.print("TROPHIES\t");
+                   case PLANTS -> System.out.print("PLANTS\t");
+                   case FRAMES -> System.out.print("FRAMES\t");
+                   case GAMES -> System.out.print("GAMES\t");
+                   case BOOKS -> System.out.print("BOOKS\t");
+               }
+           }
+           System.out.print("\n");
+       }
+        System.out.print("\n");
     }
 }

@@ -9,7 +9,7 @@ import org.projectsw.Model.CommonGoal.RowColumn;
 import org.projectsw.TestUtils;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.projectsw.Model.TilesEnum.*;
-
+import java.awt.*;
 import java.util.ArrayList;
 
 class EngineTest extends TestUtils {
@@ -345,5 +345,33 @@ class EngineTest extends TestUtils {
         engine.getGame().getPlayers().get(0).setShelf(shelf);
         int num = engine.checkRemainingColumnSpace();
         System.out.println(num);
+    }
+
+    @Test
+    void tileSelectionSimulation() throws FirstJoinFailedException, JoinFailedException, NonSelectableColumnException, MaximumTilesException, EmptyTilesException, UnusedTilesException {
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Marco");
+        Board board = new Board(4);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
+        engine.getGame().getBoard().setBoard(board.getBoard());
+        engine.selectTiles(new Point(1,1));
+        engine.selectTiles(new Point(1,2));
+        engine.selectTiles(new Point(1,3));
+        engine.confirmSelectedTiles();
+        engine.selectColumn(3);
+        engine.placeTiles(0);
+        engine.placeTiles(0);
+        engine.placeTiles(0);
+        engine.getGame().getBoard().printboard();
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
     }
 }

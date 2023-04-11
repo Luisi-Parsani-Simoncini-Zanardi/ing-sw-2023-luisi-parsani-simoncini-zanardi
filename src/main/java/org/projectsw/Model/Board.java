@@ -115,6 +115,16 @@ public class Board{
     }
 
     /**
+     * Sets the board as the passed matrix of tiles.
+     * @param board the board to set.
+     */
+    public void setBoard(Tile[][] board){
+        if(board.length != 9) throw new IllegalArgumentException();
+        if(board[0].length != 9) throw new IllegalArgumentException();
+        this.board = board;
+    }
+
+    /**
      * Sets the end game flag to the specified value.
      * @param endGame the value to set the end game flag to
      */
@@ -310,6 +320,29 @@ public class Board{
             if(adjacentPoint.equals(p1)) return true;
         }
         return false;
+    }
+
+    /**
+     * Prints the board.
+     */
+    public void printboard(){
+        for(int i=0;i<9;i++){
+            for(int j=0;j<9;j++){
+                Tile current = board[i][j];
+                switch(current.getTile()){
+                    case EMPTY -> System.out.print("EMPTY\t");
+                    case UNUSED -> System.out.print("UNUSED\t");
+                    case CATS -> System.out.print("CATS\t");
+                    case TROPHIES -> System.out.print("TROPHIES\t");
+                    case PLANTS -> System.out.print("PLANTS\t");
+                    case FRAMES -> System.out.print("FRAMES\t");
+                    case GAMES -> System.out.print("GAMES\t");
+                    case BOOKS -> System.out.print("BOOKS\t");
+                }
+            }
+            System.out.print("\n");
+        }
+        System.out.print("\n");
     }
 }
 

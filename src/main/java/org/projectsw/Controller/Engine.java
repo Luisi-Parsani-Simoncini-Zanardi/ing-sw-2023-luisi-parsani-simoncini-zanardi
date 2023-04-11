@@ -109,7 +109,7 @@ public class Engine {
         int maxLength = 0;
         for(int i=0;i<5;i++){
             for(int j=0;j<6;j++){
-                if(!shelf[j][i].getTile().equals(EMPTY)){
+                if(!shelf[j][i].getTile().equals(EMPTY) || j == 5){
                     if(maxLength < j) maxLength = j;
                     break;
                 }
@@ -139,6 +139,11 @@ public class Engine {
         for(int i=0;i<6;i++){
             if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
                 game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i-1,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+                break;
+            }
+            if(i == 5){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+                break;
             }
         }
     }
@@ -184,7 +189,6 @@ public class Engine {
                 case 4 -> player.setPoints(player.getPoints() + 6);
                 case 5 -> player.setPoints(player.getPoints() + 9);
                 case 6 -> player.setPoints(player.getPoints() + 12);
-
                 default -> throw new IllegalArgumentException("Invalid tile value: " + numberRedeemed);
             }
         }
