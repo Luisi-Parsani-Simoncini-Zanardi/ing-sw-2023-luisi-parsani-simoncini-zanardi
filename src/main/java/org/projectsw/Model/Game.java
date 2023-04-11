@@ -93,6 +93,16 @@ public class Game{
     }
 
     /**
+     * Returns the next player of the game
+     * @return the next player of the game
+     */
+    public Player getNextPlayer() {
+        if ((getCurrentPlayer().getPosition() + 1) == getNumberOfPlayers())
+            return getPlayers().get(0);
+        return getPlayers().get(getCurrentPlayer().getPosition() + 1);
+    }
+
+    /**
      * Returns the list of players in the game.
      * @return the list of players in the game
      */

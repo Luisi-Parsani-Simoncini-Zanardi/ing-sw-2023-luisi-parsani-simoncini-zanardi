@@ -1,6 +1,9 @@
 package org.projectsw;
 
 import org.projectsw.Model.*;
+import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -80,8 +83,7 @@ public class TestUtils {
             }
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
-        //assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
-        //linea sopra commentata perchè l'asserzione fallisce sempre
+        assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
     }
 
     /**
@@ -106,6 +108,40 @@ public class TestUtils {
         for(int i=0; i<chatTest.getChat().size(); i++) {
             assertEquals(chatTest.getChat().get(i), chatAssert.getChat().get(i));
         }
+    }
+    public static boolean objectHasProperty(Object object, String propertyName) {
+        Class<?> objectClass = object.getClass();
+        Field[] fields = objectClass.getDeclaredFields();
+
+        for (Field field : fields) {
+            if (field.getName().equals(propertyName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * check if two strategy objects are identical
+     * @param strategyTest a test strategy object
+     * @param strategyAssert another test strategy object
+     */
+    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) {
+        assertEquals(strategyTest.getNumObjects(), strategyAssert.getNumObjects());
+        assertEquals(strategyTest.getStrategyCode(), strategyAssert.getStrategyCode());
+       // objectHasProperty(strategyTest, "edge") ? assertEquals(strategyTest.);
+    }
+
+    /**
+     * check if two commonGoal objects are identical
+     * @param commonGoalTest a test commonGoal object
+     * @param commonGoalAssert another test commonGoal object
+     */
+    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
+        assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
+        assertEqualsStrategy(commonGoalTest.getStrategy(), commonGoalAssert.getStrategy());
     }
 
 }

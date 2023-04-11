@@ -4,6 +4,9 @@ import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
@@ -14,6 +17,7 @@ import static org.projectsw.Model.TilesEnum.UNUSED;
 public class Engine {
 
     private Game game;
+    private SaveGameStatus saveGameStatus;
 
     /**
      * get the game on which the controller is running
@@ -21,7 +25,13 @@ public class Engine {
      */
     public Game getGame() { return this.game; }
 
-    //TODO: finire metodi controller
+    /**
+     * get the saveGameStatus of the game
+     * @return saveGameStatus of the game
+     */
+    public SaveGameStatus getSaveGameStatus() { return this.saveGameStatus; }
+
+//TODO: finire metodi controller
 
     /**
      * Creates a player object with position 0 and create a new game using the game constructor (the one that also sets the first player).
@@ -71,8 +81,8 @@ public class Engine {
      */
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
-        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");
-        //TODO: !!!POST!!! aggiungere filepath
+        saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
+
 
     }
 
@@ -297,7 +307,22 @@ public class Engine {
         return 1;
     }
 
-    public void endTurn(){}
+    /**
+     * end turn logic
+     */
+    public void endTurn(){
+        this.checkCommonGoals();
+        this.checkEndGame();
+        getSaveGameStatus().saveGame();
+        if (getGame().getBoard().isBoardEmpty())
+            this.fillBoard();
+        if (getGame().getCurrentPlayer().getPosition() == (getGame().getNumberOfPlayers()-1) && getGame().getBoard().isEndGame()) {
+            this.endGame();
+        }
+        else {
+            getGame().setCurrentPlayer(getGame().getNextPlayer());
+        }
+    }
 
     /**
      * Checks if a player has completed his shelf and if so sets endGame and adds the point to the player
@@ -324,9 +349,33 @@ public class Engine {
         return true;
     }
 
-    public void endGame(){}
+    /**
+     * Get the player with the most amount of points
+     * @return winner of the game
+     */
+    public Player getWinner() {
+        Player winner =  Collections.max(getGame().getPlayers(), Comparator.comparing(s -> s.getPoints()));
+        return winner;
+    }
 
-    public void resetGame(){}
+    /**
+     * logic for the end game. Calculate personalGoals points and return the winner
+     * @return winner of the game
+     */
+    public Player endGame(){
+        this.checkPersonalGoal();
+        this.checkEndgameGoal();
+        Player winner = this.getWinner();
+        this.resetGame();
+        return winner;
+    }
+
+    /**
+     * reset game
+     */
+    public void resetGame(){
+        this.game = null;
+    }
 
     /**
      * Creates a message with sender, content and recipients and adds it to the chat.
