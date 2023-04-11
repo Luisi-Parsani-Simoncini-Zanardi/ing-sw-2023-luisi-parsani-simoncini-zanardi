@@ -184,7 +184,7 @@ class EngineTest extends TestUtils {
         for (int i = 0; i < shelf0.length; i++) {
             for (int j = 0; j < shelf0[i].length; j++) {
                 if (shelf0[i][j]!=EMPTY)
-                shelf.insertTiles(new Tile(shelf0[i][j], 0), i, j);
+                     shelf.insertTiles(new Tile(shelf0[i][j], 0), i, j);
             }
         }
         engine.getGame().getCurrentPlayer().setShelf(shelf);
@@ -319,5 +319,31 @@ class EngineTest extends TestUtils {
 
         assertEquals(1,engine.getGame().getPlayers().get(0).getPoints());
         assertEquals(0,engine.getGame().getPlayers().get(1).getPoints());
+    }
+
+    @Test
+    void checkRemainingColumnSpaceTest() throws FirstJoinFailedException, JoinFailedException, EmptyTilesException, UnusedTilesException {
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Marco");
+        Shelf shelf = new Shelf();
+        shelf.insertTiles(new Tile(GAMES,0),5,0);
+        shelf.insertTiles(new Tile(GAMES,0),5,1);
+        shelf.insertTiles(new Tile(GAMES,0),5,2);
+        shelf.insertTiles(new Tile(GAMES,0),5,3);
+        shelf.insertTiles(new Tile(GAMES,0),5,4);
+        shelf.insertTiles(new Tile(GAMES,0),4,0);
+        shelf.insertTiles(new Tile(GAMES,0),4,1);
+        shelf.insertTiles(new Tile(GAMES,0),4,2);
+        shelf.insertTiles(new Tile(GAMES,0),4,4);
+        shelf.insertTiles(new Tile(GAMES,0),3,2);
+        shelf.insertTiles(new Tile(GAMES,0),3,4);
+        shelf.insertTiles(new Tile(GAMES,0),2,2);
+        shelf.insertTiles(new Tile(GAMES,0),2,4);
+        shelf.insertTiles(new Tile(GAMES,0),1,4);
+        shelf.insertTiles(new Tile(GAMES,0),4,3);
+        engine.getGame().getPlayers().get(0).setShelf(shelf);
+        int num = engine.checkRemainingColumnSpace();
+        System.out.println(num);
     }
 }

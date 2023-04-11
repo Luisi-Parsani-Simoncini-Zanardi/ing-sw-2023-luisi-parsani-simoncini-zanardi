@@ -218,19 +218,19 @@ class PlayerTest {
         //check if elements remains in the correct order and if the size reduces correctly
         //after removing from the head of the list and from the end. Then it removes the last one
         assertEquals(3,player.getTemporaryTiles().size());
-        assertEquals(tile0,player.selectTile(0));
+        assertEquals(tile0,player.selectTemporaryTile(0));
         assertEquals(2,player.getTemporaryTiles().size());
         assertEquals(tile1,player.getTemporaryTiles().get(0));
-        assertEquals(tile2,player.selectTile(1));
+        assertEquals(tile2,player.selectTemporaryTile(1));
         assertEquals(1,player.getTemporaryTiles().size());
         assertEquals(tile1,player.getTemporaryTiles().get(0));
-        assertEquals(tile1,player.selectTile(0));
+        assertEquals(tile1,player.selectTemporaryTile(0));
         assertEquals(0,player.getTemporaryTiles().size());
         player.addTemporaryTile(tile0);
         player.addTemporaryTile(tile1);
         player.addTemporaryTile(tile2);
         //check if elements remains in the correct order after removing from the middle
-        assertEquals(tile1,player.selectTile(1));
+        assertEquals(tile1,player.selectTemporaryTile(1));
         assertEquals(tile2,player.getTemporaryTiles().get(1));
         assertEquals(tile0,player.getTemporaryTiles().get(0));
     }
@@ -239,14 +239,14 @@ class PlayerTest {
     void selectTilesExceptionWhenIndexIsNegative() {
         Player player = new Player("Davide",0);
         assertThrows(IndexOutOfBoundsException.class, () ->
-                player.selectTile(-1));
+                player.selectTemporaryTile(-1));
     }
 
     @Test
     void selectTilesExceptionWhenIndexIsTooBig() {
         Player player = new Player("Davide",0);
         assertThrows(IndexOutOfBoundsException.class, () ->
-                player.selectTile(3));
+                player.selectTemporaryTile(3));
     }
 
 
