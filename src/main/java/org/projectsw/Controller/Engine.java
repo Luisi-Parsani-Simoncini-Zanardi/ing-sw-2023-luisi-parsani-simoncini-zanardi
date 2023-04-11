@@ -110,7 +110,7 @@ public class Engine {
         for(int i=0;i<5;i++){
             for(int j=0;j<6;j++){
                 if(!shelf[j][i].getTile().equals(EMPTY)){
-                    if(maxLength < j-1) maxLength = j-1;
+                    if(maxLength < j) maxLength = j;
                     break;
                 }
             }
@@ -126,9 +126,22 @@ public class Engine {
         }
     }
 
-    public void selectColumn(){}
+    public void selectColumn(int index) throws NonSelectableColumnException{
+        ArrayList<Integer> selectableColumns = game.getCurrentPlayer().getShelf().getSelectableColumns(game.getCurrentPlayer().getTemporaryTiles().size());
+        if(selectableColumns.contains(index)){
+            game.getCurrentPlayer().getShelf().setSelectedColumnIndex(index);
+        }
+        else throw new NonSelectableColumnException();
+    }
 
-    public void placeTiles(){}
+    public void placeTiles(int temporaryIndex) throws EmptyTilesException, UnusedTilesException {
+        Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
+        for(int i=0;i<6;i++){
+            if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i-1,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+            }
+        }
+    }
 
     /**
      * Function that checks if the player has the requirements of the commonGoals in the game.
