@@ -317,6 +317,7 @@ class EngineTest extends TestUtils {
         }
         engine.getGame().setBoard(board);
         engine.fillBoard();
+        engine.getGame().getBoard().printBoard();
         assertEqualsBoard(engine.getGame().getBoard(), boardTest);
     }
 
@@ -362,6 +363,7 @@ class EngineTest extends TestUtils {
         }
         engine.getGame().setBoard(board);
         engine.fillBoard();
+        engine.getGame().getBoard().printBoard();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (tmp[i][j].getTile() == UNUSED)
@@ -525,7 +527,7 @@ class EngineTest extends TestUtils {
         engine.placeTiles(0);
         engine.placeTiles(0);
         engine.placeTiles(0);
-        engine.getGame().getBoard().printboard();
+        engine.getGame().getBoard().printBoard();
         engine.getGame().getCurrentPlayer().getShelf().printShelf();
     }
 }
