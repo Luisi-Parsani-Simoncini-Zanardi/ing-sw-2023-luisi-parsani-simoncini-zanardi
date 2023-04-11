@@ -3,8 +3,13 @@ package org.projectsw.Controller;
 import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.JoinFailedException;
+import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.*;
+
 import java.util.ArrayList;
+
+import static org.projectsw.Model.TilesEnum.EMPTY;
+import static org.projectsw.Model.TilesEnum.UNUSED;
 
 /**
  * The class contains the application logic methods of the game.
@@ -69,8 +74,9 @@ public class Engine {
      */
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
-        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
-        //notifica a view
+        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "");
+        //TODO: !!!POST!!! aggiungere filepath
+
     }
 
     //turno
@@ -118,23 +124,103 @@ public class Engine {
 
     public void placeTiles(){}
 
-    //implemented with strategy pattern
-    public void checkCommonGoals(){}
+    /**
+     * Function that checks if the player has the requirements of the commonGoals in the game.
+     * In the positive case it assigns the points and marks that the player has obtained
+     * the points of the CommonGoal in question
+     */
+    public void checkCommonGoals(){
+        for(int i=0; i<2; i++){
+            if(this.getGame().getCommonGoals().get(i).checkRequirements(this.getGame().getCurrentPlayer().getShelf()) &&
+                !this.getGame().getCurrentPlayer().isCommonGoalRedeemed(i)){
+                try {
+                    int earnedPoints = this.getGame().getCommonGoals().get(i).getRedeemedNumber() * 2;
+                    this.getGame().getCommonGoals().get(i).decreaseRedeemedNumber();
+                    this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + earnedPoints);
+                    this.getGame().getCurrentPlayer().setCommonGoalRedeemed(i,true);
+                }catch(MinimumRedeemedPointsException ignore){}
+            }
+        }
+    }
 
-    public void checkPersonalGoal(){}
+    /**
+     * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
+     */
+    public void checkPersonalGoal(){
+        for (Player player : game.getPlayers()) {
+            int numberRedeemed = 0;
+            TilesEnum[][] shelf = tileToTilesEnum(player.getShelf());
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (player.getPersonalGoal().getPersonalGoal()[i][j] == shelf[i][j] &&
+                            player.getPersonalGoal().getPersonalGoal()[i][j] != EMPTY)
+                        numberRedeemed++;
+                }
+            }
+            switch (numberRedeemed) {
+                case 0 -> player.setPoints(player.getPoints());
+                case 1 -> player.setPoints(player.getPoints() + 1);
+                case 2 -> player.setPoints(player.getPoints() + 2);
+                case 3 -> player.setPoints(player.getPoints() + 4);
+                case 4 -> player.setPoints(player.getPoints() + 6);
+                case 5 -> player.setPoints(player.getPoints() + 9);
+                case 6 -> player.setPoints(player.getPoints() + 12);
+
+                default -> throw new IllegalArgumentException("Invalid tile value: " + numberRedeemed);
+            }
+        }
+    }
+
+    /**
+     * Auxiliary method that transforms a shelf in a matrix of TilesEnum.
+     * @param shelf the shelf to be transformed
+     * @return the correspondent matrix of TilesEnum
+     */
+    private TilesEnum[][] tileToTilesEnum (Shelf shelf){
+        TilesEnum[][] tmp = new TilesEnum[6][5];
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+                tmp[i][j] = shelf.getTileShelf(i, j).getTile();
+            }
+        }
+        return tmp;
+    }
 
     public void checkEndgameGoal(){}
 
     public void endTurn(){}
 
-    public void checkEndGame(){}
+    /**
+     * Checks if a player has completed his shelf and if so sets endGame and adds the point to the player
+     */
+    public void checkEndGame(){
+        if(!this.getGame().getBoard().isEndGame()){
+            if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
+                this.getGame().getBoard().setEndGame(true);
+                this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
+            }
+        }
+    }
+
+    /**
+     * Auxiliary method that returns true if the player shelf is full, false otherwise
+     * @param shelf is the player shelf
+     * @return true if the player shelf is true, false otherwise
+     */
+    private boolean fullShelf(Shelf shelf){
+        for(int i=0; i<6; i++)
+            for(int j=0; j<5; j++)
+                if(shelf.getTileShelf(i,j).getTile()==TilesEnum.EMPTY)
+                    return false;
+        return true;
+    }
 
     public void endGame(){}
 
     public void resetGame(){}
 
     /**
-     * create a message with sender, content and recipients and add it to the chat
+     * Creates a message with sender, content and recipients and adds it to the chat.
      * @param sender message sender
      * @param content message content
      * @param recipients message recipients
@@ -145,6 +231,50 @@ public class Engine {
         game.getChat().addChatLog(message);
     }
 
-    public void fillBoard(){}
+    /**
+     * Fills the board if the board contains only tiles with no other adjacent tiles.
+     */
+    public void fillBoard(){
+        if (!(isBoardValid())){
+            for(int i=0; i<9; i++){
+                for (int j=0; j<9; j++) {
+                    if (game.getBoard().getTileFromBoard(i, j).getTile()!=EMPTY){
+                        game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns false if the board contains only tiles with no other adjacent tiles, true otherwise.
+     * @return false if the board contains only tiles with no other adjacent tiles, true otherwise
+     */
+    private boolean isBoardValid(){
+        for(int i=0; i<9; i++){
+            for (int j=0; j<9; j++) {
+                try {
+                    if (!(isEmptyOrUnusedBoard(i, j)) &&
+                            (!(isEmptyOrUnusedBoard(i - 1, j)) ||
+                            !(isEmptyOrUnusedBoard(i, j - 1)) ||
+                            !(isEmptyOrUnusedBoard(i + 1, j)) ||
+                            !(isEmptyOrUnusedBoard(i, j + 1))))
+                        return true;
+                } catch (IndexOutOfBoundsException ignore) {}
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the selected tile is either EMPTY or UNUSED.
+     * @param x the x coordinate of the tile on the board
+     * @param y the y coordinate of the tile on the board
+     * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
+     */
+    private boolean isEmptyOrUnusedBoard (int x, int y){
+        return (game.getBoard().getTileFromBoard(x, y).getTile() != EMPTY) ||
+                (game.getBoard().getTileFromBoard(x, y).getTile() != UNUSED);
+    }
 
 }

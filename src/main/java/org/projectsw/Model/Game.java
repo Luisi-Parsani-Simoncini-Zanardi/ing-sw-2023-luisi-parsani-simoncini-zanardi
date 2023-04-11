@@ -1,4 +1,5 @@
 package org.projectsw.Model;
+//TODO: !!!POST!!! omogeneizzare i javadoc
 
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.CommonGoal.*;
@@ -57,6 +58,10 @@ public class Game{
         this.firstPlayer = firstPlayer;
         this.currentPlayer = firstPlayer;
         commonGoals = new ArrayList<>();
+        try {
+            commonGoals = this.randomCommonGoals();
+        }catch(Exception e){System.err.println(e.getMessage());}
+
     }
 
     /**
