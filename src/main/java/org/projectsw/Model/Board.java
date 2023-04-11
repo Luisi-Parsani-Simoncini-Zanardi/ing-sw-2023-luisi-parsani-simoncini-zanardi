@@ -1,7 +1,6 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
-
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -174,6 +173,20 @@ public class Board{
     }
 
     /**
+     * Remove the point from the temporaryPoints list checking if the remaining points inside the list are adjacent, if they are not
+     * the method cleans all the list.
+     * @param point the point to remove from the list.
+     */
+    public void removeTemporaryPoints(Point point){
+        temporaryPoints.remove(point);
+        if(temporaryPoints.size() == 3){
+            if(!areAdjacentPoints(temporaryPoints.get(0),temporaryPoints.get(1))){
+                cleanTemporaryPoints();
+            }
+        }
+    }
+
+    /**
      * Cleans the arrayList of temporaryPoints (remove all the elements).
      */
     public void cleanTemporaryPoints() {
@@ -277,14 +290,27 @@ public class Board{
                 newSelectablePoints.add(new Point((int) selectedPoint0.getX(),(int) selectedPoint0.getY()+1));
             if(selectablePoints.contains(new Point((int) selectedPoint1.getX(),(int) selectedPoint1.getY()-1)))
                 newSelectablePoints.add(new Point((int) selectedPoint1.getX(),(int) selectedPoint1.getY()-1));
-        }
-        else if (selectedPoint0.getY() == selectedPoint1.getY() - 1) {
+        } else if (selectedPoint0.getY() == selectedPoint1.getY() - 1) {
             if (selectablePoints.contains(new Point((int) selectedPoint0.getX(), (int) selectedPoint0.getY() - 1)))
                 newSelectablePoints.add(new Point((int) selectedPoint0.getX(), (int) selectedPoint0.getY() - 1));
             if (selectablePoints.contains(new Point((int) selectedPoint1.getX(), (int) selectedPoint1.getY() + 1)))
                 newSelectablePoints.add(new Point((int) selectedPoint1.getX(), (int) selectedPoint1.getY() + 1));
         }
         return  newSelectablePoints;
+    }
+
+    /**
+     * Returns true if the padded points are adjacent.
+     * @param p0 the first point to check.
+     * @param p1 the second point to check.
+     * @return true if p0 and p1 are adjacent, false if they are not.
+     */
+    public boolean areAdjacentPoints(Point p0, Point p1){
+        ArrayList<Point> adjacentP0 = getAdjacentPoints(p0);
+        for(Point adjacentPoint : adjacentP0){
+            if(adjacentPoint.equals(p1)) return true;
+        }
+        return false;
     }
 }
 
