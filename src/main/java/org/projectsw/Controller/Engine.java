@@ -216,6 +216,7 @@ public class Engine {
                 case 4 -> player.setPoints(player.getPoints() + 6);
                 case 5 -> player.setPoints(player.getPoints() + 9);
                 case 6 -> player.setPoints(player.getPoints() + 12);
+
                 default -> throw new IllegalArgumentException("Invalid tile value: " + numberRedeemed);
             }
         }
@@ -236,7 +237,65 @@ public class Engine {
         return tmp;
     }
 
-    public void checkEndgameGoal(){}
+    /**
+     * Checks the number adjacent tiles of the same type and assigns the points earned.
+     */
+    public void checkEndgameGoal(){
+        int dim;
+        for (Player player : game.getPlayers()) {
+            ArrayList<Point> coordinates = new ArrayList<>();
+            boolean[][] matrix = new boolean[6][5];
+            Shelf shelf = player.getShelf();
+            for (int i = 5; i > -1; i--) {
+                for (int j = 0; j < 5; j++) {
+                    if (shelf.getTileShelf(i, j).getTile() != TilesEnum.EMPTY) {
+                        dim = 0;
+                        if (!matrix[i][j])
+                            dim = this.customShelfIterator(coordinates, shelf, matrix, shelf.getTileShelf(i, j).getTile(), i, j);
+                        if (dim == 3)
+                            player.setPoints(player.getPoints() + 2);
+                        else if (dim == 4)
+                            player.setPoints(player.getPoints() + 3);
+                        else if (dim == 5)
+                            player.setPoints(player.getPoints() + 5);
+                        else if (dim > 5)
+                            player.setPoints(player.getPoints() + 8);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Method that given a shelf position and type iterates over all the joint Tiles present, and returns the size of the found group
+     * @param coordinates is an array of coordinates
+     * @param shelf is the player's shelf
+     * @param matrix is an array of booleans to keep track of the shelf boxes that have already been navigated
+     * @param type is the Tile type of the group
+     * @param row is the current row in the shelf
+     * @param column is the current column in the shelf
+     * @return returns the size of the found group
+     */
+    private int customShelfIterator(ArrayList<Point> coordinates, Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
+        Point nextPoint;
+
+        if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type && !coordinates.contains(new Point(row-1,column)))
+            coordinates.add(new Point(row-1,column));
+        if(row+1 < 6 && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type && !coordinates.contains(new Point(row+1,column)))
+            coordinates.add(new Point(row+1,column));
+        if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type && !coordinates.contains(new Point(row,column-1)))
+            coordinates.add(new Point(row,column-1));
+        if(column+1 < 5 && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !coordinates.contains(new Point(row,column+1)))
+            coordinates.add(new Point(row,column+1));
+
+        matrix[row][column]=true;
+        if(coordinates.size()!=0) {
+            nextPoint = coordinates.get(0);
+            coordinates.remove(0);
+            return 1 + customShelfIterator(coordinates, shelf, matrix, type, (int) nextPoint.getX(), (int) nextPoint.getY());
+        }
+        return 1;
+    }
 
     public void endTurn(){}
 
