@@ -324,7 +324,7 @@ public class Board{
     /**
      * Prints the board.
      */
-    public void printboard(){
+    public void printBoard(){
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 Tile current = board[i][j];
