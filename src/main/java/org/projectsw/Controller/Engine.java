@@ -92,7 +92,12 @@ public class Engine {
     //            //passa il turno al giocatore successivo, o se era l'ultimo giocatore chiama endGame
     //                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
 
-    //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class
+
+    /**
+     * Add a point to the temporaryPoints list after checking if the size of temporaryPoints is smaller than
+     * the maximum remaining space in player's columns.
+     * @param selectedPoint the point that the player wants to select.
+     */
     public void selectTiles(Point selectedPoint){
         Board board = game.getBoard();
         if(board.getTemporaryPoints().size() < checkRemainingColumnSpace()){
@@ -100,10 +105,18 @@ public class Engine {
         }
     }
 
+    /**
+     * Remove the given point from the temporaryPoints list.
+     * @param point the point to remove.
+     */
     public void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
     }
 
+    /**
+     * Checks the remaining space from each column of the current player's shelf and return the maximum value found.
+     * @return the maximum value found of free spaces in the current player's shelf.
+     */
     public int checkRemainingColumnSpace() {
         Tile[][] shelf = game.getCurrentPlayer().getShelf().getShelf();
         int maxLength = 0;
@@ -118,14 +131,24 @@ public class Engine {
         return maxLength;
     }
 
+    /**
+     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles and cleans the
+     * temporaryPoints list after the copying
+     */
     public void confirmSelectedTiles() throws MaximumTilesException, EmptyTilesException, UnusedTilesException{
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
             game.getCurrentPlayer().addTemporaryTile(tile);
         }
+        game.getBoard().cleanTemporaryPoints();
     }
 
+    /**
+     * Checks if the column selected by the player is selectable by calling getSelectableColumns.
+     * @param index The index of column that player wants to select.
+     * @throws NonSelectableColumnException if the column is not selectable.
+     */
     public void selectColumn(int index) throws NonSelectableColumnException{
         ArrayList<Integer> selectableColumns = game.getCurrentPlayer().getShelf().getSelectableColumns(game.getCurrentPlayer().getTemporaryTiles().size());
         if(selectableColumns.contains(index)){
@@ -134,6 +157,10 @@ public class Engine {
         else throw new NonSelectableColumnException();
     }
 
+    /**
+     * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
+     * @param temporaryIndex the selected index of temporaryTiles.
+     */
     public void placeTiles(int temporaryIndex) throws EmptyTilesException, UnusedTilesException {
         Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
         for(int i=0;i<6;i++){

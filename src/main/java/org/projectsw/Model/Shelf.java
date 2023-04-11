@@ -94,6 +94,12 @@ public class Shelf {
         else shelf[row][column] = tile;
     }
 
+    /**
+     * Returns all the columns that have a number of empty spaces equal or greater than "temporaryTilesDimension".
+     * @param temporaryTilesDimension the minimum number of free spaces that the returned columns must have.
+     * @return an ArrayList containing all the indexes of columns that have a number of empty spaces equal or greater
+     *         than "temporaryTilesDimension".
+     */
     public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension){
         ArrayList<Integer> selectableColumns = new ArrayList<>();
         for(int i=0;i<5;i++){
