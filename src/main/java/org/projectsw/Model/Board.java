@@ -27,7 +27,6 @@ public class Board{
         endGame = false;
         temporaryPoints = new ArrayList<>();
         selectablePoints = new ArrayList<>();
-        updateSelectablePoints();
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
