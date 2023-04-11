@@ -133,18 +133,17 @@ public class Board{
 
     /**
      * Returns the Tile at the given position on the board and replaces it with an empty Tile.
-     * @param row the row index of the Tile
-     * @param column the column index of the Tile
-     * @return the Tile at the given position
-     * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
+     * @param point the indexes of the tile to remove.
+     * @return the Tile at the given position.
+     * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds.
      */
-    public Tile getTileFromBoard(int row, int column) throws IndexOutOfBoundsException{
-        if(row>8 || column>8){
+    public Tile getTileFromBoard(Point point) throws IndexOutOfBoundsException{
+        if(point.getX()>8 || point.getY()>8){
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         else {
-            Tile tmp = board[row][column];
-            board[row][column] = new Tile(TilesEnum.EMPTY, 0);
+            Tile tmp = board[(int) point.getX()][(int) point.getY()];
+            board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
             return tmp;
         }

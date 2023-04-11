@@ -46,7 +46,7 @@ class BoardTest {
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
-        temp = board.getTileFromBoard(4, 0).getTile();
+        temp = board.getTileFromBoard(new Point(4,0)).getTile();
         assertEquals(TilesEnum.EMPTY, board.getBoard()[4][0].getTile());
         assertEquals(TilesEnum.CATS,temp);
     }
@@ -168,7 +168,7 @@ class BoardTest {
         board1.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
         board1.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
         Board board2 = new Board(board1);
-        TilesEnum temp = board1.getTileFromBoard(0, 0).getTile();
+        TilesEnum temp = board1.getTileFromBoard(new Point(0,0)).getTile();
         assertEquals(TilesEnum.EMPTY, board1.getBoard()[0][0].getTile());
         assertEquals(TilesEnum.CATS, temp);
         for(int i=0;i<9;i++){
@@ -184,7 +184,7 @@ class BoardTest {
     @Test
     public void testGetTileFromBoardInvalidRow() {
         Board board = new Board();
-        assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(9, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(new Point(9,0)));
     }
 
     /**
@@ -193,7 +193,7 @@ class BoardTest {
     @Test
     public void testGetTileFromBoardInvalidColumn() {
         Board board = new Board();
-        assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(0, 9));
+        assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(new Point(0,9)));
     }
 
     /**

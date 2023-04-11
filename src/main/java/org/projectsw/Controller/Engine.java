@@ -5,9 +5,11 @@ import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.*;
-
+import java.awt.*;
 import java.util.ArrayList;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.OptionalInt;
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
 
@@ -238,7 +240,7 @@ public class Engine {
         if (!(isBoardValid())){
             for(int i=0; i<9; i++){
                 for (int j=0; j<9; j++) {
-                    if (game.getBoard().getTileFromBoard(i, j).getTile()!=EMPTY){
+                    if (game.getBoard().getTileFromBoard(new Point(i,j)).getTile()!=EMPTY){
                         game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
                     }
                 }
@@ -273,8 +275,8 @@ public class Engine {
      * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
      */
     private boolean isEmptyOrUnusedBoard (int x, int y){
-        return (game.getBoard().getTileFromBoard(x, y).getTile() != EMPTY) ||
-                (game.getBoard().getTileFromBoard(x, y).getTile() != UNUSED);
+        return (game.getBoard().getTileFromBoard(new Point(x,y)).getTile() != EMPTY) ||
+                (game.getBoard().getTileFromBoard(new Point(x,y)).getTile() != UNUSED);
     }
 
 }
