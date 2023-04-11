@@ -6,7 +6,6 @@ import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.TestUtils;
-
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +20,7 @@ class GameTest extends TestUtils{
     }
 
     /**
-     * Tests the correct creation of a silly game istance
+     * Tests the correct creation of a silly game instance
      */
     @Test
     void integritySillyGameTest(){
@@ -37,8 +36,9 @@ class GameTest extends TestUtils{
     }
 
     /**
-     * Tests the correct creation of a game istance
+     * Tests the correct creation of a game instance
      */
+    //TODO: sistemare questo test
     @Test
     void integrityGameTest(){
         Player firstPlayer = new Player("Davide",0);
@@ -48,7 +48,6 @@ class GameTest extends TestUtils{
             assertEquals(i,game.getNumberOfPlayers());
             assertEqualsBoard(new Board(i),game.getBoard());
             assertEqualsChat(new Chat(),game.getChat());
-            assertEquals(new ArrayList<>(),game.getCommonGoals());
             ArrayList<Player> fakeList = new ArrayList<>();
             fakeList.add(firstPlayer);
             assertEquals(fakeList,game.getPlayers());

@@ -2,12 +2,15 @@ package org.projectsw.Model;
 
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
+import java.util.ArrayList;
+import static org.projectsw.Model.TilesEnum.EMPTY;
 
 /**
  * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
  */
 public class Shelf {
     private Tile[][] shelf;
+    private int selectedColumnIndex;
 
     /**
      * Constructs a new empty shelf with 6 rows and 5 columns.
@@ -27,6 +30,7 @@ public class Shelf {
      */
     public Shelf(Shelf shelf){
         this.shelf = shelf.shelf;
+        this.selectedColumnIndex = shelf.getSelectedColumnIndex();
     }
 
 
@@ -36,6 +40,14 @@ public class Shelf {
      */
     public Tile[][] getShelf(){
         return shelf;
+    }
+
+    /**
+     * Returns the selectedColumnIndex attribute.
+     * @return the selectedColumnIndex attribute
+     */
+    public int getSelectedColumnIndex() {
+        return selectedColumnIndex;
     }
 
     /**
@@ -58,6 +70,13 @@ public class Shelf {
         this.shelf = shelf;
     }
 
+    /**
+     * Sets the selectedColumnIndex attribute.
+     * @param selectedColumnIndex the int to set as new selectedColumnIndex.
+     */
+    public void setSelectedColumnIndex(int selectedColumnIndex) {
+        this.selectedColumnIndex = selectedColumnIndex;
+    }
 
     /**
      * Inserts a tile into the specified row and column of the shelf.
@@ -73,5 +92,47 @@ public class Shelf {
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
         else shelf[row][column] = tile;
+    }
+
+    /**
+     * Returns all the columns that have a number of empty spaces equal or greater than "temporaryTilesDimension".
+     * @param temporaryTilesDimension the minimum number of free spaces that the returned columns must have.
+     * @return an ArrayList containing all the indexes of columns that have a number of empty spaces equal or greater
+     *         than "temporaryTilesDimension".
+     */
+    public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension){
+        ArrayList<Integer> selectableColumns = new ArrayList<>();
+        for(int i=0;i<5;i++){
+            for(int j=0;j<6;j++){
+                if(!shelf[j][i].getTile().equals(EMPTY) || j == 5){
+                    if(temporaryTilesDimension <= j) selectableColumns.add(i);
+                    break;
+                }
+            }
+        }
+        return selectableColumns;
+    }
+
+    /**
+     * Prints the shelf.
+     */
+    public void printShelf(){
+       for(int i=0;i<6;i++){
+           for(int j=0;j<5;j++){
+               Tile current = shelf[i][j];
+               switch(current.getTile()){
+                   case EMPTY -> System.out.print("EMPTY\t");
+                   case UNUSED -> System.out.print("UNUSED\t");
+                   case CATS -> System.out.print("CATS\t");
+                   case TROPHIES -> System.out.print("TROPHIES\t");
+                   case PLANTS -> System.out.print("PLANTS\t");
+                   case FRAMES -> System.out.print("FRAMES\t");
+                   case GAMES -> System.out.print("GAMES\t");
+                   case BOOKS -> System.out.print("BOOKS\t");
+               }
+           }
+           System.out.print("\n");
+       }
+        System.out.print("\n");
     }
 }

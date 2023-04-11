@@ -1,5 +1,5 @@
 package org.projectsw.Model;
-//TODO: !!!POST!!! sistemare questa classe una volta finiti model e controller
+//TODO: !!!POST!!! sistemare questa classe dopo aver finito model e controller
 
 import com.google.gson.Gson;
 

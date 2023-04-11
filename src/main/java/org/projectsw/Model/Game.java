@@ -1,4 +1,5 @@
 package org.projectsw.Model;
+//TODO: !!!POST!!! omogeneizzare i javadoc
 
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.CommonGoal.*;
@@ -20,7 +21,6 @@ public class Game{
     private Board board;
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
-
 
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
@@ -125,7 +125,6 @@ public class Game{
     public ArrayList<CommonGoal> getCommonGoals() {
         return commonGoals;
     }
-
 
     /**
      * Returns the chat of the game.

@@ -6,7 +6,9 @@ import org.projectsw.Exceptions.UnusedTilesException;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
+import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.projectsw.Model.TilesEnum.GAMES;
 
 class ShelfTest {
 
@@ -191,5 +193,27 @@ class ShelfTest {
         shelf.insertTiles(tile,0,0);
         assertEquals(tile.getTile(),shelf.getShelf()[0][0].getTile());
         assertEquals(tile.getImageNumber(),shelf.getShelf()[0][0].getImageNumber());
+    }
+
+    @Test
+    void getSelectableColumnsTest() throws EmptyTilesException, UnusedTilesException {
+        Shelf shelf = new Shelf();
+        shelf.insertTiles(new Tile(GAMES,0),5,0);
+        shelf.insertTiles(new Tile(GAMES,0),5,1);
+        shelf.insertTiles(new Tile(GAMES,0),5,2);
+        shelf.insertTiles(new Tile(GAMES,0),5,3);
+        shelf.insertTiles(new Tile(GAMES,0),5,4);
+        shelf.insertTiles(new Tile(GAMES,0),4,0);
+        shelf.insertTiles(new Tile(GAMES,0),4,1);
+        shelf.insertTiles(new Tile(GAMES,0),4,2);
+        shelf.insertTiles(new Tile(GAMES,0),4,4);
+        shelf.insertTiles(new Tile(GAMES,0),3,2);
+        shelf.insertTiles(new Tile(GAMES,0),3,4);
+        shelf.insertTiles(new Tile(GAMES,0),2,2);
+        shelf.insertTiles(new Tile(GAMES,0),2,4);
+        shelf.insertTiles(new Tile(GAMES,0),1,4);
+        shelf.insertTiles(new Tile(GAMES,0),4,3);
+        ArrayList<Integer> selectableColumns = shelf.getSelectableColumns(5);
+        System.out.println(selectableColumns.toString());
     }
 }

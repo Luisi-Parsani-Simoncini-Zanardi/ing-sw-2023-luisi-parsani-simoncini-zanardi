@@ -1,16 +1,15 @@
 package org.projectsw.Controller;
 
-import org.projectsw.Exceptions.FirstJoinFailedException;
-import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.JoinFailedException;
-import org.projectsw.Exceptions.MinimumRedeemedPointsException;
+import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
-import org.projectsw.Model.CommonGoal.CommonGoal;
-
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+
+import static org.projectsw.Model.TilesEnum.EMPTY;
+import static org.projectsw.Model.TilesEnum.UNUSED;
 
 /**
  * The class contains the application logic methods of the game.
@@ -84,6 +83,7 @@ public class Engine {
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
 
+
     }
 
     //turno
@@ -102,34 +102,88 @@ public class Engine {
     //            //passa il turno al giocatore successivo, o se era l'ultimo giocatore chiama endGame
     //                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
 
-    //select from 1 to 3 adjacent tiles and with a free side, and put them in temporarytiles in the Player class
-    public void selectTiles(int row, int column){
-        //checkSelectableTile(), eccede il numero fornito da checkRemaningColumnSpace
-        //butta in array coordinate (controllando se ha raggiunto il massimo)
+
+    /**
+     * Add a point to the temporaryPoints list after checking if the size of temporaryPoints is smaller than
+     * the maximum remaining space in player's columns.
+     * @param selectedPoint the point that the player wants to select.
+     */
+    public void selectTiles(Point selectedPoint){
+        Board board = game.getBoard();
+        if(board.getTemporaryPoints().size() < checkRemainingColumnSpace()){
+            game.getBoard().addTemporaryPoints(selectedPoint);
+        }
     }
 
-    public void deselectTiles(int row, int column){
-        //rimuove da array coordinate
+    /**
+     * Remove the given point from the temporaryPoints list.
+     * @param point the point to remove.
+     */
+    public void deselectTiles(Point point){
+        game.getBoard().removeTemporaryPoints(point);
     }
 
-    private boolean checkSelectableTile(){
-        //la tile è selezionabile?
-        //la tile è adiacente alle altre nell'array?
-        return true;
+    /**
+     * Checks the remaining space from each column of the current player's shelf and return the maximum value found.
+     * @return the maximum value found of free spaces in the current player's shelf.
+     */
+    public int checkRemainingColumnSpace() {
+        Tile[][] shelf = game.getCurrentPlayer().getShelf().getShelf();
+        int maxLength = 0;
+        for(int i=0;i<5;i++){
+            for(int j=0;j<6;j++){
+                if(!shelf[j][i].getTile().equals(EMPTY) || j == 5){
+                    if(maxLength < j) maxLength = j;
+                    break;
+                }
+            }
+        }
+        return maxLength;
     }
 
-    public int checkRemaningColumnSpace() {
-        return 0;
+    /**
+     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles and cleans the
+     * temporaryPoints list after the copying
+     */
+    public void confirmSelectedTiles() throws MaximumTilesException, EmptyTilesException, UnusedTilesException{
+        ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
+        for(Point point : selectedPoints){
+            Tile tile = game.getBoard().getTileFromBoard(point);
+            game.getCurrentPlayer().addTemporaryTile(tile);
+        }
+        game.getBoard().cleanTemporaryPoints();
     }
 
-    public void comfirmSelectedTiles(){
-        //rimuove da board addTiles di player
-
+    /**
+     * Checks if the column selected by the player is selectable by calling getSelectableColumns.
+     * @param index The index of column that player wants to select.
+     * @throws NonSelectableColumnException if the column is not selectable.
+     */
+    public void selectColumn(int index) throws NonSelectableColumnException{
+        ArrayList<Integer> selectableColumns = game.getCurrentPlayer().getShelf().getSelectableColumns(game.getCurrentPlayer().getTemporaryTiles().size());
+        if(selectableColumns.contains(index)){
+            game.getCurrentPlayer().getShelf().setSelectedColumnIndex(index);
+        }
+        else throw new NonSelectableColumnException();
     }
 
-    public void selectColumn(){}
-
-    public void placeTiles(){}
+    /**
+     * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
+     * @param temporaryIndex the selected index of temporaryTiles.
+     */
+    public void placeTiles(int temporaryIndex) throws EmptyTilesException, UnusedTilesException {
+        Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
+        for(int i=0;i<6;i++){
+            if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i-1,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+                break;
+            }
+            if(i == 5){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+                break;
+            }
+        }
+    }
 
     /**
      * Function that checks if the player has the requirements of the commonGoals in the game.
@@ -150,9 +204,108 @@ public class Engine {
         }
     }
 
-    public void checkPersonalGoal(){}
+    /**
+     * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
+     */
+    public void checkPersonalGoal(){
+        for (Player player : game.getPlayers()) {
+            int numberRedeemed = 0;
+            TilesEnum[][] shelf = tileToTilesEnum(player.getShelf());
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (player.getPersonalGoal().getPersonalGoal()[i][j] == shelf[i][j] &&
+                            player.getPersonalGoal().getPersonalGoal()[i][j] != EMPTY)
+                        numberRedeemed++;
+                }
+            }
+            switch (numberRedeemed) {
+                case 0 -> player.setPoints(player.getPoints());
+                case 1 -> player.setPoints(player.getPoints() + 1);
+                case 2 -> player.setPoints(player.getPoints() + 2);
+                case 3 -> player.setPoints(player.getPoints() + 4);
+                case 4 -> player.setPoints(player.getPoints() + 6);
+                case 5 -> player.setPoints(player.getPoints() + 9);
+                case 6 -> player.setPoints(player.getPoints() + 12);
 
-    public void checkEndgameGoal(){}
+                default -> throw new IllegalArgumentException("Invalid tile value: " + numberRedeemed);
+            }
+        }
+    }
+
+    /**
+     * Auxiliary method that transforms a shelf in a matrix of TilesEnum.
+     * @param shelf the shelf to be transformed
+     * @return the correspondent matrix of TilesEnum
+     */
+    private TilesEnum[][] tileToTilesEnum (Shelf shelf){
+        TilesEnum[][] tmp = new TilesEnum[6][5];
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 5; j++) {
+                tmp[i][j] = shelf.getTileShelf(i, j).getTile();
+            }
+        }
+        return tmp;
+    }
+
+    /**
+     * Checks the number adjacent tiles of the same type and assigns the points earned.
+     */
+    public void checkEndgameGoal(){
+        int dim;
+        for (Player player : game.getPlayers()) {
+            ArrayList<Point> coordinates = new ArrayList<>();
+            boolean[][] matrix = new boolean[6][5];
+            Shelf shelf = player.getShelf();
+            for (int i = 5; i > -1; i--) {
+                for (int j = 0; j < 5; j++) {
+                    if (shelf.getTileShelf(i, j).getTile() != TilesEnum.EMPTY) {
+                        dim = 0;
+                        if (!matrix[i][j])
+                            dim = this.customShelfIterator(coordinates, shelf, matrix, shelf.getTileShelf(i, j).getTile(), i, j);
+                        if (dim == 3)
+                            player.setPoints(player.getPoints() + 2);
+                        else if (dim == 4)
+                            player.setPoints(player.getPoints() + 3);
+                        else if (dim == 5)
+                            player.setPoints(player.getPoints() + 5);
+                        else if (dim > 5)
+                            player.setPoints(player.getPoints() + 8);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Method that given a shelf position and type iterates over all the joint Tiles present, and returns the size of the found group
+     * @param coordinates is an array of coordinates
+     * @param shelf is the player's shelf
+     * @param matrix is an array of booleans to keep track of the shelf boxes that have already been navigated
+     * @param type is the Tile type of the group
+     * @param row is the current row in the shelf
+     * @param column is the current column in the shelf
+     * @return returns the size of the found group
+     */
+    private int customShelfIterator(ArrayList<Point> coordinates, Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
+        Point nextPoint;
+
+        if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type && !coordinates.contains(new Point(row-1,column)))
+            coordinates.add(new Point(row-1,column));
+        if(row+1 < 6 && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type && !coordinates.contains(new Point(row+1,column)))
+            coordinates.add(new Point(row+1,column));
+        if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type && !coordinates.contains(new Point(row,column-1)))
+            coordinates.add(new Point(row,column-1));
+        if(column+1 < 5 && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !coordinates.contains(new Point(row,column+1)))
+            coordinates.add(new Point(row,column+1));
+
+        matrix[row][column]=true;
+        if(coordinates.size()!=0) {
+            nextPoint = coordinates.get(0);
+            coordinates.remove(0);
+            return 1 + customShelfIterator(coordinates, shelf, matrix, type, (int) nextPoint.getX(), (int) nextPoint.getY());
+        }
+        return 1;
+    }
 
     /**
      * end turn logic
@@ -225,7 +378,7 @@ public class Engine {
     }
 
     /**
-     * create a message with sender, content and recipients and add it to the chat
+     * Creates a message with sender, content and recipients and adds it to the chat.
      * @param sender message sender
      * @param content message content
      * @param recipients message recipients
@@ -236,6 +389,50 @@ public class Engine {
         game.getChat().addChatLog(message);
     }
 
-    public void fillBoard(){}
+    /**
+     * Fills the board if the board contains only tiles with no other adjacent tiles.
+     */
+    public void fillBoard(){
+        if (!(isBoardValid())){
+            for(int i=0; i<9; i++){
+                for (int j=0; j<9; j++) {
+                    if (game.getBoard().getBoard()[i][j].getTile()==EMPTY){
+                        game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns false if the board contains only tiles with no other adjacent tiles, true otherwise.
+     * @return false if the board contains only tiles with no other adjacent tiles, true otherwise
+     */
+    private boolean isBoardValid(){
+        for(int i=0; i<9; i++){
+            for (int j=0; j<9; j++) {
+                try {
+                    if (!(isEmptyOrUnusedBoard(i, j)) &&
+                            (!(isEmptyOrUnusedBoard(i - 1, j)) ||
+                                    !(isEmptyOrUnusedBoard(i, j - 1)) ||
+                                    !(isEmptyOrUnusedBoard(i + 1, j)) ||
+                                    !(isEmptyOrUnusedBoard(i, j + 1))))
+                        return true;
+                } catch (IndexOutOfBoundsException ignore) {}
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the selected tile is either EMPTY or UNUSED.
+     * @param x the x coordinate of the tile on the board
+     * @param y the y coordinate of the tile on the board
+     * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
+     */
+    private boolean isEmptyOrUnusedBoard (int x, int y){
+        return (game.getBoard().getBoard()[x][y].getTile() == EMPTY) ||
+                (game.getBoard().getBoard()[x][y].getTile() == UNUSED);
+    }
 
 }
