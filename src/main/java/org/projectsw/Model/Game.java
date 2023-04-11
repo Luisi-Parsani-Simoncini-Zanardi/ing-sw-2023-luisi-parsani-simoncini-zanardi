@@ -1,5 +1,5 @@
 package org.projectsw.Model;
-//TODO: !!!POST!!! omogeneizzare i javadoc
+//TODO: !!!POST!!! omogeneizzare i javadoc e i nomi delle funzioni
 
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.CommonGoal.*;

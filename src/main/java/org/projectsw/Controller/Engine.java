@@ -238,7 +238,7 @@ public class Engine {
         if (!(isBoardValid())){
             for(int i=0; i<9; i++){
                 for (int j=0; j<9; j++) {
-                    if (game.getBoard().getTileFromBoard(i, j).getTile()!=EMPTY){
+                    if (game.getBoard().getBoard()[i][j].getTile()==EMPTY){
                         game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
                     }
                 }
@@ -273,8 +273,8 @@ public class Engine {
      * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
      */
     private boolean isEmptyOrUnusedBoard (int x, int y){
-        return (game.getBoard().getTileFromBoard(x, y).getTile() != EMPTY) ||
-                (game.getBoard().getTileFromBoard(x, y).getTile() != UNUSED);
+        return (game.getBoard().getBoard()[x][y].getTile() == EMPTY) ||
+                (game.getBoard().getBoard()[x][y].getTile() == UNUSED);
     }
 
 }
