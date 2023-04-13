@@ -1,11 +1,18 @@
 package org.projectsw.ModelTest;
 //TODO: !!!POST!!! sistemare questa classe una volta sistemato SaveGameStatus
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.projectsw.Model.*;
+import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.TestUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,17 +58,25 @@ class SaveGameStatusTest extends TestUtils {
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
         String json = saveGameStatus.gameToJson();
         Gson gson = new Gson();
-        System.out.println(json);
 
         String substring = json.substring(json.indexOf("commonGoals") - 2);
         String newJson = json.replace(substring, "}");
         char[] charArray = substring.toCharArray();
         charArray[0] = '{';
+        String commonGoalString = String.valueOf(charArray);
 
         Game data = gson.fromJson(newJson, Game.class);
-        // data.setCommonGoals(data.getCommonGoalsByCode(code0, code1));*/
-        // Game data = gson.fromJson(json, Game.class);
+        JsonElement commonGoalJson = gson.fromJson(commonGoalString, JsonElement.class);
 
+        int strategyCode1 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                .getAsJsonArray().get(0).getAsJsonObject().get("strategy").getAsJsonObject()
+                .get("strategyCode").getAsInt();
+
+        int strategyCode2 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                .getAsJsonArray().get(1).getAsJsonObject().get("strategy").getAsJsonObject()
+                .get("strategyCode").getAsInt();
+
+        data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
 
         assertEquals(game.getGameState(), data.getGameState());
         assertEquals(game.getNumberOfPlayers(), data.getNumberOfPlayers());

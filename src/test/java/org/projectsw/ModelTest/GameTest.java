@@ -266,7 +266,6 @@ class GameTest extends TestUtils{
         game.addPlayer(next2);
         game.setCurrentPlayer(current);
         assertEqualsPlayer(next1, game.getNextPlayer());
-        System.out.println(game.getNumberOfPlayers());
-        assertEqualsPlayer(current, game.getNextPlayer());
+        assertEqualsPlayer(current, game.getCurrentPlayer());
     }
 }

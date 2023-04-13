@@ -3,13 +3,29 @@ package org.projectsw;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
+
+import java.awt.*;
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtils {
 
+    /**
+     * Checks if two Point objects are identical.
+     * @param pointTest a test Point object
+     * @param pointAssert another Point Tile object
+     */
+    public void assertEqualsPoint (Point pointTest, Point pointAssert) {
+        assertEquals(pointTest.getX(), pointAssert.getX());
+        assertEquals(pointTest.getY(), pointAssert.getY());
+    }
 
+    /**
+     * Checks if two Tile objects are identical.
+     * @param tileTest a test Tile object
+     * @param tileAssert another test Tile object
+     */
     public void assertEqualsTile (Tile tileTest, Tile tileAssert) {
         assertEquals(tileTest.getTile(), tileAssert.getTile());
         assertEquals(tileTest.getImageNumber(), tileAssert.getImageNumber());
@@ -84,6 +100,10 @@ public class TestUtils {
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
         assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
+        for(int i=0; i<boardTest.getSelectablePoints().size(); i++)
+            assertEqualsPoint(boardTest.getSelectablePoints().get(i), boardAssert.getSelectablePoints().get(i));
+        for(int i=0; i<boardTest.getTemporaryPoints().size(); i++)
+            assertEqualsPoint(boardTest.getTemporaryPoints().get(i), boardAssert.getTemporaryPoints().get(i));
     }
 
     /**
