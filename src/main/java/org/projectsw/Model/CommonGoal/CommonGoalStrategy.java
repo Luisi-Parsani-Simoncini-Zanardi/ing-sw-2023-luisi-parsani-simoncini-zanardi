@@ -14,6 +14,18 @@ public abstract class CommonGoalStrategy {
     }
 
     /**
+     * Returns the numObjects of the commonGoal
+     * @return the numObjects of the commonGoal
+     */
+    public int getNumObjects(){return this.numObjects;}
+
+    /**
+     * Returns the strategyCode of the commonGoal
+     * @return the strategyCode of the commonGoal
+     */
+    public int getStrategyCode(){return this.strategyCode;}
+
+    /**
      * Checks that the player's shelf meets the strategy requirements
      * @param shelf is the player shelf
      * @return true if the shelf meets the requirements or false if it doesn't
