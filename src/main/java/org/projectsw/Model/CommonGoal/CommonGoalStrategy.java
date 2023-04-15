@@ -45,4 +45,16 @@ public abstract class CommonGoalStrategy {
 
         return count;
     }
+
+    /**
+     * return the numObjects
+     * @return numObjects
+     */
+    public int getNumObjects() { return numObjects; }
+
+    /**
+     * return the strategyCode
+     * @return strategyCode
+     */
+    public int getStrategyCode() { return strategyCode; }
 }

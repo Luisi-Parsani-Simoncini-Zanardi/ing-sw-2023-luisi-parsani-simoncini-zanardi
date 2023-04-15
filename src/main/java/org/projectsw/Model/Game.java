@@ -279,8 +279,8 @@ public class Game{
         randomStrategyClasses = fillCommonGoalsStrategyArray();
 
         for(int index : indexes) {
-            Class<?> randomClass = randomStrategyClasses.get(index);
-            strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index+1);
+            Class<?> randomClass = randomStrategyClasses.get(index-1);
+            strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index);
             commonGoalIst = new CommonGoal(strategyIst);
             commonGoals.add(commonGoalIst);
         };

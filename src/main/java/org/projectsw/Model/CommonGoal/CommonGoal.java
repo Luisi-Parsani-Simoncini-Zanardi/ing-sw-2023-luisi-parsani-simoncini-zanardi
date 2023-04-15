@@ -43,4 +43,10 @@ public class CommonGoal{
     public boolean checkRequirements(Shelf shelf){
         return this.strategy.check(shelf);
     }
+
+    /**
+     * Method that set the redeemedNumber to a set value
+     * @param redeemedNumber redeemedNumber
+     */
+    public void setRedeemedNumber(int redeemedNumber) { this.redeemedNumber = redeemedNumber; }
 }

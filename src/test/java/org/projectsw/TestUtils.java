@@ -6,10 +6,13 @@ import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 
 import java.awt.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtils {
+
 
     /**
      * Checks if two Point objects are identical.
@@ -129,18 +132,6 @@ public class TestUtils {
             assertEquals(chatTest.getChat().get(i), chatAssert.getChat().get(i));
         }
     }
-    public static boolean objectHasProperty(Object object, String propertyName) {
-        Class<?> objectClass = object.getClass();
-        Field[] fields = objectClass.getDeclaredFields();
-
-        for (Field field : fields) {
-            if (field.getName().equals(propertyName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
 
     /**
@@ -148,10 +139,9 @@ public class TestUtils {
      * @param strategyTest a test strategy object
      * @param strategyAssert another test strategy object
      */
-    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) {
+    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         assertEquals(strategyTest.getNumObjects(), strategyAssert.getNumObjects());
         assertEquals(strategyTest.getStrategyCode(), strategyAssert.getStrategyCode());
-       // objectHasProperty(strategyTest, "edge") ? assertEquals(strategyTest.);
     }
 
     /**
@@ -159,7 +149,7 @@ public class TestUtils {
      * @param commonGoalTest a test commonGoal object
      * @param commonGoalAssert another test commonGoal object
      */
-    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
+    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
         assertEqualsStrategy(commonGoalTest.getStrategy(), commonGoalAssert.getStrategy());
     }

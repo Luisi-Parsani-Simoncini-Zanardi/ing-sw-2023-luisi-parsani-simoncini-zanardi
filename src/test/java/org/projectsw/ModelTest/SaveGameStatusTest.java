@@ -71,12 +71,18 @@ class SaveGameStatusTest extends TestUtils {
         int strategyCode1 = commonGoalJson.getAsJsonObject().get("commonGoals")
                 .getAsJsonArray().get(0).getAsJsonObject().get("strategy").getAsJsonObject()
                 .get("strategyCode").getAsInt();
-
         int strategyCode2 = commonGoalJson.getAsJsonObject().get("commonGoals")
                 .getAsJsonArray().get(1).getAsJsonObject().get("strategy").getAsJsonObject()
                 .get("strategyCode").getAsInt();
+        int redeemedNumber1 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                .getAsJsonArray().get(0).getAsJsonObject().get("redeemedNumber").getAsInt();
+        int redeemedNumber2 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                .getAsJsonArray().get(1).getAsJsonObject().get("redeemedNumber").getAsInt();
 
         data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
+        data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
+        data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
+
 
         assertEquals(game.getGameState(), data.getGameState());
         assertEquals(game.getNumberOfPlayers(), data.getNumberOfPlayers());
@@ -87,6 +93,7 @@ class SaveGameStatusTest extends TestUtils {
         }
         assertEqualsBoard(game.getBoard(), data.getBoard());
         assertEqualsChat(game.getChat(), data.getChat());
+        assertEqualsStrategy(game.getCommonGoals().get(0).getStrategy(), data.getCommonGoals().get(0).getStrategy());
         assertEqualsCommonGoal(game.getCommonGoals().get(0), data.getCommonGoals().get(0));
         assertEqualsCommonGoal(game.getCommonGoals().get(1), data.getCommonGoals().get(1));
     }

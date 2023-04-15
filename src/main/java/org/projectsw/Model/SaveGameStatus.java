@@ -2,8 +2,10 @@ package org.projectsw.Model;
 //TODO: !!!POST!!! sistemare questa classe dopo aver finito model e controller
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.io.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -63,7 +65,34 @@ public class SaveGameStatus {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
+            String json = br.lines().collect(Collectors.joining());
+
             Gson gson = new Gson();
+            String substring = json.substring(json.indexOf("commonGoals") - 2);
+            String newJson = json.replace(substring, "}");
+            char[] charArray = substring.toCharArray();
+            charArray[0] = '{';
+            String commonGoalString = String.valueOf(charArray);
+
+            Game data = gson.fromJson(newJson, Game.class);
+            JsonElement commonGoalJson = gson.fromJson(commonGoalString, JsonElement.class);
+
+            int strategyCode1 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                    .getAsJsonArray().get(0).getAsJsonObject().get("strategy").getAsJsonObject()
+                    .get("strategyCode").getAsInt();
+            int strategyCode2 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                    .getAsJsonArray().get(1).getAsJsonObject().get("strategy").getAsJsonObject()
+                    .get("strategyCode").getAsInt();
+            int redeemedNumber1 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                    .getAsJsonArray().get(0).getAsJsonObject().get("redeemedNumber").getAsInt();
+            int redeemedNumber2 = commonGoalJson.getAsJsonObject().get("commonGoals")
+                    .getAsJsonArray().get(1).getAsJsonObject().get("redeemedNumber").getAsInt();
+
+            data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
+            data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
+            data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
+
+
             return gson.fromJson(br, Game.class);
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,5 +100,4 @@ public class SaveGameStatus {
         }
     }
 
-    // prova per push fallita
 }
