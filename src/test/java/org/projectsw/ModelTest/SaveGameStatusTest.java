@@ -1,17 +1,10 @@
 package org.projectsw.ModelTest;
-//TODO: !!!POST!!! sistemare questa classe una volta sistemato SaveGameStatus
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.projectsw.Model.*;
-import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.TestUtils;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;

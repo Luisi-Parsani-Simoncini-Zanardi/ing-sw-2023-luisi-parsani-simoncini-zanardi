@@ -80,9 +80,6 @@ public class Engine {
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
-        //TODO: !!!POST!!! aggiungere filepath
-
-
     }
 
     //turno

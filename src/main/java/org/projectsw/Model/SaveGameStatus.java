@@ -1,5 +1,4 @@
 package org.projectsw.Model;
-//TODO: !!!POST!!! sistemare questa classe dopo aver finito model e controller
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
