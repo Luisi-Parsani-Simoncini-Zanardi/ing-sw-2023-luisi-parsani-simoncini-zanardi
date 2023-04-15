@@ -153,5 +153,5 @@ public class TestUtils {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
         assertEqualsStrategy(commonGoalTest.getStrategy(), commonGoalAssert.getStrategy());
     }
-
+    // prova per push
 }
