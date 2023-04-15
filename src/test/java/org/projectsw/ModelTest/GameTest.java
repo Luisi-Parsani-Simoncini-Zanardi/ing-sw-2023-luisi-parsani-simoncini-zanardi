@@ -38,7 +38,6 @@ class GameTest extends TestUtils{
     /**
      * Tests the correct creation of a game instance
      */
-    //TODO: sistemare questo test
     @Test
     void integrityGameTest(){
         Player firstPlayer = new Player("Davide",0);

@@ -31,8 +31,6 @@ public class Engine {
      */
     public SaveGameStatus getSaveGameStatus() { return this.saveGameStatus; }
 
-//TODO: finire metodi controller
-
     /**
      * Creates a player object with position 0 and create a new game using the game constructor (the one that also sets the first player).
      * The game is initialized using the first player and the number of players selected, the state of the game at the end of the
@@ -81,7 +79,8 @@ public class Engine {
      */
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
-        saveGameStatus = new SaveGameStatus(game, "");//TODO: !!!POST!!! aggiungere filepath
+        saveGameStatus = new SaveGameStatus(game, "");
+        //TODO: !!!POST!!! aggiungere filepath
 
 
     }

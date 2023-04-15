@@ -139,7 +139,7 @@ public class Player {
         this.commonGoalRedeemed.set(index, status);
     }
 
-    //TODO aggiungere clearTemporaryTiles e removeTemporaryTile
+    //TODO: aggiungere clearTemporaryTiles e removeTemporaryTile
 
     /**
      * Adds the given tile to the player's temporary tiles.
