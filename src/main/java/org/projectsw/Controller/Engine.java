@@ -354,8 +354,7 @@ public class Engine {
      * @return winner of the game
      */
     public Player getWinner() {
-        Player winner =  Collections.max(getGame().getPlayers(), Comparator.comparing(s -> s.getPoints()));
-        return winner;
+        return Collections.max(getGame().getPlayers(), Comparator.comparing(s -> s.getPoints()));
     }
 
     /**
