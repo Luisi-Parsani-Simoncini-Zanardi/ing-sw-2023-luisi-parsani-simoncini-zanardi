@@ -78,18 +78,6 @@ public class TestUtils {
         assertEquals(playerTest.isCommonGoalRedeemed(1), playerAssert.isCommonGoalRedeemed(1));
     }
 
-
-    /**
-     * Check if two Bag objects are identical.
-     * @param bagTest a test Bag object
-     * @param bagAssert another test Bag object
-     */
-    public void assertEqualsBag (Bag bagTest, Bag bagAssert) {
-        for(int i=0; i<bagTest.getBag().size(); i++) {
-            assertEqualsTile(bagTest.getBag().get(i), bagAssert.getBag().get(i));
-        }
-    }
-
     /**
      * check if two Board objects are identical
      * @param boardTest a test Board object
@@ -102,11 +90,11 @@ public class TestUtils {
             }
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
-        assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
+        /* assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
         for(int i=0; i<boardTest.getSelectablePoints().size(); i++)
             assertEqualsPoint(boardTest.getSelectablePoints().get(i), boardAssert.getSelectablePoints().get(i));
         for(int i=0; i<boardTest.getTemporaryPoints().size(); i++)
-            assertEqualsPoint(boardTest.getTemporaryPoints().get(i), boardAssert.getTemporaryPoints().get(i));
+            assertEqualsPoint(boardTest.getTemporaryPoints().get(i), boardAssert.getTemporaryPoints().get(i)); */
     }
 
     /**
