@@ -3,13 +3,32 @@ package org.projectsw;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
+
+import java.awt.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtils {
 
 
+    /**
+     * Checks if two Point objects are identical.
+     * @param pointTest a test Point object
+     * @param pointAssert another Point Tile object
+     */
+    public void assertEqualsPoint (Point pointTest, Point pointAssert) {
+        assertEquals(pointTest.getX(), pointAssert.getX());
+        assertEquals(pointTest.getY(), pointAssert.getY());
+    }
+
+    /**
+     * Checks if two Tile objects are identical.
+     * @param tileTest a test Tile object
+     * @param tileAssert another test Tile object
+     */
     public void assertEqualsTile (Tile tileTest, Tile tileAssert) {
         assertEquals(tileTest.getTile(), tileAssert.getTile());
         assertEquals(tileTest.getImageNumber(), tileAssert.getImageNumber());
@@ -71,6 +90,11 @@ public class TestUtils {
             }
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
+        /* assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
+        for(int i=0; i<boardTest.getSelectablePoints().size(); i++)
+            assertEqualsPoint(boardTest.getSelectablePoints().get(i), boardAssert.getSelectablePoints().get(i));
+        for(int i=0; i<boardTest.getTemporaryPoints().size(); i++)
+            assertEqualsPoint(boardTest.getTemporaryPoints().get(i), boardAssert.getTemporaryPoints().get(i)); */
     }
 
     /**
@@ -96,18 +120,6 @@ public class TestUtils {
             assertEquals(chatTest.getChat().get(i), chatAssert.getChat().get(i));
         }
     }
-    public static boolean objectHasProperty(Object object, String propertyName) {
-        Class<?> objectClass = object.getClass();
-        Field[] fields = objectClass.getDeclaredFields();
-
-        for (Field field : fields) {
-            if (field.getName().equals(propertyName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
 
     /**
@@ -115,10 +127,9 @@ public class TestUtils {
      * @param strategyTest a test strategy object
      * @param strategyAssert another test strategy object
      */
-    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) {
+    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         assertEquals(strategyTest.getNumObjects(), strategyAssert.getNumObjects());
         assertEquals(strategyTest.getStrategyCode(), strategyAssert.getStrategyCode());
-       // objectHasProperty(strategyTest, "edge") ? assertEquals(strategyTest.);
     }
 
     /**
@@ -126,9 +137,9 @@ public class TestUtils {
      * @param commonGoalTest a test commonGoal object
      * @param commonGoalAssert another test commonGoal object
      */
-    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
+    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
         assertEqualsStrategy(commonGoalTest.getStrategy(), commonGoalAssert.getStrategy());
     }
-
+    // prova per push
 }

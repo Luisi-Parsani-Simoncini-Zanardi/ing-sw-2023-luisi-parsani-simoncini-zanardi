@@ -261,4 +261,32 @@ public class Game{
 
     }
 
-}
+    /**
+     * Return an arrayList of commonGoals based on the indexes passed
+     * @param indexes strategyCodes of the commonGoals
+     * @return commonGoals ArrayList
+     * @throws NoSuchMethodException when there's no method defined as such
+     * @throws InvocationTargetException when a called method generates an exception
+     * @throws InstantiationException when the class cannot be instantiated
+     * @throws IllegalAccessException when the caller cannot access the method or parameter
+     */
+    public ArrayList<CommonGoal> commonGoalByIndex(int[] indexes) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+
+        CommonGoalStrategy strategyIst;
+        CommonGoal commonGoalIst;
+        ArrayList<CommonGoal> commonGoals = new ArrayList<>();
+        ArrayList<Class<?>> randomStrategyClasses;
+        randomStrategyClasses = fillCommonGoalsStrategyArray();
+
+        for(int index : indexes) {
+            Class<?> randomClass = randomStrategyClasses.get(index-1);
+            strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index);
+            commonGoalIst = new CommonGoal(strategyIst);
+            commonGoals.add(commonGoalIst);
+        };
+
+        return commonGoals;
+    }
+
+
+    }
