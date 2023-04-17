@@ -183,4 +183,19 @@ public class Player {
         }
         return generatedPersonalGoal;
     }
+
+    /**
+     * Clears the temporaryTiles array list.
+     */
+    public void clearTemporaryTiles(){
+        temporaryTiles.clear();
+    }
+
+    /**
+     * Removes the given tile from the temporaryTiles array list.
+     * @param tile the tile to be removed from the array
+     */
+    public void removeTemporaryTile(Tile tile){
+        temporaryTiles.remove(tile);
+    }
 }
