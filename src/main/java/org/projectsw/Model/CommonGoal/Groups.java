@@ -45,8 +45,8 @@ public class Groups extends CommonGoalStrategy{
         int rightGroup=0;
         int dim;
 
-        for(int i=Config.shelfLength; i>-1; i--){
-            for (int j = 0; j < Config.shelfHeight; j++) {
+        for(int i=Config.shelfLength-1; i>-1; i--){
+            for (int j = 0; j < Config.shelfHeight-1; j++) {
                 if(shelf.getTileShelf(i,j).getTile() != TilesEnum.EMPTY){
                     dim = 0;
                     if (!matrix[i][j])
