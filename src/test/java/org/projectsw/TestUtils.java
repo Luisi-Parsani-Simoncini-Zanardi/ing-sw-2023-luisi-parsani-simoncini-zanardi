@@ -40,8 +40,8 @@ public class TestUtils {
      * @param shelfAssert another test Shelf object
      */
     public void assertEqualsShelf (Shelf shelfTest, Shelf shelfAssert) {
-        for(int i=0; i<shelfTest.getShelf().length; i++) {
-            for(int j=0; j<shelfTest.getShelf()[i].length; j++){
+        for(int i=0; i<Config.shelfLength; i++) {
+            for(int j=0; j<Config.shelfHeight; j++){
                 assertEqualsTile(shelfTest.getShelf()[i][j], shelfAssert.getShelf()[i][j]);
             }
         }
@@ -53,8 +53,8 @@ public class TestUtils {
      * @param personalGoalAssert another test PersonalGoal object
      */
     public void assertEqualsPersonalGoal (PersonalGoal personalGoalTest, PersonalGoal personalGoalAssert) {
-        for(int i=0; i<personalGoalTest.getPersonalGoal().length-1; i++){
-            for(int j=0; j<personalGoalTest.getPersonalGoal()[i].length-1; j++) {
+        for(int i=0; i<Config.shelfLength; i++){
+            for(int j=0; j<Config.shelfHeight; j++) {
                 assertEquals(personalGoalTest.getPersonalGoal()[i][j], personalGoalAssert.getPersonalGoal()[i][j]);
             }
         }
@@ -84,8 +84,8 @@ public class TestUtils {
      * @param boardAssert another test Board object
      */
     public void assertEqualsBoard (Board boardTest, Board boardAssert) {
-        for(int i=0; i<boardTest.getBoard().length; i++) {
-            for(int j=0; j<boardTest.getBoard()[i].length; j++){
+        for(int i=0; i<Config.boardLength; i++) {
+            for(int j=0; j<Config.boardHeight; j++){
                 assertEqualsTile(boardTest.getBoard()[i][j], boardAssert.getBoard()[i][j]);
             }
         }
