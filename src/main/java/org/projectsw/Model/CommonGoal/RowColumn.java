@@ -92,8 +92,8 @@ public class RowColumn extends CommonGoalStrategy{
         ArrayList<Integer> tilesCounted = new ArrayList<>();
 
         if(this.rowColumn){
-            for (int i = Config.shelfLength; i > -1; i--) {
-                for (int j = 0; j < Config.shelfHeight; j++) {
+            for (int j = Config.shelfHeight-1; j > -1; j--) {
+                for (int i = 0; i < Config.shelfLength; i++) {
                     tiles.add(shelf.getTileShelf(i, j).getTile());
                 }
                 if(this.differentTiles(tiles)!=-1)
@@ -102,8 +102,8 @@ public class RowColumn extends CommonGoalStrategy{
             }
         }else{
             for (int i = 0; i < Config.shelfLength; i++) {
-                for (int j = Config.shelfHeight; j > -1; j--) {
-                    tiles.add(shelf.getTileShelf(j, i).getTile());
+                for (int j = Config.shelfHeight-1; j > -1; j--) {
+                    tiles.add(shelf.getTileShelf(i, j).getTile());
                 }
                 if(this.differentTiles(tiles)!=-1)
                     tilesCounted.add(this.differentTiles(tiles));
