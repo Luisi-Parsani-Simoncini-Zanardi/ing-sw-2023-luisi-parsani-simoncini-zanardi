@@ -310,6 +310,7 @@ public class Engine {
         this.checkCommonGoals();
         this.checkEndGame();
         getSaveGameStatus().saveGame();
+        game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
         if (getGame().getCurrentPlayer().getPosition() == (getGame().getNumberOfPlayers()-1) && getGame().getBoard().isEndGame()) {
