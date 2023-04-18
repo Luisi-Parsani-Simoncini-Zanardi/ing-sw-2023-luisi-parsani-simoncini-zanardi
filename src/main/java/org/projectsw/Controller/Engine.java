@@ -1,5 +1,6 @@
 package org.projectsw.Controller;
 
+import org.projectsw.Config;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import java.awt.*;
@@ -234,9 +235,9 @@ public class Engine {
      * @return the correspondent matrix of TilesEnum
      */
     private TilesEnum[][] tileToTilesEnum (Shelf shelf){
-        TilesEnum[][] tmp = new TilesEnum[6][5];
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++) {
+        TilesEnum[][] tmp = new TilesEnum[Config.shelfLength][Config.shelfHeight];
+        for (int i = 0; i < Config.shelfLength; i++) {
+            for (int j = 0; j < Config.shelfHeight; j++) {
                 tmp[i][j] = shelf.getTileShelf(i, j).getTile();
             }
         }

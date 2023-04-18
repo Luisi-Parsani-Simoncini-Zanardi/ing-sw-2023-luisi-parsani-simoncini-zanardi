@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Config;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
@@ -147,7 +148,7 @@ public class Player {
      * @throws UnusedTilesException if the tile is UNUSED
      */
     public void addTemporaryTile(Tile tile) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
-        if(temporaryTiles.size()>2) throw new MaximumTilesException("Maximum number of tiles reached");
+        if(temporaryTiles.size()> Config.maximumTilesPickable-1) throw new MaximumTilesException("Maximum number of tiles reached");
         else if(tile.getTile() == TilesEnum.EMPTY) throw new EmptyTilesException("You can't add an EMPTY tile");
         else if(tile.getTile() == TilesEnum.UNUSED) throw new UnusedTilesException("You can't add an UNUSED tile");
         else temporaryTiles.add(tile);
@@ -176,7 +177,7 @@ public class Player {
         //if(PersonalGoal.getUsedCodes().size() == 12) return null;
         try {
             Random random = new Random();
-            int randomNumber = random.nextInt(12);
+            int randomNumber = random.nextInt(Config.numberOfPersonalGoals);
             generatedPersonalGoal = new PersonalGoal(randomNumber);
         } catch (IllegalArgumentException e) {
             return tryPersonalGoal();

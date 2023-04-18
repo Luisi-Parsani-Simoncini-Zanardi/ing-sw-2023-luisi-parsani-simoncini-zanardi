@@ -1,4 +1,5 @@
 package org.projectsw.Model.CommonGoal;
+import org.projectsw.Config;
 import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.Shelf;
 
@@ -7,7 +8,7 @@ public class CommonGoal{
     private final CommonGoalStrategy strategy;
 
     public CommonGoal(CommonGoalStrategy strategy){
-        this.redeemedNumber = 4;
+        this.redeemedNumber = Config.numberOfCommonGoalPoints;
         this.strategy = strategy;
     }
 
