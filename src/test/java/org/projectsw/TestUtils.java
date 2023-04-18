@@ -5,9 +5,6 @@ import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 
 import java.awt.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -90,11 +87,7 @@ public class TestUtils {
             }
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
-        /* assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
-        for(int i=0; i<boardTest.getSelectablePoints().size(); i++)
-            assertEqualsPoint(boardTest.getSelectablePoints().get(i), boardAssert.getSelectablePoints().get(i));
-        for(int i=0; i<boardTest.getTemporaryPoints().size(); i++)
-            assertEqualsPoint(boardTest.getTemporaryPoints().get(i), boardAssert.getTemporaryPoints().get(i)); */
+
     }
 
     /**
@@ -127,7 +120,7 @@ public class TestUtils {
      * @param strategyTest a test strategy object
      * @param strategyAssert another test strategy object
      */
-    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) {
         assertEquals(strategyTest.getNumObjects(), strategyAssert.getNumObjects());
         assertEquals(strategyTest.getStrategyCode(), strategyAssert.getStrategyCode());
     }
@@ -137,9 +130,8 @@ public class TestUtils {
      * @param commonGoalTest a test commonGoal object
      * @param commonGoalAssert another test commonGoal object
      */
-    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
         assertEqualsStrategy(commonGoalTest.getStrategy(), commonGoalAssert.getStrategy());
     }
-    // prova per push
 }
