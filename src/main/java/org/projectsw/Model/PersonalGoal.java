@@ -1,6 +1,8 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
+import org.projectsw.Config;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -19,9 +21,9 @@ public class PersonalGoal {
      * Constructs a new EMPTY PersonalGoal
      */
     public PersonalGoal(){
-        personalGoal = new TilesEnum[6][5];
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++) {
+        personalGoal = new TilesEnum[Config.shelfLength][Config.shelfHeight];
+        for (int i = 0; i < Config.shelfLength; i++) {
+            for (int j = 0; j < Config.shelfHeight; j++) {
                 personalGoal[i][j] = TilesEnum.EMPTY;
             }
         }
@@ -43,10 +45,10 @@ public class PersonalGoal {
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
 
-            personalGoal = new TilesEnum[6][5];
-            for (int i = 0; i < 6; i++) {
-                for (int j = 0; j < 5; j++) {
-                    String str = tmpMatrix[goalCode][i][j];
+            personalGoal = new TilesEnum[Config.shelfLength][Config.shelfHeight];
+            for (int i = 0; i < Config.shelfLength; i++) {
+                for (int j = 0; j < Config.shelfHeight; j++) {
+                    String str = tmpMatrix[goalCode][j][i];
                     switch (str) {
                         case "EMPTY" -> personalGoal[i][j] = TilesEnum.EMPTY;
                         case "PLANTS" -> personalGoal[i][j] = TilesEnum.PLANTS;
