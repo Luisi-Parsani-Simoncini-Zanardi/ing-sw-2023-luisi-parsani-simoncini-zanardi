@@ -1,5 +1,6 @@
 package org.projectsw.Model.CommonGoal;
 
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
@@ -39,13 +40,13 @@ public class Groups extends CommonGoalStrategy{
      */
     @Override
     public boolean check(Shelf shelf){
-        boolean [][]matrix = new boolean[6][5];
+        boolean [][]matrix = new boolean[Config.shelfLength][Config.shelfHeight];
 
         int rightGroup=0;
         int dim;
 
-        for(int i=5; i>-1; i--){
-            for (int j = 0; j < 5; j++) {
+        for(int i=Config.shelfLength; i>-1; i--){
+            for (int j = 0; j < Config.shelfHeight; j++) {
                 if(shelf.getTileShelf(i,j).getTile() != TilesEnum.EMPTY){
                     dim = 0;
                     if (!matrix[i][j])
@@ -65,23 +66,23 @@ public class Groups extends CommonGoalStrategy{
      * @param shelf is the player's shelf
      * @param matrix is an array of booleans to keep track of the shelf boxes that have already been navigated
      * @param type is the Tile type of the group
-     * @param row is the current row in the shelf
-     * @param column is the current column in the shelf
+     * @param i is the current i in the shelf
+     * @param j is the current j in the shelf
      * @return returns the size of the found group
      */
-    private int customShelfIterator(Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
+    private int customShelfIterator(Shelf shelf, boolean [][]matrix, TilesEnum type, int i , int j){
         Point nextPoint;
 
-        if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type && !this.coordinates.contains(new Point(row-1,column)))
-            this.coordinates.add(new Point(row-1,column));
-        if(row+1 < 6 && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type && !this.coordinates.contains(new Point(row+1,column)))
-            this.coordinates.add(new Point(row+1,column));
-        if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type && !this.coordinates.contains(new Point(row,column-1)))
-            this.coordinates.add(new Point(row,column-1));
-        if(column+1 < 5 && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !this.coordinates.contains(new Point(row,column+1)))
-            this.coordinates.add(new Point(row,column+1));
+        if(i-1 > -1 && !matrix[i-1][j] && shelf.getTileShelf(i-1,j).getTile()==type && !this.coordinates.contains(new Point(i-1,j)))
+            this.coordinates.add(new Point(i-1,j));
+        if(i+1 < Config.shelfLength && !matrix[i+1][j] && shelf.getTileShelf(i+1,j).getTile()==type && !this.coordinates.contains(new Point(i+1,j)))
+            this.coordinates.add(new Point(i+1,j));
+        if(j-1 > -1 && !matrix[i][j-1] && shelf.getTileShelf(i,j-1).getTile()==type && !this.coordinates.contains(new Point(i,j-1)))
+            this.coordinates.add(new Point(i,j-1));
+        if(j+1 < Config.shelfHeight && !matrix[i][j+1] && shelf.getTileShelf(i,j + 1).getTile()==type && !this.coordinates.contains(new Point(i,j+1)))
+            this.coordinates.add(new Point(i,j+1));
 
-        matrix[row][column]=true;
+        matrix[i][j]=true;
         if(this.coordinates.size()!=0) {
             nextPoint = this.coordinates.get(0);
             this.coordinates.remove(0);
