@@ -1,6 +1,7 @@
 package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
+import org.projectsw.Config;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.RowColumn;
@@ -21,14 +22,14 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<5; i++) {
+        for(int i = 0; i< Config.shelfLength; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,5);
             }catch(Exception ignore){}
         }
         assertTrue(common.checkRequirements(shelf));
@@ -45,12 +46,12 @@ class RowColumnTest {
 
         for(int i=0; i<1; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,5);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -67,12 +68,12 @@ class RowColumnTest {
 
         for(int i=0; i<3; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,5);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -89,12 +90,12 @@ class RowColumnTest {
 
         for(int i=0; i<3; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,5);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -121,14 +122,14 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<5; i++) {
+        for(int i=0; i<Config.shelfLength; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,5);
             }catch(Exception ignore){}
         }
         assertTrue(common.checkRequirements(shelf));
@@ -145,12 +146,12 @@ class RowColumnTest {
 
         for(int i=0; i<2; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,5);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -165,14 +166,14 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<5; i++) {
+        for(int i=0; i<Config.shelfLength; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,5);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -187,14 +188,14 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<5; i++) {
+        for(int i=0; i<Config.shelfLength; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 2, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 5, i);
+                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), i,0);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,2);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,5);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -221,13 +222,13 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<6; i++) {
+        for(int i=0; i<Config.shelfHeight; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), i,0);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,2);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), 0,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 2,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4,i);
             }catch(Exception ignore){}
         }
         assertTrue(common.checkRequirements(shelf));
@@ -244,11 +245,11 @@ class RowColumnTest {
 
         for(int i=0; i<1; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), i,1);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,2);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), 0,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 2,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4,i);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -263,13 +264,13 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<6; i++) {
+        for(int i=0; i<Config.shelfHeight; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,2);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 2,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4,i);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -284,13 +285,13 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<6; i++) {
+        for(int i=0; i<Config.shelfHeight; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), i,0);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,2);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0), 0,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 2,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4,i);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -317,13 +318,13 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<6; i++) {
+        for(int i=0; i<Config.shelfHeight; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,2);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,3);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 2,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 3,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4,i);
             }catch(Exception ignore){}
         }
         assertTrue(common.checkRequirements(shelf));
@@ -340,11 +341,11 @@ class RowColumnTest {
 
         for(int i=0; i<3; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,2);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,3);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 2,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4,i);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));
@@ -359,13 +360,13 @@ class RowColumnTest {
         CommonGoal common = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
 
-        for(int i=0; i<6; i++) {
+        for(int i=0; i<Config.shelfHeight; i++) {
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,0);
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,1);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), i,2);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,3);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), i,4);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 1,i);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 2,i);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 3,i);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0), 4,i);
             }catch(Exception ignore){}
         }
         assertFalse(common.checkRequirements(shelf));

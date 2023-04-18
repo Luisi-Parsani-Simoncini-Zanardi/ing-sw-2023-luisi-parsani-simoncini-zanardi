@@ -1,6 +1,8 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
+import org.projectsw.Config;
+
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,13 +24,13 @@ public class Board{
      * Constructs a Board full of unused tiles.
      */
     public Board(){
-        board = new Tile[9][9];
+        board = new Tile[Config.boardLength][Config.boardHeight];
         bag = new Bag();
         endGame = false;
         temporaryPoints = new ArrayList<>();
         selectablePoints = new ArrayList<>();
-        for(int i=0;i<9;i++){
-            for(int j=0;j<9;j++){
+        for(int i=0;i<Config.boardLength;i++){
+            for(int j=0;j<Config.boardHeight;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
@@ -44,7 +46,7 @@ public class Board{
         try{
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
-            board = new Tile[9][9];
+            board = new Tile[Config.boardLength][Config.boardLength];
             for(int i=0;i<9;i++){
                 for(int j=0;j<9;j++){
                     if(tmpMatrix[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
@@ -118,8 +120,8 @@ public class Board{
      * @param board the board to set.
      */
     public void setBoard(Tile[][] board){
-        if(board.length != 9) throw new IllegalArgumentException();
-        if(board[0].length != 9) throw new IllegalArgumentException();
+        if(board.length != Config.boardLength) throw new IllegalArgumentException();
+        if(board[0].length != Config.boardHeight) throw new IllegalArgumentException();
         this.board = board;
     }
 
@@ -147,7 +149,7 @@ public class Board{
      * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds.
      */
     public Tile getTileFromBoard(Point point) throws IndexOutOfBoundsException{
-        if(point.getX()>8 || point.getY()>8){
+        if(point.getX()>Config.boardLength-1 || point.getY()>Config.boardHeight-1){
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         else {
@@ -161,13 +163,13 @@ public class Board{
     /**
      * Updates the board by placing the given Tile at the specified position.
      * @param tile the Tile to place on the board
-     * @param row the row index of the position to place the Tile at
-     * @param column the column index of the position to place the Tile at
+     * @param i the i index of the position to place the Tile at
+     * @param j the j index of the position to place the Tile at
      * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
      */
-    public void updateBoard(Tile tile, int row, int column) throws IndexOutOfBoundsException{
-        if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
-        else board[row][column]=tile;
+    public void updateBoard(Tile tile, int i, int j) throws IndexOutOfBoundsException{
+        if(i>Config.boardLength-1 || j>Config.boardHeight-1) throw new IndexOutOfBoundsException("Index out of bounds");
+        else board[i][j]=tile;
         updateSelectablePoints();
     }
 
@@ -225,8 +227,8 @@ public class Board{
         int middleColumn = (int) middle.getY();
         if(middleRow != 0) adjacentPoints.add(new Point(middleRow-1,middleColumn));
         if(middleColumn != 0) adjacentPoints.add(new Point(middleRow,middleColumn-1));
-        if(middleColumn != 8) adjacentPoints.add(new Point(middleRow,middleColumn+1));
-        if(middleRow != 8) adjacentPoints.add(new Point(middleRow+1,middleColumn));
+        if(middleColumn != Config.boardLength-1) adjacentPoints.add(new Point(middleRow,middleColumn+1));
+        if(middleRow != Config.boardHeight-1) adjacentPoints.add(new Point(middleRow+1,middleColumn));
         return adjacentPoints;
     }
 
@@ -236,8 +238,8 @@ public class Board{
      */
     private ArrayList<Point> getFreeEdgesPoints() {
         ArrayList<Point> newSelectablePoints = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        for (int i = 0; i < Config.boardLength; i++) {
+            for (int j = 0; j < Config.boardHeight; j++) {
                 Tile currentTile1 = board[i][j];
                 if(currentTile1.getTile().equals(TilesEnum.CATS ) || currentTile1.getTile().equals(TilesEnum.BOOKS)
                         || currentTile1.getTile().equals(TilesEnum.FRAMES) || currentTile1.getTile().equals(TilesEnum.GAMES)
@@ -349,9 +351,9 @@ public class Board{
      * @return whether the board is empty or not
      */
     public boolean isBoardEmpty() {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (!(board[i][j].getTile() == TilesEnum.EMPTY || board[i][j].getTile() == TilesEnum.UNUSED))
+        for (Tile[] tiles : board) {
+            for (Tile tile : tiles) {
+                if (!(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED))
                     return false;
             }
         }

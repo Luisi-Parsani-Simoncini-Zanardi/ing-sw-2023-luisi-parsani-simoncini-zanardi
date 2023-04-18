@@ -1,5 +1,6 @@
 package org.projectsw.Model.CommonGoal;
 
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 import java.awt.Point;
@@ -30,8 +31,8 @@ public class Square extends CommonGoalStrategy {
 
         for (TilesEnum tileType : tilesEnums) {
             coordinates.clear();
-            for (int y = 5; y > 0; y--) {
-                for (int x = 0; x < 4; x++) {
+            for (int x = 0; x < Config.shelfLength-1; x++) {
+                for (int y = Config.shelfHeight-1; y > 0; y--) {
                     if (isValidSquare(shelf, tileType, x, y)) {
                         if (coordinates.isEmpty()) {
                             insertCoords(coordinates, x, y);
@@ -94,11 +95,11 @@ public class Square extends CommonGoalStrategy {
      * @return true if the square is valid, false if not
      */
     private boolean isValidSquare(Shelf shelf, TilesEnum tileType, int x, int y){
-        return shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x).getTile() &&
-                shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x + 1).getTile() &&
-                shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y, x + 1).getTile() &&
-                shelf.getTileShelf(y, x).getTile() != TilesEnum.EMPTY &&
-                shelf.getTileShelf(y, x).getTile() != TilesEnum.UNUSED &&
-                shelf.getTileShelf(y, x).getTile() == tileType;
+        return shelf.getTileShelf(x, y).getTile() == shelf.getTileShelf(x, y - 1).getTile() &&
+                shelf.getTileShelf(x, y).getTile() == shelf.getTileShelf(x + 1, y - 1).getTile() &&
+                shelf.getTileShelf(x, y).getTile() == shelf.getTileShelf(x + 1, y).getTile() &&
+                shelf.getTileShelf(x, y).getTile() != TilesEnum.EMPTY &&
+                shelf.getTileShelf(x, y).getTile() != TilesEnum.UNUSED &&
+                shelf.getTileShelf(x, y).getTile() == tileType;
     }
 }

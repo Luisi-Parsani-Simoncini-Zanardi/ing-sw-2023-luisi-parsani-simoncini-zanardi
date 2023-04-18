@@ -1,5 +1,7 @@
 package org.projectsw.Model;
 
+import org.projectsw.Config;
+
 /**
  * Class representing a single tile.
  */
@@ -13,7 +15,7 @@ public class Tile {
      * @param imageNumber the image number of the tile (must be 0,1, or 2)
      */
     public Tile (TilesEnum tileType, int imageNumber) throws IllegalArgumentException{
-        if(imageNumber < 0 || imageNumber > 2) throw new IllegalArgumentException();
+        if(imageNumber < 0 || imageNumber > Config.numberOfImages-1) throw new IllegalArgumentException();
         this.tile = tileType;
         this.imageNumber = imageNumber;
     }

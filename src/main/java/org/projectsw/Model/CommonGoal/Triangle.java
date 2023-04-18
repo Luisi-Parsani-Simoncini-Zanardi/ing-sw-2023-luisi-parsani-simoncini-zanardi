@@ -1,5 +1,6 @@
 package org.projectsw.Model.CommonGoal;
 
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
@@ -23,7 +24,7 @@ public class Triangle extends CommonGoalStrategy{
     @Override
     public boolean check(Shelf shelf){
 
-        int [] height = this.columnsHeight(shelf);
+        int [] height = this.columnHeight(shelf);
         return this.ascending(height) || this.descending(height);
     }
 
@@ -34,11 +35,11 @@ public class Triangle extends CommonGoalStrategy{
      * @return a vector with the heights of the columns from left to right.
      * If the height of a column is 0 it returns -1 in columnHeight[0] to interrupt the algorithm
      */
-    private int[] columnsHeight(Shelf shelf){
-        int [] columnHeight = new int[5];
-        for(int i=0;i<5;i++) {
-            for (int j = 0; j < 6; j++) {
-                if (shelf.getTileShelf(j, i).getTile() != TilesEnum.EMPTY)
+    private int[] columnHeight(Shelf shelf){
+        int [] columnHeight = new int[Config.shelfLength];
+        for(int i=0;i<Config.shelfLength;i++) {
+            for (int j = 0; j < Config.shelfHeight; j++) {
+                if (shelf.getTileShelf(i,j).getTile() != TilesEnum.EMPTY)
                     columnHeight[i]++;
             }
             if(columnHeight[i] == 0) {
@@ -57,7 +58,7 @@ public class Triangle extends CommonGoalStrategy{
      */
     private boolean ascending(int []height){
         int increasing=0;
-        for(int i = 0; i<4; i++)
+        for(int i = 0; i<Config.shelfLength-1; i++)
             if (height[i + 1] - height[i] != 1) {
                 increasing = 1;
                 break;
@@ -73,7 +74,7 @@ public class Triangle extends CommonGoalStrategy{
      */
     private boolean descending(int []height){
         int decreasing=0;
-        for(int i = 0; i<4; i++)
+        for(int i = 0; i<Config.shelfLength-1; i++)
             if (height[i] - height[i + 1] != 1) {
                 decreasing = 1;
                 break;

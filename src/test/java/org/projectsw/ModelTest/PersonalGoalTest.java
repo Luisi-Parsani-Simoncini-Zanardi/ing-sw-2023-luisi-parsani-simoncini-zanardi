@@ -2,6 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Config;
 import org.projectsw.Model.PersonalGoal;
 import org.projectsw.Model.TilesEnum;
 import java.util.ArrayList;
@@ -24,10 +25,10 @@ class PersonalGoalTest {
     @Test
     void emptyIntegrityTest(){
         PersonalGoal personalGoal = new PersonalGoal();
-        assertEquals(6,personalGoal.getPersonalGoal().length);
-        assertEquals(5,personalGoal.getPersonalGoal()[0].length);
-        for(int j=0;j<6;j++){
-            for(int h=0;h<5;h++){
+        assertEquals(5,personalGoal.getPersonalGoal().length);
+        assertEquals(6,personalGoal.getPersonalGoal()[0].length);
+        for(int j = 0; j< Config.shelfLength; j++){
+            for(int h=0;h<Config.shelfHeight;h++){
                 assertEquals(personalGoal.getPersonalGoal()[j][h], TilesEnum.EMPTY);
             }
         }
@@ -41,10 +42,10 @@ class PersonalGoalTest {
         for(int i=0;i<12;i++){
             int cats = 0, books = 0, games = 0, frames = 0, plants = 0, trophies = 0, empty = 0;
             PersonalGoal personalGoal = new PersonalGoal(i);
-            assertEquals(6,personalGoal.getPersonalGoal().length);
-            assertEquals(5,personalGoal.getPersonalGoal()[0].length);
-            for(int j=0;j<6;j++){
-                for(int h=0;h<5;h++){
+            assertEquals(5,personalGoal.getPersonalGoal().length);
+            assertEquals(6,personalGoal.getPersonalGoal()[0].length);
+            for(int j=0;j<Config.shelfLength;j++){
+                for(int h=0;h<Config.shelfHeight;h++){
                     TilesEnum tile = personalGoal.getPersonalGoal()[j][h];
                     if(tile == TilesEnum.CATS) cats++;
                     if(tile == TilesEnum.FRAMES) frames++;
@@ -104,12 +105,12 @@ class PersonalGoalTest {
     @Test
     void testGetPersonalGoal(){
         PersonalGoal personalGoal = new PersonalGoal(0);
-        assertTrue(personalGoal.getPersonalGoal()[3][1].equals(TilesEnum.GAMES)&&
+        assertTrue(personalGoal.getPersonalGoal()[1][3].equals(TilesEnum.GAMES)&&
                     personalGoal.getPersonalGoal()[0][0].equals(TilesEnum.PLANTS)&&
-                    personalGoal.getPersonalGoal()[0][2].equals(TilesEnum.FRAMES)&&
-                    personalGoal.getPersonalGoal()[1][4].equals(TilesEnum.CATS)&&
-                    personalGoal.getPersonalGoal()[2][3].equals(TilesEnum.BOOKS)&&
-                    personalGoal.getPersonalGoal()[5][2].equals(TilesEnum.TROPHIES));
+                    personalGoal.getPersonalGoal()[2][0].equals(TilesEnum.FRAMES)&&
+                    personalGoal.getPersonalGoal()[4][1].equals(TilesEnum.CATS)&&
+                    personalGoal.getPersonalGoal()[3][2].equals(TilesEnum.BOOKS)&&
+                    personalGoal.getPersonalGoal()[2][5].equals(TilesEnum.TROPHIES));
     }
 
     /**
