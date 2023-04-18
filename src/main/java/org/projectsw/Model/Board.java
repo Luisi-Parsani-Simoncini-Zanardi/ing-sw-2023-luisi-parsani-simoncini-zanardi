@@ -227,8 +227,8 @@ public class Board{
         int middleColumn = (int) middle.getY();
         if(middleRow != 0) adjacentPoints.add(new Point(middleRow-1,middleColumn));
         if(middleColumn != 0) adjacentPoints.add(new Point(middleRow,middleColumn-1));
-        if(middleColumn != 8) adjacentPoints.add(new Point(middleRow,middleColumn+1));
-        if(middleRow != 8) adjacentPoints.add(new Point(middleRow+1,middleColumn));
+        if(middleColumn != Config.boardLength-1) adjacentPoints.add(new Point(middleRow,middleColumn+1));
+        if(middleRow != Config.boardHeight-1) adjacentPoints.add(new Point(middleRow+1,middleColumn));
         return adjacentPoints;
     }
 
