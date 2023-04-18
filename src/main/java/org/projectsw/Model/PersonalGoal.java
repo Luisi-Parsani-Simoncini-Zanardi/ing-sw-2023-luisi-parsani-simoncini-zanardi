@@ -38,7 +38,7 @@ public class PersonalGoal {
         try {
             if (usedCodes.contains(goalCode))
                 throw new IllegalArgumentException("Goal code already used.");
-            else if (goalCode < 0 || goalCode > 11)
+            else if (goalCode < 0 || goalCode > Config.numberOfPersonalGoals-1)
                 throw new IllegalArgumentException("Invalid goal code");
             else usedCodes.add(goalCode);
 
