@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Config;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.CommonGoal.*;
 import java.lang.reflect.InvocationTargetException;
@@ -46,7 +47,7 @@ public class Game{
      */
     public Game(Player firstPlayer, int numberOfPlayers){
         //TODO: creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
-        if(numberOfPlayers<2 || numberOfPlayers>4) throw new IllegalArgumentException("Number of players not between 2 and 4");
+        if(numberOfPlayers< Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new IllegalArgumentException("Number of players not valid");
         if(firstPlayer.getPosition() != 0) throw new IllegalArgumentException("The first player you want insert has a !=0 position");
         gameState = GameStates.LOBBY;
         this.numberOfPlayers = numberOfPlayers;
@@ -282,7 +283,7 @@ public class Game{
             strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index);
             commonGoalIst = new CommonGoal(strategyIst);
             commonGoals.add(commonGoalIst);
-        };
+        }
 
         return commonGoals;
     }

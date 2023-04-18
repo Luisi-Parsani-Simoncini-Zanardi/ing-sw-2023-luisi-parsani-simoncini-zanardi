@@ -177,7 +177,7 @@ public class Player {
         //if(PersonalGoal.getUsedCodes().size() == 12) return null;
         try {
             Random random = new Random();
-            int randomNumber = random.nextInt(Config.numberOfPersonalGoals);
+            int randomNumber = random.nextInt(Config.numberOfPotentialPersonalGoals);
             generatedPersonalGoal = new PersonalGoal(randomNumber);
         } catch (IllegalArgumentException e) {
             return tryPersonalGoal();

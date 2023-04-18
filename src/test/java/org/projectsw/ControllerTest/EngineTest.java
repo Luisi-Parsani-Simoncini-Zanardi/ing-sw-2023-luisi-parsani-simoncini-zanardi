@@ -1,7 +1,8 @@
 package org.projectsw.ControllerTest;
-
+//TODO x Luca: sistemare i test con le nuove configs
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Config;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
@@ -260,12 +261,12 @@ class EngineTest extends TestUtils {
         Shelf shelf1 = new Shelf();
         for(int i=0; i<2; i++){
             try{
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),i,0);
+                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),i,1);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),i,2);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),i,3);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),i,4);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),i,5);
             }catch(Exception ignore){}
         }
         engine.getGame().getPlayers().get(0).setShelf(shelf);
@@ -274,14 +275,14 @@ class EngineTest extends TestUtils {
         assertEqualsPlayer(engine.getGame().getCurrentPlayer(), nextPlayer);
         assertEquals(false, engine.getGame().getBoard().isEndGame());
         engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(0));
-        for(int i=0; i<5; i++){
+        for(int i=0; i<Config.shelfLength; i++){
             try{
-                shelf1.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
-                shelf1.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
-                shelf1.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
-                shelf1.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
-                shelf1.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
-                shelf1.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),i,0);
+                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),i,1);
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),i,2);
+                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),i,3);
+                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),i,4);
+                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),i,5);
             }catch(Exception ignore){}
         }
         engine.getGame().getCurrentPlayer().setShelf(shelf1);
@@ -478,8 +479,8 @@ class EngineTest extends TestUtils {
         } catch (Exception ignore) {
         }
         Shelf shelf = new Shelf();
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++)
+        for (int i = 0; i < Config.shelfLength; i++) {
+            for (int j = 0; j < Config.shelfHeight; j++)
                 try {
                     shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, j);
                 } catch (Exception ignore) {
