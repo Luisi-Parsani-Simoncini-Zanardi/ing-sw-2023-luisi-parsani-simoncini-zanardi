@@ -1,6 +1,8 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
+import org.projectsw.Config;
+
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,13 +24,13 @@ public class Board{
      * Constructs a Board full of unused tiles.
      */
     public Board(){
-        board = new Tile[9][9];
+        board = new Tile[Config.boardHeight][Config.boardLength];
         bag = new Bag();
         endGame = false;
         temporaryPoints = new ArrayList<>();
         selectablePoints = new ArrayList<>();
-        for(int i=0;i<9;i++){
-            for(int j=0;j<9;j++){
+        for(int i=0;i<Config.boardHeight;i++){
+            for(int j=0;j<Config.boardLength;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
@@ -40,13 +42,13 @@ public class Board{
      * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
      */
     public Board(int playersNumber) throws IllegalArgumentException{
-        if(playersNumber<2 || playersNumber>4) throw new IllegalArgumentException("Number of players not between 2 and 4");
+        if(playersNumber<Config.minPlayers || playersNumber>Config.maxPlayers) throw new IllegalArgumentException("Number of players not valid");
         try{
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
-            board = new Tile[9][9];
-            for(int i=0;i<9;i++){
-                for(int j=0;j<9;j++){
+            board = new Tile[Config.boardHeight][Config.boardLength];
+            for(int i=0;i<Config.boardHeight;i++){
+                for(int j=0;j<Config.boardLength;j++){
                     if(tmpMatrix[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
                     if(tmpMatrix[playersNumber-2][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
                 }
@@ -118,8 +120,8 @@ public class Board{
      * @param board the board to set.
      */
     public void setBoard(Tile[][] board){
-        if(board.length != 9) throw new IllegalArgumentException();
-        if(board[0].length != 9) throw new IllegalArgumentException();
+        if(board.length != Config.boardHeight) throw new IllegalArgumentException();
+        if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
     }
 
@@ -147,12 +149,12 @@ public class Board{
      * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds.
      */
     public Tile getTileFromBoard(Point point) throws IndexOutOfBoundsException{
-        if(point.getX()>8 || point.getY()>8){
+        if(point.getX()>Config.boardLength-1 || point.getY()>Config.boardHeight-1){
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         else {
-            Tile tmp = board[(int) point.getX()][(int) point.getY()];
-            board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
+            Tile tmp = board[(int) point.getY()][(int) point.getX()];
+            board[(int) point.getY()][(int) point.getX()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
             return tmp;
         }
@@ -166,7 +168,7 @@ public class Board{
      * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
      */
     public void updateBoard(Tile tile, int row, int column) throws IndexOutOfBoundsException{
-        if(row>8 || column>8) throw new IndexOutOfBoundsException("Index out of bounds");
+        if(row>Config.boardHeight || column>Config.boardLength) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
         updateSelectablePoints();
     }
@@ -187,7 +189,7 @@ public class Board{
      */
     public void removeTemporaryPoints(Point point){
         temporaryPoints.remove(point);
-        if(temporaryPoints.size() == 3){
+        if(temporaryPoints.size() == Config.maximumTilesPickable){
             if(!areAdjacentPoints(temporaryPoints.get(0),temporaryPoints.get(1))){
                 cleanTemporaryPoints();
             }
@@ -225,8 +227,8 @@ public class Board{
         int middleColumn = (int) middle.getY();
         if(middleRow != 0) adjacentPoints.add(new Point(middleRow-1,middleColumn));
         if(middleColumn != 0) adjacentPoints.add(new Point(middleRow,middleColumn-1));
-        if(middleColumn != 8) adjacentPoints.add(new Point(middleRow,middleColumn+1));
-        if(middleRow != 8) adjacentPoints.add(new Point(middleRow+1,middleColumn));
+        if(middleColumn != Config.boardLength-1) adjacentPoints.add(new Point(middleRow,middleColumn+1));
+        if(middleRow != Config.boardHeight) adjacentPoints.add(new Point(middleRow+1,middleColumn));
         return adjacentPoints;
     }
 
@@ -236,8 +238,8 @@ public class Board{
      */
     private ArrayList<Point> getFreeEdgesPoints() {
         ArrayList<Point> newSelectablePoints = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+        for (int i = 0; i < Config.boardHeight; i++) {
+            for (int j = 0; j < Config.boardLength; j++) {
                 Tile currentTile1 = board[i][j];
                 if(currentTile1.getTile().equals(TilesEnum.CATS ) || currentTile1.getTile().equals(TilesEnum.BOOKS)
                         || currentTile1.getTile().equals(TilesEnum.FRAMES) || currentTile1.getTile().equals(TilesEnum.GAMES)
@@ -325,8 +327,8 @@ public class Board{
      * Prints the board.
      */
     public void printBoard(){
-        for(int i=0;i<9;i++){
-            for(int j=0;j<9;j++){
+        for(int i=0;i<Config.boardLength;i++){
+            for(int j=0;j<Config.boardHeight;j++){
                 Tile current = board[i][j];
                 switch(current.getTile()){
                     case EMPTY -> System.out.print("EMPTY\t");
@@ -349,9 +351,9 @@ public class Board{
      * @return whether the board is empty or not
      */
     public boolean isBoardEmpty() {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (!(board[i][j].getTile() == TilesEnum.EMPTY || board[i][j].getTile() == TilesEnum.UNUSED))
+        for (Tile[] tiles : board) {
+            for (int j = 0; j < tiles.length; j++) {
+                if (!(tiles[j].getTile() == TilesEnum.EMPTY || tiles[j].getTile() == TilesEnum.UNUSED))
                     return false;
             }
         }

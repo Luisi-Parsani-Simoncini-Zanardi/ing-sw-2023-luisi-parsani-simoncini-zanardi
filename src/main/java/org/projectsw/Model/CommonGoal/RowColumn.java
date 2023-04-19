@@ -1,5 +1,6 @@
 package org.projectsw.Model.CommonGoal;
 
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
@@ -91,8 +92,8 @@ public class RowColumn extends CommonGoalStrategy{
         ArrayList<Integer> tilesCounted = new ArrayList<>();
 
         if(this.rowColumn){
-            for (int i = 5; i > -1; i--) {
-                for (int j = 0; j < 5; j++) {
+            for (int i = Config.shelfHeight-1; i > -1; i--) {
+                for (int j = 0; j < Config.shelfLength; j++) {
                     tiles.add(shelf.getTileShelf(i, j).getTile());
                 }
                 if(this.differentTiles(tiles)!=-1)
@@ -100,8 +101,8 @@ public class RowColumn extends CommonGoalStrategy{
                 tiles.clear();
             }
         }else{
-            for (int i = 0; i < 5; i++) {
-                for (int j = 5; j > -1; j--) {
+            for (int i = 0; i < Config.shelfLength; i++) {
+                for (int j = Config.shelfHeight-1; j > -1; j--) {
                     tiles.add(shelf.getTileShelf(j, i).getTile());
                 }
                 if(this.differentTiles(tiles)!=-1)

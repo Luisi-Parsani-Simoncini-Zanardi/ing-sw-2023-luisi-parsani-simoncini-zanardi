@@ -1,5 +1,6 @@
 package org.projectsw.Model.CommonGoal;
 
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 import java.awt.Point;
@@ -30,8 +31,8 @@ public class Square extends CommonGoalStrategy {
 
         for (TilesEnum tileType : tilesEnums) {
             coordinates.clear();
-            for (int y = 5; y > 0; y--) {
-                for (int x = 0; x < 4; x++) {
+            for (int y = Config.shelfHeight-1; y > 0; y--) {
+                for (int x = 0; x < Config.shelfLength-1; x++) {
                     if (isValidSquare(shelf, tileType, x, y)) {
                         if (coordinates.isEmpty()) {
                             insertCoords(coordinates, x, y);

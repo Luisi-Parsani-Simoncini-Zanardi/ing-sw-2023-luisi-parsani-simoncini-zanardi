@@ -1,5 +1,6 @@
 package org.projectsw.Model.CommonGoal;
 
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
@@ -52,8 +53,8 @@ public class EdgesEightEquals extends CommonGoalStrategy{
         int plants = 0;
         int trophies = 0;
         int games = 0;
-        for(int i=0; i<6; i++)
-            for(int j=0; j<5; j++){
+        for(int i = 0; i< Config.shelfHeight; i++)
+            for(int j=0; j<Config.shelfLength; j++){
                 if(shelf.getTileShelf(i,j).getTile() == TilesEnum.CATS)
                     cats++;
                 if(shelf.getTileShelf(i,j).getTile() == TilesEnum.FRAMES)

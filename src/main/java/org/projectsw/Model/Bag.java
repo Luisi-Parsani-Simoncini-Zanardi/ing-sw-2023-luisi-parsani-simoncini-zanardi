@@ -1,5 +1,7 @@
 package org.projectsw.Model;
 
+import org.projectsw.Config;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -16,12 +18,12 @@ public class Bag implements Cloneable{
     public Bag() {
         tiles = new ArrayList<>();
         for (int i = 0; i < 22; i++) {
-            tiles.add(new Tile(TilesEnum.CATS, i%3));
-            tiles.add(new Tile(TilesEnum.TROPHIES, i%3));
-            tiles.add(new Tile(TilesEnum.BOOKS, i%3));
-            tiles.add(new Tile(TilesEnum.FRAMES, i%3));
-            tiles.add(new Tile(TilesEnum.PLANTS, i%3));
-            tiles.add(new Tile(TilesEnum.GAMES, i%3));
+            tiles.add(new Tile(TilesEnum.CATS, i% Config.numberOfImages));
+            tiles.add(new Tile(TilesEnum.TROPHIES, i%Config.numberOfImages));
+            tiles.add(new Tile(TilesEnum.BOOKS, i%Config.numberOfImages));
+            tiles.add(new Tile(TilesEnum.FRAMES, i%Config.numberOfImages));
+            tiles.add(new Tile(TilesEnum.PLANTS, i%Config.numberOfImages));
+            tiles.add(new Tile(TilesEnum.GAMES, i%Config.numberOfImages));
         }
         Collections.shuffle(tiles);
     }

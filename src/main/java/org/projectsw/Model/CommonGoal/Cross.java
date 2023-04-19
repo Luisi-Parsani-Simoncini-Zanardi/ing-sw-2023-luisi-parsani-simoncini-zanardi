@@ -1,5 +1,6 @@
 package org.projectsw.Model.CommonGoal;
 
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.TilesEnum;
 
@@ -21,8 +22,8 @@ public class Cross extends CommonGoalStrategy{
     @Override
     public boolean check(Shelf shelf) {
         ArrayList<TilesEnum> tile = new ArrayList<>();
-        for(int i=1; i<5; i++){
-            for(int j=1; j<4; j++) {
+        for(int i = 1; i< Config.shelfHeight-1; i++){
+            for(int j=1; j<Config.shelfLength-1; j++) {
                 tile.add(shelf.getTileShelf(i, j).getTile());
                 tile.add(shelf.getTileShelf(i-1, j-1).getTile());
                 tile.add(shelf.getTileShelf(i+1, j+1).getTile());

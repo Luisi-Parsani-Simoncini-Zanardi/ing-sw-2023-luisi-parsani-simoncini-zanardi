@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Config;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
 import java.util.ArrayList;
@@ -16,9 +17,9 @@ public class Shelf {
      * Constructs a new empty shelf with 6 rows and 5 columns.
      */
     public Shelf(){
-        shelf = new Tile[6][5];
-        for(int i=0;i<6;i++){
-            for(int j=0;j<5;j++){
+        shelf = new Tile[Config.shelfHeight][Config.shelfLength];
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
                 shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
             }
         }
@@ -57,7 +58,7 @@ public class Shelf {
      * @return the tile at the coordinates row x column
      */
     public Tile getTileShelf(int row, int column) throws IndexOutOfBoundsException{
-        if( row > 5 || column > 4) throw new IndexOutOfBoundsException();
+        if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException();
         return shelf[row][column];
     }
 
@@ -66,7 +67,7 @@ public class Shelf {
      * @param shelf the shelf where the matrix of tiles is taken from
      */
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
-        if(shelf.length != 6 || shelf[0].length != 5) throw new IllegalArgumentException();
+        if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
     }
 
@@ -88,7 +89,7 @@ public class Shelf {
      * @throws IndexOutOfBoundsException if the row or column is out of bounds
      */
     public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException, IndexOutOfBoundsException {
-        if(row>5 || column > 4) throw new IndexOutOfBoundsException("Out of bounds");
+        if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
         else shelf[row][column] = tile;
@@ -102,10 +103,10 @@ public class Shelf {
      */
     public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension){
         ArrayList<Integer> selectableColumns = new ArrayList<>();
-        for(int i=0;i<5;i++){
-            for(int j=0;j<6;j++){
-                if(!shelf[j][i].getTile().equals(EMPTY) || j == 5){
-                    if(temporaryTilesDimension <= j) selectableColumns.add(i);
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
+                if(!shelf[i][j].getTile().equals(EMPTY) || i == Config.shelfHeight-1){
+                    if(temporaryTilesDimension <= i) selectableColumns.add(i);
                     break;
                 }
             }
@@ -117,8 +118,8 @@ public class Shelf {
      * Prints the shelf.
      */
     public void printShelf(){
-       for(int i=0;i<6;i++){
-           for(int j=0;j<5;j++){
+       for(int i=0;i<Config.shelfHeight;i++){
+           for(int j=0;j<Config.shelfLength;j++){
                Tile current = shelf[i][j];
                switch(current.getTile()){
                    case EMPTY -> System.out.print("EMPTY\t");
