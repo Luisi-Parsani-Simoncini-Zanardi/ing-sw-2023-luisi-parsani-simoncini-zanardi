@@ -22,8 +22,8 @@ public class Cross extends CommonGoalStrategy{
     @Override
     public boolean check(Shelf shelf) {
         ArrayList<TilesEnum> tile = new ArrayList<>();
-        for(int i = 1; i< Config.shelfHeight-1; i++){
-            for(int j=1; j<Config.shelfLength-1; j++) {
+        for(int i = 1; i< Config.shelfLength-1; i++){
+            for(int j=1; j<Config.shelfHeight-1; j++) {
                 tile.add(shelf.getTileShelf(i, j).getTile());
                 tile.add(shelf.getTileShelf(i-1, j-1).getTile());
                 tile.add(shelf.getTileShelf(i+1, j+1).getTile());

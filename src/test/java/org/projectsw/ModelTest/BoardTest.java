@@ -46,7 +46,7 @@ class BoardTest {
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
-        temp = board.getTileFromBoard(new Point(0,4)).getTile();
+        temp = board.getTileFromBoard(new Point(4,0)).getTile();
         assertEquals(TilesEnum.EMPTY, board.getBoard()[4][0].getTile());
         assertEquals(TilesEnum.CATS,temp);
     }
@@ -263,11 +263,11 @@ class BoardTest {
     @Test
     public void isBoardEmptyTest(){
         Board board = new Board(3);
-        assertTrue(board.isBoardEmpty());
+        assertEquals(true, board.isBoardEmpty());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
-        assertFalse(board.isBoardEmpty());
+        assertEquals(false, board.isBoardEmpty());
     }
 
 
