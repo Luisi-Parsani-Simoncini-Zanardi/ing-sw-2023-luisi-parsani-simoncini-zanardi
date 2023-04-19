@@ -1,7 +1,6 @@
 package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
-import org.projectsw.Config;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
 import org.projectsw.Model.Shelf;
@@ -19,10 +18,10 @@ class ShelfTest {
     @Test
     void integrityShelfTest(){
         Shelf shelf = new Shelf();
-        assertEquals(Config.shelfLength,shelf.getShelf().length);
-        assertEquals(Config.shelfHeight,shelf.getShelf()[0].length);
-        for(int i=0; i<Config.shelfLength; i++){
-            for(int j=0; j<Config.shelfHeight; j++){
+        assertEquals(6,shelf.getShelf().length);
+        assertEquals(5,shelf.getShelf()[0].length);
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++){
                 assertEquals(TilesEnum.EMPTY,shelf.getShelf()[i][j].getTile());
             }
         }
@@ -39,8 +38,8 @@ class ShelfTest {
         shelf.insertTiles(tile1,0,0);
         shelf.insertTiles(tile2,4,4);
         Shelf shelfClone = new Shelf(shelf);
-        for(int i=0; i<Config.shelfLength; i++){
-            for(int j=0; j<Config.shelfHeight; j++){
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++){
                 assertEquals(shelf.getShelf()[i][j].getTile(),shelfClone.getShelf()[i][j].getTile());
             }
         }
@@ -57,17 +56,17 @@ class ShelfTest {
         Shelf shelf = new Shelf();
         shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,0);
         shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),4,4);
-        Tile[][] shelfGet = shelf.getShelf();
-        for(int i=0; i<Config.shelfLength; i++){
-            for(int j=0; j<Config.shelfHeight; j++){
-                assertEquals(shelf.getShelf()[i][j],shelfGet[i][j]);
+        Tile[][] shelfGetted = shelf.getShelf();
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++){
+                assertEquals(shelf.getShelf()[i][j],shelfGetted[i][j]);
             }
         }
-        shelfGet[3][3] = new Tile(TilesEnum.GAMES,0);
-        shelf.setShelf(shelfGet);
-        for(int i=0; i<Config.shelfLength; i++){
-            for(int j=0; j<Config.shelfHeight; j++){
-                assertEquals(shelf.getShelf()[i][j],shelfGet[i][j]);
+        shelfGetted[3][3] = new Tile(TilesEnum.GAMES,0);
+        shelf.setShelf(shelfGetted);
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++){
+                assertEquals(shelf.getShelf()[i][j],shelfGetted[i][j]);
             }
         }
     }
@@ -80,7 +79,7 @@ class ShelfTest {
     public void testSetShelfInvalidInput() {
         Shelf shelf = new Shelf();
         //Both rows and columns wrong
-        final Tile[][] invalidShelf0 = new Tile[6][5];
+        final Tile[][] invalidShelf0 = new Tile[5][6];
         assertThrows(IllegalArgumentException.class, () -> shelf.setShelf(invalidShelf0));
 
         //Only columns wrong
@@ -88,7 +87,7 @@ class ShelfTest {
         assertThrows(IllegalArgumentException.class, () -> shelf.setShelf(invalidShelf1));
 
         //Only rows wrong
-        final Tile[][] invalidShelf2 = new Tile[5][7];
+        final Tile[][] invalidShelf2 = new Tile[7][5];
         assertThrows(IllegalArgumentException.class, () -> shelf.setShelf(invalidShelf2));
     }
 
@@ -108,9 +107,9 @@ class ShelfTest {
      * when the row argument is too big.
      */
     @Test
-    void getTileShelfExceptionWhenRowIsTooBig() {
+    void getTileShelfgExceptionWhenRowIsTooBig() {
         Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(0, 6));
+        assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(6, 0));
     }
 
     /**
@@ -118,9 +117,9 @@ class ShelfTest {
      * when the column argument is too big.
      */
     @Test
-    void getTileShelfExceptionWhenColumnIsTooBig() {
+    void getTileShelfgExceptionWhenColumnIsTooBig() {
         Shelf shelf = new Shelf();
-        assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(5, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(0, 5));
     }
 
     /**
@@ -134,8 +133,8 @@ class ShelfTest {
         Tile tile = new Tile(TilesEnum.CATS,0);
         shelf.insertTiles(tile,0,0);
         assertEquals(tile,shelf.getTileShelf(0,0));
-        for(int i=0; i<Config.shelfLength; i++) {
-            for (int j = 0; j < Config.shelfHeight; j++) {
+        for(int i=0; i<6; i++) {
+            for (int j = 0; j < 5; j++) {
                 if (i != 0 || j != 0){
                     assertEquals(TilesEnum.EMPTY,shelf.getShelf()[i][j].getTile());
                 }
@@ -151,7 +150,7 @@ class ShelfTest {
     void insertExceptionWhenRowIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () ->
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,6));
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),6,0));
     }
 
     /**
@@ -162,7 +161,7 @@ class ShelfTest {
     void insertExceptionWhenColumnIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () ->
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0),5,0));
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,5));
     }
     /**
      * Tests if the insertTiles method throws an EmptyTilesException when try to insert empty.
@@ -199,21 +198,21 @@ class ShelfTest {
     @Test
     void getSelectableColumnsTest() throws EmptyTilesException, UnusedTilesException {
         Shelf shelf = new Shelf();
-        shelf.insertTiles(new Tile(GAMES,0),0,5);
-        shelf.insertTiles(new Tile(GAMES,0),1,5);
-        shelf.insertTiles(new Tile(GAMES,0),2,5);
-        shelf.insertTiles(new Tile(GAMES,0),3,5);
-        shelf.insertTiles(new Tile(GAMES,0),4,5);
-        shelf.insertTiles(new Tile(GAMES,0),0,4);
-        shelf.insertTiles(new Tile(GAMES,0),1,4);
-        shelf.insertTiles(new Tile(GAMES,0),2,4);
-        shelf.insertTiles(new Tile(GAMES,0),4,4);
-        shelf.insertTiles(new Tile(GAMES,0),2,3);
-        shelf.insertTiles(new Tile(GAMES,0),4,3);
-        shelf.insertTiles(new Tile(GAMES,0),2,2);
-        shelf.insertTiles(new Tile(GAMES,0),4,2);
+        shelf.insertTiles(new Tile(GAMES,0),5,0);
+        shelf.insertTiles(new Tile(GAMES,0),5,1);
+        shelf.insertTiles(new Tile(GAMES,0),5,2);
+        shelf.insertTiles(new Tile(GAMES,0),5,3);
+        shelf.insertTiles(new Tile(GAMES,0),5,4);
+        shelf.insertTiles(new Tile(GAMES,0),4,0);
         shelf.insertTiles(new Tile(GAMES,0),4,1);
+        shelf.insertTiles(new Tile(GAMES,0),4,2);
+        shelf.insertTiles(new Tile(GAMES,0),4,4);
+        shelf.insertTiles(new Tile(GAMES,0),3,2);
         shelf.insertTiles(new Tile(GAMES,0),3,4);
+        shelf.insertTiles(new Tile(GAMES,0),2,2);
+        shelf.insertTiles(new Tile(GAMES,0),2,4);
+        shelf.insertTiles(new Tile(GAMES,0),1,4);
+        shelf.insertTiles(new Tile(GAMES,0),4,3);
         ArrayList<Integer> selectableColumns = shelf.getSelectableColumns(5);
         System.out.println(selectableColumns.toString());
     }

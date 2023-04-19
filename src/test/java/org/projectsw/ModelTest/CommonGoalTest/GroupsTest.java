@@ -1,7 +1,6 @@
 package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
-import org.projectsw.Config;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Groups;
@@ -24,27 +23,27 @@ class GroupsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,0);
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,1);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),2,1);
 
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,3);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,5);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),3,0);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,0);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,1);
 
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,0);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,1);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),3,1);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),3,2);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),0,4);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),1,4);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),1,3);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),2,3);
 
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),4,3);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),3,4);
             shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),4,4);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),4,5);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),3,5);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),5,3);
 
-            for(int i = 0; i< Config.shelfLength; i++)
-                for(int j=0; j<Config.shelfHeight; j++)
+            for(int i=0; i<6; i++)
+                for(int j=0; j<5; j++)
                     if(shelf.getTileShelf(i,j).getTile()==TilesEnum.EMPTY)
                         shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), i, j);
         }
@@ -64,19 +63,19 @@ class GroupsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,0);
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,1);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),2,1);
 
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,3);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,5);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),3,0);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,0);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,1);
 
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,0);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,1);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),3,1);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),3,2);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),0,4);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),1,4);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),1,3);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),2,3);
         }
         catch(Exception ignore){}
 
@@ -106,15 +105,15 @@ class GroupsTest {
 
         try{
             for(int i=0; i<2; i++)
-                for(int j=0; j<Config.boardHeight-1; j++)
+                for(int j=0; j<5; j++)
                     shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), i,j);
 
             for(int i=2; i<4; i++)
-                for(int j=0; j<Config.boardHeight-1; j++)
+                for(int j=0; j<5; j++)
                     shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), i,j);
 
             for(int i=4; i<6; i++)
-                for(int j=0; j<Config.boardHeight-1; j++)
+                for(int j=0; j<5; j++)
                     shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i,j);
         }
         catch(Exception ignore){}
@@ -147,8 +146,8 @@ class GroupsTest {
             shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),1,3);
             shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),2,3);
 
-            for(int i=0; i<Config.boardLength; i++)
-                for(int j=0; j<Config.boardHeight; j++)
+            for(int i=0; i<6; i++)
+                for(int j=0; j<5; j++)
                     if(shelf.getTileShelf(i,j).getTile()==TilesEnum.EMPTY)
                         shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0), i, j);
         }
@@ -209,16 +208,16 @@ class GroupsTest {
         Shelf shelf = new Shelf();
 
         try{
-            for(int j=0; j<Config.boardHeight-1; j++)
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),0,j);
-            for(int j=0; j<Config.boardHeight-1; j++)
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),1, j);
-            for(int j=0; j<Config.boardHeight-1; j++)
+            for(int j=0; j<5; j++)
+                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),1,j);
+            for(int j=0; j<5; j++)
                 shelf.insertTiles(new Tile(TilesEnum.CATS, 0),2,j);
-            for(int j=0; j<Config.boardHeight-1; j++)
+            for(int j=0; j<5; j++)
                 shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),3,j);
-            for(int j=0; j<Config.boardHeight-1; j++)
+            for(int j=0; j<5; j++)
                 shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),4,j);
+            for(int j=0; j<5; j++)
+                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),5,j);
         }
         catch(Exception ignore){}
 

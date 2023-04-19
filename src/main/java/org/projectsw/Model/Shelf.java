@@ -17,9 +17,9 @@ public class Shelf {
      * Constructs a new empty shelf with 6 rows and 5 columns.
      */
     public Shelf(){
-        shelf = new Tile[Config.shelfLength][Config.shelfHeight];
-        for(int i=0;i<Config.shelfLength;i++){
-            for(int j=0;j<Config.shelfHeight;j++){
+        shelf = new Tile[Config.shelfHeight][Config.shelfLength];
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
                 shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
             }
         }
@@ -53,13 +53,13 @@ public class Shelf {
 
     /**
      * Returns a specific tile of the shelf.
-     * @param i coordinate for the i
-     * @param j coordinate for the j
-     * @return the tile at the coordinates i x j
+     * @param row coordinate for the row
+     * @param column coordinate for the column
+     * @return the tile at the coordinates row x column
      */
-    public Tile getTileShelf(int i, int j) throws IndexOutOfBoundsException{
-        if(i > Config.shelfLength -1 || j > Config.shelfHeight -1) throw new IndexOutOfBoundsException();
-        return shelf[i][j];
+    public Tile getTileShelf(int row, int column) throws IndexOutOfBoundsException{
+        if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException();
+        return shelf[row][column];
     }
 
     /**
@@ -67,7 +67,7 @@ public class Shelf {
      * @param shelf the shelf where the matrix of tiles is taken from
      */
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
-        if(shelf.length != Config.shelfLength || shelf[0].length != Config.shelfHeight) throw new IllegalArgumentException();
+        if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
     }
 
@@ -80,19 +80,19 @@ public class Shelf {
     }
 
     /**
-     * Inserts a tile into the specified i and j of the shelf.
+     * Inserts a tile into the specified row and column of the shelf.
      * @param tile the tile to insert
-     * @param i the i to insert the tile into
-     * @param j the j to insert the tile into
+     * @param row the row to insert the tile into
+     * @param column the column to insert the tile into
      * @throws EmptyTilesException if the tile is empty
      * @throws UnusedTilesException if the tile is unused
-     * @throws IndexOutOfBoundsException if the i or j is out of bounds
+     * @throws IndexOutOfBoundsException if the row or column is out of bounds
      */
-    public void insertTiles(Tile tile, int i, int j) throws EmptyTilesException, UnusedTilesException, IndexOutOfBoundsException {
-        if(i > Config.shelfLength -1 || j > Config.shelfHeight -1) throw new IndexOutOfBoundsException("Out of bounds");
+    public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException, IndexOutOfBoundsException {
+        if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
-        else shelf[i][j] = tile;
+        else shelf[row][column] = tile;
     }
 
     /**
@@ -101,12 +101,12 @@ public class Shelf {
      * @return an ArrayList containing all the indexes of columns that have a number of empty spaces equal or greater
      *         than "temporaryTilesDimension".
      */
-    public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension){
+    public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension) {
         ArrayList<Integer> selectableColumns = new ArrayList<>();
-        for(int i=0;i<Config.shelfLength;i++){
-            for(int j=0;j<Config.shelfHeight;j++){
-                if(!shelf[i][j].getTile().equals(EMPTY) || i == Config.shelfLength-1){
-                    if(temporaryTilesDimension <= i) selectableColumns.add(j);
+        for (int i = 0; i < Config.shelfLength; i++) {
+            for (int j = 0; j < Config.shelfHeight; j++) {
+                if (!shelf[j][i].getTile().equals(EMPTY) || j == Config.shelfHeight - 1) {
+                    if (temporaryTilesDimension <= j) selectableColumns.add(i);
                     break;
                 }
             }
@@ -118,22 +118,22 @@ public class Shelf {
      * Prints the shelf.
      */
     public void printShelf(){
-       for(int i=0;i<Config.shelfLength;i++){
-           for(int j=0;j<Config.shelfHeight;j++){
-               Tile current = shelf[i][j];
-               switch(current.getTile()){
-                   case EMPTY -> System.out.print("EMPTY\t");
-                   case UNUSED -> System.out.print("UNUSED\t");
-                   case CATS -> System.out.print("CATS\t");
-                   case TROPHIES -> System.out.print("TROPHIES\t");
-                   case PLANTS -> System.out.print("PLANTS\t");
-                   case FRAMES -> System.out.print("FRAMES\t");
-                   case GAMES -> System.out.print("GAMES\t");
-                   case BOOKS -> System.out.print("BOOKS\t");
-               }
-           }
-           System.out.print("\n");
-       }
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
+                Tile current = shelf[i][j];
+                switch(current.getTile()){
+                    case EMPTY -> System.out.print("EMPTY\t");
+                    case UNUSED -> System.out.print("UNUSED\t");
+                    case CATS -> System.out.print("CATS\t");
+                    case TROPHIES -> System.out.print("TROPHIES\t");
+                    case PLANTS -> System.out.print("PLANTS\t");
+                    case FRAMES -> System.out.print("FRAMES\t");
+                    case GAMES -> System.out.print("GAMES\t");
+                    case BOOKS -> System.out.print("BOOKS\t");
+                }
+            }
+            System.out.print("\n");
+        }
         System.out.print("\n");
     }
 }

@@ -38,11 +38,11 @@ class SaveGameStatusTest extends TestUtils {
         return game;
     }
 
-     /** Checks if the gameToJson function correctly serialize and deserialize the Game class.
-      * @throws NoSuchMethodException when there's no method defined as such
-      * @throws InvocationTargetException when a called method generates an exception
-      * @throws InstantiationException when the class cannot be instantiated
-      * @throws IllegalAccessException when the caller cannot access the method or parameter
+    /** Checks if the gameToJson function correctly serialize and deserialize the Game class.
+     * @throws NoSuchMethodException when there's no method defined as such
+     * @throws InvocationTargetException when a called method generates an exception
+     * @throws InstantiationException when the class cannot be instantiated
+     * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
     @Test
     public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException{

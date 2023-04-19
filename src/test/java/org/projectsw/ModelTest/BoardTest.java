@@ -46,7 +46,7 @@ class BoardTest {
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
-        temp = board.getTileFromBoard(new Point(4,0)).getTile();
+        temp = board.getTileFromBoard(new Point(0,4)).getTile();
         assertEquals(TilesEnum.EMPTY, board.getBoard()[4][0].getTile());
         assertEquals(TilesEnum.CATS,temp);
     }
@@ -62,7 +62,7 @@ class BoardTest {
         board.setEndGame(true);
         assertTrue(board.isEndGame());
     }
-    
+
     /**
      * Tests if the Board constructor returns a correctly initialized matrix of tiles with all tiles set to UNUSED.
      */
@@ -230,7 +230,7 @@ class BoardTest {
     @Test
     public void testUpdateBoardInvalidRow() {
         Board board = new Board();
-       assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 9, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 9, 0));
     }
 
     /**
@@ -263,11 +263,11 @@ class BoardTest {
     @Test
     public void isBoardEmptyTest(){
         Board board = new Board(3);
-        assertEquals(true, board.isBoardEmpty());
+        assertTrue(board.isBoardEmpty());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
-        assertEquals(false, board.isBoardEmpty());
+        assertFalse(board.isBoardEmpty());
     }
 
 

@@ -21,27 +21,27 @@ public class Diagonal extends CommonGoalStrategy {
     @Override
     public boolean check(Shelf shelf) {
         if(shelf.getTileShelf(0,0).getTile() != TilesEnum.EMPTY &&
-            shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(1,1).getTile())&&
-            shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(2,2).getTile())&&
-            shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(3,3).getTile())&&
-            shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(4,4).getTile()))
+                shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(1,1).getTile())&&
+                shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(2,2).getTile())&&
+                shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(3,3).getTile())&&
+                shelf.getTileShelf(0,0).getTile().equals(shelf.getTileShelf(4,4).getTile()))
             return true;
-        else if(shelf.getTileShelf(0,1).getTile() != TilesEnum.EMPTY &&
-                shelf.getTileShelf(0,1).getTile().equals(shelf.getTileShelf(1,2).getTile())&&
-                shelf.getTileShelf(0,1).getTile().equals(shelf.getTileShelf(2,3).getTile())&&
-                shelf.getTileShelf(0,1).getTile().equals(shelf.getTileShelf(3,4).getTile())&&
-                shelf.getTileShelf(0,1).getTile().equals(shelf.getTileShelf(4,5).getTile()))
+        else if(shelf.getTileShelf(1,0).getTile() != TilesEnum.EMPTY &&
+                shelf.getTileShelf(1,0).getTile().equals(shelf.getTileShelf(2,1).getTile())&&
+                shelf.getTileShelf(1,0).getTile().equals(shelf.getTileShelf(3,2).getTile())&&
+                shelf.getTileShelf(1,0).getTile().equals(shelf.getTileShelf(4,3).getTile())&&
+                shelf.getTileShelf(1,0).getTile().equals(shelf.getTileShelf(5,4).getTile()))
             return true;
-        else if(shelf.getTileShelf(4,0).getTile() != TilesEnum.EMPTY &&
-                shelf.getTileShelf(4,0).getTile().equals(shelf.getTileShelf(3,1).getTile())&&
-                shelf.getTileShelf(4,0).getTile().equals(shelf.getTileShelf(2,2).getTile())&&
-                shelf.getTileShelf(4,0).getTile().equals(shelf.getTileShelf(1,3).getTile())&&
-                shelf.getTileShelf(4,0).getTile().equals(shelf.getTileShelf(0,4).getTile()))
+        else if(shelf.getTileShelf(0,4).getTile() != TilesEnum.EMPTY &&
+                shelf.getTileShelf(0,4).getTile().equals(shelf.getTileShelf(1,3).getTile())&&
+                shelf.getTileShelf(0,4).getTile().equals(shelf.getTileShelf(2,2).getTile())&&
+                shelf.getTileShelf(0,4).getTile().equals(shelf.getTileShelf(3,1).getTile())&&
+                shelf.getTileShelf(0,4).getTile().equals(shelf.getTileShelf(4,0).getTile()))
             return true;
-        else return shelf.getTileShelf(4,1).getTile() != TilesEnum.EMPTY &&
-                    shelf.getTileShelf(4,1).getTile().equals(shelf.getTileShelf(3,2).getTile()) &&
-                    shelf.getTileShelf(4,1).getTile().equals(shelf.getTileShelf(2,3).getTile()) &&
-                    shelf.getTileShelf(4,1).getTile().equals(shelf.getTileShelf(1,4).getTile()) &&
-                    shelf.getTileShelf(4,1).getTile().equals(shelf.getTileShelf(0,5).getTile());
+        else return shelf.getTileShelf(1, 4).getTile() != TilesEnum.EMPTY &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(2, 3).getTile()) &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(3, 2).getTile()) &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(4, 1).getTile()) &&
+                    shelf.getTileShelf(1, 4).getTile().equals(shelf.getTileShelf(5, 0).getTile());
     }
 }

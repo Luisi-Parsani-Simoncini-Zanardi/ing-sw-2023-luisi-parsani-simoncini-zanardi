@@ -32,9 +32,9 @@ public class EdgesEightEquals extends CommonGoalStrategy{
         ArrayList<TilesEnum> tiles = new ArrayList<>();
         if(this.edge){
             tiles.add(shelf.getTileShelf(0,0).getTile());
-            tiles.add(shelf.getTileShelf(4,0).getTile());
-            tiles.add(shelf.getTileShelf(0,5).getTile());
-            tiles.add(shelf.getTileShelf(4,5).getTile());
+            tiles.add(shelf.getTileShelf(0,4).getTile());
+            tiles.add(shelf.getTileShelf(5,0).getTile());
+            tiles.add(shelf.getTileShelf(5,4).getTile());
             return this.differentTiles(tiles) == 1;
         }else{
             return this.equalsCounter(shelf);
@@ -53,8 +53,8 @@ public class EdgesEightEquals extends CommonGoalStrategy{
         int plants = 0;
         int trophies = 0;
         int games = 0;
-        for(int i = 0; i< Config.shelfLength; i++)
-            for(int j=0; j<Config.shelfHeight; j++){
+        for(int i = 0; i< Config.shelfHeight; i++)
+            for(int j=0; j<Config.shelfLength; j++){
                 if(shelf.getTileShelf(i,j).getTile() == TilesEnum.CATS)
                     cats++;
                 if(shelf.getTileShelf(i,j).getTile() == TilesEnum.FRAMES)

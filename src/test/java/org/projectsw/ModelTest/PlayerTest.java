@@ -2,7 +2,6 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Config;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.MaximumTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
@@ -31,8 +30,8 @@ class PlayerTest {
         assertEquals(0,player.getPosition());
         assertEquals(0,player.getPoints());
         Shelf shelf = new Shelf();
-        for(int i = 0; i< Config.shelfLength; i++){
-            for(int j=0; j<Config.shelfHeight; j++){
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++){
                 assertEquals(shelf.getTileShelf(i,j).getTile(),player.getShelf().getTileShelf(i,j).getTile());
             }
         }
@@ -42,8 +41,8 @@ class PlayerTest {
         for(int p=0;p<12;p++){
             boolean different = false;
             PersonalGoal personalGoal = new PersonalGoal(p);
-            for(int i = 0; i< Config.shelfLength; i++){
-                for(int j=0; j<Config.shelfHeight; j++){
+            for(int i=0; i<6; i++){
+                for(int j=0; j<5; j++){
                     if(!personalGoal.getPersonalGoal()[i][j].equals(player.getPersonalGoal().getPersonalGoal()[i][j])){
                         different = true;
                     }

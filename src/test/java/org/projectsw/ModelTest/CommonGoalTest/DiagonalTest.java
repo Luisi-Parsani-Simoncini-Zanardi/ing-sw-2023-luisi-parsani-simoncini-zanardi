@@ -1,7 +1,6 @@
 package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
-import org.projectsw.Config;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Diagonal;
@@ -21,10 +20,10 @@ class DiagonalTest {
         CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        for(int i = 0; i< Config.shelfLength; i++)
-                try {
-                    shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i);
-                }catch(Exception ignored){}
+        for(int i=0; i<5; i++)
+            try {
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i);
+            }catch(Exception ignored){}
         assertTrue(diagonal.checkRequirements(shelf));
     }
 
@@ -36,9 +35,9 @@ class DiagonalTest {
         CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        for(int i=0; i<Config.shelfLength; i++)
+        for(int i=0; i<5; i++)
             try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i+1);
+                shelf.insertTiles(new Tile(TilesEnum.CATS,0), i+1, i);
             }catch(Exception ignored){}
         assertTrue(diagonal.checkRequirements(shelf));
     }
@@ -52,7 +51,7 @@ class DiagonalTest {
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
         int k = 0;
-        for(int i=Config.shelfLength-1; i>-1; i--) {
+        for(int i=4; i>-1; i--) {
             try {
                 shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, k);
             } catch (Exception ignored) {
@@ -70,8 +69,8 @@ class DiagonalTest {
         CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        int k = 1;
-        for(int i=Config.shelfLength-1; i>-1; i--) {
+        int k = 0;
+        for(int i=5; i>-1; i--) {
             try {
                 shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, k);
             } catch (Exception ignored) {
@@ -91,7 +90,7 @@ class DiagonalTest {
         CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        for(int i=0; i<Config.shelfLength-1; i++)
+        for(int i=0; i<4; i++)
             try {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i);
             }catch(Exception ignored){}
@@ -121,7 +120,7 @@ class DiagonalTest {
         CommonGoalStrategy strategy = new Diagonal(11);
         CommonGoal diagonal = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-        for(int i=0; i<Config.shelfLength-1; i++)
+        for(int i=0; i<4; i++)
             try {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0), i, i);
             }catch(Exception ignored){}

@@ -21,13 +21,13 @@ class CrossTest {
         CommonGoalStrategy strategy = new Cross(10);
         CommonGoal cross = new CommonGoal(strategy);
         Shelf shelf = new Shelf();
-            try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 3);
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 2);
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 1);
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
-            }catch(Exception ignored){}
+        try {
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 2, 3);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 3, 2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 1);
+            shelf.insertTiles(new Tile(TilesEnum.CATS,0), 4, 3);
+        }catch(Exception ignored){}
         assertTrue(cross.checkRequirements(shelf));
     }
 

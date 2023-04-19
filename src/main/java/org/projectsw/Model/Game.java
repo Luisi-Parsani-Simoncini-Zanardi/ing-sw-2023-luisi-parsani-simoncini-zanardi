@@ -225,7 +225,7 @@ public class Game{
 
         return randomGoalsClasses;
     }
-    
+
     /**
      * Returns the ArrayList of commonGoals containing two random commonGoals chosen from the children of CommonGoal.
      * @return the ArrayList of commonGoals containing two random commonGoals chosen from the children of CommonGoal
@@ -289,4 +289,4 @@ public class Game{
     }
 
 
-    }
+}

@@ -5,6 +5,9 @@ import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 
 import java.awt.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,8 +40,8 @@ public class TestUtils {
      * @param shelfAssert another test Shelf object
      */
     public void assertEqualsShelf (Shelf shelfTest, Shelf shelfAssert) {
-        for(int i=0; i<Config.shelfLength; i++) {
-            for(int j=0; j<Config.shelfHeight; j++){
+        for(int i=0; i<shelfTest.getShelf().length; i++) {
+            for(int j=0; j<shelfTest.getShelf()[i].length; j++){
                 assertEqualsTile(shelfTest.getShelf()[i][j], shelfAssert.getShelf()[i][j]);
             }
         }
@@ -50,8 +53,8 @@ public class TestUtils {
      * @param personalGoalAssert another test PersonalGoal object
      */
     public void assertEqualsPersonalGoal (PersonalGoal personalGoalTest, PersonalGoal personalGoalAssert) {
-        for(int i=0; i<Config.shelfLength; i++){
-            for(int j=0; j<Config.shelfHeight; j++) {
+        for(int i=0; i<personalGoalTest.getPersonalGoal().length-1; i++){
+            for(int j=0; j<personalGoalTest.getPersonalGoal()[i].length-1; j++) {
                 assertEquals(personalGoalTest.getPersonalGoal()[i][j], personalGoalAssert.getPersonalGoal()[i][j]);
             }
         }
@@ -81,13 +84,17 @@ public class TestUtils {
      * @param boardAssert another test Board object
      */
     public void assertEqualsBoard (Board boardTest, Board boardAssert) {
-        for(int i=0; i<Config.boardLength; i++) {
-            for(int j=0; j<Config.boardHeight; j++){
+        for(int i=0; i<boardTest.getBoard().length; i++) {
+            for(int j=0; j<boardTest.getBoard()[i].length; j++){
                 assertEqualsTile(boardTest.getBoard()[i][j], boardAssert.getBoard()[i][j]);
             }
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
-
+        /* assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
+        for(int i=0; i<boardTest.getSelectablePoints().size(); i++)
+            assertEqualsPoint(boardTest.getSelectablePoints().get(i), boardAssert.getSelectablePoints().get(i));
+        for(int i=0; i<boardTest.getTemporaryPoints().size(); i++)
+            assertEqualsPoint(boardTest.getTemporaryPoints().get(i), boardAssert.getTemporaryPoints().get(i)); */
     }
 
     /**
@@ -120,7 +127,7 @@ public class TestUtils {
      * @param strategyTest a test strategy object
      * @param strategyAssert another test strategy object
      */
-    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) {
+    public void assertEqualsStrategy (CommonGoalStrategy strategyTest, CommonGoalStrategy strategyAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         assertEquals(strategyTest.getNumObjects(), strategyAssert.getNumObjects());
         assertEquals(strategyTest.getStrategyCode(), strategyAssert.getStrategyCode());
     }
@@ -130,7 +137,7 @@ public class TestUtils {
      * @param commonGoalTest a test commonGoal object
      * @param commonGoalAssert another test commonGoal object
      */
-    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) {
+    public void assertEqualsCommonGoal (CommonGoal commonGoalTest, CommonGoal commonGoalAssert) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         assertEquals(commonGoalTest.getRedeemedNumber(), commonGoalAssert.getRedeemedNumber());
         assertEqualsStrategy(commonGoalTest.getStrategy(), commonGoalAssert.getStrategy());
     }

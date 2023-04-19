@@ -87,11 +87,11 @@ class BagTest {
         for(int i=0; i < 132; i++){
             tile = bag.pop();
             assertTrue(tile.getTile().equals(TilesEnum.CATS)||
-                        tile.getTile().equals(TilesEnum.FRAMES)||
-                        tile.getTile().equals(TilesEnum.BOOKS)||
-                        tile.getTile().equals(TilesEnum.GAMES)||
-                        tile.getTile().equals(TilesEnum.TROPHIES)||
-                        tile.getTile().equals(TilesEnum.PLANTS));
+                    tile.getTile().equals(TilesEnum.FRAMES)||
+                    tile.getTile().equals(TilesEnum.BOOKS)||
+                    tile.getTile().equals(TilesEnum.GAMES)||
+                    tile.getTile().equals(TilesEnum.TROPHIES)||
+                    tile.getTile().equals(TilesEnum.PLANTS));
         }
         tile = bag.pop();
         assertEquals(TilesEnum.EMPTY,tile.getTile());
