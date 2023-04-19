@@ -24,9 +24,9 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),4,5);
         }catch(Exception ignore){}
         assertTrue(common.checkRequirements(shelf));
     }
@@ -42,9 +42,9 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),4,5);
         }catch(Exception ignore){}
         assertFalse(common.checkRequirements(shelf));
     }
@@ -60,9 +60,9 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.EMPTY, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),4,5);
         }catch(Exception ignore){}
         assertFalse(common.checkRequirements(shelf));
     }
@@ -90,13 +90,13 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),4,5);
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),2,2);
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),3,3);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,1);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),4,2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),2,4);
         }catch(Exception ignore){}
         assertTrue(common.checkRequirements(shelf));
     }
@@ -112,13 +112,13 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),4,5);
             shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),2,2);
             shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),3,3);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,1);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),4,2);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),2,4);
         }catch(Exception ignore){}
         assertTrue(common.checkRequirements(shelf));
     }
@@ -134,13 +134,13 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,5);
             shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),2,2);
             shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),3,3);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),5,1);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,2);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),2,4);
         }catch(Exception ignore){}
         assertTrue(common.checkRequirements(shelf));
     }
@@ -155,13 +155,13 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),4,5);
             shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),2,2);
             shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),3,3);
-            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),5,1);
-            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),4,2);
+            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),2,4);
         }catch(Exception ignore){}
         assertTrue(common.checkRequirements(shelf));
     }
@@ -177,13 +177,13 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),4,5);
             shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),2,2);
             shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),3,3);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),5,1);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),4,2);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),2,4);
         }catch(Exception ignore){}
         assertTrue(common.checkRequirements(shelf));
     }
@@ -199,13 +199,13 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),4,5);
             shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),2,2);
             shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),3,3);
-            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),5,1);
-            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),4,2);
+            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),2,4);
         }catch(Exception ignore){}
         assertTrue(common.checkRequirements(shelf));
     }
@@ -222,13 +222,13 @@ class EdgesEightEqualsTest {
 
         try{
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),0,0);
-            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),0,4);
-            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),5,0);
-            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),5,4);
+            shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0),4,0);
+            shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),0,5);
+            shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0),4,5);
             shelf.insertTiles(new Tile(TilesEnum.CATS, 0),2,2);
             shelf.insertTiles(new Tile(TilesEnum.PLANTS, 0),3,3);
-            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),5,1);
-            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),4,2);
+            shelf.insertTiles(new Tile(TilesEnum.CATS, 0),1,5);
+            shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0),2,4);
         }catch(Exception ignore){}
         assertFalse(common.checkRequirements(shelf));
     }

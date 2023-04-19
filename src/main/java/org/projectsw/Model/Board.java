@@ -163,8 +163,8 @@ public class Board{
     /**
      * Updates the board by placing the given Tile at the specified position.
      * @param tile the Tile to place on the board
-     * @param row the row index of the position to place the Tile at
-     * @param column the column index of the position to place the Tile at
+     * @param i the i index of the position to place the Tile at
+     * @param j the j index of the position to place the Tile at
      * @throws IndexOutOfBoundsException if the given row or column's index is out of bounds
      */
     public void updateBoard(Tile tile, int row, int column) throws IndexOutOfBoundsException{

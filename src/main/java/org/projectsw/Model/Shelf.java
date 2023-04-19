@@ -53,9 +53,9 @@ public class Shelf {
 
     /**
      * Returns a specific tile of the shelf.
-     * @param row coordinate for the row
-     * @param column coordinate for the column
-     * @return the tile at the coordinates row x column
+     * @param i coordinate for the i
+     * @param j coordinate for the j
+     * @return the tile at the coordinates i x j
      */
     public Tile getTileShelf(int row, int column) throws IndexOutOfBoundsException{
         if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException();
@@ -67,7 +67,7 @@ public class Shelf {
      * @param shelf the shelf where the matrix of tiles is taken from
      */
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
-        if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
+    if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
     }
 
@@ -80,19 +80,19 @@ public class Shelf {
     }
 
     /**
-     * Inserts a tile into the specified row and column of the shelf.
+     * Inserts a tile into the specified i and j of the shelf.
      * @param tile the tile to insert
-     * @param row the row to insert the tile into
-     * @param column the column to insert the tile into
+     * @param i the i to insert the tile into
+     * @param j the j to insert the tile into
      * @throws EmptyTilesException if the tile is empty
      * @throws UnusedTilesException if the tile is unused
-     * @throws IndexOutOfBoundsException if the row or column is out of bounds
+     * @throws IndexOutOfBoundsException if the i or j is out of bounds
      */
     public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException, IndexOutOfBoundsException {
         if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
-        else shelf[row][column] = tile;
+        else shelf[i][j] = tile;
     }
 
     /**

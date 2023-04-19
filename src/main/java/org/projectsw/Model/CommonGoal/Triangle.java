@@ -24,7 +24,7 @@ public class Triangle extends CommonGoalStrategy{
     @Override
     public boolean check(Shelf shelf){
 
-        int [] height = this.columnsHeight(shelf);
+        int [] height = this.columnHeight(shelf);
         return this.ascending(height) || this.descending(height);
     }
 

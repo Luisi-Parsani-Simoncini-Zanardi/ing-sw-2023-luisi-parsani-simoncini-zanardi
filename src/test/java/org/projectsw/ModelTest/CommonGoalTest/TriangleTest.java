@@ -1,6 +1,7 @@
 package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
+import org.projectsw.Config;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Triangle;
@@ -21,30 +22,30 @@ class TriangleTest {
         CommonGoalStrategy strategy = new Triangle(12);
         CommonGoal triangle = new CommonGoal(strategy);
         Shelf shelf1 = new Shelf();
-        for(int i=0; i<5; i++) {
-            for (int j=5; i < j ; j--){
+        for(int i = 0; i< Config.shelfLength; i++) {
+            for (int j=Config.shelfHeight-1; i < j ; j--){
                 try {
-                    shelf1.insertTiles(new Tile(TilesEnum.CATS,0), j, i);
+                    shelf1.insertTiles(new Tile(TilesEnum.CATS,0), i,j);
                 } catch (Exception ignored) {}
             }
         }
         assertTrue(triangle.checkRequirements(shelf1));
 
         Shelf shelf2 = new Shelf();
-        for(int i=0; i<5; i++) {
-            for (int j=5; i-1 < j ; j--){
+        for(int i=0; i<Config.shelfLength; i++) {
+            for (int j=Config.shelfHeight-1; i-1 < j ; j--){
                 try {
-                    shelf2.insertTiles(new Tile(TilesEnum.CATS,0), j, i);
+                    shelf2.insertTiles(new Tile(TilesEnum.CATS,0), i,j);
                 } catch (Exception ignored) {}
             }
         }
         assertTrue(triangle.checkRequirements(shelf2));
 
         Shelf shelf3 = new Shelf();
-        for(int i=0; i<5; i++) {
-            for (int j=5; j > 4-i ; j--){
+        for(int i=0; i<Config.shelfLength; i++) {
+            for (int j=Config.shelfHeight-1; j > Config.shelfHeight-2-i ; j--){
                 try {
-                    shelf3.insertTiles(new Tile(TilesEnum.CATS,0), j, i);
+                    shelf3.insertTiles(new Tile(TilesEnum.CATS,0), i,j);
                 } catch (Exception ignored) {}
             }
         }
@@ -52,9 +53,9 @@ class TriangleTest {
 
         Shelf shelf4 = new Shelf();
         for(int i=0; i<5; i++) {
-            for (int j=5; j > 3-i ; j--){
+            for (int j=5; j > Config.shelfHeight-3-i ; j--){
                 try {
-                    shelf4.insertTiles(new Tile(TilesEnum.CATS,0), j, i);
+                    shelf4.insertTiles(new Tile(TilesEnum.CATS,0), i,j);
                 } catch (Exception ignored) {}
             }
         }

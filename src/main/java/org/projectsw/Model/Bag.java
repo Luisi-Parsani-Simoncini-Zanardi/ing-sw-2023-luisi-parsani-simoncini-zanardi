@@ -18,7 +18,7 @@ public class Bag implements Cloneable{
     public Bag() {
         tiles = new ArrayList<>();
         for (int i = 0; i < 22; i++) {
-            tiles.add(new Tile(TilesEnum.CATS, i% Config.numberOfImages));
+            tiles.add(new Tile(TilesEnum.CATS, i%Config.numberOfImages));
             tiles.add(new Tile(TilesEnum.TROPHIES, i%Config.numberOfImages));
             tiles.add(new Tile(TilesEnum.BOOKS, i%Config.numberOfImages));
             tiles.add(new Tile(TilesEnum.FRAMES, i%Config.numberOfImages));

@@ -45,7 +45,7 @@ public class Engine {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
             game = new Game(firstPlayer,numberOfPlayers);
         } catch (IllegalArgumentException e) {
-            if (numberOfPlayers< Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new FirstJoinFailedException("Invalid number of players");
+            if (numberOfPlayers<Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new FirstJoinFailedException("Invalid number of players");
             else throw new FirstJoinFailedException("Invalid Position");
         }
     }
@@ -279,11 +279,11 @@ public class Engine {
      * @param shelf is the player's shelf
      * @param matrix is an array of booleans to keep track of the shelf boxes that have already been navigated
      * @param type is the Tile type of the group
-     * @param row is the current row in the shelf
-     * @param column is the current column in the shelf
+     * @param i is the current i in the shelf
+     * @param j is the current j in the shelf
      * @return returns the size of the found group
      */
-    private int customShelfIterator(ArrayList<Point> coordinates, Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
+    private int customShelfIterator(ArrayList<Point> coordinates, Shelf shelf, boolean [][]matrix, TilesEnum type, int i , int j){
         Point nextPoint;
 
         if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type && !coordinates.contains(new Point(row-1,column)))
@@ -295,7 +295,7 @@ public class Engine {
         if(column+1 < Config.shelfLength && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !coordinates.contains(new Point(row,column+1)))
             coordinates.add(new Point(row,column+1));
 
-        matrix[row][column]=true;
+        matrix[i][j]=true;
         if(coordinates.size()!=0) {
             nextPoint = coordinates.get(0);
             coordinates.remove(0);
@@ -352,7 +352,7 @@ public class Engine {
      * @return winner of the game
      */
     public Player getWinner() {
-        return Collections.max(getGame().getPlayers(), Comparator.comparing(s -> s.getPoints()));
+        return Collections.max(getGame().getPlayers(), Comparator.comparing(Player::getPoints));
     }
 
     /**

@@ -32,9 +32,9 @@ public class EdgesEightEquals extends CommonGoalStrategy{
         ArrayList<TilesEnum> tiles = new ArrayList<>();
         if(this.edge){
             tiles.add(shelf.getTileShelf(0,0).getTile());
-            tiles.add(shelf.getTileShelf(0,4).getTile());
-            tiles.add(shelf.getTileShelf(5,0).getTile());
-            tiles.add(shelf.getTileShelf(5,4).getTile());
+            tiles.add(shelf.getTileShelf(4,0).getTile());
+            tiles.add(shelf.getTileShelf(0,5).getTile());
+            tiles.add(shelf.getTileShelf(4,5).getTile());
             return this.differentTiles(tiles) == 1;
         }else{
             return this.equalsCounter(shelf);
