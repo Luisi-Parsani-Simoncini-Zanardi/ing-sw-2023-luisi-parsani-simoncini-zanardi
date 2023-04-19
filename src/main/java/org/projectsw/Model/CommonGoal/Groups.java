@@ -45,8 +45,8 @@ public class Groups extends CommonGoalStrategy{
         int rightGroup=0;
         int dim;
 
-        for(int i=Config.shelfLength-1; i>-1; i--){
-            for (int j = 0; j < Config.shelfHeight-1; j++) {
+        for(int i = Config.shelfHeight-1; i>-1; i--){
+            for (int j = 0; j < Config.shelfLength; j++) {
                 if(shelf.getTileShelf(i,j).getTile() != TilesEnum.EMPTY){
                     dim = 0;
                     if (!matrix[i][j])
@@ -73,14 +73,14 @@ public class Groups extends CommonGoalStrategy{
     private int customShelfIterator(Shelf shelf, boolean [][]matrix, TilesEnum type, int i , int j){
         Point nextPoint;
 
-        if(i-1 > -1 && !matrix[i-1][j] && shelf.getTileShelf(i-1,j).getTile()==type && !this.coordinates.contains(new Point(i-1,j)))
-            this.coordinates.add(new Point(i-1,j));
-        if(i+1 < Config.shelfLength && !matrix[i+1][j] && shelf.getTileShelf(i+1,j).getTile()==type && !this.coordinates.contains(new Point(i+1,j)))
-            this.coordinates.add(new Point(i+1,j));
-        if(j-1 > -1 && !matrix[i][j-1] && shelf.getTileShelf(i,j-1).getTile()==type && !this.coordinates.contains(new Point(i,j-1)))
-            this.coordinates.add(new Point(i,j-1));
-        if(j+1 < Config.shelfHeight && !matrix[i][j+1] && shelf.getTileShelf(i,j + 1).getTile()==type && !this.coordinates.contains(new Point(i,j+1)))
-            this.coordinates.add(new Point(i,j+1));
+        if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type && !this.coordinates.contains(new Point(row-1,column)))
+            this.coordinates.add(new Point(row-1,column));
+        if(row+1 < Config.shelfHeight && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type && !this.coordinates.contains(new Point(row+1,column)))
+            this.coordinates.add(new Point(row+1,column));
+        if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type && !this.coordinates.contains(new Point(row,column-1)))
+            this.coordinates.add(new Point(row,column-1));
+        if(column+1 < Config.shelfLength && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !this.coordinates.contains(new Point(row,column+1)))
+            this.coordinates.add(new Point(row,column+1));
 
         matrix[i][j]=true;
         if(this.coordinates.size()!=0) {

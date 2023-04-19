@@ -35,11 +35,11 @@ public class Triangle extends CommonGoalStrategy{
      * @return a vector with the heights of the columns from left to right.
      * If the height of a column is 0 it returns -1 in columnHeight[0] to interrupt the algorithm
      */
-    private int[] columnHeight(Shelf shelf){
+    private int[] columnsHeight(Shelf shelf){
         int [] columnHeight = new int[Config.shelfLength];
         for(int i=0;i<Config.shelfLength;i++) {
             for (int j = 0; j < Config.shelfHeight; j++) {
-                if (shelf.getTileShelf(i,j).getTile() != TilesEnum.EMPTY)
+                if (shelf.getTileShelf(j, i).getTile() != TilesEnum.EMPTY)
                     columnHeight[i]++;
             }
             if(columnHeight[i] == 0) {
