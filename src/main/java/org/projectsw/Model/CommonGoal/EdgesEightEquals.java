@@ -53,8 +53,8 @@ public class EdgesEightEquals extends CommonGoalStrategy{
         int plants = 0;
         int trophies = 0;
         int games = 0;
-        for(int i = 0; i< Config.shelfHeight; i++)
-            for(int j=0; j<Config.shelfLength; j++){
+        for(int i = 0; i< Config.shelfLength; i++)
+            for(int j=0; j<Config.shelfHeight; j++){
                 if(shelf.getTileShelf(i,j).getTile() == TilesEnum.CATS)
                     cats++;
                 if(shelf.getTileShelf(i,j).getTile() == TilesEnum.FRAMES)

@@ -21,9 +21,9 @@ public class PersonalGoal {
      * Constructs a new EMPTY PersonalGoal
      */
     public PersonalGoal(){
-        personalGoal = new TilesEnum[Config.shelfHeight][Config.shelfLength];
-        for (int i = 0; i < Config.shelfHeight; i++) {
-            for (int j = 0; j < Config.shelfLength; j++) {
+        personalGoal = new TilesEnum[Config.shelfLength][Config.shelfHeight];
+        for (int i = 0; i < Config.shelfLength; i++) {
+            for (int j = 0; j < Config.shelfHeight; j++) {
                 personalGoal[i][j] = TilesEnum.EMPTY;
             }
         }
@@ -38,17 +38,17 @@ public class PersonalGoal {
         try {
             if (usedCodes.contains(goalCode))
                 throw new IllegalArgumentException("Goal code already used.");
-            else if (goalCode < 0 || goalCode > Config.numberOfPersonalGoals-1)
+            else if (goalCode < 0 || goalCode > Config.numberOfPotentialPersonalGoals -1)
                 throw new IllegalArgumentException("Invalid goal code");
             else usedCodes.add(goalCode);
 
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
 
-            personalGoal = new TilesEnum[Config.shelfHeight][Config.shelfLength];
-            for (int i = 0; i < Config.shelfHeight; i++) {
-                for (int j = 0; j < Config.shelfLength; j++) {
-                    String str = tmpMatrix[goalCode][i][j];
+            personalGoal = new TilesEnum[Config.shelfLength][Config.shelfHeight];
+            for (int i = 0; i < Config.shelfLength; i++) {
+                for (int j = 0; j < Config.shelfHeight; j++) {
+                    String str = tmpMatrix[goalCode][j][i];
                     switch (str) {
                         case "EMPTY" -> personalGoal[i][j] = TilesEnum.EMPTY;
                         case "PLANTS" -> personalGoal[i][j] = TilesEnum.PLANTS;
