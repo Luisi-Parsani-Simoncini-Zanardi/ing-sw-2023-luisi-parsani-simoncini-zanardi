@@ -101,12 +101,12 @@ public class Shelf {
      * @return an ArrayList containing all the indexes of columns that have a number of empty spaces equal or greater
      *         than "temporaryTilesDimension".
      */
-    public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension){
+    public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension) {
         ArrayList<Integer> selectableColumns = new ArrayList<>();
-        for(int i=0;i<Config.shelfHeight;i++){
-            for(int j=0;j<Config.shelfLength;j++){
-                if(!shelf[i][j].getTile().equals(EMPTY) || i == Config.shelfHeight-1){
-                    if(temporaryTilesDimension <= i) selectableColumns.add(i);
+        for (int i = 0; i < Config.shelfLength; i++) {
+            for (int j = 0; j < Config.shelfHeight; j++) {
+                if (!shelf[j][i].getTile().equals(EMPTY) || j == Config.shelfHeight - 1) {
+                    if (temporaryTilesDimension <= j) selectableColumns.add(i);
                     break;
                 }
             }

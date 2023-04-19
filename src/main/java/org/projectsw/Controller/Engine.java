@@ -1,5 +1,6 @@
 package org.projectsw.Controller;
 
+import org.projectsw.Config;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import java.awt.*;
@@ -44,7 +45,7 @@ public class Engine {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
             game = new Game(firstPlayer,numberOfPlayers);
         } catch (IllegalArgumentException e) {
-            if (numberOfPlayers<2 || numberOfPlayers>4) throw new FirstJoinFailedException("Invalid number of players");
+            if (numberOfPlayers< Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new FirstJoinFailedException("Invalid number of players");
             else throw new FirstJoinFailedException("Invalid Position");
         }
     }
@@ -126,9 +127,9 @@ public class Engine {
     public int checkRemainingColumnSpace() {
         Tile[][] shelf = game.getCurrentPlayer().getShelf().getShelf();
         int maxLength = 0;
-        for(int i=0;i<5;i++){
-            for(int j=0;j<6;j++){
-                if(!shelf[j][i].getTile().equals(EMPTY) || j == 5){
+        for(int i=0;i<Config.shelfLength;i++){
+            for(int j=0;j<Config.shelfHeight;j++){
+                if(!shelf[j][i].getTile().equals(EMPTY) || j == Config.shelfHeight-1){
                     if(maxLength < j) maxLength = j;
                     break;
                 }
@@ -169,12 +170,12 @@ public class Engine {
      */
     public void placeTiles(int temporaryIndex) throws EmptyTilesException, UnusedTilesException {
         Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
-        for(int i=0;i<6;i++){
+        for(int i=0;i<Config.shelfHeight;i++){
             if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
                 game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i-1,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
                 break;
             }
-            if(i == 5){
+            if(i == Config.shelfHeight-1){
                 game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
                 break;
             }
@@ -187,7 +188,7 @@ public class Engine {
      * the points of the CommonGoal in question
      */
     public void checkCommonGoals(){
-        for(int i=0; i<2; i++){
+        for(int i=0; i<Config.numberOfCommonGoals; i++){
             if(this.getGame().getCommonGoals().get(i).checkRequirements(this.getGame().getCurrentPlayer().getShelf()) &&
                 !this.getGame().getCurrentPlayer().isCommonGoalRedeemed(i)){
                 try {
@@ -207,8 +208,8 @@ public class Engine {
         for (Player player : game.getPlayers()) {
             int numberRedeemed = 0;
             TilesEnum[][] shelf = tileToTilesEnum(player.getShelf());
-            for (int i = 0; i < 6; i++) {
-                for (int j = 0; j < 5; j++) {
+            for (int i = 0; i < Config.shelfHeight; i++) {
+                for (int j = 0; j < Config.shelfLength; j++) {
                     if (player.getPersonalGoal().getPersonalGoal()[i][j] == shelf[i][j] &&
                             player.getPersonalGoal().getPersonalGoal()[i][j] != EMPTY)
                         numberRedeemed++;
@@ -234,9 +235,9 @@ public class Engine {
      * @return the correspondent matrix of TilesEnum
      */
     private TilesEnum[][] tileToTilesEnum (Shelf shelf){
-        TilesEnum[][] tmp = new TilesEnum[6][5];
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++) {
+        TilesEnum[][] tmp = new TilesEnum[Config.shelfHeight][Config.shelfLength];
+        for (int i = 0; i < Config.shelfHeight; i++) {
+            for (int j = 0; j < Config.shelfLength; j++) {
                 tmp[i][j] = shelf.getTileShelf(i, j).getTile();
             }
         }
@@ -250,10 +251,10 @@ public class Engine {
         int dim;
         for (Player player : game.getPlayers()) {
             ArrayList<Point> coordinates = new ArrayList<>();
-            boolean[][] matrix = new boolean[6][5];
+            boolean[][] matrix = new boolean[Config.shelfHeight][Config.shelfLength];
             Shelf shelf = player.getShelf();
-            for (int i = 5; i > -1; i--) {
-                for (int j = 0; j < 5; j++) {
+            for (int i = Config.shelfHeight-1; i > -1; i--) {
+                for (int j = 0; j < Config.shelfLength; j++) {
                     if (shelf.getTileShelf(i, j).getTile() != TilesEnum.EMPTY) {
                         dim = 0;
                         if (!matrix[i][j])
@@ -287,11 +288,11 @@ public class Engine {
 
         if(row-1 > -1 && !matrix[row-1][column] && shelf.getTileShelf(row-1,column).getTile()==type && !coordinates.contains(new Point(row-1,column)))
             coordinates.add(new Point(row-1,column));
-        if(row+1 < 6 && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type && !coordinates.contains(new Point(row+1,column)))
+        if(row+1 < Config.shelfHeight && !matrix[row+1][column] && shelf.getTileShelf(row+1,column).getTile()==type && !coordinates.contains(new Point(row+1,column)))
             coordinates.add(new Point(row+1,column));
         if(column-1 > -1 && !matrix[row][column-1] && shelf.getTileShelf(row,column-1).getTile()==type && !coordinates.contains(new Point(row,column-1)))
             coordinates.add(new Point(row,column-1));
-        if(column+1 < 5 && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !coordinates.contains(new Point(row,column+1)))
+        if(column+1 < Config.shelfLength && !matrix[row][column+1] && shelf.getTileShelf(row,column + 1).getTile()==type && !coordinates.contains(new Point(row,column+1)))
             coordinates.add(new Point(row,column+1));
 
         matrix[row][column]=true;
@@ -339,8 +340,8 @@ public class Engine {
      * @return true if the player shelf is true, false otherwise
      */
     private boolean fullShelf(Shelf shelf){
-        for(int i=0; i<6; i++)
-            for(int j=0; j<5; j++)
+        for(int i=0; i< Config.shelfHeight; i++)
+            for(int j=0; j< Config.shelfLength; j++)
                 if(shelf.getTileShelf(i,j).getTile()==TilesEnum.EMPTY)
                     return false;
         return true;
@@ -390,8 +391,8 @@ public class Engine {
      */
     public void fillBoard(){
         if (!(isBoardValid())){
-            for(int i=0; i<9; i++){
-                for (int j=0; j<9; j++) {
+            for(int i=0; i< Config.boardHeight; i++){
+                for (int j=0; j< Config.boardLength; j++) {
                     if (game.getBoard().getBoard()[i][j].getTile()==EMPTY){
                         game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);
                     }
@@ -405,8 +406,8 @@ public class Engine {
      * @return false if the board contains only tiles with no other adjacent tiles, true otherwise
      */
     private boolean isBoardValid(){
-        for(int i=0; i<9; i++){
-            for (int j=0; j<9; j++) {
+        for(int i=0; i< Config.boardHeight; i++){
+            for (int j=0; j< Config.boardLength; j++) {
                 try {
                     if (!(isEmptyOrUnusedBoard(i, j)) &&
                             (!(isEmptyOrUnusedBoard(i - 1, j)) ||
@@ -427,8 +428,8 @@ public class Engine {
      * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
      */
     private boolean isEmptyOrUnusedBoard (int x, int y){
-        return (game.getBoard().getBoard()[x][y].getTile() == EMPTY) ||
-                (game.getBoard().getBoard()[x][y].getTile() == UNUSED);
+        return (game.getBoard().getBoard()[y][x].getTile() == EMPTY) ||
+                (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
 }
