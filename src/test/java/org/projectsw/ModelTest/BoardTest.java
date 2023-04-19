@@ -1,5 +1,6 @@
 package org.projectsw.ModelTest;
 
+import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.Board;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
@@ -84,7 +85,7 @@ class BoardTest {
      * from 2 to 4 players, it also checks if the number of empty and unused tiles is correct.
      */
     @Test
-    void integrityTestBoards(){
+    void integrityTestBoards() throws InvalidNumberOfPlayersException {
         for(int p=2;p<5;p++) {
             int emptyNumber = 0;
             int unusedNumber = 0;
@@ -261,7 +262,7 @@ class BoardTest {
      * Test if the isBoardEmpty method correctly retrieve the board status
      */
     @Test
-    public void isBoardEmptyTest(){
+    public void isBoardEmptyTest() throws InvalidNumberOfPlayersException {
         Board board = new Board(3);
         assertTrue(board.isBoardEmpty());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
@@ -272,7 +273,7 @@ class BoardTest {
 
 
     @Test
-    public void getFirstSelectablePointsTest(){
+    public void getFirstSelectablePointsTest() throws InvalidNumberOfPlayersException {
         Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);

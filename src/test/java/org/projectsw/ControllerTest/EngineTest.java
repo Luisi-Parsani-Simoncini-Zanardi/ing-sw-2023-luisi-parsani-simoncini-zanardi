@@ -28,7 +28,7 @@ class EngineTest extends TestUtils {
      * works correctly and if the state of the game changes after the last join
      */
     @Test
-    void startingGameSimulation() throws FirstJoinFailedException, JoinFailedException {
+    void startingGameSimulation() throws FirstJoinFailedException, JoinFailedException, InvalidNumberOfPlayersException {
         //creates a new engine and checks if it has an empty game
         Engine engine = new Engine();
         assertNull(engine.getGame());
@@ -245,7 +245,6 @@ class EngineTest extends TestUtils {
 
     /**
      * Test if the end turn method correctly set the next player to the current one
-     *
      * Test if the end turn method correctly set the endGame status to true if the current
      * player shelf is full
      */
@@ -272,7 +271,7 @@ class EngineTest extends TestUtils {
         Player nextPlayer = engine.getGame().getNextPlayer();
         engine.endTurn();
         assertEqualsPlayer(engine.getGame().getCurrentPlayer(), nextPlayer);
-        assertEquals(false, engine.getGame().getBoard().isEndGame());
+        assertFalse(engine.getGame().getBoard().isEndGame());
         engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(0));
         for(int i=0; i<5; i++){
             try{
@@ -287,7 +286,7 @@ class EngineTest extends TestUtils {
         engine.getGame().getCurrentPlayer().setShelf(shelf1);
         engine.endTurn();
         engine.getGame().setCurrentPlayer(engine.getGame().getNextPlayer());
-        assertEquals(true, engine.getGame().getBoard().isEndGame());
+        assertTrue(engine.getGame().getBoard().isEndGame());
         assertEqualsPlayer(engine.getGame().getPlayers().get(0), engine.getGame().getCurrentPlayer());
     }
 
@@ -343,7 +342,7 @@ class EngineTest extends TestUtils {
         assertEqualsPlayer(engine.getGame().getPlayers().get(1), engine.getGame().getNextPlayer());
         assertEqualsShelf(shelf, engine.getGame().getPlayers().get(0).getShelf());
         engine.resetGame();
-        assertEquals(null, engine.getGame());
+        assertNull(engine.getGame());
 
     }
 
@@ -596,7 +595,7 @@ class EngineTest extends TestUtils {
     }
 
     @Test
-    void tileSelectionSimulation() throws FirstJoinFailedException, JoinFailedException, NonSelectableColumnException, MaximumTilesException, EmptyTilesException, UnusedTilesException {
+    void tileSelectionSimulation() throws FirstJoinFailedException, JoinFailedException, NonSelectableColumnException, MaximumTilesException, EmptyTilesException, UnusedTilesException, InvalidNumberOfPlayersException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");

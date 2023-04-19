@@ -2,6 +2,7 @@ package org.projectsw.Model;
 
 import org.projectsw.Config;
 import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -45,9 +46,8 @@ public class Game{
      * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
      *                                  between 2 and 4
      */
-    public Game(Player firstPlayer, int numberOfPlayers){
+    public Game(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
         //TODO: creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
-        if(numberOfPlayers< Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new IllegalArgumentException("Number of players not valid");
         if(firstPlayer.getPosition() != 0) throw new IllegalArgumentException("The first player you want insert has a !=0 position");
         gameState = GameStates.LOBBY;
         this.numberOfPlayers = numberOfPlayers;

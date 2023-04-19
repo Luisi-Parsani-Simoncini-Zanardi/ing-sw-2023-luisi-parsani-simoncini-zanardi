@@ -2,7 +2,7 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import org.projectsw.Config;
-
+import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -41,8 +41,8 @@ public class Board{
      * @param playersNumber the number of players playing the game
      * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
      */
-    public Board(int playersNumber) throws IllegalArgumentException{
-        if(playersNumber<Config.minPlayers || playersNumber>Config.maxPlayers) throw new IllegalArgumentException("Number of players not valid");
+    public Board(int playersNumber) throws InvalidNumberOfPlayersException {
+        if(playersNumber<Config.minPlayers || playersNumber>Config.maxPlayers) throw new InvalidNumberOfPlayersException("Number of players not valid");
         try{
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
@@ -352,8 +352,8 @@ public class Board{
      */
     public boolean isBoardEmpty() {
         for (Tile[] tiles : board) {
-            for (int j = 0; j < tiles.length; j++) {
-                if (!(tiles[j].getTile() == TilesEnum.EMPTY || tiles[j].getTile() == TilesEnum.UNUSED))
+            for (Tile tile : tiles) {
+                if (!(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED))
                     return false;
             }
         }
