@@ -38,16 +38,11 @@ public class Engine {
      * execution is LOBBY.
      * @param nicknameFirstPlayer the nickname of the first player joining in the game.
      * @param numberOfPlayers the number of players selected by the first player.
-     * @throws FirstJoinFailedException if the position of player is not 0 of if the number of players is not correctly chosen.
+     * @throws InvalidNumberOfPlayersException if the number of players is not correctly chosen.
      */
-    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws FirstJoinFailedException{
-        try {
+    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
             game = new Game(firstPlayer,numberOfPlayers);
-        } catch (IllegalArgumentException e) {
-            if (numberOfPlayers< Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new FirstJoinFailedException("Invalid number of players");
-            else throw new FirstJoinFailedException("Invalid Position");
-        }
     }
 
     /**
@@ -56,23 +51,19 @@ public class Engine {
      * Then checks if the lobby is fulled: if it is, calls the method to start the game,
      * if it isn't the game state remains LOBBY, waiting for new join requests.
      * @param nickname the nickname of the player to be created.
-     * @throws JoinFailedException if the name of the player is already used
+     * @throws LobbyClosedException if the name of the player is already used
      *                             of if the function is called when the lobby is closed
      */
-    public void playerJoin (String nickname) throws JoinFailedException {
+    public void playerJoin (String nickname) throws LobbyClosedException, InvalidNameException {
         if(game.getGameState().equals(GameStates.LOBBY)){
-            try {
-                int newPlayerPosition = game.getPlayers().size();
-                Player newPlayer = new Player(nickname,newPlayerPosition);
-                game.addPlayer(newPlayer);
-                if (game.getPlayers().size() == game.getNumberOfPlayers()) {
-                    startGame();
-                }
-            } catch (InvalidNameException e) {
-                throw new JoinFailedException("Name already used");
+            int newPlayerPosition = game.getPlayers().size();
+            Player newPlayer = new Player(nickname,newPlayerPosition);
+            game.addPlayer(newPlayer);
+            if (game.getPlayers().size() == game.getNumberOfPlayers()) {
+                startGame();
             }
         }
-        else throw new JoinFailedException("The lobby is closed");
+        else throw new LobbyClosedException("The lobby is closed");
     }
 
     /**
@@ -352,7 +343,7 @@ public class Engine {
      * @return winner of the game
      */
     public Player getWinner() {
-        return Collections.max(getGame().getPlayers(), Comparator.comparing(s -> s.getPoints()));
+        return Collections.max(getGame().getPlayers(), Comparator.comparing(Player::getPoints));
     }
 
     /**

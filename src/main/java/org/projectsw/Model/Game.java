@@ -1,6 +1,5 @@
 package org.projectsw.Model;
 
-import org.projectsw.Config;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
@@ -47,8 +46,6 @@ public class Game{
      *                                  between 2 and 4
      */
     public Game(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
-        //TODO: creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
-        if(firstPlayer.getPosition() != 0) throw new IllegalArgumentException("The first player you want insert has a !=0 position");
         gameState = GameStates.LOBBY;
         this.numberOfPlayers = numberOfPlayers;
         board = new Board(numberOfPlayers);

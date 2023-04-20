@@ -123,6 +123,7 @@ public class Board{
         if(board.length != Config.boardHeight) throw new IllegalArgumentException();
         if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
+        updateSelectablePoints();
     }
 
     /**
@@ -327,19 +328,23 @@ public class Board{
      * Prints the board.
      */
     public void printBoard(){
+        ArrayList<Point> selectablePoints = getSelectablePoints();
         for(int i=0;i<Config.boardLength;i++){
             for(int j=0;j<Config.boardHeight;j++){
-                Tile current = board[i][j];
-                switch(current.getTile()){
-                    case EMPTY -> System.out.print("EMPTY\t");
-                    case UNUSED -> System.out.print("UNUSED\t");
-                    case CATS -> System.out.print("CATS\t");
-                    case TROPHIES -> System.out.print("TROPHIES\t");
-                    case PLANTS -> System.out.print("PLANTS\t");
-                    case FRAMES -> System.out.print("FRAMES\t");
-                    case GAMES -> System.out.print("GAMES\t");
-                    case BOOKS -> System.out.print("BOOKS\t");
+                if(selectablePoints.contains(new Point(i,j))) System.out.print("[");
+                switch(board[i][j].getTile()){
+                    case EMPTY -> System.out.print("EMPTY");
+                    case UNUSED -> System.out.print("UNUSED");
+                    case CATS -> System.out.print("CATS");
+                    case TROPHIES -> System.out.print("TROPHIES");
+                    case PLANTS -> System.out.print("PLANTS");
+                    case FRAMES -> System.out.print("FRAMES");
+                    case GAMES -> System.out.print("GAMES");
+                    case BOOKS -> System.out.print("BOOKS");
                 }
+                if(selectablePoints.contains(new Point(i,j))) System.out.print("]");
+                System.out.print("\t");
+
             }
             System.out.print("\n");
         }

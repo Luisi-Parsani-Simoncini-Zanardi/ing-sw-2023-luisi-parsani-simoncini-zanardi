@@ -28,7 +28,7 @@ class EngineTest extends TestUtils {
      * works correctly and if the state of the game changes after the last join
      */
     @Test
-    void startingGameSimulation() throws FirstJoinFailedException, JoinFailedException, InvalidNumberOfPlayersException {
+    void startingGameSimulation() throws LobbyClosedException, InvalidNumberOfPlayersException, InvalidNameException {
         //creates a new engine and checks if it has an empty game
         Engine engine = new Engine();
         assertNull(engine.getGame());
@@ -67,36 +67,36 @@ class EngineTest extends TestUtils {
     }
 
     /**
-     * Tests if firstPlayerJoin correctly throws the FirstJoinFailedException when is passed a too low number of players
+     * Tests if firstPlayerJoin correctly throws the InvalidNumberOfPlayersException when is passed a too low number of players
      */
     @Test
     void invalidNumberOfPlayersTooLowJoinTest() {
         Engine engine = new Engine();
-        assertThrows(FirstJoinFailedException.class, () -> engine.firstPlayerJoin("Davide", 1));
+        assertThrows(InvalidNumberOfPlayersException.class, () -> engine.firstPlayerJoin("Davide", 1));
     }
 
     /**
-     * Tests if firstPlayerJoin correctly throws the FirstJoinFailedException when is passed a too big number of players
+     * Tests if firstPlayerJoin correctly throws the InvalidNumberOfPlayersException when is passed a too big number of players
      */
     @Test
     void invalidNumberOfPlayersTooBigJoinTest() {
         Engine engine = new Engine();
-        assertThrows(FirstJoinFailedException.class, () -> engine.firstPlayerJoin("Davide", 5));
+        assertThrows(InvalidNumberOfPlayersException.class, () -> engine.firstPlayerJoin("Davide", 5));
     }
 
     @Test
-    void invalidNicknameAlreadyUsedTest() throws FirstJoinFailedException {
+    void invalidNicknameAlreadyUsedTest() throws InvalidNumberOfPlayersException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide", 2);
-        assertThrows(JoinFailedException.class, () -> engine.playerJoin("Davide"));
+        assertThrows(LobbyClosedException.class, () -> engine.playerJoin("Davide"));
     }
 
     @Test
-    void invalidJoinAttemptTest() throws FirstJoinFailedException, JoinFailedException {
+    void invalidJoinAttemptTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide", 2);
         engine.playerJoin("Lore");
-        assertThrows(JoinFailedException.class, () -> engine.playerJoin("Lollo"));
+        assertThrows(LobbyClosedException.class, () -> engine.playerJoin("Lollo"));
     }
 
     @Test
@@ -569,7 +569,7 @@ class EngineTest extends TestUtils {
 
 
     @Test
-    void checkRemainingColumnSpaceTest() throws FirstJoinFailedException, JoinFailedException, EmptyTilesException, UnusedTilesException {
+    void checkRemainingColumnSpaceTest() throws LobbyClosedException, EmptyTilesException, UnusedTilesException, InvalidNumberOfPlayersException, InvalidNameException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");
@@ -595,24 +595,18 @@ class EngineTest extends TestUtils {
     }
 
     @Test
-    void tileSelectionSimulation() throws FirstJoinFailedException, JoinFailedException, NonSelectableColumnException, MaximumTilesException, EmptyTilesException, UnusedTilesException, InvalidNumberOfPlayersException {
+    void tileSelectionSimulation() throws LobbyClosedException, NonSelectableColumnException, MaximumTilesException, EmptyTilesException, UnusedTilesException, InvalidNumberOfPlayersException, InvalidNameException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");
-        Board board = new Board(4);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
-        engine.getGame().getBoard().setBoard(board.getBoard());
+        engine.fillBoard();
+        engine.getGame().getBoard().printBoard();
         engine.selectTiles(new Point(1,1));
+        engine.getGame().getBoard().printBoard();
         engine.selectTiles(new Point(1,2));
+        engine.getGame().getBoard().printBoard();
         engine.selectTiles(new Point(1,3));
+        engine.getGame().getBoard().printBoard();
         engine.confirmSelectedTiles();
         engine.selectColumn(3);
         engine.placeTiles(0);
