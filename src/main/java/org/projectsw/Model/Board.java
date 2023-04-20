@@ -154,8 +154,8 @@ public class Board{
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         else {
-            Tile tmp = board[(int) point.getY()][(int) point.getX()];
-            board[(int) point.getY()][(int) point.getX()] = new Tile(TilesEnum.EMPTY, 0);
+            Tile tmp = board[(int) point.getX()][(int) point.getY()];
+            board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
             return tmp;
         }
@@ -332,6 +332,7 @@ public class Board{
         for(int i=0;i<Config.boardLength;i++){
             for(int j=0;j<Config.boardHeight;j++){
                 if(selectablePoints.contains(new Point(i,j))) System.out.print("[");
+                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
                 switch(board[i][j].getTile()){
                     case EMPTY -> System.out.print("EMPTY");
                     case UNUSED -> System.out.print("UNUSED");
@@ -343,6 +344,7 @@ public class Board{
                     case BOOKS -> System.out.print("BOOKS");
                 }
                 if(selectablePoints.contains(new Point(i,j))) System.out.print("]");
+                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
                 System.out.print("\t");
 
             }

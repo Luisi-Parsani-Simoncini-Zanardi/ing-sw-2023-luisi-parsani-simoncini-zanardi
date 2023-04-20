@@ -599,7 +599,17 @@ class EngineTest extends TestUtils {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");
-        engine.fillBoard();
+        Board board = new Board(4);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
+        engine.getGame().getBoard().setBoard(board.getBoard());
         engine.getGame().getBoard().printBoard();
         engine.selectTiles(new Point(1,1));
         engine.getGame().getBoard().printBoard();
