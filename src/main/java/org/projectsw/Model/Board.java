@@ -3,6 +3,7 @@ package org.projectsw.Model;
 import com.google.gson.Gson;
 import org.projectsw.Config;
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
+import org.projectsw.Exceptions.UnselectableTileException;
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -178,9 +179,15 @@ public class Board{
      * Adds a new Point object to the temporaryPoints arrayList
      * @param point the Point to add.
      */
-    public void addTemporaryPoints(Point point){
-        temporaryPoints.add(point);
-        updateSelectablePoints();
+    public void addTemporaryPoints(Point point) throws UnselectableTileException {
+        if(selectablePoints.contains(point) &&
+        !board[(int) point.getX()][(int) point.getY()].getTile().equals(TilesEnum.EMPTY) &&
+        !board[(int) point.getX()][(int) point.getY()].getTile().equals(TilesEnum.UNUSED)) {
+                temporaryPoints.add(point);
+                updateSelectablePoints();
+        } else {
+            throw new UnselectableTileException();
+        }
     }
 
     /**
@@ -189,12 +196,15 @@ public class Board{
      * @param point the point to remove from the list.
      */
     public void removeTemporaryPoints(Point point){
-        temporaryPoints.remove(point);
         if(temporaryPoints.size() == Config.maximumTilesPickable){
+            temporaryPoints.remove(point);
             if(!areAdjacentPoints(temporaryPoints.get(0),temporaryPoints.get(1))){
                 cleanTemporaryPoints();
             }
+        } else {
+            temporaryPoints.remove(point);
         }
+        updateSelectablePoints();
     }
 
     /**

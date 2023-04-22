@@ -47,8 +47,8 @@ public class Game{
      */
     public Game(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
         gameState = GameStates.LOBBY;
-        this.numberOfPlayers = numberOfPlayers;
         board = new Board(numberOfPlayers);
+        this.numberOfPlayers = numberOfPlayers;
         chat = new Chat();
         players = new ArrayList<>();
         players.add(firstPlayer);

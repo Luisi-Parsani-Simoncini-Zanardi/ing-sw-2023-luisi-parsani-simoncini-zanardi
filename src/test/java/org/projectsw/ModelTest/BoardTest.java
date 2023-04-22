@@ -1,10 +1,13 @@
 package org.projectsw.ModelTest;
 
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
+import org.projectsw.Exceptions.UnselectableTileException;
 import org.projectsw.Model.Board;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import java.awt.*;
 
@@ -273,7 +276,7 @@ class BoardTest {
 
 
     @Test
-    public void getFirstSelectablePointsTest() throws InvalidNumberOfPlayersException {
+    public void getFirstSelectablePointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
         Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
@@ -310,5 +313,83 @@ class BoardTest {
         System.out.println("\nTest 5:");
         board.cleanTemporaryPoints();
         System.out.println(board.getSelectablePoints().size());
+    }
+
+    @Test
+    void unselectableTilesInAddTemporaryPointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
+        Board board = new Board(4);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
+        board.printBoard();
+        assertThrows(UnselectableTileException.class, () -> board.addTemporaryPoints(new Point( 0, 0)));
+        assertThrows(UnselectableTileException.class, () -> board.addTemporaryPoints(new Point( 2, 2)));
+        assertThrows(UnselectableTileException.class, () -> board.addTemporaryPoints(new Point( 0, 3)));
+        assertEquals(0,board.getTemporaryPoints().size());
+        board.addTemporaryPoints(new Point(1,1));
+        assertEquals(1,board.getTemporaryPoints().size());
+        assertEquals(new Point(1,1),board.getTemporaryPoints().get(0));
+    }
+
+    @Test
+    void removeTemporaryPointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
+        Board board = new Board(4);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
+
+        //Test 1
+        assertEquals(0,board.getTemporaryPoints().size());
+        board.addTemporaryPoints(new Point(1,1));
+        assertEquals(1,board.getTemporaryPoints().size());
+        assertEquals(new Point(1,1),board.getTemporaryPoints().get(0));
+        board.removeTemporaryPoints(new Point(1,1));
+        assertEquals(0,board.getTemporaryPoints().size());
+
+        //Test 2
+        board.addTemporaryPoints(new Point(1,1));
+        board.addTemporaryPoints(new Point(1,2));
+        assertEquals(2,board.getTemporaryPoints().size());
+        board.removeTemporaryPoints(new Point(1,2));
+        assertEquals(1,board.getTemporaryPoints().size());
+        assertEquals(new Point(1,1),board.getTemporaryPoints().get(0));
+        board.addTemporaryPoints(new Point(1,2));
+        assertEquals(2,board.getTemporaryPoints().size());
+        board.removeTemporaryPoints(new Point(1,1));
+        assertEquals(1,board.getTemporaryPoints().size());
+        assertEquals(new Point(1,2),board.getTemporaryPoints().get(0));
+        board.removeTemporaryPoints(new Point(1,2));
+
+        //Test 3
+        board.addTemporaryPoints(new Point(1,1));
+        board.addTemporaryPoints(new Point(1,2));
+        board.addTemporaryPoints(new Point(1,3));
+        assertEquals(3,board.getTemporaryPoints().size());
+        board.removeTemporaryPoints(new Point(1,1));
+        assertEquals(2,board.getTemporaryPoints().size());
+        assertEquals(new Point(1,2),board.getTemporaryPoints().get(0));
+        assertEquals(new Point(1,3),board.getTemporaryPoints().get(1));
+        board.addTemporaryPoints(new Point(1,1));
+        assertEquals(3,board.getTemporaryPoints().size());
+        board.removeTemporaryPoints(new Point(1,3));
+        assertEquals(2,board.getTemporaryPoints().size());
+        assertEquals(new Point(1,2),board.getTemporaryPoints().get(0));
+        assertEquals(new Point(1,1),board.getTemporaryPoints().get(1));
+        board.addTemporaryPoints(new Point(1,3));
+        assertEquals(3,board.getTemporaryPoints().size());
+        board.removeTemporaryPoints(new Point(1,2));
+        assertEquals(0,board.getTemporaryPoints().size());
     }
 }

@@ -72,6 +72,7 @@ public class Engine {
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
+        fillBoard();
     }
 
     //turno
@@ -95,12 +96,11 @@ public class Engine {
      * Add a point to the temporaryPoints list after checking if the size of temporaryPoints is smaller than
      * the maximum remaining space in player's columns.
      * @param selectedPoint the point that the player wants to select.
+     * @throws UnselectableTileException if the selected point is an empty/unused tile, of if the selected point
+     *                                   can't be selected by the rules.
      */
     public void selectTiles(Point selectedPoint) throws UnselectableTileException {
-        Board board = game.getBoard();
-        TilesEnum selectedTile = game.getBoard().getBoard()[(int) selectedPoint.getX()][(int) selectedPoint.getY()].getTile();
-        if(selectedTile == UNUSED || selectedTile == EMPTY) throw new UnselectableTileException();
-        if(board.getTemporaryPoints().size() < checkRemainingColumnSpace()){
+        if(game.getBoard().getTemporaryPoints().size() < checkRemainingColumnSpace()){
             game.getBoard().addTemporaryPoints(selectedPoint);
         }
     }
