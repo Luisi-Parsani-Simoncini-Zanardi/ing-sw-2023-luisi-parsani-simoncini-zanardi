@@ -2,9 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.MaximumTilesException;
-import org.projectsw.Exceptions.UnusedTilesException;
 import org.projectsw.Model.*;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -150,7 +148,7 @@ class PlayerTest {
      * also tests if the getter method works correctly.
      */
     @Test
-    void addValidTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
+    void addValidTileTest() throws MaximumTilesException {
         Player player = new Player("Davide",0);
         Tile tile0 = new Tile(TilesEnum.CATS,0);
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);
@@ -168,22 +166,22 @@ class PlayerTest {
     }
 
     /**
-     * Tests if the method addTiles throws correctly the EmptyTilesException then adding empty tiles to the array.
+     * Tests if the method addTiles throws correctly the IllegalArgumentException then adding empty tiles to the array.
      */
     @Test
     void addTileExceptionWhenTileIsEmpty() {
         Player player = new Player("Davide",0);
-        assertThrows(EmptyTilesException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 player.addTemporaryTile(new Tile(TilesEnum.EMPTY,0)));
     }
 
     /**
-     * Tests if the method addTiles throws correctly the UnusedTilesException then adding unused tiles to the array.
+     * Tests if the method addTiles throws correctly the IllegalArgumentException then adding unused tiles to the array.
      */
     @Test
     void addTileExceptionWhenTileIsUnused() {
         Player player = new Player("Davide",0);
-        assertThrows(UnusedTilesException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 player.addTemporaryTile(new Tile(TilesEnum.UNUSED,0)));
     }
 
@@ -191,7 +189,7 @@ class PlayerTest {
      * Tests if the method addTiles throws correctly the MaximumTilesException when the array already has 3 elements
      */
     @Test
-    void addTileExceptionWhenArrayIsFull() throws EmptyTilesException, UnusedTilesException, MaximumTilesException{
+    void addTileExceptionWhenArrayIsFull() throws MaximumTilesException{
         Player player = new Player("Davide",0);
         player.addTemporaryTile(new Tile(TilesEnum.CATS,0));
         player.addTemporaryTile(new Tile(TilesEnum.BOOKS,0));
@@ -206,7 +204,7 @@ class PlayerTest {
      * other tiles, reducing the size of the list and returning the correct element.
      */
     @Test
-    void selectTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
+    void selectTileTest() throws MaximumTilesException {
         Player player = new Player("Davide",0);
         Tile tile0 = new Tile(TilesEnum.CATS,0);
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);

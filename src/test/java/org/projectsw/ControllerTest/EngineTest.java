@@ -178,7 +178,7 @@ class EngineTest extends TestUtils {
     }
 
     @Test
-    void testCheckPersonalGoal() throws EmptyTilesException, UnusedTilesException {
+    void testCheckPersonalGoal(){
         Engine engine = new Engine();
         try {
             engine.firstPlayerJoin("Davide", 2);
@@ -503,7 +503,7 @@ class EngineTest extends TestUtils {
      * Checks if the EndgameGoal method correctly assigns the points.
      */
     @Test
-    void testCheckEndGameGoal() throws EmptyTilesException, UnusedTilesException {
+    void testCheckEndGameGoal() {
         Engine engine = new Engine();
         try {
             engine.firstPlayerJoin("Davide", 2);
@@ -569,7 +569,7 @@ class EngineTest extends TestUtils {
 
 
     @Test
-    void checkRemainingColumnSpaceTest() throws LobbyClosedException, EmptyTilesException, UnusedTilesException, InvalidNumberOfPlayersException, InvalidNameException {
+    void checkRemainingColumnSpaceTest() throws LobbyClosedException, InvalidNumberOfPlayersException, InvalidNameException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");
@@ -595,7 +595,7 @@ class EngineTest extends TestUtils {
     }
 
     @Test
-    void tileSelectionSimulation() throws LobbyClosedException, NonSelectableColumnException, MaximumTilesException, EmptyTilesException, UnusedTilesException, InvalidNumberOfPlayersException, InvalidNameException {
+    void tileSelectionSimulation() throws LobbyClosedException, UnselectableColumnException, MaximumTilesException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");

@@ -1,8 +1,6 @@
 package org.projectsw.Model;
 
 import org.projectsw.Config;
-import org.projectsw.Exceptions.EmptyTilesException;
-import org.projectsw.Exceptions.UnusedTilesException;
 import java.util.ArrayList;
 import static org.projectsw.Model.TilesEnum.EMPTY;
 
@@ -84,14 +82,11 @@ public class Shelf {
      * @param tile the tile to insert
      * @param row the row to insert the tile into
      * @param column the column to insert the tile into
-     * @throws EmptyTilesException if the tile is empty
-     * @throws UnusedTilesException if the tile is unused
      * @throws IndexOutOfBoundsException if the row or column is out of bounds
      */
-    public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException, IndexOutOfBoundsException {
+    public void insertTiles(Tile tile, int row, int column) {
         if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
-        else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
-        else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
+        else if(tile.getTile().equals(TilesEnum.EMPTY) || tile.getTile().equals(TilesEnum.UNUSED)) throw new IllegalArgumentException("Trying to add a unused or empty tile to the shelf");
         else shelf[row][column] = tile;
     }
 

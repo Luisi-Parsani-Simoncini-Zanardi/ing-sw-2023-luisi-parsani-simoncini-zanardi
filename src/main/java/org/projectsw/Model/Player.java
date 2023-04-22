@@ -1,9 +1,7 @@
 package org.projectsw.Model;
 
 import org.projectsw.Config;
-import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.MaximumTilesException;
-import org.projectsw.Exceptions.UnusedTilesException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -144,13 +142,10 @@ public class Player {
      * Adds the given tile to the player's temporary tiles.
      * @param tile the tile to be added to the player's temporary tiles
      * @throws MaximumTilesException if the player already has the maximum number of tiles (i.e., 3)
-     * @throws EmptyTilesException if the tile is EMPTY
-     * @throws UnusedTilesException if the tile is UNUSED
      */
-    public void addTemporaryTile(Tile tile) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
+    public void addTemporaryTile(Tile tile) throws MaximumTilesException {
         if(temporaryTiles.size()> Config.maximumTilesPickable-1) throw new MaximumTilesException("Maximum number of tiles reached");
-        else if(tile.getTile() == TilesEnum.EMPTY) throw new EmptyTilesException("You can't add an EMPTY tile");
-        else if(tile.getTile() == TilesEnum.UNUSED) throw new UnusedTilesException("You can't add an UNUSED tile");
+        else if(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED) throw new IllegalArgumentException("You can't add an EMPTY tile");
         else temporaryTiles.add(tile);
     }
 

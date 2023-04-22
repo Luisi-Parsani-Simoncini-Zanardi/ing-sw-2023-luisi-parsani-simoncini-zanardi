@@ -1,8 +1,6 @@
 package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
-import org.projectsw.Exceptions.EmptyTilesException;
-import org.projectsw.Exceptions.UnusedTilesException;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
@@ -31,7 +29,7 @@ class ShelfTest {
      * Tests if the constructor that copies a shelf in another does it correctly.
      */
     @Test
-    void rightShelfCopy() throws EmptyTilesException, UnusedTilesException {
+    void rightShelfCopy() {
         Shelf shelf = new Shelf();
         Tile tile1 = new Tile(TilesEnum.CATS,0);
         Tile tile2 = new Tile(TilesEnum.PLANTS,0);
@@ -52,7 +50,7 @@ class ShelfTest {
      * Tests if getters and setters of shelf works correctly.
      */
     @Test
-    void getAndSetShelfTest() throws EmptyTilesException, UnusedTilesException {
+    void getAndSetShelfTest() {
         Shelf shelf = new Shelf();
         shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,0);
         shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),4,4);
@@ -95,7 +93,7 @@ class ShelfTest {
      * Tests if the get tile method returns the correct tile.
      */
     @Test
-    void getTileShelfTest() throws EmptyTilesException, UnusedTilesException {
+    void getTileShelfTest() {
         Shelf shelf = new Shelf();
         Tile tile = new Tile(TilesEnum.CATS,0);
         shelf.insertTiles(tile,0,0);
@@ -107,7 +105,7 @@ class ShelfTest {
      * when the row argument is too big.
      */
     @Test
-    void getTileShelfgExceptionWhenRowIsTooBig() {
+    void getTileShelfExceptionWhenRowIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(6, 0));
     }
@@ -117,7 +115,7 @@ class ShelfTest {
      * when the column argument is too big.
      */
     @Test
-    void getTileShelfgExceptionWhenColumnIsTooBig() {
+    void getTileShelfExceptionWhenColumnIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(0, 5));
     }
@@ -128,7 +126,7 @@ class ShelfTest {
      */
 
     @Test
-    void insertTilesTest() throws EmptyTilesException, UnusedTilesException {
+    void insertTilesTest() {
         Shelf shelf = new Shelf();
         Tile tile = new Tile(TilesEnum.CATS,0);
         shelf.insertTiles(tile,0,0);
@@ -164,22 +162,22 @@ class ShelfTest {
                 shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,5));
     }
     /**
-     * Tests if the insertTiles method throws an EmptyTilesException when try to insert empty.
+     * Tests if the insertTiles method throws an IllegalArgumentException when try to insert empty.
      */
     @Test
     void insertExceptionWhenInsertEmpty() {
         Shelf shelf = new Shelf();
-        assertThrows(EmptyTilesException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0),0,0));
     }
 
     /**
-     * Tests if the insertTiles method throws an UnusedTilesException when try to insert unused.
+     * Tests if the insertTiles method throws an IllegalArgumentException when try to insert unused.
      */
     @Test
     void insertExceptionWhenInsertUnused() {
         Shelf shelf = new Shelf();
-        assertThrows(UnusedTilesException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 shelf.insertTiles(new Tile(TilesEnum.UNUSED,0),0,0));
     }
 
@@ -187,7 +185,7 @@ class ShelfTest {
      * Tests if the Tile functions are well integrated with Shelf class by calling them from the shelf object.
      */
     @Test
-    void correctIntegrationWithTile() throws EmptyTilesException, UnusedTilesException {
+    void correctIntegrationWithTile() {
         Shelf shelf = new Shelf();
         Tile tile = new Tile(TilesEnum.CATS,0);
         shelf.insertTiles(tile,0,0);
@@ -196,7 +194,7 @@ class ShelfTest {
     }
 
     @Test
-    void getSelectableColumnsTest() throws EmptyTilesException, UnusedTilesException {
+    void getSelectableColumnsTest() {
         Shelf shelf = new Shelf();
         shelf.insertTiles(new Tile(GAMES,0),5,0);
         shelf.insertTiles(new Tile(GAMES,0),5,1);

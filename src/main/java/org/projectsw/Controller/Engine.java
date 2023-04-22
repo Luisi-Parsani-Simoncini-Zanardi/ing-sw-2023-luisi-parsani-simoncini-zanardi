@@ -96,8 +96,10 @@ public class Engine {
      * the maximum remaining space in player's columns.
      * @param selectedPoint the point that the player wants to select.
      */
-    public void selectTiles(Point selectedPoint){
+    public void selectTiles(Point selectedPoint) throws UnselectableTileException {
         Board board = game.getBoard();
+        TilesEnum selectedTile = game.getBoard().getBoard()[(int) selectedPoint.getX()][(int) selectedPoint.getY()].getTile();
+        if(selectedTile == UNUSED || selectedTile == EMPTY) throw new UnselectableTileException();
         if(board.getTemporaryPoints().size() < checkRemainingColumnSpace()){
             game.getBoard().addTemporaryPoints(selectedPoint);
         }
@@ -131,9 +133,11 @@ public class Engine {
 
     /**
      * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles and cleans the
-     * temporaryPoints list after the copying
+     * temporaryPoints list after the copying.
+     * The TemporaryPoints passed already do not correspond to empty or unused tiles,
+     * but if this does not happen addTemporaryTile throws InvalidArgumentException.
      */
-    public void confirmSelectedTiles() throws MaximumTilesException, EmptyTilesException, UnusedTilesException{
+    public void confirmSelectedTiles() throws MaximumTilesException {
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
@@ -145,21 +149,21 @@ public class Engine {
     /**
      * Checks if the column selected by the player is selectable by calling getSelectableColumns.
      * @param index The index of column that player wants to select.
-     * @throws NonSelectableColumnException if the column is not selectable.
+     * @throws UnselectableColumnException if the column is not selectable.
      */
-    public void selectColumn(int index) throws NonSelectableColumnException{
+    public void selectColumn(int index) throws UnselectableColumnException {
         ArrayList<Integer> selectableColumns = game.getCurrentPlayer().getShelf().getSelectableColumns(game.getCurrentPlayer().getTemporaryTiles().size());
         if(selectableColumns.contains(index)){
             game.getCurrentPlayer().getShelf().setSelectedColumnIndex(index);
         }
-        else throw new NonSelectableColumnException();
+        else throw new UnselectableColumnException();
     }
 
     /**
      * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
      * @param temporaryIndex the selected index of temporaryTiles.
      */
-    public void placeTiles(int temporaryIndex) throws EmptyTilesException, UnusedTilesException {
+    public void placeTiles(int temporaryIndex) {
         Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
         for(int i=0;i<Config.shelfHeight;i++){
             if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
