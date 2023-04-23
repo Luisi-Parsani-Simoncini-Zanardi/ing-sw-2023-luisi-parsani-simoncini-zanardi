@@ -590,12 +590,10 @@ class EngineTest extends TestUtils {
         shelf.insertTiles(new Tile(GAMES,0),1,4);
         shelf.insertTiles(new Tile(GAMES,0),4,3);
         engine.getGame().getPlayers().get(0).setShelf(shelf);
-        int num = engine.checkRemainingColumnSpace();
-        System.out.println(num);
     }
 
     @Test
-    void tileSelectionSimulation() throws LobbyClosedException, UnselectableColumnException, MaximumTilesException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException {
+    void tileSelectionSimulation() throws LobbyClosedException, UnselectableColumnException, MaximumTilesException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");

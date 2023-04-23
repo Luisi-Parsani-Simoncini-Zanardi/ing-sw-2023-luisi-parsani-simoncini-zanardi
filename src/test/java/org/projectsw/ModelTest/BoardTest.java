@@ -409,4 +409,32 @@ class BoardTest {
         board.cleanTemporaryPoints();
         assertEquals(0,board.getTemporaryPoints().size());
     }
+
+    /*
+     * Tests if getSelectablePoints and updateSelectablePoints works correctly by printing some tests cases.
+
+    @Test
+    public void getFirstSelectablePointsTest2() throws InvalidNumberOfPlayersException, UnselectableTileException {
+        Board board = new Board(4);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 1, 1);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 1, 2);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 1, 3);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 2, 1);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 2, 2);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 2, 3);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 3, 1);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 3, 2);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 3, 3);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 4, 1);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 4, 2);
+        board.updateBoard(new Tile(TilesEnum.CATS, 0), 4, 3);
+
+        board.addTemporaryPoints(new Point(1,1));
+        board.addTemporaryPoints(new Point(2,1));
+        board.printBoard();
+
+    }*/
+
+
+
 }

@@ -1,11 +1,13 @@
 package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
+import org.projectsw.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.projectsw.Model.TilesEnum.CATS;
 import static org.projectsw.Model.TilesEnum.GAMES;
 
 class ShelfTest {
@@ -31,7 +33,7 @@ class ShelfTest {
     @Test
     void rightShelfCopy() {
         Shelf shelf = new Shelf();
-        Tile tile1 = new Tile(TilesEnum.CATS,0);
+        Tile tile1 = new Tile(CATS,0);
         Tile tile2 = new Tile(TilesEnum.PLANTS,0);
         shelf.insertTiles(tile1,0,0);
         shelf.insertTiles(tile2,4,4);
@@ -41,7 +43,7 @@ class ShelfTest {
                 assertEquals(shelf.getShelf()[i][j].getTile(),shelfClone.getShelf()[i][j].getTile());
             }
         }
-        assertEquals(TilesEnum.CATS,shelfClone.getTileShelf(0,0).getTile());
+        assertEquals(CATS,shelfClone.getTileShelf(0,0).getTile());
         assertEquals(TilesEnum.PLANTS,shelfClone.getTileShelf(4,4).getTile());
 
     }
@@ -52,7 +54,7 @@ class ShelfTest {
     @Test
     void getAndSetShelfTest() {
         Shelf shelf = new Shelf();
-        shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,0);
+        shelf.insertTiles(new Tile(CATS,0),0,0);
         shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),4,4);
         Tile[][] shelfGetted = shelf.getShelf();
         for(int i=0; i<6; i++){
@@ -95,7 +97,7 @@ class ShelfTest {
     @Test
     void getTileShelfTest() {
         Shelf shelf = new Shelf();
-        Tile tile = new Tile(TilesEnum.CATS,0);
+        Tile tile = new Tile(CATS,0);
         shelf.insertTiles(tile,0,0);
         assertEquals(tile,shelf.getTileShelf(0,0));
     }
@@ -128,7 +130,7 @@ class ShelfTest {
     @Test
     void insertTilesTest() {
         Shelf shelf = new Shelf();
-        Tile tile = new Tile(TilesEnum.CATS,0);
+        Tile tile = new Tile(CATS,0);
         shelf.insertTiles(tile,0,0);
         assertEquals(tile,shelf.getTileShelf(0,0));
         for(int i=0; i<6; i++) {
@@ -148,7 +150,7 @@ class ShelfTest {
     void insertExceptionWhenRowIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () ->
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0),6,0));
+                shelf.insertTiles(new Tile(CATS,0),6,0));
     }
 
     /**
@@ -159,7 +161,7 @@ class ShelfTest {
     void insertExceptionWhenColumnIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () ->
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,5));
+                shelf.insertTiles(new Tile(CATS,0),0,5));
     }
     /**
      * Tests if the insertTiles method throws an IllegalArgumentException when try to insert empty.
@@ -187,7 +189,7 @@ class ShelfTest {
     @Test
     void correctIntegrationWithTile() {
         Shelf shelf = new Shelf();
-        Tile tile = new Tile(TilesEnum.CATS,0);
+        Tile tile = new Tile(CATS,0);
         shelf.insertTiles(tile,0,0);
         assertEquals(tile.getTile(),shelf.getShelf()[0][0].getTile());
         assertEquals(tile.getImageNumber(),shelf.getShelf()[0][0].getImageNumber());
@@ -211,7 +213,29 @@ class ShelfTest {
         shelf.insertTiles(new Tile(GAMES,0),2,4);
         shelf.insertTiles(new Tile(GAMES,0),1,4);
         shelf.insertTiles(new Tile(GAMES,0),4,3);
+        shelf.printShelf();
         ArrayList<Integer> selectableColumns = shelf.getSelectableColumns(5);
         System.out.println(selectableColumns.toString());
+    }
+
+    /**
+     * Tests if maxFreeColumnSpace always returns the exact expected value of maxFreeColumns space. Tested by filling the
+     * shelf from the bottom ad calling maxFreeColumnSpace after every insertion.
+     */
+    @Test
+    void maxFreeColumnsSpaceTest(){
+        Shelf shelf = new Shelf();
+        for(int i = 0; i< Config.shelfHeight; i++) {
+            for (int j = 0; j < Config.shelfLength; j++) {
+                shelf.getShelf()[i][j] = new Tile(CATS,0);
+                if(i>=(Config.shelfHeight-Config.maximumTilesPickable)){
+                    if(j == Config.shelfLength-1) assertEquals((Config.shelfHeight)-i-1,shelf.maxFreeColumnSpace());
+                    else assertEquals((Config.shelfHeight)-i,shelf.maxFreeColumnSpace());
+                } else {
+                    assertEquals(3, shelf.maxFreeColumnSpace());
+                }
+
+            }
+        }
     }
 }

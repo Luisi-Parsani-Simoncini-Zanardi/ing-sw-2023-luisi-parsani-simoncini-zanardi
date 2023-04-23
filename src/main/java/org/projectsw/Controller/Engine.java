@@ -99,10 +99,9 @@ public class Engine {
      * @throws UnselectableTileException if the selected point is an empty/unused tile, of if the selected point
      *                                   can't be selected by the rules.
      */
-    public void selectTiles(Point selectedPoint) throws UnselectableTileException {
-        if(game.getBoard().getTemporaryPoints().size() < checkRemainingColumnSpace()){
-            game.getBoard().addTemporaryPoints(selectedPoint);
-        }
+    public void selectTiles(Point selectedPoint) throws UnselectableTileException, NoMoreColumnSpaceException {
+        if(selectionPossible()) game.getBoard().addTemporaryPoints(selectedPoint);
+        else throw new NoMoreColumnSpaceException();
     }
 
     /**
@@ -114,21 +113,12 @@ public class Engine {
     }
 
     /**
-     * Checks the remaining space from each column of the current player's shelf and return the maximum value found.
-     * @return the maximum value found of free spaces in the current player's shelf.
+     * The function returns true if the maximum columns space in the current's player shelf is bigger then the board's
+     * temporaryPoints arraylist size, meaning that the selections is still possible.
+     * @return true if the selection is possible, false if it isn't.
      */
-    public int checkRemainingColumnSpace() {
-        Tile[][] shelf = game.getCurrentPlayer().getShelf().getShelf();
-        int maxLength = 0;
-        for(int i=0;i<Config.shelfLength;i++){
-            for(int j=0;j<Config.shelfHeight;j++){
-                if(!shelf[j][i].getTile().equals(EMPTY) || j == Config.shelfHeight-1){
-                    if(maxLength < j) maxLength = j;
-                    break;
-                }
-            }
-        }
-        return maxLength;
+    public boolean selectionPossible() {
+        return game.getCurrentPlayer().getShelf().maxFreeColumnSpace() > game.getBoard().getTemporaryPoints().size();
     }
 
     /**

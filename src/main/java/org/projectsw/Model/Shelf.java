@@ -138,13 +138,15 @@ public class Shelf {
      */
     public int maxFreeColumnSpace(){
         int maxFreeColumnSpace = 0;
-        for(int i=0;i<Config.shelfLength;i++){
+        for(int j=0;j<Config.shelfLength;j++){
             int freeColumnSpace = 0;
-            for(int j=Config.shelfHeight-1;j>(Config.shelfHeight-1)-Config.maximumTilesPickable;j--){
+            for(int i=Config.shelfHeight-1;i>(Config.shelfHeight-1)-Config.maximumTilesPickable;i--){
                 if(!shelf[i][j].getTile().equals(EMPTY)) break;
                 freeColumnSpace++;
             }
-            if(freeColumnSpace>maxFreeColumnSpace) maxFreeColumnSpace = freeColumnSpace;
+            if(freeColumnSpace>maxFreeColumnSpace) {
+                maxFreeColumnSpace = freeColumnSpace;
+            }
         }
         return maxFreeColumnSpace;
     }
