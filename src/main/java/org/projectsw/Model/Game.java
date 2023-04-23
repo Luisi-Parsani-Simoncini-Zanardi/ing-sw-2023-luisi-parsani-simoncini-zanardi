@@ -7,6 +7,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
 
+//TODO: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza.
+//      (se risolvete scrivete a Davide)
+
 /**
  * The class contains information about the game state,
  * including the board, players (with info on the currently playing one and the first one), chat, and common goals.
@@ -153,7 +156,6 @@ public class Game{
         this.currentPlayer=currentPlayer;
     }
 
-    //TODO: creare eccezioni ad-hoc, la lista di players deve essere lunga quanto numberOfPlayers e i nomi non devono essere duplicati
     /**
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy

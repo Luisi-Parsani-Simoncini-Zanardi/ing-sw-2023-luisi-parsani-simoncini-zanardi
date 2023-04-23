@@ -93,22 +93,26 @@ public class Engine {
 
 
     /**
-     * Add a point to the temporaryPoints list after checking if the size of temporaryPoints is smaller than
-     * the maximum remaining space in player's columns.
+     * If the selected point isn't already selected it adds a point to the temporaryPoints list after checking if the
+     * size of temporaryPoints is smaller than the maximum remaining space in player's columns.
+     * If the selected point is already selected it calls deselect tiles on that point.
      * @param selectedPoint the point that the player wants to select.
      * @throws UnselectableTileException if the selected point is an empty/unused tile, of if the selected point
      *                                   can't be selected by the rules.
      */
     public void selectTiles(Point selectedPoint) throws UnselectableTileException, NoMoreColumnSpaceException {
-        if(selectionPossible()) game.getBoard().addTemporaryPoints(selectedPoint);
-        else throw new NoMoreColumnSpaceException();
+        if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
+        else {
+            if (selectionPossible()) game.getBoard().addTemporaryPoints(selectedPoint);
+            else throw new NoMoreColumnSpaceException();
+        }
     }
 
     /**
      * Remove the given point from the temporaryPoints list.
      * @param point the point to remove.
      */
-    public void deselectTiles(Point point){
+    private void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
     }
 
@@ -117,7 +121,7 @@ public class Engine {
      * temporaryPoints arraylist size, meaning that the selections is still possible.
      * @return true if the selection is possible, false if it isn't.
      */
-    public boolean selectionPossible() {
+    private boolean selectionPossible() {
         return game.getCurrentPlayer().getShelf().maxFreeColumnSpace() > game.getBoard().getTemporaryPoints().size();
     }
 
@@ -127,7 +131,7 @@ public class Engine {
      * The TemporaryPoints passed already do not correspond to empty or unused tiles,
      * but if this does not happen addTemporaryTile throws InvalidArgumentException.
      */
-    public void confirmSelectedTiles() throws MaximumTilesException {
+    public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException {
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
