@@ -131,4 +131,21 @@ public class Shelf {
         }
         System.out.print("\n");
     }
+
+    /**
+     * Returns the maximum column space present in the shelf between 0 to Config.maximumTilesPickable.
+     * @return an int equal to the maximum column space.
+     */
+    public int maxFreeColumnSpace(){
+        int maxFreeColumnSpace = 0;
+        for(int i=0;i<Config.shelfLength;i++){
+            int freeColumnSpace = 0;
+            for(int j=Config.shelfHeight-1;j>(Config.shelfHeight-1)-Config.maximumTilesPickable;j--){
+                if(!shelf[i][j].getTile().equals(EMPTY)) break;
+                freeColumnSpace++;
+            }
+            if(freeColumnSpace>maxFreeColumnSpace) maxFreeColumnSpace = freeColumnSpace;
+        }
+        return maxFreeColumnSpace;
+    }
 }
