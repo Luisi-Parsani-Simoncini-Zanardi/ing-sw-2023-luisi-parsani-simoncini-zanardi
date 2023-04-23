@@ -262,7 +262,7 @@ class BoardTest {
     }
 
     /**
-     * Test if the isBoardEmpty method correctly retrieve the board status
+     * Tests if the isBoardEmpty method correctly retrieve the board status
      */
     @Test
     public void isBoardEmptyTest() throws InvalidNumberOfPlayersException {
@@ -275,6 +275,9 @@ class BoardTest {
     }
 
 
+    /**
+     * Tests if getSelectablePoints and updateSelectablePoints works correctly by printing some tests cases.
+     */
     @Test
     public void getFirstSelectablePointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
         Board board = new Board(4);
@@ -315,6 +318,9 @@ class BoardTest {
         System.out.println(board.getSelectablePoints().size());
     }
 
+    /**
+     * Tests if addTemporaryPoints throws correctly the UnselectableTileException when required.
+     */
     @Test
     void unselectableTilesInAddTemporaryPointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
         Board board = new Board(4);
@@ -337,6 +343,10 @@ class BoardTest {
         assertEquals(new Point(1,1),board.getTemporaryPoints().get(0));
     }
 
+    /**
+     * Tests if removeTemporaryPoints works correctly in every case of deletion form the temporaryPoints array, at
+     * the end (Test 4) also tests if cleanTemporaryPoints works correctly.
+     */
     @Test
     void removeTemporaryPointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
         Board board = new Board(4);
@@ -390,6 +400,13 @@ class BoardTest {
         board.addTemporaryPoints(new Point(1,3));
         assertEquals(3,board.getTemporaryPoints().size());
         board.removeTemporaryPoints(new Point(1,2));
+        assertEquals(0,board.getTemporaryPoints().size());
+
+        //Test 4
+        board.addTemporaryPoints(new Point(1,1));
+        board.addTemporaryPoints(new Point(1,2));
+        board.addTemporaryPoints(new Point(1,3));
+        board.cleanTemporaryPoints();
         assertEquals(0,board.getTemporaryPoints().size());
     }
 }

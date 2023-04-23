@@ -335,7 +335,7 @@ public class Board{
     }
 
     /**
-     * Prints the board.
+     * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
      */
     public void printBoard(){
         ArrayList<Point> selectablePoints = getSelectablePoints();
