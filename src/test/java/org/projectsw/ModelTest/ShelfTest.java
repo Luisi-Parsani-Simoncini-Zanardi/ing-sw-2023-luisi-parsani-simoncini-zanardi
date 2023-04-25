@@ -1,7 +1,9 @@
 package org.projectsw.ModelTest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Config;
+import org.projectsw.Model.PersonalGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
 import org.projectsw.Model.TilesEnum;
@@ -11,6 +13,14 @@ import static org.projectsw.Model.TilesEnum.CATS;
 import static org.projectsw.Model.TilesEnum.GAMES;
 
 class ShelfTest {
+
+    /**
+     * Cleans the list of used codes before each test.
+     */
+    @BeforeEach
+    void codesCleaner(){
+        PersonalGoal.cleanUsedCodes();
+    }
 
     /**
      * Tests if the empty constructor of shelf actually creates a 6x5 matrix of empty tiles.

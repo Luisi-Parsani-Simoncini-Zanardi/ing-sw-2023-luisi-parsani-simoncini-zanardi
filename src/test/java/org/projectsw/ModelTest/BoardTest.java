@@ -50,7 +50,7 @@ class BoardTest {
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
-        temp = board.getTileFromBoard(new Point(0,4)).getTile();
+        temp = board.getTileFromBoard(new Point(4,0)).getTile();
         assertEquals(TilesEnum.EMPTY, board.getBoard()[4][0].getTile());
         assertEquals(TilesEnum.CATS,temp);
     }
@@ -121,20 +121,13 @@ class BoardTest {
 
     /**
      * Tests if the constructor of the board throws correctly the IllegalArgumentException for a number
-     * of players higher than expected.
+     * of players higher or lower than expected.
      */
     @Test
-    void testInvalidPlayersNumberHigher() {
-        assertThrows(IllegalArgumentException.class, () -> new Board(5));
-    }
+    void testInvalidPlayersNumberWrong() {
+        assertThrows(InvalidNumberOfPlayersException.class, () -> new Board(5));
+        assertThrows(InvalidNumberOfPlayersException.class, () -> new Board(1));
 
-    /**
-     * Tests if the constructor of the board throws correctly the IllegalArgumentException for a number
-     * of players lower than expected.
-     */
-    @Test
-    void testInvalidPlayersNumberLower() {
-        assertThrows(IllegalArgumentException.class, () -> new Board(1));
     }
 
     /**

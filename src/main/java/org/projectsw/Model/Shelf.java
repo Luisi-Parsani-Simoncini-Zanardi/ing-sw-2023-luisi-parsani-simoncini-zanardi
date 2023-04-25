@@ -13,6 +13,19 @@ public class Shelf {
     private int selectedColumnIndex;
 
     /**
+     * Constructs a new empty shelf with 6 rows and 5 columns, setting a default owner.
+     */
+    public Shelf(){
+        shelf = new Tile[Config.shelfHeight][Config.shelfLength];
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
+                shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
+            }
+        }
+        player = null;
+    }
+
+    /**
      * Constructs a new empty shelf with 6 rows and 5 columns.
      */
     public Shelf(Player player){
@@ -30,9 +43,9 @@ public class Shelf {
      * @param shelf the shelf to copy
      */
     public Shelf(Shelf shelf){
-        this.shelf = shelf.shelf;
+        this.shelf = shelf.getShelf();
         this.selectedColumnIndex = shelf.getSelectedColumnIndex();
-        this.player = shelf.player;
+        this.player = shelf.getPlayer();
     }
 
 
@@ -82,7 +95,9 @@ public class Shelf {
      * Sets the player attribute.
      * @param player the player to sat as new owner of the shelf.
      */
-    public void setPlayer(Player player){ this.player = player; }
+    public void setPlayer(Player player){
+        this.player = player;
+    }
 
     /**
      * Sets the selectedColumnIndex attribute.
