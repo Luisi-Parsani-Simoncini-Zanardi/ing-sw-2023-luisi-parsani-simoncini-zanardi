@@ -9,18 +9,20 @@ import static org.projectsw.Model.TilesEnum.EMPTY;
  */
 public class Shelf {
     private Tile[][] shelf;
+    private Player player;
     private int selectedColumnIndex;
 
     /**
      * Constructs a new empty shelf with 6 rows and 5 columns.
      */
-    public Shelf(){
+    public Shelf(Player player){
         shelf = new Tile[Config.shelfHeight][Config.shelfLength];
         for(int i=0;i<Config.shelfHeight;i++){
             for(int j=0;j<Config.shelfLength;j++){
                 shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
             }
         }
+        this.player = player;
     }
 
     /**
@@ -30,6 +32,7 @@ public class Shelf {
     public Shelf(Shelf shelf){
         this.shelf = shelf.shelf;
         this.selectedColumnIndex = shelf.getSelectedColumnIndex();
+        this.player = shelf.player;
     }
 
 
@@ -61,6 +64,12 @@ public class Shelf {
     }
 
     /**
+     * Returns the player who owns the shelf.
+     * @return the player attribute.
+     */
+    public Player getPlayer(){ return player; }
+
+    /**
      * Sets the matrix of tiles for the shelf from the given shelf.
      * @param shelf the shelf where the matrix of tiles is taken from
      */
@@ -68,6 +77,12 @@ public class Shelf {
         if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
     }
+
+    /**
+     * Sets the player attribute.
+     * @param player the player to sat as new owner of the shelf.
+     */
+    public void setPlayer(Player player){ this.player = player; }
 
     /**
      * Sets the selectedColumnIndex attribute.

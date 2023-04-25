@@ -30,7 +30,7 @@ public class Player {
         this.nickname=nickname;
         this.position=position;
         points=0;
-        shelf = new Shelf();
+        shelf = new Shelf(this);
         personalGoal = tryPersonalGoal();
         temporaryTiles = new ArrayList<>();
         commonGoalRedeemed = new ArrayList<>();
