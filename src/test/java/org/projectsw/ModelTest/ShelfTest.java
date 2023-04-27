@@ -3,6 +3,7 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Config;
+import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import org.projectsw.Model.*;
 
 import java.util.ArrayList;
@@ -246,6 +247,56 @@ class ShelfTest {
                 }
 
             }
+        }
+    }
+
+    /**
+     * Try for every possible length (form 0 to Config.maximumTilesPickable) of temporaryTiles to fill the board from [0][0], to [0][4], to [5][4] and
+     * calling updateSelectableColumns after every insertion, checking if the result is equal to the expected (for both length and elements contained).
+     * If the description isn't enough clear try to run the test with the commented lines and check what the function prints.
+     */
+    @Test
+    void updateSelectableColumnsTest() throws MaxTemporaryTilesExceededException {
+        Player player = new Player("Davide",0);
+        Shelf shelf = player.getShelf();
+        for(int numberOfTiles = 0; numberOfTiles < Config.maximumTilesPickable + 1; numberOfTiles++){
+            for(int n = 0; n < numberOfTiles; n++){
+                player.addTemporaryTile(new Tile(CATS,0));
+            }
+            //System.out.println("Testing for number of tiles = "+numberOfTiles+"\nConfirmed number of tiles = "+player.getTemporaryTiles().size());
+            for(int i=0;i<Config.shelfHeight;i++){
+                for(int j=0;j<Config.shelfLength;j++){
+                    shelf.insertTiles(new Tile(CATS,0),i,j);
+                    shelf.updateSelectableColumns();
+                    //System.out.println("Insert in ["+i+"]["+j+"]");
+                    ArrayList<Integer> nowSelectable = shelf.getSelectableColumns();
+                    if(i > (Config.shelfHeight - numberOfTiles)){
+                        //System.out.println("b1,vector: "+nowSelectable.toString());
+                        assertEquals(0,nowSelectable.size());
+                    } else if(i == (Config.shelfHeight - numberOfTiles)){
+                        //System.out.println("b2,vector: "+nowSelectable.toString());
+                        assertEquals((Config.shelfLength - 1 - j),nowSelectable.size());
+                        for(int h=j+1;h<Config.shelfLength;h++){
+                            assertTrue(nowSelectable.contains(h));
+                        }
+                    } else if (i == (Config.shelfHeight - 1)){
+                        //System.out.println("b3,vector: "+nowSelectable.toString());
+                        assertEquals((Config.shelfLength - 1 - j),nowSelectable.size());
+                        for(int h=j+1;h<Config.shelfLength;h++){
+                            assertTrue(nowSelectable.contains(h));
+                        }
+                    } else {
+                        //System.out.println("b4,vector: "+nowSelectable.toString());
+                        assertEquals(5,nowSelectable.size());
+                        for(int h=0;h<Config.shelfLength;h++){
+                            assertTrue(nowSelectable.contains(h));
+                        }
+                    }
+                    //System.out.println("Correct");
+                }
+            }
+            shelf = new Shelf(player);
+            player.clearTemporaryTiles();
         }
     }
 }
