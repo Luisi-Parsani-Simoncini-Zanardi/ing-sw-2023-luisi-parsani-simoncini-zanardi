@@ -140,46 +140,24 @@ class EngineTest extends TestUtils {
 
     }
 
+    @Test
+    void selectAndDeselectColumn(){}
 
     @Test
-    void checkRemainingColumnSpaceTest() throws LobbyClosedException, InvalidNumberOfPlayersException, InvalidNameException {
-        Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide",2);
-        engine.playerJoin("Marco");
-        Shelf shelf = new Shelf();
-        shelf.insertTiles(new Tile(GAMES,0),5,0);
-        shelf.insertTiles(new Tile(GAMES,0),5,1);
-        shelf.insertTiles(new Tile(GAMES,0),5,2);
-        shelf.insertTiles(new Tile(GAMES,0),5,3);
-        shelf.insertTiles(new Tile(GAMES,0),5,4);
-        shelf.insertTiles(new Tile(GAMES,0),4,0);
-        shelf.insertTiles(new Tile(GAMES,0),4,1);
-        shelf.insertTiles(new Tile(GAMES,0),4,2);
-        shelf.insertTiles(new Tile(GAMES,0),4,4);
-        shelf.insertTiles(new Tile(GAMES,0),3,2);
-        shelf.insertTiles(new Tile(GAMES,0),3,4);
-        shelf.insertTiles(new Tile(GAMES,0),2,2);
-        shelf.insertTiles(new Tile(GAMES,0),2,4);
-        shelf.insertTiles(new Tile(GAMES,0),1,4);
-        shelf.insertTiles(new Tile(GAMES,0),4,3);
-        engine.getGame().getPlayers().get(0).setShelf(shelf);
-    }
-
-    @Test
-    void tileSelectionSimulation() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
+    void tileSelectionSimulationEmptyShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");
         Board board = new Board(4);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
+        board.updateBoard(new Tile(CATS,0),1,1);
+        board.updateBoard(new Tile(BOOKS,0),1,2);
+        board.updateBoard(new Tile(FRAMES,0),1,3);
+        board.updateBoard(new Tile(CATS,0),2,1);
+        board.updateBoard(new Tile(BOOKS,0),2,2);
+        board.updateBoard(new Tile(FRAMES,0),2,3);
+        board.updateBoard(new Tile(CATS,0),3,1);
+        board.updateBoard(new Tile(BOOKS,0),3,2);
+        board.updateBoard(new Tile(FRAMES,0),3,3);
         engine.getGame().getBoard().setBoard(board.getBoard());
         engine.getGame().getBoard().printBoard();
         engine.selectTiles(new Point(1,1));
@@ -198,11 +176,50 @@ class EngineTest extends TestUtils {
     }
 
     @Test
-    void selectTiles() {
-    }
-
-    @Test
-    void placeTiles() {
+    void tileSelectionAndInsertionSimulationFullShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Marco");
+        Board board = new Board(4);
+        board.updateBoard(new Tile(CATS,0),1,1);
+        board.updateBoard(new Tile(BOOKS,0),1,2);
+        board.updateBoard(new Tile(FRAMES,0),1,3);
+        board.updateBoard(new Tile(CATS,0),2,1);
+        board.updateBoard(new Tile(BOOKS,0),2,2);
+        board.updateBoard(new Tile(FRAMES,0),2,3);
+        board.updateBoard(new Tile(CATS,0),3,1);
+        board.updateBoard(new Tile(BOOKS,0),3,2);
+        board.updateBoard(new Tile(FRAMES,0),3,3);
+        Shelf shelf = new Shelf();
+        for(int i=0;i<3;i++){
+            for(int j=0;j<5;j++) {
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, j);
+            }
+        }
+        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,0);
+        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,1);
+        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,2);
+        engine.getGame().getCurrentPlayer().setShelf(shelf);
+        engine.getGame().getBoard().setBoard(board.getBoard());
+        engine.getGame().getBoard().printBoard();
+        engine.getGame().getCurrentPlayer().getShelf().updateSelectableColumns();
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.selectTiles(new Point(1,1));
+        engine.selectTiles(new Point(1,2));
+        engine.selectTiles(new Point(1,3));
+        engine.getGame().getBoard().printBoard();
+        engine.confirmSelectedTiles();
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.getGame().getBoard().printBoard();
+        engine.selectColumn(3);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.placeTiles(0);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.placeTiles(0);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.placeTiles(0);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.getGame().getBoard().printBoard();
     }
 
     /**

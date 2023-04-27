@@ -3,14 +3,11 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Config;
-import org.projectsw.Model.PersonalGoal;
-import org.projectsw.Model.Shelf;
-import org.projectsw.Model.Tile;
-import org.projectsw.Model.TilesEnum;
+import org.projectsw.Model.*;
+
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.projectsw.Model.TilesEnum.CATS;
-import static org.projectsw.Model.TilesEnum.GAMES;
+import static org.projectsw.Model.TilesEnum.*;
 
 class ShelfTest {
 
@@ -23,18 +20,34 @@ class ShelfTest {
     }
 
     /**
-     * Tests if the empty constructor of shelf actually creates a 6x5 matrix of empty tiles.
+     * Tests if constructors Shelf() and Shelf(Player) actually creates two correct shelf.
      */
     @Test
     void integrityShelfTest(){
-        Shelf shelf = new Shelf();
-        assertEquals(6,shelf.getShelf().length);
-        assertEquals(5,shelf.getShelf()[0].length);
+        Shelf shelf1 = new Shelf();
+        assertEquals(6,shelf1.getShelf().length);
+        assertEquals(5,shelf1.getShelf()[0].length);
         for(int i=0; i<6; i++){
             for(int j=0; j<5; j++){
-                assertEquals(TilesEnum.EMPTY,shelf.getShelf()[i][j].getTile());
+                assertEquals(TilesEnum.EMPTY,shelf1.getShelf()[i][j].getTile());
             }
         }
+        assertNull(shelf1.getSelectedColumn());
+        assertNull(shelf1.getSelectableColumns());
+        assertNull(shelf1.getPlayer());
+
+        Player player = new Player("Davide",0);
+        Shelf shelf2 = new Shelf(player);
+        assertEquals(6,shelf2.getShelf().length);
+        assertEquals(5,shelf2.getShelf()[0].length);
+        for(int i=0; i<6; i++){
+            for(int j=0; j<5; j++){
+                assertEquals(TilesEnum.EMPTY,shelf2.getShelf()[i][j].getTile());
+            }
+        }
+        assertNull(shelf2.getSelectedColumn());
+        assertNull(shelf2.getSelectableColumns());
+        assertEquals(player,shelf2.getPlayer());
     }
 
     /**
@@ -206,27 +219,21 @@ class ShelfTest {
     }
 
     @Test
-    void getSelectableColumnsTest() {
+    void setAndGetSelectableColumnsTest() {
         Shelf shelf = new Shelf();
-        shelf.insertTiles(new Tile(GAMES,0),5,0);
-        shelf.insertTiles(new Tile(GAMES,0),5,1);
-        shelf.insertTiles(new Tile(GAMES,0),5,2);
-        shelf.insertTiles(new Tile(GAMES,0),5,3);
-        shelf.insertTiles(new Tile(GAMES,0),5,4);
-        shelf.insertTiles(new Tile(GAMES,0),4,0);
-        shelf.insertTiles(new Tile(GAMES,0),4,1);
-        shelf.insertTiles(new Tile(GAMES,0),4,2);
-        shelf.insertTiles(new Tile(GAMES,0),4,4);
-        shelf.insertTiles(new Tile(GAMES,0),3,2);
-        shelf.insertTiles(new Tile(GAMES,0),3,4);
-        shelf.insertTiles(new Tile(GAMES,0),2,2);
-        shelf.insertTiles(new Tile(GAMES,0),2,4);
-        shelf.insertTiles(new Tile(GAMES,0),1,4);
-        shelf.insertTiles(new Tile(GAMES,0),4,3);
-        shelf.printShelf();
-        ArrayList<Integer> selectableColumns = shelf.getSelectableColumns(5);
-        System.out.println(selectableColumns.toString());
+        ArrayList<Integer> selectableColumns = new ArrayList<>();
+        selectableColumns.add(0);
+        selectableColumns.add(1);
+        selectableColumns.add(2);
+        shelf.setSelectableColumns(selectableColumns);
+        assertEquals(3,shelf.getSelectableColumns().size());
+        assertEquals(0,shelf.getSelectableColumns().get(0));
+        assertEquals(1,shelf.getSelectableColumns().get(1));
+        assertEquals(2,shelf.getSelectableColumns().get(2));
+        shelf.cleanSelectableColumns();
+        assertEquals(0,shelf.getSelectableColumns().size());
     }
+
 
     /**
      * Tests if maxFreeColumnSpace always returns the exact expected value of maxFreeColumns space. Tested by filling the

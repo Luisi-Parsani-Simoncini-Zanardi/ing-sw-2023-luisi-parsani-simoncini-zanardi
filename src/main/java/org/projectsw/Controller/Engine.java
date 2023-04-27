@@ -126,10 +126,10 @@ public class Engine {
     }
 
     /**
-     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles and cleans the
-     * temporaryPoints list after the copying.
-     * The TemporaryPoints passed already do not correspond to empty or unused tiles,
-     * but if this does not happen addTemporaryTile throws InvalidArgumentException.
+     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles,
+     * after the copying cleans the temporaryPoints list and update the selectable columns.
+     * Thanks to other exceptions in selectTiles the TemporaryPoints passed already do not correspond to empty or unused tiles,
+     * but if they don't addTemporaryTile throws InvalidArgumentException.
      */
     public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException {
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
@@ -138,19 +138,29 @@ public class Engine {
             game.getCurrentPlayer().addTemporaryTile(tile);
         }
         game.getBoard().cleanTemporaryPoints();
+        game.getCurrentPlayer().getShelf().updateSelectableColumns();
     }
 
     /**
-     * Checks if the column selected by the player is selectable by calling getSelectableColumns.
+     * Checks if the player has already selected a tile, if he did it, it calls deselectTiles, if he didn't and the column at the
+     * specified index is selectable, it sets the passed index as selected column of the player.
      * @param index The index of column that player wants to select.
      * @throws UnselectableColumnException if the column is not selectable.
      */
-    public void selectColumn(int index) throws UnselectableColumnException {
-        ArrayList<Integer> selectableColumns = game.getCurrentPlayer().getShelf().getSelectableColumns(game.getCurrentPlayer().getTemporaryTiles().size());
-        if(selectableColumns.contains(index)){
-            game.getCurrentPlayer().getShelf().setSelectedColumnIndex(index);
-        }
-        else throw new UnselectableColumnException();
+    public void selectColumn(Integer index) throws UnselectableColumnException {
+        if(game.getCurrentPlayer().getShelf().getSelectedColumn() == null) {
+            if(game.getCurrentPlayer().getShelf().getSelectableColumns().contains(index)){
+                game.getCurrentPlayer().getShelf().setSelectedColumn(index);
+            } else throw new UnselectableColumnException();
+        } else deselectColumn();
+    }
+
+    /**
+     * Sets as null the selected column index and updates the selectable columns arrayList in currentPlayer's shelf.
+     */
+    public void deselectColumn(){
+        game.getCurrentPlayer().getShelf().setSelectedColumn(null);
+        game.getCurrentPlayer().getShelf().updateSelectableColumns();
     }
 
     /**
@@ -159,15 +169,22 @@ public class Engine {
      */
     public void placeTiles(int temporaryIndex) {
         Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
-        for(int i=0;i<Config.shelfHeight;i++){
-            if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
-                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i-1,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+        int selectedColumn = game.getCurrentPlayer().getShelf().getSelectedColumn();
+        for(int i=Config.shelfHeight-1; i>=0; i--){
+            if(!game.getCurrentPlayer().getShelf().getShelf()[i][selectedColumn].getTile().equals(EMPTY)){
+                if(i != Config.shelfHeight-1){
+                    game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i+1,selectedColumn);
+                }
                 break;
             }
-            if(i == Config.shelfHeight-1){
-                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+            if(i == 0){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,selectedColumn);
                 break;
             }
+        }
+        if(game.getCurrentPlayer().getTemporaryTiles().isEmpty()){
+            deselectColumn();
+            //endTurn();
         }
     }
 

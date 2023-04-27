@@ -10,10 +10,11 @@ import static org.projectsw.Model.TilesEnum.EMPTY;
 public class Shelf {
     private Tile[][] shelf;
     private Player player;
-    private int selectedColumnIndex;
+    private ArrayList<Integer> selectableColumns;
+    private Integer selectedColumn;
 
     /**
-     * Constructs a new empty shelf with 6 rows and 5 columns, setting a default owner.
+     * Constructs a new empty shelf with 6 rows and 5 columns, setting as null all the other parameters.
      */
     public Shelf(){
         shelf = new Tile[Config.shelfHeight][Config.shelfLength];
@@ -23,10 +24,13 @@ public class Shelf {
             }
         }
         player = null;
+        selectableColumns = null;
+        selectedColumn = null;
     }
 
     /**
-     * Constructs a new empty shelf with 6 rows and 5 columns.
+     * Constructs a new empty shelf with 6 rows and 5 columns setting the passed player
+     * as player attribute and setting null all the others.
      */
     public Shelf(Player player){
         shelf = new Tile[Config.shelfHeight][Config.shelfLength];
@@ -36,6 +40,8 @@ public class Shelf {
             }
         }
         this.player = player;
+        selectableColumns = null;
+        selectedColumn = null;
     }
 
     /**
@@ -44,7 +50,8 @@ public class Shelf {
      */
     public Shelf(Shelf shelf){
         this.shelf = shelf.getShelf();
-        this.selectedColumnIndex = shelf.getSelectedColumnIndex();
+        this.selectableColumns = shelf.getSelectableColumns();
+        this.selectedColumn = shelf.getSelectedColumn();
         this.player = shelf.getPlayer();
     }
 
@@ -58,17 +65,18 @@ public class Shelf {
     }
 
     /**
-     * Returns the selectedColumnIndex attribute.
-     * @return the selectedColumnIndex attribute
+     * Returns the selectable columns attribute.
+     * @return the arraylist of integers containing the indexes of selectable columns.
      */
-    public int getSelectedColumnIndex() {
-        return selectedColumnIndex;
+    public ArrayList<Integer> getSelectableColumns() {
+        return selectableColumns;
     }
 
     /**
      * Returns a specific tile of the shelf.
      * @param row coordinate for the row
      * @param column coordinate for the column
+     * @throws IndexOutOfBoundsException if row or column exceed the shelf bounds (Config.shelfHeight or Config.shelfLength)
      * @return the tile at the coordinates row x column
      */
     public Tile getTileShelf(int row, int column) throws IndexOutOfBoundsException{
@@ -83,8 +91,17 @@ public class Shelf {
     public Player getPlayer(){ return player; }
 
     /**
+     * Return the selected column attribute.
+     * @return the int corresponding to the selected column attribute.
+     */
+    public Integer getSelectedColumn() {
+        return selectedColumn;
+    }
+
+    /**
      * Sets the matrix of tiles for the shelf from the given shelf.
      * @param shelf the shelf where the matrix of tiles is taken from
+     * @throws IllegalArgumentException if the parameter shelf hasn't the right dimensions (Config.shelfHeight or Config.shelfLength)
      */
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
         if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
@@ -100,11 +117,19 @@ public class Shelf {
     }
 
     /**
-     * Sets the selectedColumnIndex attribute.
-     * @param selectedColumnIndex the int to set as new selectedColumnIndex.
+     * Sets the selectable columns attribute.
+     * @param selectableColumns the arraylist of integers to ses as new array list of integers.
      */
-    public void setSelectedColumnIndex(int selectedColumnIndex) {
-        this.selectedColumnIndex = selectedColumnIndex;
+    public void setSelectableColumns(ArrayList<Integer> selectableColumns) {
+        this.selectableColumns = selectableColumns;
+    }
+
+    /**
+     * Sets the selected column attribute.
+     * @param selectedColumn the int to set as new selected column attribute.
+     */
+    public void setSelectedColumn(Integer selectedColumn) {
+        this.selectedColumn = selectedColumn;
     }
 
     /**
@@ -112,7 +137,8 @@ public class Shelf {
      * @param tile the tile to insert
      * @param row the row to insert the tile into
      * @param column the column to insert the tile into
-     * @throws IndexOutOfBoundsException if the row or column is out of bounds
+     * @throws IndexOutOfBoundsException if the row or column is out of bounds (Config.shelfHeight or Config.shelfLength)
+     * @throws IllegalArgumentException if row and column correspond to an EMPTY or an UNUSED tile
      */
     public void insertTiles(Tile tile, int row, int column) {
         if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
@@ -121,22 +147,20 @@ public class Shelf {
     }
 
     /**
-     * Returns all the columns that have a number of empty spaces equal or greater than "temporaryTilesDimension".
-     * @param temporaryTilesDimension the minimum number of free spaces that the returned columns must have.
-     * @return an ArrayList containing all the indexes of columns that have a number of empty spaces equal or greater
-     *         than "temporaryTilesDimension".
+     * Updates the selectable columns arrayList after checking the size of temporaryTiles arrayList of the player.
      */
-    public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension) {
+    public void updateSelectableColumns() {
         ArrayList<Integer> selectableColumns = new ArrayList<>();
-        for (int i = 0; i < Config.shelfLength; i++) {
-            for (int j = 0; j < Config.shelfHeight; j++) {
-                if (!shelf[j][i].getTile().equals(EMPTY) || j == Config.shelfHeight - 1) {
-                    if (temporaryTilesDimension <= j) selectableColumns.add(i);
-                    break;
-                }
+        for (int j=0; j<Config.shelfLength; j++) {
+            int freeSpace = 0;
+            for (int i=Config.shelfHeight-1; i>=0; i--){
+                if (shelf[i][j].getTile().equals(EMPTY)) {
+                    freeSpace++;
+                } else break;
             }
+            if(freeSpace >= this.player.getTemporaryTiles().size() && freeSpace > 0) selectableColumns.add(j);
         }
-        return selectableColumns;
+        this.selectableColumns = selectableColumns;
     }
 
     /**
@@ -159,10 +183,17 @@ public class Shelf {
     }
 
     /**
+     * Clears the selectable columns arrayList.
+     */
+    public void cleanSelectableColumns() {
+        selectableColumns.clear();
+    }
+
+    /**
      * Prints the shelf.
      */
     public void printShelf(){
-        for(int i=0;i<Config.shelfHeight;i++){
+        for(int i=Config.shelfHeight-1;i>=0;i--){
             for(int j=0;j<Config.shelfLength;j++){
                 Tile current = shelf[i][j];
                 switch(current.getTile()){
@@ -178,6 +209,16 @@ public class Shelf {
             }
             System.out.print("\n");
         }
-        System.out.print("\n");
+        for(int h=0;h<Config.shelfLength;h++){
+            if(selectedColumn == null){
+                if(selectableColumns.contains(h)) System.out.print("(S)\t\t");
+                else System.out.print("(U)\t\t");
+            } else {
+                if(h == selectedColumn) System.out.print("(D)\t\t");
+                else  System.out.print("(N)\t\t");
+            }
+        }
+        System.out.print("\n\n");
     }
+
 }
