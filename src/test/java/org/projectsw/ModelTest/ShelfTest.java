@@ -126,22 +126,13 @@ class ShelfTest {
     }
 
     /**
-     * Tests if the getTileShelf method throws an IndexOutOfBoundsException
-     * when the row argument is too big.
+     * Tests if the getTileShelf method throws correctly an IndexOutOfBoundsException
+     * when the row or the column argument is too big.
      */
     @Test
-    void getTileShelfExceptionWhenRowIsTooBig() {
+    void getTileShelfExceptionWhenInputIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(6, 0));
-    }
-
-    /**
-     * Tests if the getTileShelf method throws an IndexOutOfBoundsException
-     * when the column argument is too big.
-     */
-    @Test
-    void getTileShelfExceptionWhenColumnIsTooBig() {
-        Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () -> shelf.getTileShelf(0, 5));
     }
 
@@ -167,44 +158,29 @@ class ShelfTest {
 
     /**
      * Tests if the insertTiles method throws an IndexOutOfBoundsException
-     * when the row argument is too big.
+     * when the row or the column argument is too big.
      */
     @Test
-    void insertExceptionWhenRowIsTooBig() {
+    void insertExceptionWhenInputIsTooBig() {
         Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () ->
                 shelf.insertTiles(new Tile(CATS,0),6,0));
-    }
-
-    /**
-     * Tests if the insertTiles method throws an IndexOutOfBoundsException
-     * when the column argument is too big.
-     */
-    @Test
-    void insertExceptionWhenColumnIsTooBig() {
-        Shelf shelf = new Shelf();
         assertThrows(IndexOutOfBoundsException.class, () ->
                 shelf.insertTiles(new Tile(CATS,0),0,5));
     }
+
     /**
-     * Tests if the insertTiles method throws an IllegalArgumentException when try to insert empty.
+     * Tests if the insertTiles method throws an IllegalArgumentException when try to insert an unusable tile, EMPTY or UNUSED.
      */
     @Test
-    void insertExceptionWhenInsertEmpty() {
+    void insertExceptionWhenInsertUnusable() {
         Shelf shelf = new Shelf();
         assertThrows(IllegalArgumentException.class, () ->
                 shelf.insertTiles(new Tile(TilesEnum.EMPTY,0),0,0));
-    }
-
-    /**
-     * Tests if the insertTiles method throws an IllegalArgumentException when try to insert unused.
-     */
-    @Test
-    void insertExceptionWhenInsertUnused() {
-        Shelf shelf = new Shelf();
         assertThrows(IllegalArgumentException.class, () ->
                 shelf.insertTiles(new Tile(TilesEnum.UNUSED,0),0,0));
     }
+
 
     /**
      * Tests if the Tile functions are well integrated with Shelf class by calling them from the shelf object.
@@ -218,8 +194,11 @@ class ShelfTest {
         assertEquals(tile.getImageNumber(),shelf.getShelf()[0][0].getImageNumber());
     }
 
+    /**
+     * Tests if the setter, getter and cleaner of selectableColumns ArrayList works correctly.
+     */
     @Test
-    void setAndGetSelectableColumnsTest() {
+    void setGetAndCleanSelectableColumnsTest() {
         Shelf shelf = new Shelf();
         ArrayList<Integer> selectableColumns = new ArrayList<>();
         selectableColumns.add(0);
@@ -232,6 +211,20 @@ class ShelfTest {
         assertEquals(2,shelf.getSelectableColumns().get(2));
         shelf.cleanSelectableColumns();
         assertEquals(0,shelf.getSelectableColumns().size());
+    }
+
+    /**
+     * Tests if the setter, getter and cleaner of selectedColumn attribute works correctly.
+     */
+    @Test
+    void setGetAndCleanSelectedColumnTest() {
+        Shelf shelf = new Shelf();
+        Integer selectedColumn = 0;
+        assertNull(shelf.getSelectedColumn());
+        shelf.setSelectedColumn(selectedColumn);
+        assertEquals(0,shelf.getSelectedColumn());
+        shelf.cleanSelectedColumn();
+        assertNull(shelf.getSelectedColumn());
     }
 
 

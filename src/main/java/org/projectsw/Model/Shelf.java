@@ -190,6 +190,11 @@ public class Shelf {
     }
 
     /**
+     * Sets as null the selectedColumn attribute.
+     */
+    public void cleanSelectedColumn(){ selectedColumn = null; }
+
+    /**
      * Prints the shelf.
      */
     public void printShelf(){

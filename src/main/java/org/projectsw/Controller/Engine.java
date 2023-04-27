@@ -159,7 +159,7 @@ public class Engine {
      * Sets as null the selected column index and updates the selectable columns arrayList in currentPlayer's shelf.
      */
     public void deselectColumn(){
-        game.getCurrentPlayer().getShelf().setSelectedColumn(null);
+        game.getCurrentPlayer().getShelf().cleanSelectedColumn();
         game.getCurrentPlayer().getShelf().updateSelectableColumns();
     }
 
