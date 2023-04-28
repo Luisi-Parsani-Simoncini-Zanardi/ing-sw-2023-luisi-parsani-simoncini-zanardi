@@ -1,5 +1,6 @@
 package org.projectsw.Distributed;
-import org.projectsw.Model.Game;
+
+import org.projectsw.View.TextualUI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -16,6 +17,6 @@ public interface Server extends Remote {
      * @param client  the client that generated the event
      * @param arg     the choice made by the client
      */
-    void update(Client client, Game arg) throws RemoteException;
+    void update(Client client, TextualUI.Event arg) throws RemoteException;
 
 }

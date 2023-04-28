@@ -4,6 +4,8 @@ import org.projectsw.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
+import org.projectsw.View.TextualUI;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -438,9 +440,9 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    //TODO: attenzione|||||||
-    public void update(Client client, Game game){
-
+    //TODO: attenzione
+    public void update(Client client, TextualUI.Event game){
+        //gestisce gli input e chiama le funzioni
     }
 
 }

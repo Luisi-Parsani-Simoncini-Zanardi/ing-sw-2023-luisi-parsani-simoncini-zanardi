@@ -3,8 +3,8 @@ package org.projectsw.Distributed;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.JoinFailedException;
-import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
+import org.projectsw.View.TextualUI;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -58,7 +58,7 @@ public class ServerImpl implements Server{
     }
 
     @Override
-    public void update(Client client, Game arg) throws RemoteException {
+    public void update(Client client, TextualUI.Event arg) throws RemoteException {
         this.controller.update(client, arg);
     }
 }

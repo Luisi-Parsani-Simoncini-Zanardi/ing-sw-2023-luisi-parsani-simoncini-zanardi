@@ -2,6 +2,7 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import org.projectsw.Config;
+import org.projectsw.Util.Observable;
 
 import java.awt.*;
 import java.io.FileReader;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
  */
-public class Board{
+public class Board extends Observable<Game.Event> {
     private Tile[][] board;
     private boolean endGame;
     private Bag bag;
@@ -34,6 +35,7 @@ public class Board{
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -61,6 +63,7 @@ public class Board{
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -73,6 +76,7 @@ public class Board{
         this.bag = board.getBag();
         this.temporaryPoints = board.getTemporaryPoints();
         this.updateSelectablePoints();
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -123,6 +127,7 @@ public class Board{
         if(board.length != Config.boardHeight) throw new IllegalArgumentException();
         if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -131,6 +136,7 @@ public class Board{
      */
     public void setEndGame(boolean endGame) {
         this.endGame = endGame;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -156,6 +162,7 @@ public class Board{
             Tile tmp = board[(int) point.getY()][(int) point.getX()];
             board[(int) point.getY()][(int) point.getX()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
+            setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
             return tmp;
         }
     }
@@ -171,6 +178,7 @@ public class Board{
         if(row>Config.boardHeight || column>Config.boardLength) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
         updateSelectablePoints();
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**

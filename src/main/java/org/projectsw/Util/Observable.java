@@ -1,5 +1,7 @@
 package org.projectsw.Util;
 
+import org.projectsw.Model.Game;
+
 import java.util.Vector;
 
 /**
@@ -189,5 +191,10 @@ public class Observable<Event extends Enum<Event>> {
      */
     public synchronized int countObservers() {
         return obs.size();
+    }
+
+    public void setChangedAndNotifyObservers(Event arg) {
+        setChanged();
+        notifyObservers(arg);
     }
 }

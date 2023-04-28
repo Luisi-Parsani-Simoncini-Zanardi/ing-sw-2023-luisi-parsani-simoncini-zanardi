@@ -3,13 +3,15 @@ package org.projectsw.Model;
 import org.projectsw.Config;
 import org.projectsw.Exceptions.EmptyTilesException;
 import org.projectsw.Exceptions.UnusedTilesException;
+import org.projectsw.Util.Observable;
+
 import java.util.ArrayList;
 import static org.projectsw.Model.TilesEnum.EMPTY;
 
 /**
  * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
  */
-public class Shelf {
+public class Shelf extends Observable<Game.Event> {
     private Tile[][] shelf;
     private int selectedColumnIndex;
 
@@ -32,6 +34,7 @@ public class Shelf {
     public Shelf(Shelf shelf){
         this.shelf = shelf.shelf;
         this.selectedColumnIndex = shelf.getSelectedColumnIndex();
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
 
@@ -69,6 +72,7 @@ public class Shelf {
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
         if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
     /**
@@ -93,6 +97,7 @@ public class Shelf {
         else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
         else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
         else shelf[row][column] = tile;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
     /**

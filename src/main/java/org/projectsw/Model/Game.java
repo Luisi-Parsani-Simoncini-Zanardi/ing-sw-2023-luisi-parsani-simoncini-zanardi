@@ -16,7 +16,7 @@ import java.util.Random;
 public class Game extends Observable<Game.Event> {
 
     public enum Event{
-        UPDATED_BOARD, UPDATED_PLAYER_SHELF, INIT
+        UPDATED_BOARD, UPDATED_SHELF, UPDATED_CURRENT_PLAYER, UPDATED_CHAT
     }
 
     private GameStates gameState;
@@ -74,13 +74,13 @@ public class Game extends Observable<Game.Event> {
      * Returns the current state of the game.
      * @return the current state of the game.
      */
-    public GameStates getGameState() {return gameState;}
+    public GameStates getGameState() { return gameState; }
 
     /**
      * Returns the number of players of the game.
      * @return the number of players of the game.
      */
-    public int getNumberOfPlayers() {return numberOfPlayers;}
+    public int getNumberOfPlayers() { return numberOfPlayers; }
 
     /**
      * Returns the first player of the game.
@@ -144,7 +144,7 @@ public class Game extends Observable<Game.Event> {
      * Sets the game state as the passed parameter.
      * @param gameState the game state to set.
      */
-    public void setGameState(GameStates gameState) {this.gameState = gameState;}
+    public void setGameState(GameStates gameState) { this.gameState = gameState; }
 
     /**
      * Sets the first player of the game.
@@ -160,6 +160,7 @@ public class Game extends Observable<Game.Event> {
      */
     public void setCurrentPlayer(Player currentPlayer){
         this.currentPlayer=currentPlayer;
+        setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
     }
 
     //TODO: creare eccezioni ad-hoc, la lista di players deve essere lunga quanto numberOfPlayers e i nomi non devono essere duplicati
@@ -177,6 +178,7 @@ public class Game extends Observable<Game.Event> {
      */
     public void setBoard(Board board) {
         this.board = board;
+        setChangedAndNotifyObservers(Event.UPDATED_BOARD);
     }
 
     /**
@@ -185,6 +187,7 @@ public class Game extends Observable<Game.Event> {
      */
     public void setChat(Chat chat) {
         this.chat = chat;
+        setChangedAndNotifyObservers(Event.UPDATED_CHAT);
     }
 
     /**
@@ -293,6 +296,4 @@ public class Game extends Observable<Game.Event> {
 
         return commonGoals;
     }
-
-
 }

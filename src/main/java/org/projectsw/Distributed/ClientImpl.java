@@ -12,13 +12,22 @@ public class ClientImpl implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
 
-    public ClientImpl(boolean useGui){
-        if(useGui){
-
+    public ClientImpl(Server server){
+        try {
+            server.register(this);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
+        tui.addObserver((o, arg) -> {
+            try {
+                server.update(this, arg);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
     @Override
     public void update(GameView o, Game.Event arg) throws RemoteException {
-
+        //Passa la GameView alla TextualUI
     }
 }
