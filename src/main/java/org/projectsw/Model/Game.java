@@ -3,6 +3,8 @@ package org.projectsw.Model;
 import org.projectsw.Config;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.CommonGoal.*;
+import org.projectsw.Util.Observable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,7 +13,11 @@ import java.util.Random;
  * The class contains information about the game state,
  * including the board, players (with info on the currently playing one and the first one), chat, and common goals.
  */
-public class Game{
+public class Game extends Observable<Game.Event> {
+
+    public enum Event{
+        UPDATED_BOARD , UPDATED_PLAYER_SHELF
+    }
 
     private GameStates gameState;
     private final int numberOfPlayers;
