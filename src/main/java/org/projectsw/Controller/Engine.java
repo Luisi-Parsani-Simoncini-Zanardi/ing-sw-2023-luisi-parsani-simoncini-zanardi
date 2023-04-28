@@ -1,24 +1,30 @@
 package org.projectsw.Controller;
 
 import org.projectsw.Config;
+import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
 
 /**
  * The class contains the application logic methods of the game.
  */
-public class Engine {
+public class Engine{
 
+    private final ArrayList<Client> clients = new ArrayList<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
+
+    /**
+     * get the Clients
+     * @return the clients
+     */
+    public ArrayList<Client> getClients() { return this.clients; }
 
     /**
      * get the game on which the controller is running
@@ -430,6 +436,11 @@ public class Engine {
     private boolean isEmptyOrUnusedBoard (int x, int y){
         return (game.getBoard().getBoard()[y][x].getTile() == EMPTY) ||
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
+    }
+
+    //TODO: attenzione|||||||
+    public void update(Client client, Game game){
+
     }
 
 }

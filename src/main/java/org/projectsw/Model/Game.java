@@ -16,7 +16,7 @@ import java.util.Random;
 public class Game extends Observable<Game.Event> {
 
     public enum Event{
-        UPDATED_BOARD , UPDATED_PLAYER_SHELF
+        UPDATED_BOARD, UPDATED_PLAYER_SHELF, INIT
     }
 
     private GameStates gameState;

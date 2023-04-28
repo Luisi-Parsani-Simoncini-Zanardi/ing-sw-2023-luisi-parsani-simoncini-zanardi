@@ -3,10 +3,8 @@ package org.projectsw.Model;
 import java.io.Serializable;
 
 public class GameView implements Serializable {
-    static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 1L;
     private final Board gameBoard;
-
     private final Shelf currentPlayerShelf;
 
     public GameView(Game model){
