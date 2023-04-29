@@ -4,7 +4,7 @@ import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.FirstJoinFailedException;
 import org.projectsw.Exceptions.JoinFailedException;
 import org.projectsw.Model.GameView;
-import org.projectsw.View.TextualUI;
+import org.projectsw.View.UIEvent;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -58,7 +58,7 @@ public class ServerImpl implements Server{
     }
 
     @Override
-    public void update(Client client, TextualUI.Event arg) throws RemoteException {
+    public void update(Client client, UIEvent arg) throws RemoteException {
         this.controller.update(client, arg);
     }
 }

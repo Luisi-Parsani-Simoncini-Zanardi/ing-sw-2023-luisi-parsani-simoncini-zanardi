@@ -4,7 +4,7 @@ import org.projectsw.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
-import org.projectsw.View.TextualUI;
+import org.projectsw.View.UIEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -441,7 +441,7 @@ public class Engine{
     }
 
     //TODO: attenzione
-    public void update(Client client, TextualUI.Event game){
+    public void update(Client client, UIEvent game){
         //gestisce gli input e chiama le funzioni
     }
 

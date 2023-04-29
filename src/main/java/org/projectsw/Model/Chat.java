@@ -1,11 +1,13 @@
 package org.projectsw.Model;
 
+import org.projectsw.Util.Observable;
+
 import java.util.ArrayList;
 
 /**
  * The Chat class represents a chat log.
  */
-public class Chat {
+public class Chat extends Observable<Game.Event> {
 
     private final ArrayList<Message> chat;
 

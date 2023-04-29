@@ -331,6 +331,7 @@ public class Board extends Observable<Game.Event> {
         return false;
     }
 
+    //TODO: codice duplicato con linea 128 della shelf da sistemare
     /**
      * Prints the board.
      */

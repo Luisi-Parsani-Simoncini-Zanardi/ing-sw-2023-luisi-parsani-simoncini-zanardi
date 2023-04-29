@@ -67,7 +67,7 @@ public class Game extends Observable<Game.Event> {
         try {
             commonGoals = this.randomCommonGoals();
         }catch(Exception e){System.err.println(e.getMessage());}
-
+        setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
     }
 
     /**

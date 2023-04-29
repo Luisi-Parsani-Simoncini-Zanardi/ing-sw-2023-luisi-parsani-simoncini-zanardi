@@ -7,13 +7,20 @@ public class GameView implements Serializable {
 
     private final Board gameBoard;
     private final Shelf currentPlayerShelf;
+    private final String currentPlayerName;
+    private final Chat chat;
 
     public GameView(Game model){
         this.gameBoard =  model.getBoard();
         this.currentPlayerShelf = model.getCurrentPlayer().getShelf();
+        this.currentPlayerName = model.getCurrentPlayer().getNickname();
+        this.chat = model.getChat();
     }
 
     public Board getGameBoard(){return this.gameBoard;}
 
     public Shelf getCurrentPlayerShelf(){return this.currentPlayerShelf;}
+
+    public String getCurrentPlayerName(){return this.currentPlayerName;}
+    public Chat getChat(){return this.chat;}
 }

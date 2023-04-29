@@ -119,6 +119,7 @@ public class Shelf extends Observable<Game.Event> {
         return selectableColumns;
     }
 
+    //TODO: codice duplicato con la board linea 341 da sistemare
     /**
      * Prints the shelf.
      */
