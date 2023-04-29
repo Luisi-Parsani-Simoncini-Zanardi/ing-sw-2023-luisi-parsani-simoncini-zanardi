@@ -12,7 +12,7 @@ import static org.projectsw.Config.maxPlayers;
 
 public class ServerImpl implements Server{
 
-    private Engine controller;
+    private final Engine controller = new Engine();
 
     @Override
     public void register(Client client) throws RemoteException {

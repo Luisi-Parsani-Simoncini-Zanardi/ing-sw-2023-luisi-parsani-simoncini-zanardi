@@ -39,6 +39,7 @@ public class ClientImpl implements Client{
                     throw new RuntimeException(e);
                 }
             });
+        runView();
     }
 
     @Override
@@ -54,6 +55,12 @@ public class ClientImpl implements Client{
         return gui;
     }
 
+    private void runView(){
+        if(this.tui != null)
+            tui.run();
+        else
+            gui.run();
+    }
     private String insertNickname(){
         Scanner scanner = new Scanner(System.in);
         System.out.print("insert your nickname: ");
@@ -75,11 +82,9 @@ public class ClientImpl implements Client{
         if(scanner.nextInt()==1){
             tui = null;
             gui = new GraphicalUI();
-            gui.run();
         }else{
             gui = null;
             tui = new TextualUI();
-            tui.run();
         }
     }
 }

@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class TextualUI extends Observable<UIEvent> implements Runnable{
 
-    private UIState state;
+    private UIState state = UIState.OPPONENT_TURN;//in modo da aspettare all'inizio e partire solo quando il server tramite il controller mi da il via
     private final Object lock = new Object();
     private Integer index;
     private Point coordinate;
@@ -55,7 +55,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             do{
                 index = selectColumnInput();
             }while(chooseColumn());
+
             //parte place tiles con richiesta di ordine di inserimento nella shelf all'utente
+
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
         }

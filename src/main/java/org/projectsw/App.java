@@ -1,6 +1,5 @@
 package org.projectsw;
 
-import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.ClientImpl;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Distributed.ServerImpl;
@@ -9,7 +8,7 @@ public class App {
     public static void main(String[] args){
         Server server = new ServerImpl();
 
-        Client client = new ClientImpl(server);
+        new ClientImpl(server);
 
     }
 }
