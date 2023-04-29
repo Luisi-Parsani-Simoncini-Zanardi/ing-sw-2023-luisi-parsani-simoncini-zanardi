@@ -8,6 +8,7 @@ import org.projectsw.View.UIEvent;
 import org.projectsw.View.UIState;
 
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -341,11 +342,20 @@ public class Engine{
 
     private void wakeUpClient(){
         for(Client client : clients){
-            if(getGame().getCurrentPlayer().getNickname().equals(client.getNickname()))
-                if(client.getTui()!=null)
-                    client.getTui().setState(UIState.YOUR_TURN);
-                else
-                    client.getGui().setState(UIState.YOUR_TURN);
+            try {
+                if(getGame().getCurrentPlayer().getNickname().equals(client.getNickname())) {
+                    try {
+                        if(client.getTui()!=null)
+                            client.getTui().setState(UIState.YOUR_TURN);
+                        else
+                            client.getGui().setState(UIState.YOUR_TURN);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -461,9 +471,13 @@ public class Engine{
 
     public void update(Client client, UIEvent UiEvent, InputController input){
         //gestisce gli input e chiama le funzioni
-        if(!client.getNickname().equals(game.getCurrentPlayer().getNickname()) && UiEvent != UIEvent.SAY_IN_CHAT){
-            System.err.println("Discarding notification from "+client.getNickname());
-            return;
+        try {
+            if(!client.getNickname().equals(game.getCurrentPlayer().getNickname()) && !UiEvent.equals(UIEvent.SAY_IN_CHAT)){
+                System.out.println("Discarding notification from "+client.getNickname());
+                return;
+            }
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
         switch(UiEvent){
             case TILE_SELECTION -> {
@@ -473,7 +487,6 @@ public class Engine{
                     throw new RuntimeException(e);
                 }
             }
-
             case CONFIRM_SELECTION -> {
                 try {
                     confirmSelectedTiles();
@@ -481,7 +494,6 @@ public class Engine{
                     throw new RuntimeException(e);
                 }
             }
-
             case COLUMN_SELECTION -> {
                 try {
                     selectColumn(input.getIndex());
@@ -490,8 +502,5 @@ public class Engine{
                 }
             }
         }
-
-
     }
-
 }

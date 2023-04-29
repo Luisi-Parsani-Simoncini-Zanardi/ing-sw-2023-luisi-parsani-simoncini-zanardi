@@ -6,13 +6,26 @@ import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
 import java.rmi.RemoteException;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 import static org.projectsw.Config.maxPlayers;
 
-public class ServerImpl implements Server{
+public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine();
+
+    public ServerImpl() throws RemoteException {
+        super();
+    }
+    public ServerImpl(int port) throws RemoteException {
+        super(port);
+    }
+    public ServerImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
+        super(port, csf, ssf);
+    }
 
     @Override
     public void register(Client client) throws RemoteException {
@@ -38,7 +51,7 @@ public class ServerImpl implements Server{
             try {
                 client.update(new GameView(this.controller.getGame()), arg);
             } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException(e);//da gestire esplicitamente
             }
         });
     }
