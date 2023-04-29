@@ -1,11 +1,14 @@
 package org.projectsw.Model;
 
-import org.projectsw.Config;
 import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
+
+//TODO: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza.
+//      (se risolvete scrivete a Davide)
 
 /**
  * The class contains information about the game state,
@@ -45,13 +48,10 @@ public class Game{
      * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
      *                                  between 2 and 4
      */
-    public Game(Player firstPlayer, int numberOfPlayers){
-        //TODO: creare eccezioni ad-hoc per questi errori in modo da poter gestire con due catch separate il metodo in engine
-        if(numberOfPlayers< Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new IllegalArgumentException("Number of players not valid");
-        if(firstPlayer.getPosition() != 0) throw new IllegalArgumentException("The first player you want insert has a !=0 position");
+    public Game(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
         gameState = GameStates.LOBBY;
-        this.numberOfPlayers = numberOfPlayers;
         board = new Board(numberOfPlayers);
+        this.numberOfPlayers = numberOfPlayers;
         chat = new Chat();
         players = new ArrayList<>();
         players.add(firstPlayer);
@@ -156,7 +156,6 @@ public class Game{
         this.currentPlayer=currentPlayer;
     }
 
-    //TODO: creare eccezioni ad-hoc, la lista di players deve essere lunga quanto numberOfPlayers e i nomi non devono essere duplicati
     /**
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy

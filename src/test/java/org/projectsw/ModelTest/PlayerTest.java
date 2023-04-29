@@ -2,9 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Exceptions.EmptyTilesException;
-import org.projectsw.Exceptions.MaximumTilesException;
-import org.projectsw.Exceptions.UnusedTilesException;
+import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import org.projectsw.Model.*;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,7 +52,6 @@ class PlayerTest {
         assertFalse(player.isCommonGoalRedeemed(0));
         assertFalse(player.isCommonGoalRedeemed(1));
         assertTrue(player.getTemporaryTiles().isEmpty());
-
     }
 
     /**
@@ -91,6 +88,7 @@ class PlayerTest {
     @Test
     void getAndSetShelfTest() {
         Shelf shelf = new Shelf();
+        shelf.insertTiles(new Tile(TilesEnum.CATS,0),1,2);
         Player player = new Player("Attila", 4);
         player.setShelf(shelf);
         assertEquals(shelf, player.getShelf());
@@ -112,13 +110,24 @@ class PlayerTest {
      * Tests if the getter of temporaryTiles works correctly.
      */
     @Test
-    void getAndSetTemporaryTilesTest(){
+    void getAndSetTemporaryTilesTest() throws MaxTemporaryTilesExceededException {
         ArrayList<Tile> list = new ArrayList<>();
         list.add(new Tile(TilesEnum.CATS,0));
         list.add(new Tile(TilesEnum.BOOKS,0));
         Player player = new Player("Riccardo", 3);
         player.setTemporaryTiles(list);
         assertEquals(list, player.getTemporaryTiles());
+    }
+
+    @Test
+    void setTooBigTemporaryTilesTest(){
+        ArrayList<Tile> list = new ArrayList<>();
+        list.add(new Tile(TilesEnum.CATS,0));
+        list.add(new Tile(TilesEnum.BOOKS,0));
+        list.add(new Tile(TilesEnum.CATS,0));
+        list.add(new Tile(TilesEnum.BOOKS,0));
+        Player player = new Player("Riccardo", 3);
+        assertThrows(MaxTemporaryTilesExceededException.class,() -> player.setTemporaryTiles(list));
     }
 
     /**
@@ -133,24 +142,12 @@ class PlayerTest {
         assertTrue(player.isCommonGoalRedeemed(1));
     }
 
-    /*
-     * Tests if the getter and setter of personaGoalRedeemed attribute works correctly
-
-    @Test
-    void setGetPersonalGoalRedeemed(){
-        Player player = new Player("Pietro",3);
-        player.setPersonalGoalRedeemed(true);                   attribute removed
-        assertTrue(player.isPersonalGoalRedeemed());
-        player.setPersonalGoalRedeemed(false);
-        assertFalse(player.isPersonalGoalRedeemed());
-    }     */
-
     /**
      * Tests if the method actually adds a tiles in the array temporaryTiles;
      * also tests if the getter method works correctly.
      */
     @Test
-    void addValidTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
+    void addValidTileTest() throws MaxTemporaryTilesExceededException {
         Player player = new Player("Davide",0);
         Tile tile0 = new Tile(TilesEnum.CATS,0);
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);
@@ -168,36 +165,28 @@ class PlayerTest {
     }
 
     /**
-     * Tests if the method addTiles throws correctly the EmptyTilesException then adding empty tiles to the array.
+     * Tests if the method addTiles throws correctly the IllegalArgumentException then adding empty or unused tiles to the array.
      */
     @Test
-    void addTileExceptionWhenTileIsEmpty() {
+    void addTileExceptionWhenTileIsEmptyOrUnused() {
         Player player = new Player("Davide",0);
-        assertThrows(EmptyTilesException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 player.addTemporaryTile(new Tile(TilesEnum.EMPTY,0)));
-    }
-
-    /**
-     * Tests if the method addTiles throws correctly the UnusedTilesException then adding unused tiles to the array.
-     */
-    @Test
-    void addTileExceptionWhenTileIsUnused() {
-        Player player = new Player("Davide",0);
-        assertThrows(UnusedTilesException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 player.addTemporaryTile(new Tile(TilesEnum.UNUSED,0)));
     }
 
     /**
-     * Tests if the method addTiles throws correctly the MaximumTilesException when the array already has 3 elements
+     * Tests if the method addTiles throws correctly the MaxTemporaryTilesExceededException when the array already has 3 elements
      */
     @Test
-    void addTileExceptionWhenArrayIsFull() throws EmptyTilesException, UnusedTilesException, MaximumTilesException{
+    void addTileExceptionWhenArrayIsFull() throws MaxTemporaryTilesExceededException {
         Player player = new Player("Davide",0);
         player.addTemporaryTile(new Tile(TilesEnum.CATS,0));
         player.addTemporaryTile(new Tile(TilesEnum.BOOKS,0));
         player.addTemporaryTile(new Tile(TilesEnum.GAMES,0));
-        assertThrows(MaximumTilesException.class, () ->
-                player.addTemporaryTile(new Tile(TilesEnum.UNUSED,0)));
+        assertThrows(MaxTemporaryTilesExceededException.class, () ->
+                player.addTemporaryTile(new Tile(TilesEnum.BOOKS,0)));
     }
 
 
@@ -206,17 +195,18 @@ class PlayerTest {
      * other tiles, reducing the size of the list and returning the correct element.
      */
     @Test
-    void selectTileTest() throws EmptyTilesException, UnusedTilesException, MaximumTilesException {
+    void selectTileTest() throws MaxTemporaryTilesExceededException {
         Player player = new Player("Davide",0);
         Tile tile0 = new Tile(TilesEnum.CATS,0);
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);
         Tile tile2 = new Tile(TilesEnum.FRAMES,0);
         assertEquals(0,player.getTemporaryTiles().size());
+
+        //check if elements remains in the correct order and if the size reduces correctly
+        //after removing from the head of the list and from the end. Then it removes the last one
         player.addTemporaryTile(tile0);
         player.addTemporaryTile(tile1);
         player.addTemporaryTile(tile2);
-        //check if elements remains in the correct order and if the size reduces correctly
-        //after removing from the head of the list and from the end. Then it removes the last one
         assertEquals(3,player.getTemporaryTiles().size());
         assertEquals(tile0,player.selectTemporaryTile(0));
         assertEquals(2,player.getTemporaryTiles().size());
@@ -226,29 +216,46 @@ class PlayerTest {
         assertEquals(tile1,player.getTemporaryTiles().get(0));
         assertEquals(tile1,player.selectTemporaryTile(0));
         assertEquals(0,player.getTemporaryTiles().size());
+
+        //check if elements remains in the correct order after removing from the middle
         player.addTemporaryTile(tile0);
         player.addTemporaryTile(tile1);
         player.addTemporaryTile(tile2);
-        //check if elements remains in the correct order after removing from the middle
         assertEquals(tile1,player.selectTemporaryTile(1));
         assertEquals(tile2,player.getTemporaryTiles().get(1));
         assertEquals(tile0,player.getTemporaryTiles().get(0));
     }
 
     @Test
-    void selectTilesExceptionWhenIndexIsNegative() {
+    void selectTilesExceptionWrongIndex() {
         Player player = new Player("Davide",0);
         assertThrows(IndexOutOfBoundsException.class, () ->
                 player.selectTemporaryTile(-1));
-    }
-
-    @Test
-    void selectTilesExceptionWhenIndexIsTooBig() {
-        Player player = new Player("Davide",0);
         assertThrows(IndexOutOfBoundsException.class, () ->
                 player.selectTemporaryTile(3));
     }
 
+    /**
+     * Tests if the removeTemporaryTile and clearTemporaryTiles works correctly.
+     */
+    @Test
+    void removeAndCleanTemporaryTiles() throws MaxTemporaryTilesExceededException {
+        Player player = new Player("Davide", 0);
+        Tile tile0 = new Tile(TilesEnum.CATS, 0);
+        Tile tile1 = new Tile(TilesEnum.BOOKS, 0);
+        Tile tile2 = new Tile(TilesEnum.FRAMES, 0);
+        assertEquals(0, player.getTemporaryTiles().size());
+        player.addTemporaryTile(tile0);
+        player.addTemporaryTile(tile1);
+        player.addTemporaryTile(tile2);
+        assertEquals(3, player.getTemporaryTiles().size());
+        player.removeTemporaryTile(tile1);
+        assertEquals(2, player.getTemporaryTiles().size());
+        assertEquals(tile0,player.getTemporaryTiles().get(0));
+        assertEquals(tile2,player.getTemporaryTiles().get(1));
+        player.clearTemporaryTiles();
+        assertEquals(0, player.getTemporaryTiles().size());
+    }
 
     /**
      * Tests if the constructor of players always create a player with a different

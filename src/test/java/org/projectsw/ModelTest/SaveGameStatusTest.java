@@ -1,6 +1,7 @@
 package org.projectsw.ModelTest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import org.junit.jupiter.api.BeforeEach;
 import org.projectsw.Model.*;
 import org.projectsw.TestUtils;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +11,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SaveGameStatusTest extends TestUtils {
+
+    /**
+     * Cleans the list of used codes before each test.
+     */
+    @BeforeEach
+    void codesCleaner(){
+        PersonalGoal.cleanUsedCodes();
+    }
 
     /**
      * Initializes a game given its properties.
