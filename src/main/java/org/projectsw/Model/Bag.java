@@ -1,7 +1,6 @@
 package org.projectsw.Model;
 
 import org.projectsw.Config;
-
 import java.util.ArrayList;
 import java.util.Collections;
 

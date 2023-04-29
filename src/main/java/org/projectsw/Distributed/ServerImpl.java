@@ -1,9 +1,9 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
-import org.projectsw.Exceptions.FirstJoinFailedException;
-import org.projectsw.Exceptions.JoinFailedException;
+import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.GameView;
+import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
 
 import java.rmi.RemoteException;
@@ -19,23 +19,22 @@ public class ServerImpl implements Server{
     public void register(Client client) throws RemoteException {
         //TODO: qui si dovrà gestire la possibile reconnect se un savegame è presente
         if(this.controller.getClients().size()==0){
-            String nickname = insertNickname();
             int num = insertNumOfPlayers();
             try {
-                this.controller.firstPlayerJoin(nickname, num);
-            } catch (FirstJoinFailedException e) {
+                this.controller.firstPlayerJoin(client.getNickname(), num);
+            } catch (InvalidNumberOfPlayersException e) {
                 throw new RuntimeException(e);
             }
         }else if(this.controller.getClients().size()<maxPlayers){
-            String nickname = insertNickname();
             try {
-                this.controller.playerJoin(nickname);
-            } catch (JoinFailedException e) {
+                this.controller.playerJoin(client.getNickname());
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
+
         this.controller.getClients().add(client);
-        //adding observer
+
         this.controller.getGame().addObserver((o, arg) -> {
             try {
                 client.update(new GameView(this.controller.getGame()), arg);
@@ -45,12 +44,6 @@ public class ServerImpl implements Server{
         });
     }
 
-    private String insertNickname(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("insert your nickname: ");
-        return scanner.nextLine();
-    }
-
     private int insertNumOfPlayers(){
         Scanner scanner = new Scanner(System.in);
         System.out.print("insert the number of players: ");
@@ -58,7 +51,7 @@ public class ServerImpl implements Server{
     }
 
     @Override
-    public void update(Client client, UIEvent arg) throws RemoteException {
-        this.controller.update(client, arg);
+    public void update(Client client, UIEvent arg, InputController input) throws RemoteException {
+        this.controller.update(client, arg, input);
     }
 }

@@ -1,10 +1,7 @@
 package org.projectsw.Model;
 
 import org.projectsw.Config;
-import org.projectsw.Exceptions.EmptyTilesException;
-import org.projectsw.Exceptions.UnusedTilesException;
 import org.projectsw.Util.Observable;
-
 import java.util.ArrayList;
 import static org.projectsw.Model.TilesEnum.EMPTY;
 
@@ -58,7 +55,6 @@ public class Shelf extends Observable<Game.Event> {
         this.selectedColumn = shelf.getSelectedColumn();
         this.player = shelf.getPlayer();
         this.shelf = shelf.shelf;
-        this.selectedColumnIndex = shelf.getSelectedColumnIndex();
         setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 

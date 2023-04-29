@@ -1,5 +1,6 @@
 package org.projectsw.Distributed;
 
+import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
 
 import java.rmi.Remote;
@@ -17,6 +18,6 @@ public interface Server extends Remote {
      * @param client  the client that generated the event
      * @param arg     the choice made by the client
      */
-    void update(Client client, UIEvent arg) throws RemoteException;
+    void update(Client client, UIEvent arg, InputController input) throws RemoteException;
 
 }

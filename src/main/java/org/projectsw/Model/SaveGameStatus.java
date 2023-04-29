@@ -2,10 +2,8 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-
 import java.io.*;
 import java.util.stream.Collectors;
-
 
 /**
  * This class represents a status for saving a game, including the game itself and the file path
