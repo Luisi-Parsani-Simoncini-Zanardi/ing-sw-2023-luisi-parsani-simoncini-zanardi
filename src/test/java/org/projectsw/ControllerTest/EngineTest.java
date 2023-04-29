@@ -135,9 +135,24 @@ class EngineTest extends TestUtils {
         engine.getGame().getBoard().printBoard();
     }
 
+    private Shelf getFullShelf(){
+        Shelf shelf = new Shelf();
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
+                shelf.insertTiles(new Tile(CATS,0),i,j);
+            }
+        }
+        return shelf;
+    }
+
     @Test
     void selectionExceptionsTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException, UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException {
-
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Lorenzo");
+        assertThrows(UnselectableTileException.class,() -> engine.selectTiles(new Point(0,0)));
+        engine.getGame().getCurrentPlayer().setShelf(getFullShelf());
+        assertThrows(NoMoreColumnSpaceException.class, () -> engine.selectTiles(new Point(3,3)));
     }
 
     @Test
