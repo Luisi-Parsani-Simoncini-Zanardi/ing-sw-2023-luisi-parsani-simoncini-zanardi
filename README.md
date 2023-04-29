@@ -4,6 +4,7 @@
 - Più client possono essere sulla stessa macchina<br>
 - Bisogna poter selezionare tra TUI e GUI<br>
 - Bisogna poter selezionare tra socket e RMI<br>
+- Registry per RMI può essere configurato da linea di comando in futuro
 
 - - -
 
