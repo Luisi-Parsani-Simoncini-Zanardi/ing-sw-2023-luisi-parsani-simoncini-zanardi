@@ -62,13 +62,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private boolean chooseColumn(){
-        System.out.println("\nAre you sure?\n1: yes\n2: no");
+        System.out.println("Are you sure?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextInt() == 1;
+        return scanner.nextInt() == 0;
     }
 
     private Integer selectColumnInput(){
-        System.out.println("\nIn which column do you want to insert your tiles?");
+        System.out.println("In which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
     }
@@ -79,9 +79,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\ninsert the row: ");
+        System.out.println("insert the row: ");
         int row = scanner.nextInt();
-        System.out.println("\ninsert the column: ");
+        System.out.println("insert the column: ");
         int column = scanner.nextInt();
         return new Point(row, column);
     }
@@ -90,7 +90,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         Board board = model.getGameBoard();
         if(board == null)
             return;
-        System.out.println("\n");
+        System.out.println("---GAME BOARD---");
         board.printBoard();
     }
 

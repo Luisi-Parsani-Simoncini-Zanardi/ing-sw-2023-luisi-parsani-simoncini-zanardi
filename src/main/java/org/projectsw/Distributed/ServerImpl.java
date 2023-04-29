@@ -5,7 +5,6 @@ import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
-
 import java.rmi.RemoteException;
 import java.util.Scanner;
 

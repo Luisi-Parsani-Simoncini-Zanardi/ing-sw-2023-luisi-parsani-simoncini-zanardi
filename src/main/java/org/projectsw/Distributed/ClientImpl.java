@@ -73,11 +73,13 @@ public class ClientImpl implements Client{
         System.out.println("which UI do you want to use?\n1: Gui\n2: Tui");
         Scanner scanner = new Scanner(System.in);
         if(scanner.nextInt()==1){
-            gui = new GraphicalUI();
             tui = null;
+            gui = new GraphicalUI();
+            gui.run();
         }else{
-            tui = new TextualUI();
             gui = null;
+            tui = new TextualUI();
+            tui.run();
         }
     }
 }
