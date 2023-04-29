@@ -2,6 +2,7 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Config;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
@@ -28,7 +29,7 @@ class EngineTest extends TestUtils {
      * works correctly and if the state of the game changes after the last join
      */
     @Test
-    void startingGameSimulation() throws FirstJoinFailedException, JoinFailedException {
+    void startingGameSimulation() throws LobbyClosedException, InvalidNumberOfPlayersException, InvalidNameException {
         //creates a new engine and checks if it has an empty game
         Engine engine = new Engine();
         assertNull(engine.getGame());
@@ -67,44 +68,173 @@ class EngineTest extends TestUtils {
     }
 
     /**
-     * Tests if firstPlayerJoin correctly throws the FirstJoinFailedException when is passed a too low number of players
+     * Tests if firstPlayerJoin correctly throws the InvalidNumberOfPlayersException when is passed a wrong number
+     * of players (too low or too big).
      */
     @Test
-    void invalidNumberOfPlayersTooLowJoinTest() {
+    void invalidNumberOfPlayersJoinTest() {
         Engine engine = new Engine();
-        assertThrows(FirstJoinFailedException.class, () -> engine.firstPlayerJoin("Davide", 1));
+        assertThrows(InvalidNumberOfPlayersException.class, () -> engine.firstPlayerJoin("Davide", Config.minPlayers-1));
+        assertThrows(InvalidNumberOfPlayersException.class, () -> engine.firstPlayerJoin("Davide", Config.maxPlayers+1));
     }
 
     /**
-     * Tests if firstPlayerJoin correctly throws the FirstJoinFailedException when is passed a too big number of players
+     * Tests if playerJoin correctly throws InvalidNameException if called with a duplicated nickname.
      */
     @Test
-    void invalidNumberOfPlayersTooBigJoinTest() {
-        Engine engine = new Engine();
-        assertThrows(FirstJoinFailedException.class, () -> engine.firstPlayerJoin("Davide", 5));
-    }
-
-    @Test
-    void invalidNicknameAlreadyUsedTest() throws FirstJoinFailedException {
+    void invalidNicknameAlreadyUsedTest() throws InvalidNumberOfPlayersException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide", 2);
-        assertThrows(JoinFailedException.class, () -> engine.playerJoin("Davide"));
+        assertThrows(InvalidNameException.class, () -> engine.playerJoin("Davide"));
     }
 
+    /**
+     * Tests if playerJoin correctly throws LobbyClosedException if called after the join of the last player.
+     */
     @Test
-    void invalidJoinAttemptTest() throws FirstJoinFailedException, JoinFailedException {
+    void invalidJoinAttemptLobbyClosedTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide", 2);
         engine.playerJoin("Lore");
-        assertThrows(JoinFailedException.class, () -> engine.playerJoin("Lollo"));
+        assertThrows(LobbyClosedException.class, () -> engine.playerJoin("Lollo"));
+    }
+
+    /**
+     * Tests if selectTiles works correctly for both selecting and deselecting tiles.
+     */
+    @Test
+    void selectAndDeselectTilesTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException, UnselectableTileException, NoMoreColumnSpaceException {
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Marco");
+        Board board = new Board(4);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
+        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
+        engine.getGame().getBoard().setBoard(board.getBoard());
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,2));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,1));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,3));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,3));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,3));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,2));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,2));
+        engine.getGame().getBoard().printBoard();
+    }
+
+    private Shelf getFullShelf(){
+        Shelf shelf = new Shelf();
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
+                shelf.insertTiles(new Tile(CATS,0),i,j);
+            }
+        }
+        return shelf;
     }
 
     @Test
-    void selectTiles() {
+    void selectionExceptionsTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException, UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException {
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Lorenzo");
+        assertThrows(UnselectableTileException.class,() -> engine.selectTiles(new Point(0,0)));
+        engine.getGame().getCurrentPlayer().setShelf(getFullShelf());
+        assertThrows(NoMoreColumnSpaceException.class, () -> engine.selectTiles(new Point(3,3)));
     }
 
     @Test
-    void placeTiles() {
+    void selectAndDeselectColumn(){}
+
+    @Test
+    void tileSelectionSimulationEmptyShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Marco");
+        Board board = new Board(4);
+        board.updateBoard(new Tile(CATS,0),1,1);
+        board.updateBoard(new Tile(BOOKS,0),1,2);
+        board.updateBoard(new Tile(FRAMES,0),1,3);
+        board.updateBoard(new Tile(CATS,0),2,1);
+        board.updateBoard(new Tile(BOOKS,0),2,2);
+        board.updateBoard(new Tile(FRAMES,0),2,3);
+        board.updateBoard(new Tile(CATS,0),3,1);
+        board.updateBoard(new Tile(BOOKS,0),3,2);
+        board.updateBoard(new Tile(FRAMES,0),3,3);
+        engine.getGame().getBoard().setBoard(board.getBoard());
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,1));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,2));
+        engine.getGame().getBoard().printBoard();
+        engine.selectTiles(new Point(1,3));
+        engine.getGame().getBoard().printBoard();
+        engine.confirmSelectedTiles();
+        engine.selectColumn(3);
+        engine.placeTiles(0);
+        engine.placeTiles(0);
+        engine.placeTiles(0);
+        engine.getGame().getBoard().printBoard();
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+    }
+
+    @Test
+    void tileSelectionAndInsertionSimulationFullShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
+        Engine engine = new Engine();
+        engine.firstPlayerJoin("Davide",2);
+        engine.playerJoin("Marco");
+        Board board = new Board(4);
+        board.updateBoard(new Tile(CATS,0),1,1);
+        board.updateBoard(new Tile(BOOKS,0),1,2);
+        board.updateBoard(new Tile(FRAMES,0),1,3);
+        board.updateBoard(new Tile(CATS,0),2,1);
+        board.updateBoard(new Tile(BOOKS,0),2,2);
+        board.updateBoard(new Tile(FRAMES,0),2,3);
+        board.updateBoard(new Tile(CATS,0),3,1);
+        board.updateBoard(new Tile(BOOKS,0),3,2);
+        board.updateBoard(new Tile(FRAMES,0),3,3);
+        Shelf shelf = new Shelf();
+        for(int i=0;i<3;i++){
+            for(int j=0;j<5;j++) {
+                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, j);
+            }
+        }
+        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,0);
+        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,1);
+        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,2);
+        engine.getGame().getCurrentPlayer().setShelf(shelf);
+        engine.getGame().getBoard().setBoard(board.getBoard());
+        engine.getGame().getBoard().printBoard();
+        engine.getGame().getCurrentPlayer().getShelf().updateSelectableColumns();
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.selectTiles(new Point(1,1));
+        engine.selectTiles(new Point(1,2));
+        engine.selectTiles(new Point(1,3));
+        engine.getGame().getBoard().printBoard();
+        engine.confirmSelectedTiles();
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.getGame().getBoard().printBoard();
+        engine.selectColumn(3);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.placeTiles(0);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.placeTiles(0);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.placeTiles(0);
+        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        engine.getGame().getBoard().printBoard();
     }
 
     /**
@@ -178,7 +308,7 @@ class EngineTest extends TestUtils {
     }
 
     @Test
-    void testCheckPersonalGoal() throws EmptyTilesException, UnusedTilesException {
+    void testCheckPersonalGoal(){
         Engine engine = new Engine();
         try {
             engine.firstPlayerJoin("Davide", 2);
@@ -245,7 +375,6 @@ class EngineTest extends TestUtils {
 
     /**
      * Test if the end turn method correctly set the next player to the current one
-     *
      * Test if the end turn method correctly set the endGame status to true if the current
      * player shelf is full
      */
@@ -272,7 +401,7 @@ class EngineTest extends TestUtils {
         Player nextPlayer = engine.getGame().getNextPlayer();
         engine.endTurn();
         assertEqualsPlayer(engine.getGame().getCurrentPlayer(), nextPlayer);
-        assertEquals(false, engine.getGame().getBoard().isEndGame());
+        assertFalse(engine.getGame().getBoard().isEndGame());
         engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(0));
         for(int i=0; i<5; i++){
             try{
@@ -287,7 +416,7 @@ class EngineTest extends TestUtils {
         engine.getGame().getCurrentPlayer().setShelf(shelf1);
         engine.endTurn();
         engine.getGame().setCurrentPlayer(engine.getGame().getNextPlayer());
-        assertEquals(true, engine.getGame().getBoard().isEndGame());
+        assertTrue(engine.getGame().getBoard().isEndGame());
         assertEqualsPlayer(engine.getGame().getPlayers().get(0), engine.getGame().getCurrentPlayer());
     }
 
@@ -343,7 +472,7 @@ class EngineTest extends TestUtils {
         assertEqualsPlayer(engine.getGame().getPlayers().get(1), engine.getGame().getNextPlayer());
         assertEqualsShelf(shelf, engine.getGame().getPlayers().get(0).getShelf());
         engine.resetGame();
-        assertEquals(null, engine.getGame());
+        assertNull(engine.getGame());
 
     }
 
@@ -504,7 +633,7 @@ class EngineTest extends TestUtils {
      * Checks if the EndgameGoal method correctly assigns the points.
      */
     @Test
-    void testCheckEndGameGoal() throws EmptyTilesException, UnusedTilesException {
+    void testCheckEndGameGoal() {
         Engine engine = new Engine();
         try {
             engine.firstPlayerJoin("Davide", 2);
@@ -566,60 +695,5 @@ class EngineTest extends TestUtils {
         engine.getGame().getCurrentPlayer().setPoints(0);
         engine.checkEndgameGoal();
         assertEquals(engine.getGame().getCurrentPlayer().getPoints(), 0);
-    }
-
-
-    @Test
-    void checkRemainingColumnSpaceTest() throws FirstJoinFailedException, JoinFailedException, EmptyTilesException, UnusedTilesException {
-        Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide",2);
-        engine.playerJoin("Marco");
-        Shelf shelf = new Shelf();
-        shelf.insertTiles(new Tile(GAMES,0),5,0);
-        shelf.insertTiles(new Tile(GAMES,0),5,1);
-        shelf.insertTiles(new Tile(GAMES,0),5,2);
-        shelf.insertTiles(new Tile(GAMES,0),5,3);
-        shelf.insertTiles(new Tile(GAMES,0),5,4);
-        shelf.insertTiles(new Tile(GAMES,0),4,0);
-        shelf.insertTiles(new Tile(GAMES,0),4,1);
-        shelf.insertTiles(new Tile(GAMES,0),4,2);
-        shelf.insertTiles(new Tile(GAMES,0),4,4);
-        shelf.insertTiles(new Tile(GAMES,0),3,2);
-        shelf.insertTiles(new Tile(GAMES,0),3,4);
-        shelf.insertTiles(new Tile(GAMES,0),2,2);
-        shelf.insertTiles(new Tile(GAMES,0),2,4);
-        shelf.insertTiles(new Tile(GAMES,0),1,4);
-        shelf.insertTiles(new Tile(GAMES,0),4,3);
-        engine.getGame().getPlayers().get(0).setShelf(shelf);
-        int num = engine.checkRemainingColumnSpace();
-        System.out.println(num);
-    }
-
-    @Test
-    void tileSelectionSimulation() throws FirstJoinFailedException, JoinFailedException, NonSelectableColumnException, MaximumTilesException, EmptyTilesException, UnusedTilesException {
-        Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide",2);
-        engine.playerJoin("Marco");
-        Board board = new Board(4);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
-        engine.getGame().getBoard().setBoard(board.getBoard());
-        engine.selectTiles(new Point(1,1));
-        engine.selectTiles(new Point(1,2));
-        engine.selectTiles(new Point(1,3));
-        engine.confirmSelectedTiles();
-        engine.selectColumn(3);
-        engine.placeTiles(0);
-        engine.placeTiles(0);
-        engine.placeTiles(0);
-        engine.getGame().getBoard().printBoard();
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
     }
 }

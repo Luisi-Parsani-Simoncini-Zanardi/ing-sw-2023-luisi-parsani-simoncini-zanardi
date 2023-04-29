@@ -13,10 +13,12 @@ import static org.projectsw.Model.TilesEnum.EMPTY;
  */
 public class Shelf extends Observable<Game.Event> {
     private Tile[][] shelf;
-    private int selectedColumnIndex;
+    private Player player;
+    private ArrayList<Integer> selectableColumns;
+    private Integer selectedColumn;
 
     /**
-     * Constructs a new empty shelf with 6 rows and 5 columns.
+     * Constructs a new empty shelf with 6 rows and 5 columns, setting as null all the other parameters.
      */
     public Shelf(){
         shelf = new Tile[Config.shelfHeight][Config.shelfLength];
@@ -25,6 +27,25 @@ public class Shelf extends Observable<Game.Event> {
                 shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
             }
         }
+        player = null;
+        selectableColumns = null;
+        selectedColumn = null;
+    }
+
+    /**
+     * Constructs a new empty shelf with 6 rows and 5 columns setting the passed player
+     * as player attribute and setting null all the others.
+     */
+    public Shelf(Player player){
+        shelf = new Tile[Config.shelfHeight][Config.shelfLength];
+        for(int i=0;i<Config.shelfHeight;i++){
+            for(int j=0;j<Config.shelfLength;j++){
+                shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
+            }
+        }
+        this.player = player;
+        selectableColumns = null;
+        selectedColumn = null;
     }
 
     /**
@@ -32,6 +53,10 @@ public class Shelf extends Observable<Game.Event> {
      * @param shelf the shelf to copy
      */
     public Shelf(Shelf shelf){
+        this.shelf = shelf.getShelf();
+        this.selectableColumns = shelf.getSelectableColumns();
+        this.selectedColumn = shelf.getSelectedColumn();
+        this.player = shelf.getPlayer();
         this.shelf = shelf.shelf;
         this.selectedColumnIndex = shelf.getSelectedColumnIndex();
         setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
@@ -47,17 +72,18 @@ public class Shelf extends Observable<Game.Event> {
     }
 
     /**
-     * Returns the selectedColumnIndex attribute.
-     * @return the selectedColumnIndex attribute
+     * Returns the selectable columns attribute.
+     * @return the arraylist of integers containing the indexes of selectable columns.
      */
-    public int getSelectedColumnIndex() {
-        return selectedColumnIndex;
+    public ArrayList<Integer> getSelectableColumns() {
+        return selectableColumns;
     }
 
     /**
      * Returns a specific tile of the shelf.
      * @param row coordinate for the row
      * @param column coordinate for the column
+     * @throws IndexOutOfBoundsException if row or column exceed the shelf bounds (Config.shelfHeight or Config.shelfLength)
      * @return the tile at the coordinates row x column
      */
     public Tile getTileShelf(int row, int column) throws IndexOutOfBoundsException{
@@ -66,8 +92,23 @@ public class Shelf extends Observable<Game.Event> {
     }
 
     /**
+     * Returns the player who owns the shelf.
+     * @return the player attribute.
+     */
+    public Player getPlayer(){ return player; }
+
+    /**
+     * Return the selected column attribute.
+     * @return the int corresponding to the selected column attribute.
+     */
+    public Integer getSelectedColumn() {
+        return selectedColumn;
+    }
+
+    /**
      * Sets the matrix of tiles for the shelf from the given shelf.
      * @param shelf the shelf where the matrix of tiles is taken from
+     * @throws IllegalArgumentException if the parameter shelf hasn't the right dimensions (Config.shelfHeight or Config.shelfLength)
      */
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
         if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
@@ -76,11 +117,27 @@ public class Shelf extends Observable<Game.Event> {
     }
 
     /**
-     * Sets the selectedColumnIndex attribute.
-     * @param selectedColumnIndex the int to set as new selectedColumnIndex.
+     * Sets the player attribute.
+     * @param player the player to sat as new owner of the shelf.
      */
-    public void setSelectedColumnIndex(int selectedColumnIndex) {
-        this.selectedColumnIndex = selectedColumnIndex;
+    public void setPlayer(Player player){
+        this.player = player;
+    }
+
+    /**
+     * Sets the selectable columns attribute.
+     * @param selectableColumns the arraylist of integers to ses as new array list of integers.
+     */
+    public void setSelectableColumns(ArrayList<Integer> selectableColumns) {
+        this.selectableColumns = selectableColumns;
+    }
+
+    /**
+     * Sets the selected column attribute.
+     * @param selectedColumn the int to set as new selected column attribute.
+     */
+    public void setSelectedColumn(Integer selectedColumn) {
+        this.selectedColumn = selectedColumn;
     }
 
     /**
@@ -88,43 +145,70 @@ public class Shelf extends Observable<Game.Event> {
      * @param tile the tile to insert
      * @param row the row to insert the tile into
      * @param column the column to insert the tile into
-     * @throws EmptyTilesException if the tile is empty
-     * @throws UnusedTilesException if the tile is unused
-     * @throws IndexOutOfBoundsException if the row or column is out of bounds
+     * @throws IndexOutOfBoundsException if the row or column is out of bounds (Config.shelfHeight or Config.shelfLength)
+     * @throws IllegalArgumentException if row and column correspond to an EMPTY or an UNUSED tile
      */
-    public void insertTiles(Tile tile, int row, int column) throws EmptyTilesException, UnusedTilesException, IndexOutOfBoundsException {
+    public void insertTiles(Tile tile, int row, int column) {
         if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
-        else if(tile.getTile().equals(TilesEnum.EMPTY)) throw new EmptyTilesException("You can't add an EMPTY tile to the shelf");
-        else if(tile.getTile().equals(TilesEnum.UNUSED)) throw new UnusedTilesException("You can't add an UNUSED tile to the shelf");
+        else if(tile.getTile().equals(TilesEnum.EMPTY) || tile.getTile().equals(TilesEnum.UNUSED)) throw new IllegalArgumentException("Trying to add a unused or empty tile to the shelf");
         else shelf[row][column] = tile;
         setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
     /**
-     * Returns all the columns that have a number of empty spaces equal or greater than "temporaryTilesDimension".
-     * @param temporaryTilesDimension the minimum number of free spaces that the returned columns must have.
-     * @return an ArrayList containing all the indexes of columns that have a number of empty spaces equal or greater
-     *         than "temporaryTilesDimension".
+     * Updates the selectable columns arrayList after checking the size of temporaryTiles arrayList of the player.
      */
-    public ArrayList<Integer> getSelectableColumns(int temporaryTilesDimension) {
+    public void updateSelectableColumns() {
         ArrayList<Integer> selectableColumns = new ArrayList<>();
-        for (int i = 0; i < Config.shelfLength; i++) {
-            for (int j = 0; j < Config.shelfHeight; j++) {
-                if (!shelf[j][i].getTile().equals(EMPTY) || j == Config.shelfHeight - 1) {
-                    if (temporaryTilesDimension <= j) selectableColumns.add(i);
-                    break;
-                }
+        for (int j=0; j<Config.shelfLength; j++) {
+            int freeSpace = 0;
+            for (int i=Config.shelfHeight-1; i>=0; i--){
+                if (shelf[i][j].getTile().equals(EMPTY)) {
+                    freeSpace++;
+                } else break;
+            }
+            if(freeSpace >= this.player.getTemporaryTiles().size() && freeSpace > 0) selectableColumns.add(j);
+        }
+        this.selectableColumns = selectableColumns;
+    }
+
+    /**
+     * Returns the maximum column space present in the shelf between 0 to Config.maximumTilesPickable.
+     * @return an int equal to the maximum column space.
+     */
+    public int maxFreeColumnSpace(){
+        int maxFreeColumnSpace = 0;
+        for(int j=0;j<Config.shelfLength;j++){
+            int freeColumnSpace = 0;
+            for(int i=Config.shelfHeight-1;i>(Config.shelfHeight-1)-Config.maximumTilesPickable;i--){
+                if(!shelf[i][j].getTile().equals(EMPTY)) break;
+                freeColumnSpace++;
+            }
+            if(freeColumnSpace>maxFreeColumnSpace) {
+                maxFreeColumnSpace = freeColumnSpace;
             }
         }
-        return selectableColumns;
+        return maxFreeColumnSpace;
     }
+
+    /**
+     * Clears the selectable columns arrayList.
+     */
+    public void cleanSelectableColumns() {
+        selectableColumns.clear();
+    }
+
+    /**
+     * Sets as null the selectedColumn attribute.
+     */
+    public void cleanSelectedColumn(){ selectedColumn = null; }
 
     //TODO: codice duplicato con la board linea 341 da sistemare
     /**
      * Prints the shelf.
      */
     public void printShelf(){
-        for(int i=0;i<Config.shelfHeight;i++){
+        for(int i=Config.shelfHeight-1;i>=0;i--){
             for(int j=0;j<Config.shelfLength;j++){
                 Tile current = shelf[i][j];
                 switch(current.getTile()){
@@ -140,6 +224,15 @@ public class Shelf extends Observable<Game.Event> {
             }
             System.out.print("\n");
         }
-        System.out.print("\n");
+        for(int h=0;h<Config.shelfLength;h++){
+            if(selectedColumn == null){
+                if(selectableColumns.contains(h)) System.out.print("(S)\t\t");
+                else System.out.print("(U)\t\t");
+            } else {
+                if(h == selectedColumn) System.out.print("(D)\t\t");
+                else  System.out.print("(N)\t\t");
+            }
+        }
+        System.out.print("\n\n");
     }
 }

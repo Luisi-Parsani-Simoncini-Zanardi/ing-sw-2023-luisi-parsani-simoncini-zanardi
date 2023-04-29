@@ -3,6 +3,7 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.TestUtils;
@@ -39,7 +40,7 @@ class GameTest extends TestUtils{
      * Tests the correct creation of a game instance
      */
     @Test
-    void integrityGameTest(){
+    void integrityGameTest() throws InvalidNumberOfPlayersException {
         Player firstPlayer = new Player("Davide",0);
         for(int i=2;i<5;i++){
             Game game = new Game(firstPlayer,i);
@@ -57,30 +58,12 @@ class GameTest extends TestUtils{
 
     /**
      * Tests if the constructor of game correctly throws the IllegalArgumentException when the number of players
-     * is too low
+     * is too low or too high.
      */
     @Test
-    void invalidNumberOfPlayersTooLowTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",0),1));
-    }
-
-    /**
-     * Tests if the constructor of game correctly throws the IllegalArgumentException when the number of players
-     * is too high
-     */
-    @Test
-    void invalidNumberOfPlayersTooHighTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",0),5));
-    }
-
-    /**
-     * Tests if the constructor of game correctly throws the IllegalArgumentException when the position of the
-     * first player is not 0
-     */
-    @Test
-    void invalidPositionOfFirstPlayerTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",-1),2));
-        assertThrows(IllegalArgumentException.class, () -> new Game(new Player("Davide",1),2));
+    void invalidNumberOfPlayersTest(){
+        assertThrows(InvalidNumberOfPlayersException.class, () -> new Game(new Player("Davide",0),1));
+        assertThrows(InvalidNumberOfPlayersException.class, () -> new Game(new Player("Davide",0),5));
     }
 
     /**
@@ -256,7 +239,7 @@ class GameTest extends TestUtils{
      * @throws InvalidNameException duplicate or invalid name
      */
     @Test
-    void getNextPlayerTest() throws InvalidNameException {
+    void getNextPlayerTest() throws InvalidNameException, InvalidNumberOfPlayersException {
         Player current = new Player("Renala", 0);
         Player next1 = new Player("Gravius", 1);
         Player next2 = new Player("Lusat", 2);

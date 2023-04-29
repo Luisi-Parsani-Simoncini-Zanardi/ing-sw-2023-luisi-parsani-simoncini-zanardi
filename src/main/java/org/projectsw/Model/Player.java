@@ -1,10 +1,7 @@
 package org.projectsw.Model;
 
 import org.projectsw.Config;
-import org.projectsw.Exceptions.EmptyTilesException;
-import org.projectsw.Exceptions.MaximumTilesException;
-import org.projectsw.Exceptions.UnusedTilesException;
-
+import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -33,7 +30,7 @@ public class Player {
         this.nickname=nickname;
         this.position=position;
         points=0;
-        shelf = new Shelf();
+        shelf = new Shelf(this);
         personalGoal = tryPersonalGoal();
         temporaryTiles = new ArrayList<>();
         commonGoalRedeemed = new ArrayList<>();
@@ -104,6 +101,7 @@ public class Player {
      * @param shelf the shelf to set for the player
      */
     public void setShelf(Shelf shelf) {
+        shelf.setPlayer(this);
         this.shelf=shelf;
     }
 
@@ -127,7 +125,8 @@ public class Player {
      * Sets the temporaryTiles of the player to the given temporaryTiles list.
      * @param temporaryTiles the temporaryTiles list to set for the player
      */
-    public void setTemporaryTiles(ArrayList<Tile> temporaryTiles) {
+    public void setTemporaryTiles(ArrayList<Tile> temporaryTiles) throws MaxTemporaryTilesExceededException {
+        if(temporaryTiles.size() > Config.maximumTilesPickable) throw new MaxTemporaryTilesExceededException();
         this.temporaryTiles = temporaryTiles;
     }
 
@@ -143,14 +142,11 @@ public class Player {
     /**
      * Adds the given tile to the player's temporary tiles.
      * @param tile the tile to be added to the player's temporary tiles
-     * @throws MaximumTilesException if the player already has the maximum number of tiles (i.e., 3)
-     * @throws EmptyTilesException if the tile is EMPTY
-     * @throws UnusedTilesException if the tile is UNUSED
+     * @throws MaxTemporaryTilesExceededException if the player already has the maximum number of tiles (i.e., 3)
      */
-    public void addTemporaryTile(Tile tile) throws MaximumTilesException, EmptyTilesException, UnusedTilesException {
-        if(temporaryTiles.size()> Config.maximumTilesPickable-1) throw new MaximumTilesException("Maximum number of tiles reached");
-        else if(tile.getTile() == TilesEnum.EMPTY) throw new EmptyTilesException("You can't add an EMPTY tile");
-        else if(tile.getTile() == TilesEnum.UNUSED) throw new UnusedTilesException("You can't add an UNUSED tile");
+    public void addTemporaryTile(Tile tile) throws MaxTemporaryTilesExceededException {
+        if(Config.maximumTilesPickable <= temporaryTiles.size()) throw new MaxTemporaryTilesExceededException("Maximum number of tiles reached");
+        else if(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED) throw new IllegalArgumentException("You can't add an EMPTY tile");
         else temporaryTiles.add(tile);
     }
 

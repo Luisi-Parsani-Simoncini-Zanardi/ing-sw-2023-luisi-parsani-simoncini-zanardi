@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import org.projectsw.Config;
 import org.projectsw.Util.Observable;
 
+import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
+import org.projectsw.Exceptions.UnselectableTileException;
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -43,8 +45,8 @@ public class Board extends Observable<Game.Event> {
      * @param playersNumber the number of players playing the game
      * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
      */
-    public Board(int playersNumber) throws IllegalArgumentException{
-        if(playersNumber<Config.minPlayers || playersNumber>Config.maxPlayers) throw new IllegalArgumentException("Number of players not valid");
+    public Board(int playersNumber) throws InvalidNumberOfPlayersException {
+        if(playersNumber<Config.minPlayers || playersNumber>Config.maxPlayers) throw new InvalidNumberOfPlayersException("Number of players not valid");
         try{
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
@@ -127,6 +129,7 @@ public class Board extends Observable<Game.Event> {
         if(board.length != Config.boardHeight) throw new IllegalArgumentException();
         if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
+        updateSelectablePoints();
         setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
@@ -159,8 +162,8 @@ public class Board extends Observable<Game.Event> {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         else {
-            Tile tmp = board[(int) point.getY()][(int) point.getX()];
-            board[(int) point.getY()][(int) point.getX()] = new Tile(TilesEnum.EMPTY, 0);
+            Tile tmp = board[(int) point.getX()][(int) point.getY()];
+            board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
             setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
             return tmp;
@@ -185,9 +188,15 @@ public class Board extends Observable<Game.Event> {
      * Adds a new Point object to the temporaryPoints arrayList
      * @param point the Point to add.
      */
-    public void addTemporaryPoints(Point point){
-        temporaryPoints.add(point);
-        updateSelectablePoints();
+    public void addTemporaryPoints(Point point) throws UnselectableTileException {
+        if(selectablePoints.contains(point) &&
+        !board[(int) point.getX()][(int) point.getY()].getTile().equals(TilesEnum.EMPTY) &&
+        !board[(int) point.getX()][(int) point.getY()].getTile().equals(TilesEnum.UNUSED)) {
+                temporaryPoints.add(point);
+                updateSelectablePoints();
+        } else {
+            throw new UnselectableTileException();
+        }
     }
 
     /**
@@ -196,12 +205,15 @@ public class Board extends Observable<Game.Event> {
      * @param point the point to remove from the list.
      */
     public void removeTemporaryPoints(Point point){
-        temporaryPoints.remove(point);
         if(temporaryPoints.size() == Config.maximumTilesPickable){
+            temporaryPoints.remove(point);
             if(!areAdjacentPoints(temporaryPoints.get(0),temporaryPoints.get(1))){
                 cleanTemporaryPoints();
             }
+        } else {
+            temporaryPoints.remove(point);
         }
+        updateSelectablePoints();
     }
 
     /**
@@ -333,22 +345,28 @@ public class Board extends Observable<Game.Event> {
 
     //TODO: codice duplicato con linea 128 della shelf da sistemare
     /**
-     * Prints the board.
+     * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
      */
     public void printBoard(){
+        ArrayList<Point> selectablePoints = getSelectablePoints();
         for(int i=0;i<Config.boardLength;i++){
             for(int j=0;j<Config.boardHeight;j++){
-                Tile current = board[i][j];
-                switch(current.getTile()){
-                    case EMPTY -> System.out.print("EMPTY\t");
-                    case UNUSED -> System.out.print("UNUSED\t");
-                    case CATS -> System.out.print("CATS\t");
-                    case TROPHIES -> System.out.print("TROPHIES\t");
-                    case PLANTS -> System.out.print("PLANTS\t");
-                    case FRAMES -> System.out.print("FRAMES\t");
-                    case GAMES -> System.out.print("GAMES\t");
-                    case BOOKS -> System.out.print("BOOKS\t");
+                if(selectablePoints.contains(new Point(i,j))) System.out.print("[");
+                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
+                switch(board[i][j].getTile()){
+                    case EMPTY -> System.out.print("EMPTY");
+                    case UNUSED -> System.out.print("UNUSED");
+                    case CATS -> System.out.print("CATS");
+                    case TROPHIES -> System.out.print("TROPHIES");
+                    case PLANTS -> System.out.print("PLANTS");
+                    case FRAMES -> System.out.print("FRAMES");
+                    case GAMES -> System.out.print("GAMES");
+                    case BOOKS -> System.out.print("BOOKS");
                 }
+                if(selectablePoints.contains(new Point(i,j))) System.out.print("]");
+                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
+                System.out.print("\t");
+
             }
             System.out.print("\n");
         }
@@ -361,8 +379,8 @@ public class Board extends Observable<Game.Event> {
      */
     public boolean isBoardEmpty() {
         for (Tile[] tiles : board) {
-            for (int j = 0; j < tiles.length; j++) {
-                if (!(tiles[j].getTile() == TilesEnum.EMPTY || tiles[j].getTile() == TilesEnum.UNUSED))
+            for (Tile tile : tiles) {
+                if (!(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED))
                     return false;
             }
         }

@@ -46,16 +46,11 @@ public class Engine{
      * execution is LOBBY.
      * @param nicknameFirstPlayer the nickname of the first player joining in the game.
      * @param numberOfPlayers the number of players selected by the first player.
-     * @throws FirstJoinFailedException if the position of player is not 0 of if the number of players is not correctly chosen.
+     * @throws InvalidNumberOfPlayersException if the number of players is not correctly chosen.
      */
-    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws FirstJoinFailedException{
-        try {
+    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
             game = new Game(firstPlayer,numberOfPlayers);
-        } catch (IllegalArgumentException e) {
-            if (numberOfPlayers< Config.minPlayers || numberOfPlayers>Config.maxPlayers) throw new FirstJoinFailedException("Invalid number of players");
-            else throw new FirstJoinFailedException("Invalid Position");
-        }
     }
 
     /**
@@ -64,23 +59,19 @@ public class Engine{
      * Then checks if the lobby is fulled: if it is, calls the method to start the game,
      * if it isn't the game state remains LOBBY, waiting for new join requests.
      * @param nickname the nickname of the player to be created.
-     * @throws JoinFailedException if the name of the player is already used
+     * @throws LobbyClosedException if the name of the player is already used
      *                             of if the function is called when the lobby is closed
      */
-    public void playerJoin (String nickname) throws JoinFailedException {
+    public void playerJoin (String nickname) throws LobbyClosedException, InvalidNameException {
         if(game.getGameState().equals(GameStates.LOBBY)){
-            try {
-                int newPlayerPosition = game.getPlayers().size();
-                Player newPlayer = new Player(nickname,newPlayerPosition);
-                game.addPlayer(newPlayer);
-                if (game.getPlayers().size() == game.getNumberOfPlayers()) {
-                    startGame();
-                }
-            } catch (InvalidNameException e) {
-                throw new JoinFailedException("Name already used");
+            int newPlayerPosition = game.getPlayers().size();
+            Player newPlayer = new Player(nickname,newPlayerPosition);
+            game.addPlayer(newPlayer);
+            if (game.getPlayers().size() == game.getNumberOfPlayers()) {
+                startGame();
             }
         }
-        else throw new JoinFailedException("The lobby is closed");
+        else throw new LobbyClosedException("The lobby is closed");
     }
 
     /**
@@ -89,6 +80,7 @@ public class Engine{
     public void startGame(){
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
+        fillBoard();
     }
 
     //turno
@@ -109,14 +101,18 @@ public class Engine{
 
 
     /**
-     * Add a point to the temporaryPoints list after checking if the size of temporaryPoints is smaller than
-     * the maximum remaining space in player's columns.
+     * If the selected point isn't already selected it adds a point to the temporaryPoints list after checking if the
+     * size of temporaryPoints is smaller than the maximum remaining space in player's columns.
+     * If the selected point is already selected it calls deselect tiles on that point.
      * @param selectedPoint the point that the player wants to select.
+     * @throws UnselectableTileException if the selected point is an empty/unused tile, of if the selected point
+     *                                   can't be selected by the rules.
      */
-    public void selectTiles(Point selectedPoint){
-        Board board = game.getBoard();
-        if(board.getTemporaryPoints().size() < checkRemainingColumnSpace()){
-            game.getBoard().addTemporaryPoints(selectedPoint);
+    public void selectTiles(Point selectedPoint) throws UnselectableTileException, NoMoreColumnSpaceException {
+        if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
+        else {
+            if (selectionPossible()) game.getBoard().addTemporaryPoints(selectedPoint);
+            else throw new NoMoreColumnSpaceException();
         }
     }
 
@@ -124,69 +120,79 @@ public class Engine{
      * Remove the given point from the temporaryPoints list.
      * @param point the point to remove.
      */
-    public void deselectTiles(Point point){
+    private void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
     }
 
     /**
-     * Checks the remaining space from each column of the current player's shelf and return the maximum value found.
-     * @return the maximum value found of free spaces in the current player's shelf.
+     * The function returns true if the maximum columns space in the current's player shelf is bigger then the board's
+     * temporaryPoints arraylist size, meaning that the selections is still possible.
+     * @return true if the selection is possible, false if it isn't.
      */
-    public int checkRemainingColumnSpace() {
-        Tile[][] shelf = game.getCurrentPlayer().getShelf().getShelf();
-        int maxLength = 0;
-        for(int i=0;i<Config.shelfLength;i++){
-            for(int j=0;j<Config.shelfHeight;j++){
-                if(!shelf[j][i].getTile().equals(EMPTY) || j == Config.shelfHeight-1){
-                    if(maxLength < j) maxLength = j;
-                    break;
-                }
-            }
-        }
-        return maxLength;
+    private boolean selectionPossible() {
+        return game.getCurrentPlayer().getShelf().maxFreeColumnSpace() > game.getBoard().getTemporaryPoints().size();
     }
 
     /**
-     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles and cleans the
-     * temporaryPoints list after the copying
+     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles,
+     * after the copying cleans the temporaryPoints list and update the selectable columns.
+     * Thanks to other exceptions in selectTiles the TemporaryPoints passed already do not correspond to empty or unused tiles,
+     * but if they don't addTemporaryTile throws InvalidArgumentException.
      */
-    public void confirmSelectedTiles() throws MaximumTilesException, EmptyTilesException, UnusedTilesException{
+    public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException {
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
             game.getCurrentPlayer().addTemporaryTile(tile);
         }
         game.getBoard().cleanTemporaryPoints();
+        game.getCurrentPlayer().getShelf().updateSelectableColumns();
     }
 
     /**
-     * Checks if the column selected by the player is selectable by calling getSelectableColumns.
+     * Checks if the player has already selected a tile, if he did it, it calls deselectTiles, if he didn't and the column at the
+     * specified index is selectable, it sets the passed index as selected column of the player.
      * @param index The index of column that player wants to select.
-     * @throws NonSelectableColumnException if the column is not selectable.
+     * @throws UnselectableColumnException if the column is not selectable.
      */
-    public void selectColumn(int index) throws NonSelectableColumnException{
-        ArrayList<Integer> selectableColumns = game.getCurrentPlayer().getShelf().getSelectableColumns(game.getCurrentPlayer().getTemporaryTiles().size());
-        if(selectableColumns.contains(index)){
-            game.getCurrentPlayer().getShelf().setSelectedColumnIndex(index);
-        }
-        else throw new NonSelectableColumnException();
+    public void selectColumn(Integer index) throws UnselectableColumnException {
+        if(game.getCurrentPlayer().getShelf().getSelectedColumn() == null) {
+            if(game.getCurrentPlayer().getShelf().getSelectableColumns().contains(index)){
+                game.getCurrentPlayer().getShelf().setSelectedColumn(index);
+            } else throw new UnselectableColumnException();
+        } else deselectColumn();
+    }
+
+    /**
+     * Sets as null the selected column index and updates the selectable columns arrayList in currentPlayer's shelf.
+     */
+    public void deselectColumn(){
+        game.getCurrentPlayer().getShelf().cleanSelectedColumn();
+        game.getCurrentPlayer().getShelf().updateSelectableColumns();
     }
 
     /**
      * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
      * @param temporaryIndex the selected index of temporaryTiles.
      */
-    public void placeTiles(int temporaryIndex) throws EmptyTilesException, UnusedTilesException {
+    public void placeTiles(int temporaryIndex) {
         Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
-        for(int i=0;i<Config.shelfHeight;i++){
-            if(!game.getCurrentPlayer().getShelf().getShelf()[i][game.getCurrentPlayer().getShelf().getSelectedColumnIndex()].getTile().equals(EMPTY)){
-                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i-1,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+        int selectedColumn = game.getCurrentPlayer().getShelf().getSelectedColumn();
+        for(int i=Config.shelfHeight-1; i>=0; i--){
+            if(!game.getCurrentPlayer().getShelf().getShelf()[i][selectedColumn].getTile().equals(EMPTY)){
+                if(i != Config.shelfHeight-1){
+                    game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i+1,selectedColumn);
+                }
                 break;
             }
-            if(i == Config.shelfHeight-1){
-                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,game.getCurrentPlayer().getShelf().getSelectedColumnIndex());
+            if(i == 0){
+                game.getCurrentPlayer().getShelf().insertTiles(tileToInsert,i,selectedColumn);
                 break;
             }
+        }
+        if(game.getCurrentPlayer().getTemporaryTiles().isEmpty()){
+            deselectColumn();
+            //endTurn();
         }
     }
 
@@ -360,7 +366,7 @@ public class Engine{
      * @return winner of the game
      */
     public Player getWinner() {
-        return Collections.max(getGame().getPlayers(), Comparator.comparing(s -> s.getPoints()));
+        return Collections.max(getGame().getPlayers(), Comparator.comparing(Player::getPoints));
     }
 
     /**
