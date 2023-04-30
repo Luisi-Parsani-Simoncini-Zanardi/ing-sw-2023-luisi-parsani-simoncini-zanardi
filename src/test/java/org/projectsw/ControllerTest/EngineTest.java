@@ -146,7 +146,7 @@ class EngineTest extends TestUtils {
     }
 
     @Test
-    void selectionExceptionsTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException, UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException {
+    void selectionExceptionsTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException{
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Lorenzo");
@@ -159,7 +159,7 @@ class EngineTest extends TestUtils {
     void selectAndDeselectColumn(){}
 
     @Test
-    void tileSelectionSimulationEmptyShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
+    void tileSelectionSimulationEmptyShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException, EmptyTemporaryPointsException, UpdatingOnWrongPlayerException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");
@@ -187,11 +187,11 @@ class EngineTest extends TestUtils {
         engine.placeTiles(0);
         engine.placeTiles(0);
         engine.getGame().getBoard().printBoard();
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        //engine.getGame().getCurrentPlayer().getShelf().printShelf();
     }
 
     @Test
-    void tileSelectionAndInsertionSimulationFullShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException {
+    void tileSelectionAndInsertionSimulationFullShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException, EmptyTemporaryPointsException, UpdatingOnWrongPlayerException {
         Engine engine = new Engine();
         engine.firstPlayerJoin("Davide",2);
         engine.playerJoin("Marco");
@@ -217,7 +217,7 @@ class EngineTest extends TestUtils {
         engine.getGame().getCurrentPlayer().setShelf(shelf);
         engine.getGame().getBoard().setBoard(board.getBoard());
         engine.getGame().getBoard().printBoard();
-        engine.getGame().getCurrentPlayer().getShelf().updateSelectableColumns();
+        engine.getGame().getCurrentPlayer().getShelf().updateSelectableColumns(engine.getGame().getCurrentPlayer());
         engine.getGame().getCurrentPlayer().getShelf().printShelf();
         engine.selectTiles(new Point(1,1));
         engine.selectTiles(new Point(1,2));
@@ -233,7 +233,7 @@ class EngineTest extends TestUtils {
         engine.placeTiles(0);
         engine.getGame().getCurrentPlayer().getShelf().printShelf();
         engine.placeTiles(0);
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
+        //engine.getGame().getCurrentPlayer().getShelf().printShelf();
         engine.getGame().getBoard().printBoard();
     }
 
