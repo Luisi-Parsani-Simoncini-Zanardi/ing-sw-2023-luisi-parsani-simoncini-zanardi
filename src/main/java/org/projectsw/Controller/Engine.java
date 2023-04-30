@@ -1,24 +1,52 @@
 package org.projectsw.Controller;
 
 import org.projectsw.Config;
+import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
+import org.projectsw.View.UIEvent;
+import org.projectsw.View.UIState;
+
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
+
+
+//turno
+//chiama selectTiles/deselectTiles ad ogni click su board
+//confermo la mia scelta, chiamo comfirmSelectedtiles
+//chiama select column
+//chiama placeTiles
+//chiama endTurn
+//            //chiama checkCommonGoal
+//            //chiama checkEndGame
+//                //controlla di non essere già in endgame
+//                //controlla che il giocatore abbia riempito la shelf
+//                    // se vero, setta endGame e assegna punto
+//            //chiama saveGameStatus
+//            //controlla se la board e' "vuota", e in caso chiama fillBoard
+//            //passa il turno al giocatore successivo, o se era l'ultimo giocatore chiama endGame
+//                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
 
 /**
  * The class contains the application logic methods of the game.
  */
-public class Engine {
-
+public class Engine{
+    //TODO: controllare che non si possano confermare un array di tiles vuoto
+    //TODO: controllare a fine implementazione se effettivamente serve o va eliminato
+    private final ArrayList<Client> clients = new ArrayList<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
+
+    /**
+     * get the Clients
+     * @return the clients
+     */
+    public ArrayList<Client> getClients() { return this.clients; }
 
     /**
      * get the game on which the controller is running
@@ -74,23 +102,6 @@ public class Engine {
         saveGameStatus = new SaveGameStatus(game, "");
         fillBoard();
     }
-
-    //turno
-    //chiama selectTiles/deselectTiles ad ogni click su board
-    //confermo la mia scelta, chiamo comfirmSelectedtiles
-    //chiama select column
-    //chiama placeTiles
-    //chiama endTurn
-    //            //chiama checkCommonGoal
-    //            //chiama checkEndGame
-    //                //controlla di non essere già in endgame
-    //                //controlla che il giocatore abbia riempito la shelf
-    //                    // se vero, setta endGame e assegna punto
-    //            //chiama saveGameStatus
-    //            //controlla se la board e' "vuota", e in caso chiama fillBoard
-    //            //passa il turno al giocatore successivo, o se era l'ultimo giocatore chiama endGame
-    //                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
-
 
     /**
      * If the selected point isn't already selected it adds a point to the temporaryPoints list after checking if the
@@ -158,7 +169,7 @@ public class Engine {
     /**
      * Sets as null the selected column index and updates the selectable columns arrayList in currentPlayer's shelf.
      */
-    public void deselectColumn(){
+    private void deselectColumn(){
         game.getCurrentPlayer().getShelf().cleanSelectedColumn();
         game.getCurrentPlayer().getShelf().updateSelectableColumns();
     }
@@ -167,7 +178,7 @@ public class Engine {
      * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
      * @param temporaryIndex the selected index of temporaryTiles.
      */
-    public void placeTiles(int temporaryIndex) {
+    public void placeTiles(Integer temporaryIndex) {
         Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
         int selectedColumn = game.getCurrentPlayer().getShelf().getSelectedColumn();
         for(int i=Config.shelfHeight-1; i>=0; i--){
@@ -184,7 +195,7 @@ public class Engine {
         }
         if(game.getCurrentPlayer().getTemporaryTiles().isEmpty()){
             deselectColumn();
-            //endTurn();
+            endTurn();
         }
     }
 
@@ -316,7 +327,7 @@ public class Engine {
     public void endTurn(){
         this.checkCommonGoals();
         this.checkEndGame();
-        getSaveGameStatus().saveGame();
+        //getSaveGameStatus().saveGame();
         game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
@@ -325,6 +336,26 @@ public class Engine {
         }
         else {
             getGame().setCurrentPlayer(getGame().getNextPlayer());
+        }
+        wakeUpClient();
+    }
+
+    private void wakeUpClient(){
+        for(Client client : clients){
+            try {
+                if(getGame().getCurrentPlayer().getNickname().equals(client.getNickname())) {
+                    try {
+                        if(client.getTui()!=null)
+                            client.getTui().setState(UIState.YOUR_TURN);
+                        else
+                            client.getGui().setState(UIState.YOUR_TURN);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -438,4 +469,38 @@ public class Engine {
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
+    public void update(Client client, UIEvent UiEvent, InputController input){
+        //gestisce gli input e chiama le funzioni
+        try {
+            if(!client.getNickname().equals(game.getCurrentPlayer().getNickname()) && !UiEvent.equals(UIEvent.SAY_IN_CHAT)){
+                System.out.println("Discarding notification from "+client.getNickname());
+                return;
+            }
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+        switch(UiEvent){
+            case TILE_SELECTION -> {
+                try {
+                    selectTiles(input.getCoordinate());
+                } catch (UnselectableTileException | NoMoreColumnSpaceException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case CONFIRM_SELECTION -> {
+                try {
+                    confirmSelectedTiles();
+                } catch (MaxTemporaryTilesExceededException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case COLUMN_SELECTION -> {
+                try {
+                    selectColumn(input.getIndex());
+                } catch (UnselectableColumnException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 }
