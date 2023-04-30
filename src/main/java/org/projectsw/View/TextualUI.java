@@ -34,7 +34,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         return this.coordinate;
     }
 
-    //TODO da finire
+    //TODO: da finire
     @Override
     public void run() {
         while(getState() != UIState.GAME_ENDING){

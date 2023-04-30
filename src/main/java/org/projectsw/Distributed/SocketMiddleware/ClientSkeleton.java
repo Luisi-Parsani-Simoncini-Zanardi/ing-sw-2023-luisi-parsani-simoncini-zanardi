@@ -65,7 +65,7 @@ public class ClientSkeleton implements Client {
     }
 
 
-    //TODO non so se va bene ritornarli con ois e oos o semplicemente fare return nickname
+    //TODO: non so se va bene ritornarli con ois e oos o semplicemente fare return nickname
     @Override
     public String getNickname() throws RemoteException {
         return null;

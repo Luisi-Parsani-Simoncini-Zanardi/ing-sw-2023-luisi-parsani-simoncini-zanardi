@@ -29,9 +29,9 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void register(Client client) throws RemoteException {
-        //TODO: qui si dovrà gestire la possibile reconnect se un savegame è presente
+        //TODO: gestire la possibile reconnect se un savegame è presente
         if(this.controller.getClients().size()==0){
-            int num = insertNumOfPlayers();
+            int num = insertNumOfPlayers(); //TODO: cambiare questo metodo, cosi' printa sul server
             try {
                 this.controller.firstPlayerJoin(client.getNickname(), num);
             } catch (InvalidNumberOfPlayersException e) {
