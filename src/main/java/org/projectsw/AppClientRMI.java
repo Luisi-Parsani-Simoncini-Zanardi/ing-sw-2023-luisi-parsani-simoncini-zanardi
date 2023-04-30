@@ -1,6 +1,5 @@
 package org.projectsw;
 
-import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.ClientImpl;
 import org.projectsw.Distributed.Server;
 
@@ -17,7 +16,7 @@ public class AppClientRMI {
             Server server = (Server) registry.lookup("server");
             new ClientImpl(server);
         }catch(NotBoundException e){
-            System.err.println("Server not found");
+            throw new NotBoundException("Server not found");
         }
 
     }
