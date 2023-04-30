@@ -81,8 +81,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private Integer selectColumnInput(){
-        System.out.println("In which column do you want to insert your tiles?\n" +
-                "if u have previosly ch");
+        System.out.println("In which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
     }
