@@ -10,7 +10,7 @@ import java.rmi.registry.Registry;
 public class AppServerRMI {
     public static void main(String[] args) throws RemoteException {
         Server server = new ServerImpl();
-
+        //TODO: da configurare rmiregistry
         Registry registry = LocateRegistry.getRegistry();//port 1099 standard
         registry.rebind("server", server);
     }

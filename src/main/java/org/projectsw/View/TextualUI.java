@@ -39,6 +39,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public void run() {
         while(getState() != UIState.GAME_ENDING){
             while(getState() == UIState.OPPONENT_TURN){
+                //per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni ciocatore che aspetta
+                //per gestirlo bisognera usare synchronized e i lock e manderà al controller il suò messaggio controllando che il
+                //giocatore che sta giocando non stia mandando input in chat in quel momento per evitare conflitti.
+                //poi si fa una setChangedAndNotifyObservers(UIEvent.SAY_IN_CHAT); e aggiorno le view //NOTE A FINE CLASSE
                 synchronized (lock){
                     try{lock.wait();
                     }catch(InterruptedException e){
@@ -46,17 +50,20 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                     }
                 }
             }
+
             System.out.println("---YOUR TURN---");
             do{
                 coordinate = selectTilesInput();
                 setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
             }while(chooseTiles());
             setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
+
             do{
                 index = selectColumnInput();
             }while(chooseColumn());
+            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
 
-            //parte place tiles con richiesta di ordine di inserimento nella shelf all'utente
+            //TODO: parte place tiles con richiesta di ordine di inserimento nella shelf all'utente
 
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
@@ -66,11 +73,16 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private boolean chooseColumn(){
         System.out.println("Are you sure?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextInt() == 0;
+        int choice = scanner.nextInt();
+        if(choice == 2){
+            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
+        }
+        return choice == 2;
     }
 
     private Integer selectColumnInput(){
-        System.out.println("In which column do you want to insert your tiles?");
+        System.out.println("In which column do you want to insert your tiles?\n" +
+                "if u have previosly ch");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
     }
@@ -119,3 +131,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
 }
+
+//la chat deve anche poter inviare a un singolo giocatore il messaggio quindi bisognerà fare una classe chatSegreta
+//notificherà il singolo client. dato che potrà avere un singolo observer bisogna farne una per client alla creazione dello
+//stesso. poremmo metterla in player in modo che ognuno abbia la sua e quando si vuole scrivere a un determinato giocatore
+//si va a modificare solo la sua chat e si notifica l'observer cioè il client (e di conseguenza la UI) del player destinatario
+//Questo però potrebbe creare un ciclo di oggetti tra game,player e chat che possono dare problemi alla serializzazione (loop
+// infinito). suggerisco di rifare chat come interfaccia e fare due figli:
+// chatSegreta(che va nel player)
+// chatPubblica (che va nel game)
+//in questo modo la serializzazione non ha problemi sicuramente e l'implementazione usa il paradigna a oggetti at its finest

@@ -13,8 +13,9 @@ public class AppClientRMI {
     public static void main(String[] args) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry();
         try {
+            //TODO: da configurare rmiregistry
             Server server = (Server) registry.lookup("server");
-            Client client = new ClientImpl(server);
+            new ClientImpl(server);
         }catch(NotBoundException e){
             System.err.println("Server not found");
         }
