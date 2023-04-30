@@ -340,7 +340,7 @@ public class Engine{
         wakeUpClient();
     }
 
-    private void wakeUpClient(){
+    public void wakeUpClient(){
         for(Client client : clients){
             try {
                 if(getGame().getCurrentPlayer().getNickname().equals(client.getNickname())) {
@@ -354,7 +354,7 @@ public class Engine{
                     }
                 }
             } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("nickname client not found" + e.getMessage());
             }
         }
     }
@@ -435,6 +435,7 @@ public class Engine{
                     }
                 }
             }
+            game.getBoard().finishedUpdateBoard();
         }
     }
 

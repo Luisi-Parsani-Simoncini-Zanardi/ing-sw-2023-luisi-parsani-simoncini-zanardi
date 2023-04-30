@@ -8,6 +8,8 @@ import static org.projectsw.Model.TilesEnum.EMPTY;
 /**
  * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
  */
+
+//TODO player dentro shelf crea loop infinito sussss
 public class Shelf extends Observable<Game.Event> {
     private Tile[][] shelf;
     private Player player;

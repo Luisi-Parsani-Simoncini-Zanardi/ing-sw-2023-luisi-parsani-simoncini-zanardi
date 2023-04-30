@@ -181,6 +181,12 @@ public class Board extends Observable<Game.Event> {
         if(row>Config.boardHeight || column>Config.boardLength) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
         updateSelectablePoints();
+    }
+
+    /**
+     * notify the completion of the fillBoard
+     */
+    public void finishedUpdateBoard() {
         setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 

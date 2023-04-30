@@ -42,14 +42,14 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         try {
             server.register(this);
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("cannot register client on server" + e.getMessage());
         }
         if(tui != null)
             tui.addObserver((o, arg) -> {
                 try {
                     server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex()));
                 } catch (RemoteException e) {
-                    throw new RuntimeException(e);//da gestire esplicitamente
+                    throw new RuntimeException("cannot send the client input" + e.getMessage());//da gestire esplicitamente
                 }
             });
         else
@@ -57,7 +57,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                 try {
                     server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex()));
                 } catch (RemoteException e) {
-                    throw new RuntimeException(e);//da gestire esplicitamente
+                    throw new RuntimeException("cannot send the client input" + e.getMessage());//da gestire esplicitamente
                 }
             });
         runView();
