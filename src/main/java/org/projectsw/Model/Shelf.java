@@ -1,13 +1,16 @@
 package org.projectsw.Model;
 
 import org.projectsw.Config;
+import org.projectsw.Util.Observable;
 import java.util.ArrayList;
 import static org.projectsw.Model.TilesEnum.EMPTY;
 
 /**
  * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
  */
-public class Shelf {
+
+//TODO player dentro shelf crea loop infinito sussss
+public class Shelf extends Observable<Game.Event> {
     private Tile[][] shelf;
     private Player player;
     private ArrayList<Integer> selectableColumns;
@@ -53,6 +56,8 @@ public class Shelf {
         this.selectableColumns = shelf.getSelectableColumns();
         this.selectedColumn = shelf.getSelectedColumn();
         this.player = shelf.getPlayer();
+        this.shelf = shelf.shelf;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
 
@@ -106,6 +111,7 @@ public class Shelf {
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
         if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
     /**
@@ -144,6 +150,7 @@ public class Shelf {
         if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.getTile().equals(TilesEnum.EMPTY) || tile.getTile().equals(TilesEnum.UNUSED)) throw new IllegalArgumentException("Trying to add a unused or empty tile to the shelf");
         else shelf[row][column] = tile;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
     /**
@@ -194,6 +201,7 @@ public class Shelf {
      */
     public void cleanSelectedColumn(){ selectedColumn = null; }
 
+    //TODO: codice duplicato con la board linea 341 da sistemare
     /**
      * Prints the shelf.
      */
@@ -225,5 +233,4 @@ public class Shelf {
         }
         System.out.print("\n\n");
     }
-
 }

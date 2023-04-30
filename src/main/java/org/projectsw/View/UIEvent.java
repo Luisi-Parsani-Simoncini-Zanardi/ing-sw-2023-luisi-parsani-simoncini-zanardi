@@ -1,0 +1,5 @@
+package org.projectsw.View;
+
+public enum UIEvent {
+    TILE_SELECTION, CONFIRM_SELECTION, COLUMN_SELECTION, TILE_INSERTION, SAY_IN_CHAT
+}

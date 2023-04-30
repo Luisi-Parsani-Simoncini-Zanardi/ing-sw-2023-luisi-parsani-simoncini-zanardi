@@ -3,18 +3,24 @@ package org.projectsw.Model;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
+import org.projectsw.Util.Observable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
 
-//TODO: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza.
+//TODO: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza
 //      (se risolvete scrivete a Davide)
 
 /**
  * The class contains information about the game state,
  * including the board, players (with info on the currently playing one and the first one), chat, and common goals.
  */
-public class Game{
+public class Game extends Observable<Game.Event> {
+
+    public enum Event{
+        UPDATED_BOARD, UPDATED_SHELF, UPDATED_CURRENT_PLAYER, UPDATED_CHAT
+    }
 
     private GameStates gameState;
     private final int numberOfPlayers;
@@ -61,20 +67,20 @@ public class Game{
         try {
             commonGoals = this.randomCommonGoals();
         }catch(Exception e){System.err.println(e.getMessage());}
-
+        setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
     }
 
     /**
      * Returns the current state of the game.
      * @return the current state of the game.
      */
-    public GameStates getGameState() {return gameState;}
+    public GameStates getGameState() { return gameState; }
 
     /**
      * Returns the number of players of the game.
      * @return the number of players of the game.
      */
-    public int getNumberOfPlayers() {return numberOfPlayers;}
+    public int getNumberOfPlayers() { return numberOfPlayers; }
 
     /**
      * Returns the first player of the game.
@@ -138,7 +144,7 @@ public class Game{
      * Sets the game state as the passed parameter.
      * @param gameState the game state to set.
      */
-    public void setGameState(GameStates gameState) {this.gameState = gameState;}
+    public void setGameState(GameStates gameState) { this.gameState = gameState; }
 
     /**
      * Sets the first player of the game.
@@ -154,6 +160,7 @@ public class Game{
      */
     public void setCurrentPlayer(Player currentPlayer){
         this.currentPlayer=currentPlayer;
+        setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
     }
 
     /**
@@ -170,6 +177,7 @@ public class Game{
      */
     public void setBoard(Board board) {
         this.board = board;
+        setChangedAndNotifyObservers(Event.UPDATED_BOARD);
     }
 
     /**
@@ -178,6 +186,7 @@ public class Game{
      */
     public void setChat(Chat chat) {
         this.chat = chat;
+        setChangedAndNotifyObservers(Event.UPDATED_CHAT);
     }
 
     /**
@@ -286,6 +295,4 @@ public class Game{
 
         return commonGoals;
     }
-
-
 }

@@ -2,6 +2,8 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import org.projectsw.Config;
+import org.projectsw.Util.Observable;
+
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Exceptions.UnselectableTileException;
 import java.awt.*;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
  */
-public class Board{
+public class Board extends Observable<Game.Event> {
     private Tile[][] board;
     private boolean endGame;
     private Bag bag;
@@ -35,6 +37,7 @@ public class Board{
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -62,6 +65,7 @@ public class Board{
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -74,6 +78,7 @@ public class Board{
         this.bag = board.getBag();
         this.temporaryPoints = board.getTemporaryPoints();
         this.updateSelectablePoints();
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -125,6 +130,7 @@ public class Board{
         if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
         updateSelectablePoints();
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -133,6 +139,7 @@ public class Board{
      */
     public void setEndGame(boolean endGame) {
         this.endGame = endGame;
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -158,6 +165,7 @@ public class Board{
             Tile tmp = board[(int) point.getX()][(int) point.getY()];
             board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
+            setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
             return tmp;
         }
     }
@@ -173,6 +181,13 @@ public class Board{
         if(row>Config.boardHeight || column>Config.boardLength) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
         updateSelectablePoints();
+    }
+
+    /**
+     * notify the completion of the fillBoard
+     */
+    public void finishedUpdateBoard() {
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -334,6 +349,7 @@ public class Board{
         return false;
     }
 
+    //TODO: codice duplicato con linea 128 della shelf da sistemare
     /**
      * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
      */
