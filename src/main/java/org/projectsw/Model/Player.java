@@ -101,7 +101,6 @@ public class Player {
      * @param shelf the shelf to set for the player
      */
     public void setShelf(Shelf shelf) {
-        shelf.setPlayer(this);
         this.shelf=shelf;
     }
 

@@ -1,6 +1,7 @@
 package org.projectsw.Model;
 
 import org.projectsw.Config;
+import org.projectsw.Exceptions.UpdatingOnWrongPlayerException;
 import org.projectsw.Util.Observable;
 import java.util.ArrayList;
 import static org.projectsw.Model.TilesEnum.EMPTY;
@@ -10,9 +11,9 @@ import static org.projectsw.Model.TilesEnum.EMPTY;
  */
 public class Shelf extends Observable<Game.Event> {
     private Tile[][] shelf;
-    private Player player;
     private ArrayList<Integer> selectableColumns;
     private Integer selectedColumn;
+    private boolean selectionPossible;
 
     /**
      * Constructs a new empty shelf with 6 rows and 5 columns, setting as null all the other parameters.
@@ -24,9 +25,9 @@ public class Shelf extends Observable<Game.Event> {
                 shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
             }
         }
-        player = null;
         selectableColumns = null;
         selectedColumn = null;
+        selectionPossible = true;
     }
 
     /**
@@ -40,9 +41,9 @@ public class Shelf extends Observable<Game.Event> {
                 shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
             }
         }
-        this.player = player;
         selectableColumns = null;
         selectedColumn = null;
+        selectionPossible = true;
     }
 
     /**
@@ -53,8 +54,8 @@ public class Shelf extends Observable<Game.Event> {
         this.shelf = shelf.getShelf();
         this.selectableColumns = shelf.getSelectableColumns();
         this.selectedColumn = shelf.getSelectedColumn();
-        this.player = shelf.getPlayer();
         this.shelf = shelf.shelf;
+        this.selectionPossible = shelf.isSelectionPossible();
         setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
@@ -88,17 +89,19 @@ public class Shelf extends Observable<Game.Event> {
     }
 
     /**
-     * Returns the player who owns the shelf.
-     * @return the player attribute.
-     */
-    public Player getPlayer(){ return player; }
-
-    /**
      * Return the selected column attribute.
      * @return the int corresponding to the selected column attribute.
      */
     public Integer getSelectedColumn() {
         return selectedColumn;
+    }
+
+    /**
+     * Return the selectionPossible attribute.
+     * @return the boolean corresponding to the selectionPossible attribute.
+     */
+    public boolean isSelectionPossible() {
+        return selectionPossible;
     }
 
     /**
@@ -110,14 +113,6 @@ public class Shelf extends Observable<Game.Event> {
         if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
         setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
-    }
-
-    /**
-     * Sets the player attribute.
-     * @param player the player to sat as new owner of the shelf.
-     */
-    public void setPlayer(Player player){
-        this.player = player;
     }
 
     /**
@@ -137,6 +132,15 @@ public class Shelf extends Observable<Game.Event> {
     }
 
     /**
+     * Sets the selection possible attribute.
+     * @param selectionPossible the boolean to set as new selection possible attribute.
+     */
+    public void setSelectionPossible(boolean selectionPossible) {
+        this.selectionPossible = selectionPossible;
+    }
+
+
+    /**
      * Inserts a tile into the specified row and column of the shelf.
      * @param tile the tile to insert
      * @param row the row to insert the tile into
@@ -154,7 +158,8 @@ public class Shelf extends Observable<Game.Event> {
     /**
      * Updates the selectable columns arrayList after checking the size of temporaryTiles arrayList of the player.
      */
-    public void updateSelectableColumns() {
+    public void updateSelectableColumns(Player player) throws UpdatingOnWrongPlayerException {
+        if(!player.getShelf().equals(this)) throw new UpdatingOnWrongPlayerException();
         ArrayList<Integer> selectableColumns = new ArrayList<>();
         for (int j=0; j<Config.shelfLength; j++) {
             int freeSpace = 0;
@@ -163,7 +168,7 @@ public class Shelf extends Observable<Game.Event> {
                     freeSpace++;
                 } else break;
             }
-            if(freeSpace >= this.player.getTemporaryTiles().size() && freeSpace > 0) selectableColumns.add(j);
+            if(freeSpace >= player.getTemporaryTiles().size() && freeSpace > 0) selectableColumns.add(j);
         }
         this.selectableColumns = selectableColumns;
     }

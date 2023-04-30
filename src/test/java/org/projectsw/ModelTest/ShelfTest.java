@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Config;
 import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
+import org.projectsw.Exceptions.UpdatingOnWrongPlayerException;
 import org.projectsw.Model.*;
 
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ class ShelfTest {
         }
         assertNull(shelf1.getSelectedColumn());
         assertNull(shelf1.getSelectableColumns());
-        assertNull(shelf1.getPlayer());
 
         Player player = new Player("Davide",0);
         Shelf shelf2 = new Shelf(player);
@@ -48,7 +48,6 @@ class ShelfTest {
         }
         assertNull(shelf2.getSelectedColumn());
         assertNull(shelf2.getSelectableColumns());
-        assertEquals(player,shelf2.getPlayer());
     }
 
     /**
@@ -256,7 +255,7 @@ class ShelfTest {
      * If the description isn't enough clear try to run the test with the commented lines and check what the function prints.
      */
     @Test
-    void updateSelectableColumnsTest() throws MaxTemporaryTilesExceededException {
+    void updateSelectableColumnsTest() throws MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException {
         Player player = new Player("Davide",0);
         Shelf shelf = player.getShelf();
         for(int numberOfTiles = 0; numberOfTiles < Config.maximumTilesPickable + 1; numberOfTiles++){
@@ -267,7 +266,7 @@ class ShelfTest {
             for(int i=0;i<Config.shelfHeight;i++){
                 for(int j=0;j<Config.shelfLength;j++){
                     shelf.insertTiles(new Tile(CATS,0),i,j);
-                    shelf.updateSelectableColumns();
+                    shelf.updateSelectableColumns(player);
                     //System.out.println("Insert in ["+i+"]["+j+"]");
                     ArrayList<Integer> nowSelectable = shelf.getSelectableColumns();
                     if(i > (Config.shelfHeight - numberOfTiles)){
