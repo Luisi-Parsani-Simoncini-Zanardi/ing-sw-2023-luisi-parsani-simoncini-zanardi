@@ -9,7 +9,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Scanner;
 
 import static org.projectsw.Config.maxPlayers;
 
@@ -31,9 +30,8 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     public void register(Client client) throws RemoteException {
         //TODO: gestire la possibile reconnect se un savegame è presente
         if(this.controller.getClients().size()==0){
-            int num = insertNumOfPlayers(); //TODO: cambiare questo metodo, cosi' printa sul server
             try {
-                this.controller.firstPlayerJoin(client.getNickname(), num);
+                this.controller.firstPlayerJoin(client.getNickname(), client.getNumOfPLayer());
             } catch (InvalidNumberOfPlayersException e) {
                 throw new RuntimeException(e);
             }
@@ -56,14 +54,13 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         });
     }
 
-    private int insertNumOfPlayers(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("insert the number of players: ");
-        return scanner.nextInt();
-    }
-
     @Override
     public void update(Client client, UIEvent arg, InputController input) throws RemoteException {
         this.controller.update(client, arg, input);
+    }
+
+    @Override
+    public boolean askNum() {
+        return this.controller.getClients().size() == 0;
     }
 }

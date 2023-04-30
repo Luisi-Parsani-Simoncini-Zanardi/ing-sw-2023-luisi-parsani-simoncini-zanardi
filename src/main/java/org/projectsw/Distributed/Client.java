@@ -15,8 +15,10 @@ public interface Client extends Remote {
      * @param o     The resulting model view
      * @param arg   The causing event
      */
-    public void update(GameView o, Game.Event arg) throws RemoteException;
-    public String getNickname() throws RemoteException;
-    public GraphicalUI getGui() throws RemoteException;
-    public TextualUI getTui() throws RemoteException;
+    void update(GameView o, Game.Event arg) throws RemoteException;
+     String getNickname() throws RemoteException;
+     GraphicalUI getGui() throws RemoteException;
+     TextualUI getTui() throws RemoteException;
+
+     int getNumOfPLayer() throws RemoteException;
 }

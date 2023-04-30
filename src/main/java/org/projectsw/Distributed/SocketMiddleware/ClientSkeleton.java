@@ -72,6 +72,11 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
+    public int getNumOfPLayer() throws RemoteException {
+        return 0;
+    }
+
+    @Override
     public GraphicalUI getGui() throws RemoteException {
         return null;
     }

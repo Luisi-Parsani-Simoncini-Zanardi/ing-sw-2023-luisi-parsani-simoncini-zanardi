@@ -88,4 +88,9 @@ public class ServerStub implements Server {
             throw new RemoteException("Cannot close socket", e);
         }
     }
+
+    @Override
+    public boolean askNum() {
+        return true;
+    }
 }

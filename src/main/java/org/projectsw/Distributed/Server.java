@@ -22,4 +22,6 @@ public interface Server extends Remote {
      */
     void update(Client client, UIEvent arg, InputController input) throws RemoteException;
 
+    boolean askNum() throws RemoteException;
+
 }

@@ -17,6 +17,8 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     private GraphicalUI gui;
     private String nickname;
 
+    private int numOfPlayer;
+
     public ClientImpl(Server server) throws RemoteException{
         super();
         initialize(server);
@@ -35,6 +37,8 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     private void initialize(Server server) throws RemoteException{
         chooseUI();
         this.nickname = insertNickname();
+        if (server.askNum())
+            this.numOfPlayer = insertNumOfPlayers();
         try {
             server.register(this);
         } catch (RemoteException e) {
@@ -63,6 +67,11 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         return this.nickname;
     }
 
+    @Override
+    public int getNumOfPLayer(){
+        return this.numOfPlayer;
+    }
+
     public TextualUI getTui(){
         return this.tui;
     }
@@ -81,6 +90,12 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         Scanner scanner = new Scanner(System.in);
         System.out.print("insert your nickname: ");
         return scanner.nextLine();
+    }
+
+    private int insertNumOfPlayers(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("insert the number of players: ");
+        return scanner.nextInt();
     }
 
 
