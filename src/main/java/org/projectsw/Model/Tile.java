@@ -1,6 +1,6 @@
 package org.projectsw.Model;
 
-import org.projectsw.Config;
+import org.projectsw.Util.Config;
 
 /**
  * Class representing a single tile.

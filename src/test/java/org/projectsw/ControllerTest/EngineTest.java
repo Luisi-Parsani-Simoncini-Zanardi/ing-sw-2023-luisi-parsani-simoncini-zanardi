@@ -2,7 +2,7 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Config;
+import org.projectsw.Util.Config;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;

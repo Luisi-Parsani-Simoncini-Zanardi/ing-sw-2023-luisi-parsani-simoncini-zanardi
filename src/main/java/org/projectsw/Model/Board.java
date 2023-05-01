@@ -1,7 +1,7 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
-import org.projectsw.Config;
+import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;

@@ -2,7 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Config;
+import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import org.projectsw.Exceptions.UpdatingOnWrongPlayerException;
 import org.projectsw.Model.*;

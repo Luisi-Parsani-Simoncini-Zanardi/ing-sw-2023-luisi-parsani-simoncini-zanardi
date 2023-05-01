@@ -1,6 +1,6 @@
 package org.projectsw.Controller;
 
-import org.projectsw.Config;
+import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;

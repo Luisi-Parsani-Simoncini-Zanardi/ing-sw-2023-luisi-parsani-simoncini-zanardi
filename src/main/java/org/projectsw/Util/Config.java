@@ -1,4 +1,4 @@
-package org.projectsw;
+package org.projectsw.Util;
 
 public class Config {
     public static final int boardLength = 9;

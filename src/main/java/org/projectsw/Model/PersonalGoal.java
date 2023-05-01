@@ -1,7 +1,7 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
-import org.projectsw.Config;
+import org.projectsw.Util.Config;
 
 import java.io.FileReader;
 import java.io.IOException;
