@@ -38,19 +38,14 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     @Override
     public void run() {
         while(getState() != UIState.GAME_ENDING){
-            while(getState() == UIState.OPPONENT_TURN){
-                //per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni ciocatore che aspetta
-                //per gestirlo bisognera usare synchronized e i lock e manderà al controller il suò messaggio controllando che il
-                //giocatore che sta giocando non stia mandando input in chat in quel momento per evitare conflitti.
-                //poi si fa una setChangedAndNotifyObservers(UIEvent.SAY_IN_CHAT); e aggiorno le view //NOTE A FINE CLASSE
-                synchronized (lock){
+             while(getState() == UIState.OPPONENT_TURN){
+                synchronized (lock){//forse va eliminata perchè superflua
                     try{lock.wait();
                     }catch(InterruptedException e){
                         System.err.println("Interrupted while waiting for server: " + e.getMessage());
                     }
                 }
             }
-
             System.out.println("---YOUR TURN---");
             do{
                 coordinate = selectTilesInput();
@@ -130,7 +125,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
 }
-
+//per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni ciocatore che aspetta
+//per gestirlo bisognera usare synchronized e i lock e manderà al controller il suò messaggio controllando che il
+//giocatore che sta giocando non stia mandando input in chat in quel momento per evitare conflitti.
+//poi si fa una setChangedAndNotifyObservers(UIEvent.SAY_IN_CHAT); e aggiorno le view
 //la chat deve anche poter inviare a un singolo giocatore il messaggio quindi bisognerà fare una classe chatSegreta
 //notificherà il singolo client. dato che potrà avere un singolo observer bisogna farne una per client alla creazione dello
 //stesso. poremmo metterla in player in modo che ognuno abbia la sua e quando si vuole scrivere a un determinato giocatore

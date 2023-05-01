@@ -10,7 +10,6 @@ import java.rmi.registry.Registry;
 
 public class AppClientRMI {
     public static void main(String[] args) throws RemoteException, NotBoundException {
-        //TODO: consentire piu' run parallele
         Registry registry = LocateRegistry.getRegistry();
         try {
             Server server = (Server) registry.lookup("server");

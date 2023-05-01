@@ -364,15 +364,16 @@ public class Engine{
                 if(getGame().getCurrentPlayer().getNickname().equals(client.getNickname())) {
                     try {
                         if(client.getTui()!=null)
-                            client.getTui().setState(UIState.YOUR_TURN);
+                            client.getTui().setState(UIState.YOUR_TURN);//questa è la linea errata
+                        //il controlle non può modificare le UI del client
                         else
                             client.getGui().setState(UIState.YOUR_TURN);
                     } catch (RemoteException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Failed to wake the player: "+e.getMessage());
                     }
                 }
             } catch (RemoteException e) {
-                throw new RuntimeException("nickname client not found" + e.getMessage());
+                throw new RuntimeException("nickname client not found: " + e.getMessage());
             }
         }
     }

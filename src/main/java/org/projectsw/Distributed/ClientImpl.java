@@ -16,7 +16,6 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
     private String nickname;
-
     private int numOfPlayer;
 
     public ClientImpl(Server server) throws RemoteException{

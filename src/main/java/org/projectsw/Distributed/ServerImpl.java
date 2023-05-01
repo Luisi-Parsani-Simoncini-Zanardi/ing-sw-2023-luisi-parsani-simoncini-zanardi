@@ -17,7 +17,6 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine();
 
-
     public ServerImpl() throws RemoteException {
         super();
     }
@@ -54,9 +53,6 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 throw new RuntimeException("cannot update the view " + e.getMessage());//da gestire esplicitamente
             }
         });
-
-        if(this.controller.getGame().getGameState().equals(GameStates.RUNNING))
-            this.controller.wakeUpClient();
     }
 
     @Override
