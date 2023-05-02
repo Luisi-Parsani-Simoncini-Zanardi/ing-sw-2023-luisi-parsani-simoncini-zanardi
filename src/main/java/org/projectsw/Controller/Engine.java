@@ -5,32 +5,14 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.View.UIEvent;
-import org.projectsw.View.UIState;
 
 import java.awt.*;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
 
-
-//turno
-//chiama selectTiles/deselectTiles ad ogni click su board
-//confermo la mia scelta, chiamo comfirmSelectedtiles
-//chiama select column
-//chiama placeTiles
-//chiama endTurn
-//            //chiama checkCommonGoal
-//            //chiama checkEndGame
-//                //controlla di non essere già in endgame
-//                //controlla che il giocatore abbia riempito la shelf
-//                    // se vero, setta endGame e assegna punto
-//            //chiama saveGameStatus
-//            //controlla se la board e' "vuota", e in caso chiama fillBoard
-//            //passa il turno al giocatore successivo, o se era l'ultimo giocatore chiama endGame
-//                    //endGame calcola i punteggi e assegna il vincitore e poi chiama resetGame
 
 /**
  * The class contains the application logic methods of the game.
@@ -53,6 +35,7 @@ public class Engine{
      * @return current game
      */
     public Game getGame() { return this.game; }
+
 
     /**
      * get the saveGameStatus of the game
@@ -470,5 +453,7 @@ public class Engine{
 
     public void update(Client client, UIEvent UiEvent, InputController input){
         //gestisce gli input e chiama le funzioni
+        switch (UiEvent){
+        }
     }
 }

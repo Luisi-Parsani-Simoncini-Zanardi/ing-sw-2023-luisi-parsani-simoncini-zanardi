@@ -1,8 +1,6 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
-import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
-import org.projectsw.Model.GameStates;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
@@ -10,8 +8,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-
-import static org.projectsw.Util.Config.maxPlayers;
 
 public class ServerImpl extends UnicastRemoteObject implements Server{
 
