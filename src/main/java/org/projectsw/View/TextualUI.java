@@ -125,13 +125,14 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
 }
-//per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni ciocatore che aspetta
-//per gestirlo bisognera usare synchronized e i lock e manderà al controller il suò messaggio controllando che il
-//giocatore che sta giocando non stia mandando input in chat in quel momento per evitare conflitti.
+//per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni giocatore che aspetta
+//per gestirlo bisognerà usare synchronized (lock) la tui si metterà in continuazione in ascolto di un input che verrà mandato
+// ad entrambi i thread di chat e del gioco, ci sarà un controllo di formato (ad esempio: per scrivere in chat bisogna usare un determinato formato
+//  /msg "questo è il messaggio". se si legge /msg allora è un messaggio da gestire e il thread della chat lo farà mentre quello del gioco lo scarta).
 //poi si fa una setChangedAndNotifyObservers(UIEvent.SAY_IN_CHAT); e aggiorno le view
 //la chat deve anche poter inviare a un singolo giocatore il messaggio quindi bisognerà fare una classe chatSegreta
-//notificherà il singolo client. dato che potrà avere un singolo observer bisogna farne una per client alla creazione dello
-//stesso. poremmo metterla in player in modo che ognuno abbia la sua e quando si vuole scrivere a un determinato giocatore
+//notificherà il singolo client (es: /msg/nomeGiocatore "questo è il messaggio"). dato che potrà avere un singolo observer bisogna farne una per client
+// alla creazione dello stesso. poremmo metterla in player in modo che ognuno abbia la sua e quando si vuole scrivere a un determinato giocatore
 //si va a modificare solo la sua chat e si notifica l'observer cioè il client (e di conseguenza la UI) del player destinatario
 //Questo però potrebbe creare un ciclo di oggetti tra game,player e chat che possono dare problemi alla serializzazione (loop
 // infinito). suggerisco di rifare chat come interfaccia e fare due figli:
