@@ -2,9 +2,7 @@ package org.projectsw.Distributed.SocketMiddleware;
 
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Server;
-import org.projectsw.Model.Game;
-import org.projectsw.Model.GameView;
-import org.projectsw.Model.InputController;
+import org.projectsw.Model.*;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 import org.projectsw.View.UIEvent;
@@ -43,6 +41,7 @@ public class ClientSkeleton implements Client {
         }
     }
 
+
     public void receive(Server server) throws RemoteException{
         UIEvent arg;
         try{
@@ -62,18 +61,6 @@ public class ClientSkeleton implements Client {
             throw new RemoteException("Cannot cast event: "+e.getMessage());
         }
         server.update(this, arg, input);
-    }
-
-
-    //TODO: non so se va bene ritornarli con ois e oos o semplicemente fare return nickname
-    @Override
-    public String getNickname() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public int getNumOfPLayer() throws RemoteException {
-        return 0;
     }
 
     @Override

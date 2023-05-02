@@ -6,7 +6,6 @@ import java.io.Serializable;
 public class GameView implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-
     private final Board gameBoard;
     private final Shelf currentPlayerShelf;
     private final String currentPlayerName;

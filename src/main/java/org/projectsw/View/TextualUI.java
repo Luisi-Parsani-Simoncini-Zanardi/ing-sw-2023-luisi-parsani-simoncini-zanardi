@@ -1,9 +1,5 @@
 package org.projectsw.View;
-
-import org.projectsw.Model.Board;
-import org.projectsw.Model.Game;
-import org.projectsw.Model.GameView;
-import org.projectsw.Model.Message;
+import org.projectsw.Model.*;
 import org.projectsw.Util.Observable;
 
 import java.awt.*;
@@ -13,10 +9,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
     private UIState state = UIState.OPPONENT_TURN;//in modo da aspettare all'inizio e partire solo quando il server tramite il controller mi da il via
     private final Object lock = new Object();
-    private Integer index;
+    private Integer number;
     private Point coordinate;
     private String nickname;
-    private int numOfPlayer;
 
     private UIState getState(){
         synchronized(lock){
@@ -30,7 +25,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
     public Integer getIndex(){
-        return this.index;
+        return this.number;
     }
     public Point getCoordinate(){
         return this.coordinate;
@@ -40,7 +35,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     //TODO: da finire
     @Override
     public void run() {
-        while(getState() != UIState.GAME_ENDING){
+        try{
+            insertNickname();
+        }catch(RuntimeException e){
+            System.out.println("Nickname already used");
+            insertNickname();
+        }
+     /*   while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 synchronized (lock){//forse va eliminata perchè superflua
                     try{lock.wait();
@@ -57,7 +58,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
 
             do{
-                index = selectColumnInput();
+                number = selectColumnInput();
             }while(chooseColumn());
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
 
@@ -65,6 +66,14 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
+        }*/
+    }
+    public void update(GameView model, Game.Event arg){
+        switch(arg){
+            case UPDATED_BOARD -> showBoard(model);
+            case UPDATED_SHELF -> showShelf(model);
+            case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
+            case UPDATED_CHAT -> showChat(model);
         }
     }
 
@@ -119,13 +128,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
     }
 
-    public void update(GameView model, Game.Event arg){
-        switch(arg){
-            case UPDATED_BOARD -> showBoard(model);
-            case UPDATED_SHELF -> showShelf(model);
-            case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);
-        }
+    private void insertNickname(){
+        System.out.println("Insert your nickname: ");
+        Scanner scanner = new Scanner(System.in);
+        nickname = scanner.nextLine();
+        coordinate = null;
+        number = null;
+        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
     }
 }
 

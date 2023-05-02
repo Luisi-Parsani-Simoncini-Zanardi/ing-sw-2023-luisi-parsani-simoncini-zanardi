@@ -5,7 +5,6 @@ import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
-
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
