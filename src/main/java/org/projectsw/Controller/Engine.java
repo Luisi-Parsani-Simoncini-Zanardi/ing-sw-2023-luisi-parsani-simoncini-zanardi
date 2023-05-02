@@ -355,27 +355,6 @@ public class Engine{
         else {
             getGame().setCurrentPlayer(getGame().getNextPlayer());
         }
-        wakeUpClient();
-    }
-//--------eliminare questo coso-------------------------------------------------------------------------------------------------------------------------
-    public void wakeUpClient(){
-        for(Client client : clients){
-            try {
-                if(getGame().getCurrentPlayer().getNickname().equals(client.getNickname())) {
-                    try {
-                        if(client.getTui()!=null)
-                            client.getTui().setState(UIState.YOUR_TURN);//questa è la linea errata
-                        //il controlle non può modificare le UI del client
-                        else
-                            client.getGui().setState(UIState.YOUR_TURN);
-                    } catch (RemoteException e) {
-                        throw new RuntimeException("Failed to wake the player: "+e.getMessage());
-                    }
-                }
-            } catch (RemoteException e) {
-                throw new RuntimeException("nickname client not found: " + e.getMessage());
-            }
-        }
     }
 
     /**
@@ -491,36 +470,5 @@ public class Engine{
 
     public void update(Client client, UIEvent UiEvent, InputController input){
         //gestisce gli input e chiama le funzioni
-        try {
-            if(!client.getNickname().equals(game.getCurrentPlayer().getNickname()) && !UiEvent.equals(UIEvent.SAY_IN_CHAT)){
-                System.out.println("Discarding notification from "+client.getNickname());
-                return;
-            }
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-        switch(UiEvent){
-            case TILE_SELECTION -> {
-                try {
-                    selectTiles(input.getCoordinate());
-                } catch (UnselectableTileException | NoMoreColumnSpaceException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            case CONFIRM_SELECTION -> {
-                try {
-                    confirmSelectedTiles();
-                } catch (MaxTemporaryTilesExceededException | EmptyTemporaryPointsException | UpdatingOnWrongPlayerException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            case COLUMN_SELECTION -> {
-                try {
-                    selectColumn(input.getIndex());
-                } catch (UnselectableColumnException | UpdatingOnWrongPlayerException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 }
