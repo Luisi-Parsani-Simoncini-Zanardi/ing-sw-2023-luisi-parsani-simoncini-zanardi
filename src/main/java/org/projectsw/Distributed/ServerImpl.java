@@ -17,7 +17,6 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine();
 
-
     public ServerImpl() throws RemoteException {
         super();
     }
@@ -31,22 +30,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     @Override
     public void register(Client client) throws RemoteException {
         //TODO: gestire la possibile reconnect se un savegame è presente
-            if(this.controller.getClients().size()==0){
-                try {
-                    this.controller.firstPlayerJoin(client.getNickname(), client.getNumOfPLayer());
-                } catch (InvalidNumberOfPlayersException e) {
-                    throw new RuntimeException("cannot add first player " + e.getMessage());
-                }
-            }else if(this.controller.getClients().size()<maxPlayers){
-                try {
-                    this.controller.playerJoin(client.getNickname());
-                } catch (Exception e) {
-                    throw new RuntimeException("cannot add player " + e.getMessage());
-                }
-            }
-
-            this.controller.getClients().add(client);
-
+        this.controller.getClients().add(client);
         this.controller.getGame().addObserver((o, arg) -> {
             try {
                 client.update(new GameView(this.controller.getGame()), arg);
@@ -54,18 +38,10 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 throw new RuntimeException("cannot update the view " + e.getMessage());//da gestire esplicitamente
             }
         });
-
-        if(this.controller.getGame().getGameState().equals(GameStates.RUNNING))
-            this.controller.wakeUpClient();
     }
 
     @Override
     public void update(Client client, UIEvent arg, InputController input) throws RemoteException {
         this.controller.update(client, arg, input);
-    }
-
-    @Override
-    public boolean askNum() throws RemoteException {
-        return this.controller.getClients().size() == 0;
     }
 }
