@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-05-02T16:17:03.025Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="_T2VkgMJ9bYNc1CYKG4z" version="21.2.4" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-02T16:24:19.478Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="jQmE_FjTyd5RzRVXUA5Q" version="21.2.4" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
     <mxGraphModel dx="3676" dy="3178" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -511,6 +511,30 @@
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-23" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enumeration&amp;gt;&amp;gt;&lt;/i&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;&lt;i&gt;UIEvent&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;CONFIRM_SELECTION&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;TILE_SELECTION&lt;br&gt;&amp;nbsp;SAY_IN_CHAT&lt;br&gt;&amp;nbsp;CHOOSE_NICKNAME&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;TILE_INSETION&lt;br&gt;&amp;nbsp;COLUMN_SELECTION&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="2070" y="-759" width="170" height="149" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-27" value="GameView" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="700" width="200" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-28" value="- seriealVersionUID: long&lt;br&gt;- gameBoard: Board&lt;br&gt;- chat: Chat&lt;br&gt;- currentPlayerName: String&lt;br&gt;- currentPlayerShelf: Shelf" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="F7evz0KNMgZYf-CdFRLq-27">
+          <mxGeometry y="26" width="200" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-29" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="F7evz0KNMgZYf-CdFRLq-27">
+          <mxGeometry y="110" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-30" value="+ getGameBoard(): Board&lt;br&gt;+ getCurrentPlayerShelf(): Shelf&lt;br&gt;+ getChat(): Chat&lt;br&gt;+ getCurrentPlayerName(): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="F7evz0KNMgZYf-CdFRLq-27">
+          <mxGeometry y="118" width="200" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-31" value="InputController" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="700" width="160" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-32" value="- coordinate: Point&lt;br&gt;- string: String&lt;br&gt;- integer: Integer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="F7evz0KNMgZYf-CdFRLq-31">
+          <mxGeometry y="26" width="160" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-33" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="F7evz0KNMgZYf-CdFRLq-31">
+          <mxGeometry y="80" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-34" value="+ getCoordinate(): Point&lt;br&gt;+ getIndex(): Integer&lt;br&gt;getString(): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="F7evz0KNMgZYf-CdFRLq-31">
+          <mxGeometry y="88" width="160" height="62" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
