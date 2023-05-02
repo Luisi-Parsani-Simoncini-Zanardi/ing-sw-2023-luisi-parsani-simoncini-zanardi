@@ -21,7 +21,7 @@ public class Engine{
     //TODO: controllare che non si possano confermare un array di tiles vuoto
     //TODO: controllare a fine implementazione se effettivamente serve o va eliminato
     private final ArrayList<Client> clients = new ArrayList<>();
-    private Game game;
+    private Game game = new Game();
     private SaveGameStatus saveGameStatus;
 
     /**
@@ -53,7 +53,7 @@ public class Engine{
      */
     public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
-            game = new Game(firstPlayer,numberOfPlayers);
+            game.initializeGame(firstPlayer,numberOfPlayers);
     }
 
     /**

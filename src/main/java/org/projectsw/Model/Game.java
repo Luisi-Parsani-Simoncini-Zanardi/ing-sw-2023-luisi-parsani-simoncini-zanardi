@@ -23,7 +23,7 @@ public class Game extends Observable<Game.Event> {
     }
 
     private GameStates gameState;
-    private final int numberOfPlayers;
+    private int numberOfPlayers;
     private Player firstPlayer;
     private Player currentPlayer;
     private ArrayList<Player> players;
@@ -31,6 +31,7 @@ public class Game extends Observable<Game.Event> {
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
 
+    //TODO: modificato
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
      * a full-unused board and an empty commonGals list. First and current player are not set yet.
@@ -38,11 +39,6 @@ public class Game extends Observable<Game.Event> {
      */
     public Game(){
         gameState = GameStates.SILLY;
-        numberOfPlayers = 0;
-        board = new Board();
-        chat = new Chat();
-        players = new ArrayList<>();
-        commonGoals = new ArrayList<>();
     }
 
     /**
@@ -54,7 +50,7 @@ public class Game extends Observable<Game.Event> {
      * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
      *                                  between 2 and 4
      */
-    public Game(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
+    public void initializeGame(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
         gameState = GameStates.LOBBY;
         board = new Board(numberOfPlayers);
         this.numberOfPlayers = numberOfPlayers;

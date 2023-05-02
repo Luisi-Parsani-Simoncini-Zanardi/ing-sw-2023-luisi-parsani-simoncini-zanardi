@@ -38,7 +38,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         try{
             insertNickname();
         }catch(RuntimeException e){
-            System.out.println("");
+            System.out.println("Nickname already used");
             insertNickname();
         }
      /*   while(getState() != UIState.GAME_ENDING){
@@ -129,6 +129,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void insertNickname(){
+        System.out.println("Insert your nickname: ");
         Scanner scanner = new Scanner(System.in);
         nickname = scanner.nextLine();
         coordinate = null;
