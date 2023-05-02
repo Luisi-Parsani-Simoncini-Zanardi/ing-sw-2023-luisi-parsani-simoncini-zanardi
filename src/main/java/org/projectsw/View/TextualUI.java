@@ -15,6 +15,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private final Object lock = new Object();
     private Integer index;
     private Point coordinate;
+    private String nickname;
+    private int numOfPlayer;
 
     private UIState getState(){
         synchronized(lock){
@@ -33,6 +35,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public Point getCoordinate(){
         return this.coordinate;
     }
+    public String getNickname(){return this.nickname;}
 
     //TODO: da finire
     @Override
@@ -125,6 +128,22 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni giocatore che aspetta
 //per gestirlo bisognerà usare synchronized (lock) la tui si metterà in continuazione in ascolto di un input che verrà mandato
 // ad entrambi i thread di chat e del gioco, ci sarà un controllo di formato (ad esempio: per scrivere in chat bisogna usare un determinato formato

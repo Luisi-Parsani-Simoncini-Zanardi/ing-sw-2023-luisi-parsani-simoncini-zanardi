@@ -15,8 +15,7 @@ import java.util.Scanner;
 public class ClientImpl extends UnicastRemoteObject implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
-    private String nickname;
-    private int numOfPlayer;
+
 
     public ClientImpl(Server server) throws RemoteException{
         super();
@@ -34,19 +33,16 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     private void initialize(Server server) throws RemoteException{
-        chooseUI();
-        this.nickname = insertNickname();
-        if (server.askNum())
-            this.numOfPlayer = insertNumOfPlayers();
         try {
             server.register(this);
         } catch (RemoteException e) {
             throw new RuntimeException("cannot register client on server" + e.getMessage());
         }
+        chooseUI();
         if(tui != null)
             tui.addObserver((o, arg) -> {
                 try {
-                    server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex()));
+                    server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex(),tui.getNickname()));
                 } catch (RemoteException e) {
                     throw new RuntimeException("cannot send the client input" + e.getMessage());//da gestire esplicitamente
                 }
@@ -54,49 +50,26 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         else
             gui.addObserver((o, arg) -> {
                 try {
-                    server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex()));
+                    server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex(), tui.getNickname()));
                 } catch (RemoteException e) {
                     throw new RuntimeException("cannot send the client input" + e.getMessage());//da gestire esplicitamente
                 }
             });
         runView();
     }
-    @Override
-    public String getNickname(){
-        return this.nickname;
-    }
-
-    @Override
-    public int getNumOfPLayer(){
-        return this.numOfPlayer;
-    }
 
     public TextualUI getTui(){
         return this.tui;
     }
-
     public GraphicalUI getGui() {
         return this.gui;
     }
-
     private void runView(){
         if(this.tui != null)
             tui.run();
         else
             gui.run();
     }
-    private String insertNickname(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("insert your nickname: ");
-        return scanner.nextLine();
-    }
-
-    private int insertNumOfPlayers(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("insert the number of players: ");
-        return scanner.nextInt();
-    }
-
 
     @Override
     public void update(GameView o, Game.Event arg) throws RemoteException {

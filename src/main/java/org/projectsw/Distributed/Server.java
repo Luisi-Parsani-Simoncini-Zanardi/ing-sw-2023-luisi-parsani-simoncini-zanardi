@@ -21,7 +21,4 @@ public interface Server extends Remote {
      * @param arg     the choice made by the client
      */
     void update(Client client, UIEvent arg, InputController input) throws RemoteException;
-
-    boolean askNum() throws RemoteException;
-
 }
