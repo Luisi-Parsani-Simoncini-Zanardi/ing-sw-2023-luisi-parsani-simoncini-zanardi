@@ -11,7 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-//TODO x Davide: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
+//TODO DAVIDE: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
 
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
@@ -349,7 +349,7 @@ public class Board extends Observable<Game.Event> {
         return false;
     }
 
-    //TODO: codice duplicato con linea 128 della shelf da sistemare
+    //TODO DAVIDE: codice duplicato con linea 128 della shelf da sistemare
     /**
      * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
      */

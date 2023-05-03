@@ -7,8 +7,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Server extends Remote {
-    //TODO: come detto da Damiani nelle registrazioni bisogna gestire esplicitamente le RemoteException cioè quando qualcosa fa storto nella connessione 1:20:00 della registrazione
-
     /**
      * Register a client to the server
      * @param client the client to register

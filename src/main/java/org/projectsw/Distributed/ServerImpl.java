@@ -33,20 +33,20 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 try {
                     client.update(new GameView(), arg);
                 } catch (RemoteException e) {
-                    throw new RuntimeException("cannot update the view " + e.getMessage());//da gestire esplicitamente
+                    throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
                 }
             } else {
                 if (arg == Game.Event.ERROR){
                     try {
                         client.update(new GameView(this.controller.getGame().getError()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("cannot update the view " + e.getMessage());//da gestire esplicitamente
+                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
                     }
                 } else {
                     try {
                         client.update(new GameView(this.controller.getGame().getError()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("cannot update the view " + e.getMessage());//da gestire esplicitamente
+                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
                     }
                 }
             }

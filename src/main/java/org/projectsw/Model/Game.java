@@ -12,8 +12,7 @@ import java.util.Random;
 
 import static org.projectsw.Exceptions.ErrorName.NULL;
 
-//TODO: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza
-//      (se risolvete scrivete a Davide)
+//TODO DAVIDE: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza
 
 /**
  * The class contains information about the game state,
@@ -40,7 +39,6 @@ public class Game extends Observable<Game.Event> {
     private ArrayList<CommonGoal> commonGoals;
     private ErrorName error = NULL;
 
-    //TODO: modificato
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
      * a full-unused board and an empty commonGals list. First and current player are not set yet.

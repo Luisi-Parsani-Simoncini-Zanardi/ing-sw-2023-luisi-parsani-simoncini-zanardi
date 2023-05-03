@@ -12,11 +12,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer number;
     private Point coordinate;
     private String nickname;
-    private boolean firstPlayerJoined;
-
-    public TextualUI () {
-        firstPlayerJoined = false;
-    }
+    private boolean firstPlayerJoined = false;
 
     private UIState getState(){
         synchronized(lock){
@@ -39,11 +35,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public boolean getFirstPlayerJoined(){return firstPlayerJoined;}
     public void setFirstPlayerJoined(boolean bool){firstPlayerJoined = bool;}
 
-    //TODO: da finire
     @Override
     public void run() {
         insertNickname();
-
+        //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
      /*   while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 synchronized (lock){//forse va eliminata perchè superflua
@@ -65,23 +60,22 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }while(chooseColumn());
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
 
-            //TODO: parte place tiles con richiesta di ordine di inserimento nella shelf all'utente
-
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
         }*/
     }
     public void update(GameView model, Game.Event arg){
         switch(arg){
-            /* //TODO: da sistemare
+            //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
+            /*
             case UPDATED_BOARD -> showBoard(model);
             case UPDATED_SHELF -> showShelf(model); */
             case EXISTS_FIRST_PLAYER -> firstPlayerJoined = true;
             /*
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);*/
-
             case ERROR ->  {
+                //TODO LUCA: fare in modo che le eccezioni le gestisca solo il client interessato
                 switch (model.getError())
                 {
                     case INVALID_NAME -> {
@@ -100,6 +94,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                     }
                     case EMPTY_TEMPORARY_POINTS -> {
                         System.out.println("Please select any tile");
+                    }
+                    case INVALID_RECIPIENT -> {
+                        //TODO LUCA: gestire l'eccezione
                     }
                 }
             }
@@ -134,7 +131,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         int column = scanner.nextInt();
         return new Point(row, column);
     }
-    //TODO: da sistemare
+    //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
     /*
     private void showBoard(GameView model){
         Board board = model.getGameBoard();

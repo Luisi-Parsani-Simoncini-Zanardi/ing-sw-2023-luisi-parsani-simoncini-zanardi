@@ -18,8 +18,6 @@ import static org.projectsw.Model.TilesEnum.UNUSED;
  * The class contains the application logic methods of the game.
  */
 public class Engine{
-    //TODO: controllare che non si possano confermare un array di tiles vuoto
-    //TODO: controllare a fine implementazione se effettivamente serve o va eliminato
     private final ArrayList<Client> clients = new ArrayList<>();
     private Game game = new Game();
     private SaveGameStatus saveGameStatus;
@@ -413,7 +411,7 @@ public class Engine{
         try {
             message.setRecipients(recipients);
         } catch (InvalidRecipientException e) {
-            game.setError(ErrorName.INVALID_NAME);
+            game.setError(ErrorName.INVALID_RECIPIENT);
         }
         game.getChat().addChatLog(message);
     }
