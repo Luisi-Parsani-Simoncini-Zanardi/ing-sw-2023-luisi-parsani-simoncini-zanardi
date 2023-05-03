@@ -51,9 +51,13 @@ public class Engine{
      * @param numberOfPlayers the number of players selected by the first player.
      * @throws InvalidNumberOfPlayersException if the number of players is not correctly chosen.
      */
-    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
+    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
+        try {
             game.initializeGame(firstPlayer,numberOfPlayers);
+        } catch (InvalidNumberOfPlayersException e) {
+            game.setError(ErrorName.INVALID_NUMBER_OF_PLAYERS);
+        }
     }
 
     /**
@@ -65,16 +69,22 @@ public class Engine{
      * @throws LobbyClosedException if the name of the player is already used
      *                             of if the function is called when the lobby is closed
      */
-    public void playerJoin (String nickname) throws LobbyClosedException, InvalidNameException {
+    public void playerJoin (String nickname) {
         if(game.getGameState().equals(GameStates.LOBBY)){
             int newPlayerPosition = game.getPlayers().size();
             Player newPlayer = new Player(nickname,newPlayerPosition);
-            game.addPlayer(newPlayer);
+            try {
+                game.addPlayer(newPlayer);
+            } catch (InvalidNameException e) {
+                game.setError(ErrorName.INVALID_NAME);
+            }
             if (game.getPlayers().size() == game.getNumberOfPlayers()) {
                 startGame();
             }
         }
-        else throw new LobbyClosedException("The lobby is closed");
+        else {
+            //TODO: Throw new lobbyclosed
+        }
     }
 
     /**
@@ -451,9 +461,16 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    public void update(Client client, UIEvent UiEvent, InputController input){
+    public void update(Client client, UIEvent UiEvent, InputController input) {
         //gestisce gli input e chiama le funzioni
         switch (UiEvent){
+            case CHECK_EXISTS_FIRST_PLAYER -> {
+                if (game.getPlayers() != null){
+                game.existsFirstPlayer();
+                }
+            }
+            case CHOOSE_NICKNAME -> playerJoin(input.getString());
+            case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> firstPlayerJoin(input.getString(), input.getIndex());
         }
     }
 }

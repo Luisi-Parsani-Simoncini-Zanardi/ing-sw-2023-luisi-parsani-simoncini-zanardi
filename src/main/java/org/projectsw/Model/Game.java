@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.ErrorName;
 import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
@@ -8,6 +9,8 @@ import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
+
+import static org.projectsw.Exceptions.ErrorName.NULL;
 
 //TODO: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza
 //      (se risolvete scrivete a Davide)
@@ -19,7 +22,12 @@ import java.util.Random;
 public class Game extends Observable<Game.Event> {
 
     public enum Event{
-        UPDATED_BOARD, UPDATED_SHELF, UPDATED_CURRENT_PLAYER, UPDATED_CHAT
+        UPDATED_BOARD,
+        UPDATED_SHELF,
+        EXISTS_FIRST_PLAYER,
+        UPDATED_CURRENT_PLAYER,
+        UPDATED_CHAT,
+        ERROR
     }
 
     private GameStates gameState;
@@ -30,6 +38,7 @@ public class Game extends Observable<Game.Event> {
     private Board board;
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
+    private ErrorName error = NULL;
 
     //TODO: modificato
     /**
@@ -63,7 +72,6 @@ public class Game extends Observable<Game.Event> {
         try {
             commonGoals = this.randomCommonGoals();
         }catch(Exception e){System.err.println(e.getMessage());}
-        setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
     }
 
     /**
@@ -136,6 +144,10 @@ public class Game extends Observable<Game.Event> {
         return chat;
     }
 
+    public ErrorName getError() {
+        return error;
+    }
+
     /**
      * Sets the game state as the passed parameter.
      * @param gameState the game state to set.
@@ -191,6 +203,11 @@ public class Game extends Observable<Game.Event> {
      */
     public void setCommonGoals(ArrayList<CommonGoal> commonGoals) {
         this.commonGoals = commonGoals;
+    }
+
+    public void setError(ErrorName error) {
+        this.error = error;
+        setChangedAndNotifyObservers(Event.ERROR);
     }
 
     /**
@@ -292,5 +309,9 @@ public class Game extends Observable<Game.Event> {
         }
 
         return commonGoals;
+    }
+
+    public void existsFirstPlayer() {
+        setChangedAndNotifyObservers(Event.EXISTS_FIRST_PLAYER);
     }
 }

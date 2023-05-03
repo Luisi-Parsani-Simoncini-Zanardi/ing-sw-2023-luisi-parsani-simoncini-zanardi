@@ -12,6 +12,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer number;
     private Point coordinate;
     private String nickname;
+    private boolean firstPlayerJoined;
+
+    public TextualUI () {
+        firstPlayerJoined = false;
+    }
 
     private UIState getState(){
         synchronized(lock){
@@ -31,16 +36,14 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         return this.coordinate;
     }
     public String getNickname(){return this.nickname;}
+    public boolean getFirstPlayerJoined(){return firstPlayerJoined;}
+    public void setFirstPlayerJoined(boolean bool){firstPlayerJoined = bool;}
 
     //TODO: da finire
     @Override
     public void run() {
-        try{
-            insertNickname();
-        }catch(RuntimeException e){
-            System.out.println("Nickname already used");
-            insertNickname();
-        }
+        insertNickname();
+
      /*   while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 synchronized (lock){//forse va eliminata perchè superflua
@@ -70,10 +73,23 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
     public void update(GameView model, Game.Event arg){
         switch(arg){
+            /* //TODO: da sistemare
             case UPDATED_BOARD -> showBoard(model);
-            case UPDATED_SHELF -> showShelf(model);
+            case UPDATED_SHELF -> showShelf(model); */
+            case EXISTS_FIRST_PLAYER -> firstPlayerJoined = true;
+            /*
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);
+            case UPDATED_CHAT -> showChat(model);*/
+
+            case ERROR ->  {
+                switch (model.getError())
+                {
+                    case INVALID_NAME -> {
+                        System.out.println("Nickname already in use. Try again...");
+                        insertNickname();
+                    }
+                }
+            }
         }
     }
 
@@ -105,7 +121,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         int column = scanner.nextInt();
         return new Point(row, column);
     }
-
+    //TODO: da sistemare
+    /*
     private void showBoard(GameView model){
         Board board = model.getGameBoard();
         if(board == null)
@@ -124,17 +141,25 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void showChat(GameView model){
-        for(Message message : model.getChat().getChat())
+        for(Message message : model.getChat())
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
     }
-
+*/
     private void insertNickname(){
         System.out.println("Insert your nickname: ");
         Scanner scanner = new Scanner(System.in);
         nickname = scanner.nextLine();
         coordinate = null;
-        number = null;
-        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        setChangedAndNotifyObservers(UIEvent.CHECK_EXISTS_FIRST_PLAYER);
+        if (!getFirstPlayerJoined()){
+            System.out.println("Insert the number of players: ");
+            number = Integer.valueOf(scanner.nextLine());
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+        }
+        else {
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        }
+
     }
 }
 
