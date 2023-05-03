@@ -220,7 +220,7 @@ public class Game extends Observable<Game.Event> {
         for (int i = 0; i<playerLength; i++) {
             if(getPlayers().get(i).getNickname().equals(player.getNickname()))
             {
-                throw new InvalidNameException("Invalid name, must be unique");
+                throw new InvalidNameException();
             }
         }
         players.add(player);

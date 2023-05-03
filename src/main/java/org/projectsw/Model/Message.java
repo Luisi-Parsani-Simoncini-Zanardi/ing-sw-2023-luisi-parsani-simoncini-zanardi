@@ -1,6 +1,7 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.InvalidRecipientException;
 
 import java.util.ArrayList;
 
@@ -30,11 +31,11 @@ public class Message {
      * Sets the list of recipients of the message.
      * @param recipients the recipients of the message
      */
-    public void setRecipients (ArrayList<Player> recipients) throws InvalidNameException {
+    public void setRecipients (ArrayList<Player> recipients) throws InvalidRecipientException {
         ArrayList<String> recipientName = new ArrayList<>();
         getRecipients().forEach((element) -> recipientName.add(element.getNickname()));
         if (recipientName.contains(sender.getNickname())) {
-            throw new InvalidNameException("sender can't be recipients");
+            throw new InvalidRecipientException();
         }
         this.recipients = recipients;
     }

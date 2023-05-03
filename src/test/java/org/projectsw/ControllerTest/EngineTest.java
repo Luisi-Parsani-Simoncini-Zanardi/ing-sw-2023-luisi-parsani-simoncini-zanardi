@@ -480,7 +480,7 @@ class EngineTest extends TestUtils {
      * Tests if the messages work correctly.
      */
     @Test
-    void sayInChatTest() throws InvalidNameException {
+    void sayInChatTest() throws InvalidRecipientException {
         Engine engine = new Engine();
         try {
             engine.firstPlayerJoin("Davide", 2);

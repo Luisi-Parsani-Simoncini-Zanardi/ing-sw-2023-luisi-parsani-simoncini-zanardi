@@ -412,7 +412,7 @@ public class Engine{
         Message message = new Message(sender, content);
         try {
             message.setRecipients(recipients);
-        } catch (InvalidNameException e) {
+        } catch (InvalidRecipientException e) {
             game.setError(ErrorName.INVALID_NAME);
         }
         game.getChat().addChatLog(message);
