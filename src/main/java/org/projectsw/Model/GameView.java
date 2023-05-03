@@ -25,12 +25,22 @@ public class GameView implements Serializable {
         this.error = ErrorName.NULL;
     }
 
+    public GameView(ErrorName error){
+        this.gameBoard =  new Tile[1][1];
+        gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
+        this.currentPlayerShelf = new Tile[1][1];
+        currentPlayerShelf[0][0] = new Tile(TilesEnum.CATS, 1);
+        this.currentPlayerName = "a";
+        this.chat = new ArrayList<>();
+        this.error = error;
+    }
+
     public GameView(Game model){
         this.gameBoard =  model.getBoard().getBoard();
         this.currentPlayerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.currentPlayerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getChat();
-        this.error = model.getError();
+        this.error = ErrorName.NULL;
     }
 
     public Tile[][] getGameBoard(){return this.gameBoard;}

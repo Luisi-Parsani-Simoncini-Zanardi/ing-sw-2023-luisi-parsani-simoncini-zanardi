@@ -83,7 +83,7 @@ public class Engine{
             }
         }
         else {
-            //TODO: Throw new lobbyclosed
+            game.setError(ErrorName.LOBBY_CLOSED);
         }
     }
 
@@ -135,8 +135,8 @@ public class Engine{
      * Thanks to other exceptions in selectTiles the TemporaryPoints passed already do not correspond to empty or unused tiles,
      * but if they don't addTemporaryTile throws InvalidArgumentException.
      */
-    public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException, EmptyTemporaryPointsException, UpdatingOnWrongPlayerException {
-        if(game.getBoard().getTemporaryPoints().isEmpty()) throw new EmptyTemporaryPointsException();
+    public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException {
+        if(game.getBoard().getTemporaryPoints().isEmpty()) game.setError(ErrorName.EMPTY_TEMPORARY_POINTS);
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
@@ -408,9 +408,13 @@ public class Engine{
      * @param content message content
      * @param recipients message recipients
      */
-    public void sayInChat(Player sender, String content, ArrayList<Player> recipients) throws InvalidNameException {
+    public void sayInChat(Player sender, String content, ArrayList<Player> recipients) {
         Message message = new Message(sender, content);
-        message.setRecipients(recipients);
+        try {
+            message.setRecipients(recipients);
+        } catch (InvalidNameException e) {
+            game.setError(ErrorName.INVALID_NAME);
+        }
         game.getChat().addChatLog(message);
     }
 

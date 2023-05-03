@@ -88,6 +88,19 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                         System.out.println("Nickname already in use. Try again...");
                         insertNickname();
                     }
+                    case INVALID_NUMBER_OF_PLAYERS -> {
+                        System.out.println("Number of players not valid. Try again...");
+                        Scanner scanner = new Scanner(System.in);
+                        number = Integer.valueOf(scanner.nextLine());
+                        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+                    }
+                    case LOBBY_CLOSED -> {
+                        System.out.println("Sorry, the lobby is full. Exiting...");
+                        System.exit(0);
+                    }
+                    case EMPTY_TEMPORARY_POINTS -> {
+                        System.out.println("Please select any tile");
+                    }
                 }
             }
         }
