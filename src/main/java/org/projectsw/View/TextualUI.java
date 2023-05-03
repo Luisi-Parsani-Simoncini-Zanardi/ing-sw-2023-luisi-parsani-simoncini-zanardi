@@ -12,6 +12,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer number;
     private Point coordinate;
     private String nickname;
+    private boolean firstPlayerJoined = false;
 
     private UIState getState(){
         synchronized(lock){
@@ -31,16 +32,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         return this.coordinate;
     }
     public String getNickname(){return this.nickname;}
+    public boolean getFirstPlayerJoined(){return firstPlayerJoined;}
+    public void setFirstPlayerJoined(boolean bool){firstPlayerJoined = bool;}
 
-    //TODO: da finire
     @Override
     public void run() {
-        try{
-            insertNickname();
-        }catch(RuntimeException e){
-            System.out.println("Nickname already used");
-            insertNickname();
-        }
+        insertNickname();
+        //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
      /*   while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 synchronized (lock){//forse va eliminata perchè superflua
@@ -62,18 +60,46 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }while(chooseColumn());
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
 
-            //TODO: parte place tiles con richiesta di ordine di inserimento nella shelf all'utente
-
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
         }*/
     }
     public void update(GameView model, Game.Event arg){
         switch(arg){
+            //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
+            /*
             case UPDATED_BOARD -> showBoard(model);
-            case UPDATED_SHELF -> showShelf(model);
+            case UPDATED_SHELF -> showShelf(model); */
+            case EXISTS_FIRST_PLAYER -> firstPlayerJoined = true;
+            /*
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);
+            case UPDATED_CHAT -> showChat(model);*/
+            case ERROR ->  {
+                //TODO LUCA: fare in modo che le eccezioni le gestisca solo il client interessato
+                switch (model.getError())
+                {
+                    case INVALID_NAME -> {
+                        System.out.println("Nickname already in use. Try again...");
+                        insertNickname();
+                    }
+                    case INVALID_NUMBER_OF_PLAYERS -> {
+                        System.out.println("Number of players not valid. Try again...");
+                        Scanner scanner = new Scanner(System.in);
+                        number = Integer.valueOf(scanner.nextLine());
+                        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+                    }
+                    case LOBBY_CLOSED -> {
+                        System.out.println("Sorry, the lobby is full. Exiting...");
+                        System.exit(0);
+                    }
+                    case EMPTY_TEMPORARY_POINTS -> {
+                        System.out.println("Please select any tile");
+                    }
+                    case INVALID_RECIPIENT -> {
+                        //TODO LUCA: gestire l'eccezione
+                    }
+                }
+            }
         }
     }
 
@@ -105,7 +131,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         int column = scanner.nextInt();
         return new Point(row, column);
     }
-
+    //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
+    /*
     private void showBoard(GameView model){
         Board board = model.getGameBoard();
         if(board == null)
@@ -124,17 +151,25 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void showChat(GameView model){
-        for(Message message : model.getChat().getChat())
+        for(Message message : model.getChat())
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
     }
-
+*/
     private void insertNickname(){
         System.out.println("Insert your nickname: ");
         Scanner scanner = new Scanner(System.in);
         nickname = scanner.nextLine();
         coordinate = null;
-        number = null;
-        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        setChangedAndNotifyObservers(UIEvent.CHECK_EXISTS_FIRST_PLAYER);
+        if (!getFirstPlayerJoined()){
+            System.out.println("Insert the number of players: ");
+            number = Integer.valueOf(scanner.nextLine());
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+        }
+        else {
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        }
+
     }
 }
 

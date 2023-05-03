@@ -10,7 +10,6 @@ import static org.projectsw.Model.TilesEnum.EMPTY;
  * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
  */
 
-//TODO player dentro shelf crea loop infinito sussss
 public class Shelf extends Observable<Game.Event> {
     private Tile[][] shelf;
     private ArrayList<Integer> selectableColumns;
@@ -206,7 +205,7 @@ public class Shelf extends Observable<Game.Event> {
      */
     public void cleanSelectedColumn(){ selectedColumn = null; }
 
-    //TODO: codice duplicato con la board linea 341 da sistemare
+    //TODO DAVIDE: codice duplicato con la board linea 341 da sistemare
     /**
      * Prints the shelf.
      */

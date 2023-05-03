@@ -18,8 +18,6 @@ import static org.projectsw.Model.TilesEnum.UNUSED;
  * The class contains the application logic methods of the game.
  */
 public class Engine{
-    //TODO: controllare che non si possano confermare un array di tiles vuoto
-    //TODO: controllare a fine implementazione se effettivamente serve o va eliminato
     private final ArrayList<Client> clients = new ArrayList<>();
     private Game game = new Game();
     private SaveGameStatus saveGameStatus;
@@ -51,9 +49,13 @@ public class Engine{
      * @param numberOfPlayers the number of players selected by the first player.
      * @throws InvalidNumberOfPlayersException if the number of players is not correctly chosen.
      */
-    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
+    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
+        try {
             game.initializeGame(firstPlayer,numberOfPlayers);
+        } catch (InvalidNumberOfPlayersException e) {
+            game.setError(ErrorName.INVALID_NUMBER_OF_PLAYERS);
+        }
     }
 
     /**
@@ -65,16 +67,22 @@ public class Engine{
      * @throws LobbyClosedException if the name of the player is already used
      *                             of if the function is called when the lobby is closed
      */
-    public void playerJoin (String nickname) throws LobbyClosedException, InvalidNameException {
+    public void playerJoin (String nickname) {
         if(game.getGameState().equals(GameStates.LOBBY)){
             int newPlayerPosition = game.getPlayers().size();
             Player newPlayer = new Player(nickname,newPlayerPosition);
-            game.addPlayer(newPlayer);
+            try {
+                game.addPlayer(newPlayer);
+            } catch (InvalidNameException e) {
+                game.setError(ErrorName.INVALID_NAME);
+            }
             if (game.getPlayers().size() == game.getNumberOfPlayers()) {
                 startGame();
             }
         }
-        else throw new LobbyClosedException("The lobby is closed");
+        else {
+            game.setError(ErrorName.LOBBY_CLOSED);
+        }
     }
 
     /**
@@ -125,8 +133,8 @@ public class Engine{
      * Thanks to other exceptions in selectTiles the TemporaryPoints passed already do not correspond to empty or unused tiles,
      * but if they don't addTemporaryTile throws InvalidArgumentException.
      */
-    public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException, EmptyTemporaryPointsException, UpdatingOnWrongPlayerException {
-        if(game.getBoard().getTemporaryPoints().isEmpty()) throw new EmptyTemporaryPointsException();
+    public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException {
+        if(game.getBoard().getTemporaryPoints().isEmpty()) game.setError(ErrorName.EMPTY_TEMPORARY_POINTS);
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
@@ -398,9 +406,13 @@ public class Engine{
      * @param content message content
      * @param recipients message recipients
      */
-    public void sayInChat(Player sender, String content, ArrayList<Player> recipients) throws InvalidNameException {
+    public void sayInChat(Player sender, String content, ArrayList<Player> recipients) {
         Message message = new Message(sender, content);
-        message.setRecipients(recipients);
+        try {
+            message.setRecipients(recipients);
+        } catch (InvalidRecipientException e) {
+            game.setError(ErrorName.INVALID_RECIPIENT);
+        }
         game.getChat().addChatLog(message);
     }
 
@@ -451,9 +463,16 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    public void update(Client client, UIEvent UiEvent, InputController input){
+    public void update(Client client, UIEvent UiEvent, InputController input) {
         //gestisce gli input e chiama le funzioni
         switch (UiEvent){
+            case CHECK_EXISTS_FIRST_PLAYER -> {
+                if (game.getPlayers() != null){
+                game.existsFirstPlayer();
+                }
+            }
+            case CHOOSE_NICKNAME -> playerJoin(input.getString());
+            case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> firstPlayerJoin(input.getString(), input.getIndex());
         }
     }
 }

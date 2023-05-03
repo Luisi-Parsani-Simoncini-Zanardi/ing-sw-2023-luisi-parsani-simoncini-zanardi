@@ -1,6 +1,7 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
+import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
@@ -28,10 +29,26 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         //TODO: gestire la possibile reconnect se un savegame è presente
         this.controller.getClients().add(client);
         this.controller.getGame().addObserver((o, arg) -> {
-            try {
-                client.update(new GameView(this.controller.getGame()), arg);
-            } catch (RemoteException e) {
-                throw new RuntimeException("cannot update the view " + e.getMessage());//da gestire esplicitamente
+            if (arg == Game.Event.EXISTS_FIRST_PLAYER) {
+                try {
+                    client.update(new GameView(), arg);
+                } catch (RemoteException e) {
+                    throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
+                }
+            } else {
+                if (arg == Game.Event.ERROR){
+                    try {
+                        client.update(new GameView(this.controller.getGame().getError()), arg);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
+                    }
+                } else {
+                    try {
+                        client.update(new GameView(this.controller.getGame().getError()), arg);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
+                    }
+                }
             }
         });
     }

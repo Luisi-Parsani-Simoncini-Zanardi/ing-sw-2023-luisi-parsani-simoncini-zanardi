@@ -2,10 +2,12 @@ package org.projectsw.Model;
 
 import org.projectsw.Util.Config;
 
+import java.io.Serializable;
+
 /**
  * Class representing a single tile.
  */
-public class Tile {
+public class Tile implements Serializable {
     private final TilesEnum tile;
     private final int imageNumber;
 

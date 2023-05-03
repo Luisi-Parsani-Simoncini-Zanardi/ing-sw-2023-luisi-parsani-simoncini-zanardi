@@ -2,6 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.Test;
 import org.projectsw.Exceptions.InvalidNameException;
+import org.projectsw.Exceptions.InvalidRecipientException;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;
 
@@ -18,7 +19,7 @@ public class MessageTest {
      * test if the setRecipients method correctly set the recipients list
      */
     @Test
-    public void setRecipientsTest() throws InvalidNameException  {
+    public void setRecipientsTest() throws InvalidRecipientException {
         Player sender = new Player("Pippo", 1);
         Message message = new Message(sender, "test Content");
 
