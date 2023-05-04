@@ -23,7 +23,7 @@ public class Game extends Observable<Game.Event> {
     public enum Event{
         UPDATED_BOARD,
         UPDATED_SHELF,
-        SET_CLIENT_ID,
+        SET_CLIENT_ID_RETURN,
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR
@@ -322,6 +322,6 @@ public class Game extends Observable<Game.Event> {
 
     public void initializeClientID(int i) {
         this.clientID = i;
-        setChangedAndNotifyObservers(Event.SET_CLIENT_ID);
+        setChangedAndNotifyObservers(Event.SET_CLIENT_ID_RETURN);
     }
 }

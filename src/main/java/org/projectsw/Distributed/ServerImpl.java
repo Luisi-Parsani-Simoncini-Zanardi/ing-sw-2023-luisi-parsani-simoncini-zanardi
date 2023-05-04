@@ -1,7 +1,6 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
-import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
@@ -30,7 +29,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         this.controller.getClients().add(client);
         this.controller.getGame().addObserver((o, arg) -> {
             switch (arg){
-                case SET_CLIENT_ID -> {
+                case SET_CLIENT_ID_RETURN -> {
                     try {
                         client.update(new GameView(this.controller.getGame().getClientID()), arg);
                     } catch (RemoteException e) {

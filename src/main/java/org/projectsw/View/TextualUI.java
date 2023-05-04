@@ -69,7 +69,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             /*
             case UPDATED_BOARD -> showBoard(model);
             case UPDATED_SHELF -> showShelf(model); */
-            case SET_CLIENT_ID -> {
+            case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
                     clientUID = model.getClientID();
             }
@@ -171,7 +171,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         else {
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
         }
-        System.out.println(clientUID);
     }
 }
 
