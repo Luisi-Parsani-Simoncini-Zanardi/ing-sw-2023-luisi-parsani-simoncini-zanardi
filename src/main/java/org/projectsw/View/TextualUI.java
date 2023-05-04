@@ -10,9 +10,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private UIState state = UIState.OPPONENT_TURN;//in modo da aspettare all'inizio e partire solo quando il server tramite il controller mi da il via
     private final Object lock = new Object();
     private Integer number;
-    private Point coordinate;
-    private String nickname;
-    private boolean firstPlayerJoined = false;
+    private Point point;
+    private String string;
+    private int clientUID;
 
     private UIState getState(){
         synchronized(lock){
@@ -28,12 +28,12 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public Integer getIndex(){
         return this.number;
     }
-    public Point getCoordinate(){
-        return this.coordinate;
+    public Point getPoint(){
+        return this.point;
     }
-    public String getNickname(){return this.nickname;}
-    public boolean getFirstPlayerJoined(){return firstPlayerJoined;}
-    public void setFirstPlayerJoined(boolean bool){firstPlayerJoined = bool;}
+    public String getString(){return this.string;}
+    public int getClientUID(){return clientUID;}
+    public void setClientUID(int integer){clientUID = integer;}
 
     @Override
     public void run() {
@@ -70,7 +70,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             /*
             case UPDATED_BOARD -> showBoard(model);
             case UPDATED_SHELF -> showShelf(model); */
-            case EXISTS_FIRST_PLAYER -> firstPlayerJoined = true;
+            case SET_CLIENT_ID -> clientUID = model.getClientID();
             /*
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);*/
@@ -158,10 +158,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private void insertNickname(){
         System.out.println("Insert your nickname: ");
         Scanner scanner = new Scanner(System.in);
-        nickname = scanner.nextLine();
-        coordinate = null;
-        setChangedAndNotifyObservers(UIEvent.CHECK_EXISTS_FIRST_PLAYER);
-        if (!getFirstPlayerJoined()){
+        string = scanner.nextLine();
+        point = null;
+        setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
+        if (clientUID == 1){
             System.out.println("Insert the number of players: ");
             number = Integer.valueOf(scanner.nextLine());
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
@@ -169,7 +169,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         else {
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
         }
-
+        System.out.println(clientUID);
     }
 }
 

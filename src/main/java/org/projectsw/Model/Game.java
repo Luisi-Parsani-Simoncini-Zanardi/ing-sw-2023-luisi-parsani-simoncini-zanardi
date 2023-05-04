@@ -23,7 +23,7 @@ public class Game extends Observable<Game.Event> {
     public enum Event{
         UPDATED_BOARD,
         UPDATED_SHELF,
-        EXISTS_FIRST_PLAYER,
+        SET_CLIENT_ID,
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR
@@ -37,8 +37,10 @@ public class Game extends Observable<Game.Event> {
     private Board board;
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
-    private ErrorName error = NULL;
 
+    //attributes designed to send messages
+    private ErrorName error = NULL;
+    private int clientID = 0;
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
      * a full-unused board and an empty commonGals list. First and current player are not set yet.
@@ -145,6 +147,10 @@ public class Game extends Observable<Game.Event> {
     public ErrorName getError() {
         return error;
     }
+    public int getClientID() {
+        return clientID;
+    }
+
 
     /**
      * Sets the game state as the passed parameter.
@@ -309,7 +315,8 @@ public class Game extends Observable<Game.Event> {
         return commonGoals;
     }
 
-    public void existsFirstPlayer() {
-        setChangedAndNotifyObservers(Event.EXISTS_FIRST_PLAYER);
+    public void initializeClientID(int i) {
+        this.clientID = i;
+        setChangedAndNotifyObservers(Event.SET_CLIENT_ID);
     }
 }

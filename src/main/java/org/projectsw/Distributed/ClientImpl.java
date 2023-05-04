@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ClientImpl extends UnicastRemoteObject implements Client{
@@ -41,7 +42,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         if(tui != null)
             tui.addObserver((o, arg) -> {
                 try {
-                    server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex(),tui.getNickname()));
+                    server.update(this, arg, new InputController(tui.getPoint(),tui.getIndex(),tui.getString()));
                 } catch (RemoteException e) {
                     throw new RuntimeException("cannot send the client input" + e.getMessage());//TODO: gestire esplicitamente
                 }
@@ -49,7 +50,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         else
             gui.addObserver((o, arg) -> {
                 try {
-                    server.update(this, arg, new InputController(tui.getCoordinate(),tui.getIndex(), tui.getNickname()));
+                    server.update(this, arg, new InputController(tui.getPoint(),tui.getIndex(), tui.getString()));
                 } catch (RemoteException e) {
                     throw new RuntimeException("cannot send the client input" + e.getMessage());//TODO: gestire esplicitamente
                 }
@@ -79,14 +80,25 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     private void chooseUI(){
-        System.out.println("which UI do you want to use?\n1: Gui\n2: Tui");
+        System.out.println("Which UI do you want to use?\n1: Gui\n2: Tui");
         Scanner scanner = new Scanner(System.in);
-        if(scanner.nextInt()==1){
+        int selected;
+        try {
+             selected = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            selected = 0;
+        }
+        if(selected==1){
             tui = null;
             gui = new GraphicalUI();
-        }else{
+        }else {
+            if ((selected==2)){
             gui = null;
             tui = new TextualUI();
+            } else {
+                System.out.println("Invalid value. Try again...");
+                chooseUI();
+            }
         }
     }
 }
