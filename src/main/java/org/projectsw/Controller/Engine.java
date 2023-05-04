@@ -87,8 +87,8 @@ public class Engine{
     /**
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
-    public void startGame(){
-        game.setGameState(GameStates.RUNNING);
+    private void startGame(){
+        game.gameStatusChanged(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         fillBoard();
     }
@@ -427,7 +427,7 @@ public class Engine{
                     }
                 }
             }
-            game.getBoard().finishedUpdateBoard();
+            game.finishedUpdateBoard();
         }
     }
 

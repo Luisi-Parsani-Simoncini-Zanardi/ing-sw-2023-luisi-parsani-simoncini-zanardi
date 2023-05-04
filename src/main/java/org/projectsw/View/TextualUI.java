@@ -11,7 +11,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private final Object lock = new Object();
     private Integer number;
     private Point point;
-    private String string;
+    private Point coordinate;
+    private String nickname;
     private int clientUID = 0;
 
     private UIState getState(){
@@ -31,21 +32,21 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public Point getPoint(){
         return this.point;
     }
-    public String getString(){return this.string;}
+    public String getNickname(){return this.nickname;}
     public int getClientUID(){return clientUID;}
 
     @Override
     public void run() {
         insertNickname();
         //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
-     /*   while(getState() != UIState.GAME_ENDING){
+        while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
-                synchronized (lock){//forse va eliminata perchè superflua
+                /*synchronized (lock){//forse va eliminata perchè superflua
                     try{lock.wait();
                     }catch(InterruptedException e){
                         System.err.println("Interrupted while waiting for server: " + e.getMessage());
                     }
-                }
+                }*/
             }
             System.out.println("---YOUR TURN---");
             do{
@@ -61,21 +62,21 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
-        }*/
+        }
     }
     public void update(GameView model, Game.Event arg){
         switch(arg){
             //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
-            /*
+
             case UPDATED_BOARD -> showBoard(model);
-            case UPDATED_SHELF -> showShelf(model); */
+            //case UPDATED_SHELF -> showShelf(model);
             case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
                     clientUID = model.getClientID();
             }
-            /*
+
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);*/
+            case UPDATED_CHAT -> showChat(model);
             case ERROR ->  {
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
@@ -100,6 +101,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                             //TODO LUCA: gestire l'eccezione
                         }
                     }
+                }
+            }
+            case UPDATED_GAME_STATE -> {
+                if (model.getCurrentPlayerName().equals(nickname)) {
+                    setState(UIState.YOUR_TURN);
                 }
             }
         }
@@ -134,19 +140,18 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         return new Point(row, column);
     }
     //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
-    /*
+
     private void showBoard(GameView model){
-        Board board = model.getGameBoard();
-        if(board == null)
-            return;
+        Board board = new Board();
+        board.setBoard(model.getGameBoard());
         System.out.println("---GAME BOARD---");
         board.printBoard();
     }
 
-    private void showShelf(GameView model){
+    /*private void showShelf(GameView model){
         System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
         model.getCurrentPlayerShelf().printShelf();
-    }
+    }*/
 
     private void showCurrentPlayer(GameView model){
         System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
@@ -156,11 +161,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         for(Message message : model.getChat())
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
     }
-*/
+
     private void insertNickname(){
         System.out.println("Insert your nickname: ");
         Scanner scanner = new Scanner(System.in);
-        string = scanner.nextLine();
+        nickname = scanner.nextLine();
         point = null;
         setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
         if (clientUID == 1){
