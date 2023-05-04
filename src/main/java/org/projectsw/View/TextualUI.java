@@ -78,7 +78,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case UPDATED_CHAT -> showChat(model);*/
             case ERROR ->  {
                 if (model.getClientID() == clientUID) {
-                    //TODO LUCA: fare in modo che le eccezioni le gestisca solo il client interessato
                     switch (model.getError()) {
                         case INVALID_NAME -> {
                             System.out.println("Nickname already in use. Try again...");
