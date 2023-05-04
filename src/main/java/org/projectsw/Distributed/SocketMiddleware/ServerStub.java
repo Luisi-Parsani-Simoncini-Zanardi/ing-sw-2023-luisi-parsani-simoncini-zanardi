@@ -45,7 +45,7 @@ public class ServerStub implements Server {
     }
 
     @Override
-    public void update(Client client, UIEvent arg, InputController input) throws RemoteException {
+    public void update(InputController input, UIEvent arg) throws RemoteException {
         try{
             oos.writeObject(arg);
         }catch(IOException e){

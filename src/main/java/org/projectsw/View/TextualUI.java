@@ -10,9 +10,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private UIState state = UIState.OPPONENT_TURN;//in modo da aspettare all'inizio e partire solo quando il server tramite il controller mi da il via
     private final Object lock = new Object();
     private Integer number;
-    private Point coordinate;
-    private String nickname;
-    private boolean firstPlayerJoined = false;
+    private Point point;
+    private String string;
+    private int clientUID = 0;
 
     private UIState getState(){
         synchronized(lock){
@@ -28,12 +28,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public Integer getIndex(){
         return this.number;
     }
-    public Point getCoordinate(){
-        return this.coordinate;
+    public Point getPoint(){
+        return this.point;
     }
-    public String getNickname(){return this.nickname;}
-    public boolean getFirstPlayerJoined(){return firstPlayerJoined;}
-    public void setFirstPlayerJoined(boolean bool){firstPlayerJoined = bool;}
+    public String getString(){return this.string;}
+    public int getClientUID(){return clientUID;}
 
     @Override
     public void run() {
@@ -70,33 +69,37 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             /*
             case UPDATED_BOARD -> showBoard(model);
             case UPDATED_SHELF -> showShelf(model); */
-            case EXISTS_FIRST_PLAYER -> firstPlayerJoined = true;
+            case SET_CLIENT_ID -> {
+                if (clientUID==0)
+                    clientUID = model.getClientID();
+            }
             /*
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);*/
             case ERROR ->  {
-                //TODO LUCA: fare in modo che le eccezioni le gestisca solo il client interessato
-                switch (model.getError())
-                {
-                    case INVALID_NAME -> {
-                        System.out.println("Nickname already in use. Try again...");
-                        insertNickname();
-                    }
-                    case INVALID_NUMBER_OF_PLAYERS -> {
-                        System.out.println("Number of players not valid. Try again...");
-                        Scanner scanner = new Scanner(System.in);
-                        number = Integer.valueOf(scanner.nextLine());
-                        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
-                    }
-                    case LOBBY_CLOSED -> {
-                        System.out.println("Sorry, the lobby is full. Exiting...");
-                        System.exit(0);
-                    }
-                    case EMPTY_TEMPORARY_POINTS -> {
-                        System.out.println("Please select any tile");
-                    }
-                    case INVALID_RECIPIENT -> {
-                        //TODO LUCA: gestire l'eccezione
+                if (model.getClientID() == clientUID) {
+                    //TODO LUCA: fare in modo che le eccezioni le gestisca solo il client interessato
+                    switch (model.getError()) {
+                        case INVALID_NAME -> {
+                            System.out.println("Nickname already in use. Try again...");
+                            insertNickname();
+                        }
+                        case INVALID_NUMBER_OF_PLAYERS -> {
+                            System.out.println("Number of players not valid. Try again...");
+                            Scanner scanner = new Scanner(System.in);
+                            number = Integer.valueOf(scanner.nextLine());
+                            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+                        }
+                        case LOBBY_CLOSED -> {
+                            System.out.println("Sorry, the lobby is full. Exiting...");
+                            System.exit(0);
+                        }
+                        case EMPTY_TEMPORARY_POINTS -> {
+                            System.out.println("Please select any tile");
+                        }
+                        case INVALID_RECIPIENT -> {
+                            //TODO LUCA: gestire l'eccezione
+                        }
                     }
                 }
             }
@@ -158,10 +161,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private void insertNickname(){
         System.out.println("Insert your nickname: ");
         Scanner scanner = new Scanner(System.in);
-        nickname = scanner.nextLine();
-        coordinate = null;
-        setChangedAndNotifyObservers(UIEvent.CHECK_EXISTS_FIRST_PLAYER);
-        if (!getFirstPlayerJoined()){
+        string = scanner.nextLine();
+        point = null;
+        setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
+        if (clientUID == 1){
             System.out.println("Insert the number of players: ");
             number = Integer.valueOf(scanner.nextLine());
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
@@ -169,7 +172,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         else {
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
         }
-
+        System.out.println(clientUID);
     }
 }
 

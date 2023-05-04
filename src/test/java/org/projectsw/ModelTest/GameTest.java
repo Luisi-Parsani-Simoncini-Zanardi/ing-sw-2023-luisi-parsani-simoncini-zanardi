@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest extends TestUtils{
 
+    //TODO DAVIDE: sistemare i test utilizzando il nuovo schema di costruzione di game
     /**
      * Cleans the list of used codes before each test.
      */

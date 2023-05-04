@@ -60,7 +60,7 @@ public class ClientSkeleton implements Client {
         }catch(ClassNotFoundException e){
             throw new RemoteException("Cannot cast event: "+e.getMessage());
         }
-        server.update(this, arg, input);
+        server.update(input, arg);
     }
 
     @Override

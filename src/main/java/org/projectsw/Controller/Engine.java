@@ -47,7 +47,6 @@ public class Engine{
      * execution is LOBBY.
      * @param nicknameFirstPlayer the nickname of the first player joining in the game.
      * @param numberOfPlayers the number of players selected by the first player.
-     * @throws InvalidNumberOfPlayersException if the number of players is not correctly chosen.
      */
     public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) {
             Player firstPlayer = new Player(nicknameFirstPlayer,0);
@@ -463,13 +462,13 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    public void update(Client client, UIEvent UiEvent, InputController input) {
-        //gestisce gli input e chiama le funzioni
+    public void update(InputController input, UIEvent UiEvent) {
+        game.setClientID(input.getClientID());
         switch (UiEvent){
-            case CHECK_EXISTS_FIRST_PLAYER -> {
-                if (game.getPlayers() != null){
-                game.existsFirstPlayer();
-                }
+            case SET_CLIENT_ID -> {
+                if (game.getPlayers() == null){
+                game.initializeClientID(1);
+                } else game.initializeClientID(game.getPlayers().size()+1);
             }
             case CHOOSE_NICKNAME -> playerJoin(input.getString());
             case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> firstPlayerJoin(input.getString(), input.getIndex());

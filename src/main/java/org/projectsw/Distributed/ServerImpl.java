@@ -29,22 +29,24 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         //TODO: gestire la possibile reconnect se un savegame è presente
         this.controller.getClients().add(client);
         this.controller.getGame().addObserver((o, arg) -> {
-            if (arg == Game.Event.EXISTS_FIRST_PLAYER) {
-                try {
-                    client.update(new GameView(), arg);
-                } catch (RemoteException e) {
-                    throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
-                }
-            } else {
-                if (arg == Game.Event.ERROR){
+            switch (arg){
+                case SET_CLIENT_ID -> {
                     try {
-                        client.update(new GameView(this.controller.getGame().getError()), arg);
+                        client.update(new GameView(this.controller.getGame().getClientID()), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
                     }
-                } else {
+                }
+                case ERROR -> {
                     try {
-                        client.update(new GameView(this.controller.getGame().getError()), arg);
+                        client.update(new GameView(this.controller.getGame().getError(), this.controller.getGame().getClientID()), arg);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
+                    }
+                }
+                default -> {
+                    try {
+                        client.update(new GameView(this.controller.getGame()), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
                     }
@@ -54,7 +56,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     }
 
     @Override
-    public void update(Client client, UIEvent arg, InputController input) throws RemoteException {
-        this.controller.update(client, arg, input);
+    public void update(InputController input, UIEvent arg) throws RemoteException {
+        this.controller.update(input, arg);
     }
 }

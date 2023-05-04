@@ -15,8 +15,8 @@ public interface Server extends Remote {
 
     /**
      * Notify the server that a client has made a choice
-     * @param client  the client that generated the event
+     * @param ...
      * @param arg     the choice made by the client
      */
-    void update(Client client, UIEvent arg, InputController input) throws RemoteException;
+    void update(InputController input, UIEvent arg) throws RemoteException;
 }

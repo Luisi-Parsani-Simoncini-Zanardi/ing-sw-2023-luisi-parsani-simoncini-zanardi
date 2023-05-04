@@ -14,8 +14,9 @@ public class GameView implements Serializable {
     private final String currentPlayerName;
     private final ArrayList<Message> chat;
     private final ErrorName error;
+    private final int clientID;
 
-    public GameView(){
+    public GameView(int clientID){
         this.gameBoard =  new Tile[1][1];
         gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
         this.currentPlayerShelf = new Tile[1][1];
@@ -23,9 +24,10 @@ public class GameView implements Serializable {
         this.currentPlayerName = "a";
         this.chat = new ArrayList<>();
         this.error = ErrorName.NULL;
+        this.clientID = clientID;
     }
 
-    public GameView(ErrorName error){
+    public GameView(ErrorName error, int clientID){
         this.gameBoard =  new Tile[1][1];
         gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
         this.currentPlayerShelf = new Tile[1][1];
@@ -33,6 +35,7 @@ public class GameView implements Serializable {
         this.currentPlayerName = "a";
         this.chat = new ArrayList<>();
         this.error = error;
+        this.clientID = clientID;
     }
 
     public GameView(Game model){
@@ -41,6 +44,7 @@ public class GameView implements Serializable {
         this.currentPlayerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getChat();
         this.error = ErrorName.NULL;
+        this.clientID = 0;
     }
 
     public Tile[][] getGameBoard(){return this.gameBoard;}
@@ -48,4 +52,6 @@ public class GameView implements Serializable {
     public String getCurrentPlayerName(){return this.currentPlayerName;}
     public ArrayList<Message> getChat(){return this.chat;}
     public ErrorName getError(){return this.error;}
+    public int getClientID(){return this.clientID;}
+
 }
