@@ -27,7 +27,7 @@ public class GameView implements Serializable {
         this.clientID = clientID;
     }
 
-    public GameView(ErrorName error){
+    public GameView(ErrorName error, int clientID){
         this.gameBoard =  new Tile[1][1];
         gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
         this.currentPlayerShelf = new Tile[1][1];
@@ -35,7 +35,7 @@ public class GameView implements Serializable {
         this.currentPlayerName = "a";
         this.chat = new ArrayList<>();
         this.error = error;
-        this.clientID = 0;
+        this.clientID = clientID;
     }
 
     public GameView(Game model){

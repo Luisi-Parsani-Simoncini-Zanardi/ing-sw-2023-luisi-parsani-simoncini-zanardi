@@ -462,8 +462,8 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    public void update(Client client, UIEvent UiEvent, InputController input) {
-        //gestisce gli input e chiama le funzioni
+    public void update(InputController input, UIEvent UiEvent) {
+        game.setClientID(input.getClientID());
         switch (UiEvent){
             case SET_CLIENT_ID -> {
                 if (game.getPlayers() == null){

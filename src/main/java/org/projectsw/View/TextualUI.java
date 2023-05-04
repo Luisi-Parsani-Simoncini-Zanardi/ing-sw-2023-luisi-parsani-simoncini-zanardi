@@ -12,7 +12,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer number;
     private Point point;
     private String string;
-    private int clientUID;
+    private int clientUID = 0;
 
     private UIState getState(){
         synchronized(lock){
@@ -33,7 +33,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
     public String getString(){return this.string;}
     public int getClientUID(){return clientUID;}
-    public void setClientUID(int integer){clientUID = integer;}
 
     @Override
     public void run() {
@@ -70,33 +69,37 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             /*
             case UPDATED_BOARD -> showBoard(model);
             case UPDATED_SHELF -> showShelf(model); */
-            case SET_CLIENT_ID -> clientUID = model.getClientID();
+            case SET_CLIENT_ID -> {
+                if (clientUID==0)
+                    clientUID = model.getClientID();
+            }
             /*
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);*/
             case ERROR ->  {
-                //TODO LUCA: fare in modo che le eccezioni le gestisca solo il client interessato
-                switch (model.getError())
-                {
-                    case INVALID_NAME -> {
-                        System.out.println("Nickname already in use. Try again...");
-                        insertNickname();
-                    }
-                    case INVALID_NUMBER_OF_PLAYERS -> {
-                        System.out.println("Number of players not valid. Try again...");
-                        Scanner scanner = new Scanner(System.in);
-                        number = Integer.valueOf(scanner.nextLine());
-                        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
-                    }
-                    case LOBBY_CLOSED -> {
-                        System.out.println("Sorry, the lobby is full. Exiting...");
-                        System.exit(0);
-                    }
-                    case EMPTY_TEMPORARY_POINTS -> {
-                        System.out.println("Please select any tile");
-                    }
-                    case INVALID_RECIPIENT -> {
-                        //TODO LUCA: gestire l'eccezione
+                if (model.getClientID() == clientUID) {
+                    //TODO LUCA: fare in modo che le eccezioni le gestisca solo il client interessato
+                    switch (model.getError()) {
+                        case INVALID_NAME -> {
+                            System.out.println("Nickname already in use. Try again...");
+                            insertNickname();
+                        }
+                        case INVALID_NUMBER_OF_PLAYERS -> {
+                            System.out.println("Number of players not valid. Try again...");
+                            Scanner scanner = new Scanner(System.in);
+                            number = Integer.valueOf(scanner.nextLine());
+                            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+                        }
+                        case LOBBY_CLOSED -> {
+                            System.out.println("Sorry, the lobby is full. Exiting...");
+                            System.exit(0);
+                        }
+                        case EMPTY_TEMPORARY_POINTS -> {
+                            System.out.println("Please select any tile");
+                        }
+                        case INVALID_RECIPIENT -> {
+                            //TODO LUCA: gestire l'eccezione
+                        }
                     }
                 }
             }

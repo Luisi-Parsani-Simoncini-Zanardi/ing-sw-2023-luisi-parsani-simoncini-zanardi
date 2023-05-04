@@ -39,7 +39,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 }
                 case ERROR -> {
                     try {
-                        client.update(new GameView(this.controller.getGame().getError()), arg);
+                        client.update(new GameView(this.controller.getGame().getError(), this.controller.getGame().getClientID()), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
                     }
@@ -56,7 +56,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     }
 
     @Override
-    public void update(Client client, UIEvent arg, InputController input) throws RemoteException {
-        this.controller.update(client, arg, input);
+    public void update(InputController input, UIEvent arg) throws RemoteException {
+        this.controller.update(input, arg);
     }
 }

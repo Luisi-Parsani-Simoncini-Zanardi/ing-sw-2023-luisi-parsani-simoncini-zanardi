@@ -214,6 +214,11 @@ public class Game extends Observable<Game.Event> {
         setChangedAndNotifyObservers(Event.ERROR);
     }
 
+    public void setClientID(int clientID) {
+        this.clientID = clientID;
+    }
+
+
     /**
      * Adds a new player to the game.
      * @param player the player to be added
