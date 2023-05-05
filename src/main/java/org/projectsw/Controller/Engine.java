@@ -88,9 +88,10 @@ public class Engine{
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
     private void startGame(){
-        game.gameStatusChanged(GameStates.RUNNING);
+        game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         fillBoard();
+        game.nextTurnNotify();
     }
 
     /**
@@ -344,6 +345,7 @@ public class Engine{
         }
         else {
             getGame().setCurrentPlayer(getGame().getNextPlayer());
+            game.nextTurnNotify();
         }
     }
 
@@ -462,7 +464,7 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    public void update(InputController input, UIEvent UiEvent) {
+    public void update(InputController input, UIEvent UiEvent) throws UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException, UnselectableColumnException {
         game.setClientID(input.getClientID());
         switch (UiEvent){
             case SET_CLIENT_ID -> {
@@ -472,6 +474,10 @@ public class Engine{
             }
             case CHOOSE_NICKNAME -> playerJoin(input.getString());
             case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> firstPlayerJoin(input.getString(), input.getIndex());
+            case TILE_SELECTION -> selectTiles(input.getCoordinate());
+            case CONFIRM_SELECTION -> confirmSelectedTiles();
+            case COLUMN_SELECTION -> selectColumn(input.getIndex());
+            case TILE_INSERTION -> placeTiles(input.getIndex());
         }
     }
 }

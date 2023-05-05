@@ -11,7 +11,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private final Object lock = new Object();
     private Integer number;
     private Point point;
-    private Point coordinate;
     private String nickname;
     private int clientUID = 0;
 
@@ -26,7 +25,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             lock.notifyAll();
         }
     }
-    public Integer getIndex(){
+    public Integer getNumber(){
         return this.number;
     }
     public Point getPoint(){
@@ -50,7 +49,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }
             System.out.println("---YOUR TURN---");
             do{
-                coordinate = selectTilesInput();
+                point = selectTilesInput();
                 setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
             }while(chooseTiles());
             setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
@@ -60,6 +59,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }while(chooseColumn());
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
 
+            number = selectTemporaryTile();
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
         }
@@ -103,7 +103,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                     }
                 }
             }
-            case UPDATED_GAME_STATE -> {
+            case NEXT_PLAYER_TURN_NOTIFY -> {
+                System.out.println("popo");
                 if (model.getCurrentPlayerName().equals(nickname)) {
                     setState(UIState.YOUR_TURN);
                 }
@@ -119,6 +120,12 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
         }
         return choice == 2;
+    }
+
+    private Integer selectTemporaryTile(){
+        System.out.println("Wich tiles do you want to insert?");
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextInt();
     }
 
     private Integer selectColumnInput(){

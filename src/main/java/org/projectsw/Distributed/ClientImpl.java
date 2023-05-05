@@ -42,7 +42,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         if(tui != null)
             tui.addObserver((o, arg) -> {
                 try {
-                    server.update(new InputController(tui.getClientUID(), tui.getPoint(),tui.getIndex(),tui.getNickname()), arg);
+                    server.update(new InputController(tui.getClientUID(), tui.getPoint(),tui.getNumber(),tui.getNickname()), arg);
                 } catch (RemoteException e) {
                     throw new RuntimeException("cannot send the client input" + e.getMessage());//TODO: gestire esplicitamente
                 }
@@ -50,7 +50,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         else
             gui.addObserver((o, arg) -> {
                 try {
-                    server.update(new InputController(tui.getClientUID(), tui.getPoint(),tui.getIndex(),tui.getNickname()), arg);
+                    server.update(new InputController(tui.getClientUID(), tui.getPoint(),tui.getNumber(),tui.getNickname()), arg);
                     //cambiare una volta finita GUI
                 } catch (RemoteException e) {
                     throw new RuntimeException("cannot send the client input" + e.getMessage());//TODO: gestire esplicitamente
