@@ -37,4 +37,24 @@ public class Tile implements Serializable {
     public int getImageNumber(){
         return imageNumber;
     }
+
+    /**
+     * Returns a string rappresenting the kind of tile.
+     * @return a string that rappresent the tile.
+     */
+    @Override
+    public String toString() {
+        String str;
+        switch(this.getTile()){
+            case EMPTY -> str = "EMPTY";
+            case CATS -> str = "CATS";
+            case TROPHIES -> str = "TROPHIES";
+            case PLANTS -> str = "PLANTS";
+            case FRAMES -> str = "FRAMES";
+            case GAMES -> str = "GAMES";
+            case BOOKS -> str = "BOOKS";
+            default -> str = "UNUSED";
+        }
+        return str;
+    }
 }
