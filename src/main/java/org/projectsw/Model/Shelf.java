@@ -32,22 +32,6 @@ public class Shelf extends Observable<Game.Event> {
     }
 
     /**
-     * Constructs a new empty shelf with 6 rows and 5 columns setting the passed player
-     * as player attribute and setting null all the others.
-     */
-    public Shelf(Player player){
-        shelf = new Tile[Config.shelfHeight][Config.shelfLength];
-        for(int i=0;i<Config.shelfHeight;i++){
-            for(int j=0;j<Config.shelfLength;j++){
-                shelf[i][j]= new Tile(TilesEnum.EMPTY, 0);
-            }
-        }
-        selectableColumns = null;
-        selectedColumn = null;
-        selectionPossible = true;
-    }
-
-    /**
      * Constructs a new shelf with the same contents as the given shelf.
      * @param shelf the shelf to copy
      */
@@ -205,7 +189,6 @@ public class Shelf extends Observable<Game.Event> {
      */
     public void cleanSelectedColumn(){ selectedColumn = null; }
 
-    //TODO DAVIDE: codice duplicato con la board linea 341 da sistemare
     /**
      * Prints the shelf.
      */
@@ -213,16 +196,7 @@ public class Shelf extends Observable<Game.Event> {
         for(int i=Config.shelfHeight-1;i>=0;i--){
             for(int j=0;j<Config.shelfLength;j++){
                 Tile current = shelf[i][j];
-                switch(current.getTile()){
-                    case EMPTY -> System.out.print("EMPTY\t");
-                    case UNUSED -> System.out.print("UNUSED\t");
-                    case CATS -> System.out.print("CATS\t");
-                    case TROPHIES -> System.out.print("TROPHIES\t");
-                    case PLANTS -> System.out.print("PLANTS\t");
-                    case FRAMES -> System.out.print("FRAMES\t");
-                    case GAMES -> System.out.print("GAMES\t");
-                    case BOOKS -> System.out.print("BOOKS\t");
-                }
+                System.out.println(current.toString());
             }
             System.out.print("\n");
         }
