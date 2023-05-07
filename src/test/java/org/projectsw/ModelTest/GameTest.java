@@ -44,7 +44,8 @@ class GameTest extends TestUtils{
     void integrityGameTest() throws InvalidNumberOfPlayersException {
         Player firstPlayer = new Player("Davide",0);
         for(int i=2;i<5;i++){
-            Game game = new Game(firstPlayer,i);
+            Game game = new Game();
+            game.initializeGame(firstPlayer,i);
             assertEquals(GameStates.LOBBY,game.getGameState());
             assertEquals(i,game.getNumberOfPlayers());
             assertEqualsBoard(new Board(i),game.getBoard());
@@ -63,8 +64,9 @@ class GameTest extends TestUtils{
      */
     @Test
     void invalidNumberOfPlayersTest(){
-        assertThrows(InvalidNumberOfPlayersException.class, () -> new Game(new Player("Davide",0),1));
-        assertThrows(InvalidNumberOfPlayersException.class, () -> new Game(new Player("Davide",0),5));
+        Game game =  new Game();
+        assertThrows(InvalidNumberOfPlayersException.class, () -> game.initializeGame(new Player("Davide",0),1));
+        assertThrows(InvalidNumberOfPlayersException.class, () -> game.initializeGame(new Player("Davide",0),5));
     }
 
     /**
@@ -121,7 +123,7 @@ class GameTest extends TestUtils{
      * Tests if the method sets the players correctly.
      */
     @Test
-    void testSetPlayers() {
+    void testSetPlayers() throws InvalidNameException {
         Game game = new Game();
         Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
@@ -140,7 +142,7 @@ class GameTest extends TestUtils{
      * Tests if the method returns the right players.
      */
     @Test
-    void testGetPlayers() {
+    void testGetPlayers() throws InvalidNameException {
         Game game = new Game();
         Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
@@ -244,7 +246,8 @@ class GameTest extends TestUtils{
         Player current = new Player("Renala", 0);
         Player next1 = new Player("Gravius", 1);
         Player next2 = new Player("Lusat", 2);
-        Game game = new Game(current, 3);
+        Game game = new Game();
+        game.initializeGame(current, 3);
         game.addPlayer(next1);
         game.addPlayer(next2);
         game.setCurrentPlayer(current);

@@ -5,11 +5,9 @@ import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
 import org.projectsw.Util.Observable;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
-
 import static org.projectsw.Exceptions.ErrorName.NULL;
 
 //TODO DAVIDE: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza
@@ -178,9 +176,12 @@ public class Game extends Observable<Game.Event> {
     /**
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy
+     * @throws InvalidNameException if the passed list has duplicated nicknames
      */
-    public void setPlayers(ArrayList<Player> players) {
-        this.players = players;
+    public void setPlayers(ArrayList<Player> players) throws InvalidNameException {
+        for(Player player : players){
+            addPlayer(player);
+        }
     }
 
     /**

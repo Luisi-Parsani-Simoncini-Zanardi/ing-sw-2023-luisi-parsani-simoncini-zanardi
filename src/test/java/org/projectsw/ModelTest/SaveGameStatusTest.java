@@ -2,6 +2,7 @@ package org.projectsw.ModelTest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.junit.jupiter.api.BeforeEach;
+import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.*;
 import org.projectsw.TestUtils;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +30,7 @@ class SaveGameStatusTest extends TestUtils {
      * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
 
-    public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, InvalidNameException {
         Game game = new Game();
         game.setCommonGoals(game.randomCommonGoals());
         Player player1 = new Player("Davide", 0);
@@ -54,7 +55,7 @@ class SaveGameStatusTest extends TestUtils {
      * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
     @Test
-    public void gameDeserializerTest() throws  NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException{
+    public void gameDeserializerTest() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, InvalidNameException {
 
         Game game = gameInitializer();
         SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
