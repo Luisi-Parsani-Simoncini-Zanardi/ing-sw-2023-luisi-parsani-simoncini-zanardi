@@ -100,11 +100,27 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                         case INVALID_RECIPIENT -> {
                             //TODO LUCA: gestire l'eccezione
                         }
+                        case UNSELECTABLE_TILE -> {
+                            System.out.println("Invalid Tile. Try again...");
+                            point = selectTilesInput();
+                            setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                        }
+                        case UNSELECTABLE_COLUMN -> {
+                            System.out.println("Invalid Column. Try again...");
+                            do{
+                                number = selectColumnInput();
+                            }while(chooseColumn());
+                            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+                        }
+                        case INVALID_TEMPORARY_TILE -> {
+                            System.out.println("You don't have this tile. Try again...");
+                            number = selectTemporaryTile();
+                            setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+                        }
                     }
                 }
             }
             case NEXT_PLAYER_TURN_NOTIFY -> {
-                System.out.println("popo");
                 if (model.getCurrentPlayerName().equals(nickname)) {
                     setState(UIState.YOUR_TURN);
                 }
@@ -116,9 +132,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("Are you sure?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
-        if(choice == 2){
+        //TODO non capisco il perchè di questo if (continuo a chiedere e quando ho finito notifico)
+        /*if(choice == 2){
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
-        }
+        }*/
         return choice == 2;
     }
 
