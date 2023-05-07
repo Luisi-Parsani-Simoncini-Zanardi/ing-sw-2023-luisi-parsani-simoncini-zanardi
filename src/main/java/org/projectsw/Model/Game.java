@@ -332,4 +332,7 @@ public class Game extends Observable<Game.Event> {
     public void finishedUpdateBoard() {
         setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
+    public void finishedUpdateShelf() {
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+    }
 }

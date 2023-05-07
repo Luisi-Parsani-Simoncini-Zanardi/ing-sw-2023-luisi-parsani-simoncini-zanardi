@@ -68,7 +68,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         switch(arg){
             //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
 
-            case UPDATED_BOARD -> showBoard(model);
+            case UPDATED_BOARD -> {
+                if (model.getCurrentPlayerName().equals(nickname))
+                    showBoard(model);
+            }
+            //TODO sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
             //case UPDATED_SHELF -> showShelf(model);
             case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
@@ -172,10 +176,12 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         board.printBoard();
     }
 
-    /*private void showShelf(GameView model){
+    private void showShelf(GameView model){
         System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
-        model.getCurrentPlayerShelf().printShelf();
-    }*/
+        Shelf shelf = new Shelf();
+        shelf.setShelf(model.getCurrentPlayerShelf());
+        shelf.printShelf();
+    }
 
     private void showCurrentPlayer(GameView model){
         System.out.println("\nThe current player is: "+model.getCurrentPlayerName());

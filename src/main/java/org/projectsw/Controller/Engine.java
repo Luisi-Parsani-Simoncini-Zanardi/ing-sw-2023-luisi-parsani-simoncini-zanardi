@@ -191,12 +191,14 @@ public class Engine{
                 if (!game.getCurrentPlayer().getShelf().getShelf()[i][selectedColumn].getTile().equals(EMPTY)) {
                     if (i != Config.shelfHeight - 1) {
                         game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i + 1, selectedColumn);
+                        game.finishedUpdateShelf();
                         System.out.println("insert");
                     }
                     break;
                 }
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
+                    game.finishedUpdateShelf();
                     System.out.println("insert");
                     break;
                 }
@@ -359,6 +361,7 @@ public class Engine{
         }
         else {
             getGame().setCurrentPlayer(getGame().getNextPlayer());
+            game.finishedUpdateBoard();
             game.nextTurnNotify();
         }
     }
