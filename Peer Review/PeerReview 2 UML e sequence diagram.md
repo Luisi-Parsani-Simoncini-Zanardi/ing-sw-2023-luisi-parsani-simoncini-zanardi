@@ -13,7 +13,7 @@ Il sistema di lobby management sembra ben organizzato e interessante. Non avendo
 
 # Lati negativi
 
-A parer nostro converrebbe trovare un modo per inviare la notify solo al Listener corretto invece di trasmetterlo a tutti e di scartarlo a posteriori perche' quest'ultima soluzione richiede l'invocazione di molte notify (visto anche il notevole numero di eventi) che poi vengono scartate, andando ad influire sulle performance in caso di eventuali volumi elevati. 
+A parer nostro converrebbe trovare un modo per inviare la notify solo al Listener corretto, o perlomeno a una classe intermedia di dispatch, invece di trasmetterlo a tutti e di scartarlo a posteriori perche' quest'ultima soluzione richiede l'invocazione di molte notify (visto anche il notevole numero di eventi) che poi vengono scartate, andando ad influire sulle performance in caso di eventuali volumi elevati. 
 
 # Confronto tra le architetture
 
