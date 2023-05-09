@@ -34,6 +34,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     private void initialize(Server server) throws RemoteException{
+        displayLogo();
         try {
             server.register(this);
         } catch (RemoteException e) {
@@ -82,14 +83,6 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     private void chooseUI(){
-        System.out.println(ConsoleColors.PURPLE + "  __  __" + ConsoleColors.BLUE + "        _____ _          _  __ _      ");
-        System.out.println(ConsoleColors.PURPLE + " |  \\/  |" + ConsoleColors.BLUE + "      / ____| |        | |/ _(_)     ");
-        System.out.println(ConsoleColors.PURPLE + " | \\  / |_   _" + ConsoleColors.BLUE + "| (___ | |__   ___| | |_ _  ___ ");
-        System.out.println(ConsoleColors.PURPLE + " | |\\/| | | | |" + ConsoleColors.BLUE + "\\___ \\| '_ \\ / _ \\ |  _| |/ _ \\");
-        System.out.println(ConsoleColors.PURPLE + " | |  | | |_| |" + ConsoleColors.BLUE + "____) | | | |  __/ | | | |  __/");
-        System.out.println(ConsoleColors.PURPLE + " |_|  |_|\\__, |" + ConsoleColors.BLUE + "_____/|_| |_|\\___|_|_| |_|\\___|");
-        System.out.println(ConsoleColors.PURPLE + "          __/ |                               " );
-        System.out.println("         |___/                                " + ConsoleColors.RESET);
 
         System.out.println("Which UI do you want to use?\n1: Gui\n2: Tui");
         Scanner scanner = new Scanner(System.in);
@@ -112,4 +105,16 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
             }
         }
     }
+
+    public void displayLogo(){
+        System.out.println(ConsoleColors.PURPLE_BOLD + "  __  __" + ConsoleColors.BLUE_BOLD + "        _____ _          _  __ _      ");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " |  \\/  |" + ConsoleColors.BLUE_BOLD + "      / ____| |        | |/ _(_)     ");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " | \\  / |_   _" + ConsoleColors.BLUE_BOLD + "| (___ | |__   ___| | |_ _  ___ ");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " | |\\/| | | | |" + ConsoleColors.BLUE_BOLD + "\\___ \\| '_ \\ / _ \\ |  _| |/ _ \\");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " | |  | | |_| |" + ConsoleColors.BLUE_BOLD + "____) | | | |  __/ | | | |  __/");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " |_|  |_|\\__, |" + ConsoleColors.BLUE_BOLD + "_____/|_| |_|\\___|_|_| |_|\\___|");
+        System.out.println(ConsoleColors.PURPLE_BOLD + "          __/ |                               " );
+        System.out.println("         |___/                                " + ConsoleColors.RESET);
+    }
+
 }

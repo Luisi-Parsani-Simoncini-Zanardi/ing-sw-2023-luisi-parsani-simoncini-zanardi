@@ -219,6 +219,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
         setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
     }
+
 }
 
 
