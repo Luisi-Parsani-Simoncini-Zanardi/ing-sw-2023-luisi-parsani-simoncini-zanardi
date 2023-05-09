@@ -6,6 +6,8 @@ import org.projectsw.Util.Observable;
 
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Exceptions.UnselectableTileException;
+import org.projectsw.View.ConsoleColors;
+
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -357,18 +359,56 @@ public class Board extends Observable<Game.Event> {
     public void printBoard(ArrayList<Point> points){
         //ArrayList<Point> selectablePoints = getSelectablePoints();
         ArrayList<Point> selectablePoints = points;
-        Formatter f = new Formatter();
-        f.format("%1s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9", "\n");
-        for(int j=0;j<Config.boardHeight;j++){
-                //if(selectablePoints.contains(new Point(i,j))) System.out.print("[");
-                //if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
-                f.format("%1s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", j+1, board[0][j].getTile().toString(), board[1][j].getTile().toString(), board[2][j].getTile().toString(), board[3][j].getTile().toString(), board[4][j].getTile().toString(), board[5][j].getTile().toString(), board[6][j].getTile().toString(), board[7][j].getTile().toString(), board[8][j].getTile().toString(), "\n");
-                //if(selectablePoints.contains(new Point(i,j))) System.out.print("]");
-                //if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
-                //System.out.print("\t");
+        String printedString = "  ";
+        for(int i=0;i<Config.boardLength;i++) {
+            Integer integer = i+1;
+            printedString = printedString + integer.toString() + "           ";
         }
-        System.out.println(f);
+        System.out.println(printedString);
+        for(int j=0;j<Config.boardHeight;j++){
+            Integer integer = j+1;
+            printedString = integer.toString() + " ";
+            for(int i=0;i<Config.boardLength;i++) {
+                printedString = printedString + stringColorAndMarker(i,j) + printPadding(i,j);
+        }
+            System.out.println(printedString);
+        }
         System.out.print("\n");
+    }
+
+    private String stringColorAndMarker(int i, int j){
+        String result = "";
+        TilesEnum type = board[i][j].getTile();
+        if(selectablePoints.contains(new Point(i,j))) result = result + "(";
+        if(temporaryPoints.contains(new Point(i,j))) result = result + "[";
+        switch (type){
+            case CATS -> result = result + ConsoleColors.CATS;
+            case TROPHIES -> result = result + ConsoleColors.TROPHIES;
+            case BOOKS -> result = result + ConsoleColors.BOOKS;
+            case FRAMES -> result = result + ConsoleColors.FRAMES;
+            case GAMES -> result = result + ConsoleColors.GAMES;
+            case PLANTS -> result = result + ConsoleColors.PLANTS;
+            case EMPTY -> result = result + ConsoleColors.EMPTY;
+            case UNUSED -> result = result + "//////      ";
+
+        }
+        if(selectablePoints.contains(new Point(i,j))) result = result + ")";
+        if(temporaryPoints.contains(new Point(i,j))) result = result + "]";
+        return result;
+    }
+
+    private String printPadding (int i, int j){
+        int padding = 12;
+        String paddingSpaces = "";
+        if (board[i][j].getTile() != TilesEnum.UNUSED)
+            padding -= board[i][j].getTile().toString().length();
+        else
+            return "";
+        if(selectablePoints.contains(new Point(i,j)) || temporaryPoints.contains(new Point(i,j))) padding -= 2;
+        for (int k=0; k<padding; k++) {
+            paddingSpaces = paddingSpaces + " ";
+        }
+        return paddingSpaces;
     }
 
     /**
