@@ -3,6 +3,7 @@ package org.projectsw.Distributed;
 import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
+import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 import java.rmi.RemoteException;
@@ -81,6 +82,15 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     private void chooseUI(){
+        System.out.println(ConsoleColors.PURPLE + "  __  __" + ConsoleColors.BLUE + "        _____ _          _  __ _      ");
+        System.out.println(ConsoleColors.PURPLE + " |  \\/  |" + ConsoleColors.BLUE + "      / ____| |        | |/ _(_)     ");
+        System.out.println(ConsoleColors.PURPLE + " | \\  / |_   _" + ConsoleColors.BLUE + "| (___ | |__   ___| | |_ _  ___ ");
+        System.out.println(ConsoleColors.PURPLE + " | |\\/| | | | |" + ConsoleColors.BLUE + "\\___ \\| '_ \\ / _ \\ |  _| |/ _ \\");
+        System.out.println(ConsoleColors.PURPLE + " | |  | | |_| |" + ConsoleColors.BLUE + "____) | | | |  __/ | | | |  __/");
+        System.out.println(ConsoleColors.PURPLE + " |_|  |_|\\__, |" + ConsoleColors.BLUE + "_____/|_| |_|\\___|_|_| |_|\\___|");
+        System.out.println(ConsoleColors.PURPLE + "          __/ |                               " );
+        System.out.println("         |___/                                " + ConsoleColors.RESET);
+
         System.out.println("Which UI do you want to use?\n1: Gui\n2: Tui");
         Scanner scanner = new Scanner(System.in);
         int selected;
