@@ -115,6 +115,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                         }
                         case INVALID_TEMPORARY_TILE -> {
                             System.out.println("You don't have this tile. Try again...");
+                            //nickname = selectTemporaryTile();
                             number = selectTemporaryTile();
                             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
                         }
@@ -183,10 +184,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     //TODO :LORE sistemare i metodi della tui adattandoli alla nuova gameView
 
     private void showBoard(GameView model){
-        Board board = new Board();
+        Board board = new Board(model.getSelectablePoints());
         board.setBoard(model.getGameBoard());
         System.out.println("---GAME BOARD---");
-        board.printBoard();
+        board.printBoard(model.getSelectablePoints());
     }
 
     private void showShelf(GameView model){
