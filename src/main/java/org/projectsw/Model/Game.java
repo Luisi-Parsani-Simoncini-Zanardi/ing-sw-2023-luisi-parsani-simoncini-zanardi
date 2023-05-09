@@ -24,7 +24,8 @@ public class Game extends Observable<Game.Event> {
         SET_CLIENT_ID_RETURN,
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
-        ERROR
+        ERROR,
+        NEXT_PLAYER_TURN_NOTIFY,
     }
 
     private GameStates gameState;
@@ -324,5 +325,15 @@ public class Game extends Observable<Game.Event> {
     public void initializeClientID(int i) {
         this.clientID = i;
         setChangedAndNotifyObservers(Event.SET_CLIENT_ID_RETURN);
+    }
+
+    public void nextTurnNotify() {
+        setChangedAndNotifyObservers(Event.NEXT_PLAYER_TURN_NOTIFY);
+    }
+    public void finishedUpdateBoard() {
+        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+    }
+    public void finishedUpdateShelf() {
+        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 }

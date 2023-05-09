@@ -11,7 +11,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private final Object lock = new Object();
     private Integer number;
     private Point point;
-    private String string;
+    private String nickname;
     private int clientUID = 0;
 
     private UIState getState(){
@@ -25,31 +25,31 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             lock.notifyAll();
         }
     }
-    public Integer getIndex(){
+    public Integer getNumber(){
         return this.number;
     }
     public Point getPoint(){
         return this.point;
     }
-    public String getString(){return this.string;}
+    public String getNickname(){return this.nickname;}
     public int getClientUID(){return clientUID;}
 
     @Override
     public void run() {
         insertNickname();
-        //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
-     /*   while(getState() != UIState.GAME_ENDING){
+        //TODO: LORE sistemare i metodi della tui adattandoli alla nuova gameView
+        while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
-                synchronized (lock){//forse va eliminata perchè superflua
+                /*synchronized (lock){//forse va eliminata perchè superflua
                     try{lock.wait();
                     }catch(InterruptedException e){
                         System.err.println("Interrupted while waiting for server: " + e.getMessage());
                     }
-                }
+                }*/
             }
             System.out.println("---YOUR TURN---");
             do{
-                coordinate = selectTilesInput();
+                point = selectTilesInput();
                 setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
             }while(chooseTiles());
             setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
@@ -59,23 +59,28 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }while(chooseColumn());
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
 
+            number = selectTemporaryTile();
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             setState(UIState.OPPONENT_TURN);
-        }*/
+        }
     }
     public void update(GameView model, Game.Event arg){
         switch(arg){
             //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
-            /*
-            case UPDATED_BOARD -> showBoard(model);
-            case UPDATED_SHELF -> showShelf(model); */
+
+            case UPDATED_BOARD -> {
+                if (model.getCurrentPlayerName().equals(nickname))
+                    showBoard(model);
+            }
+            //TODO sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
+            //case UPDATED_SHELF -> showShelf(model);
             case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
                     clientUID = model.getClientID();
             }
-            /*
+
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);*/
+            case UPDATED_CHAT -> showChat(model);
             case ERROR ->  {
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
@@ -99,7 +104,29 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                         case INVALID_RECIPIENT -> {
                             //TODO LUCA: gestire l'eccezione
                         }
+                        case UNSELECTABLE_TILE -> {
+                            System.out.println("Invalid Tile. Try again...");
+                            point = selectTilesInput();
+                            setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                        }
+                        case UNSELECTABLE_COLUMN -> {
+                            System.out.println("Invalid Column. Try again...");
+                            do{
+                                number = selectColumnInput();
+                            }while(chooseColumn());
+                            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+                        }
+                        case INVALID_TEMPORARY_TILE -> {
+                            System.out.println("You don't have this tile. Try again...");
+                            number = selectTemporaryTile();
+                            setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+                        }
                     }
+                }
+            }
+            case NEXT_PLAYER_TURN_NOTIFY -> {
+                if (model.getCurrentPlayerName().equals(nickname)) {
+                    setState(UIState.YOUR_TURN);
                 }
             }
         }
@@ -109,10 +136,17 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("Are you sure?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
-        if(choice == 2){
+        //TODO non capisco il perchè di questo if (continuo a chiedere e quando ho finito notifico)
+        /*if(choice == 2){
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
-        }
+        }*/
         return choice == 2;
+    }
+
+    private Integer selectTemporaryTile(){
+        System.out.println("Wich tiles do you want to insert?");
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextInt();
     }
 
     private Integer selectColumnInput(){
@@ -133,19 +167,20 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         int column = scanner.nextInt();
         return new Point(row, column);
     }
-    //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
-    /*
+    //TODO :LORE sistemare i metodi della tui adattandoli alla nuova gameView
+
     private void showBoard(GameView model){
-        Board board = model.getGameBoard();
-        if(board == null)
-            return;
+        Board board = new Board();
+        board.setBoard(model.getGameBoard());
         System.out.println("---GAME BOARD---");
         board.printBoard();
     }
 
     private void showShelf(GameView model){
         System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
-        model.getCurrentPlayerShelf().printShelf();
+        Shelf shelf = new Shelf();
+        shelf.setShelf(model.getCurrentPlayerShelf());
+        shelf.printShelf();
     }
 
     private void showCurrentPlayer(GameView model){
@@ -156,11 +191,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         for(Message message : model.getChat())
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
     }
-*/
+
     private void insertNickname(){
         System.out.println("Insert your nickname: ");
         Scanner scanner = new Scanner(System.in);
-        string = scanner.nextLine();
+        nickname = scanner.nextLine();
         point = null;
         setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
         if (clientUID == 1){

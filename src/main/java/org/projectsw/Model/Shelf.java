@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Exceptions.UnselectableColumnException;
 import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.UpdatingOnWrongPlayerException;
 import org.projectsw.Util.Observable;
@@ -112,8 +113,12 @@ public class Shelf extends Observable<Game.Event> {
      * Sets the selected column attribute.
      * @param selectedColumn the int to set as new selected column attribute.
      */
-    public void setSelectedColumn(Integer selectedColumn) {
+    public void setSelectedColumn(Integer selectedColumn) throws UnselectableColumnException {
+        if (getSelectableColumns().contains(selectedColumn))
         this.selectedColumn = selectedColumn;
+        else {
+            throw new UnselectableColumnException();
+        }
     }
 
     /**

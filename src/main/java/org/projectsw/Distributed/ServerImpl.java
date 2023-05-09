@@ -1,6 +1,7 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
+import org.projectsw.Exceptions.*;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
@@ -56,6 +57,18 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void update(InputController input, UIEvent arg) throws RemoteException {
-        this.controller.update(input, arg);
+        try {
+            this.controller.update(input, arg);
+        } catch (UnselectableTileException e) {
+            throw new RuntimeException(e);
+        } catch (NoMoreColumnSpaceException e) {
+            throw new RuntimeException(e);
+        } catch (MaxTemporaryTilesExceededException e) {
+            throw new RuntimeException(e);
+        } catch (UpdatingOnWrongPlayerException e) {
+            throw new RuntimeException(e);
+        } catch (UnselectableColumnException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
