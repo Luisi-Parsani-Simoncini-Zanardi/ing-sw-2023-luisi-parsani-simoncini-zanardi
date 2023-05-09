@@ -116,8 +116,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
                         }
                         case INVALID_TEMPORARY_TILE -> {
-                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);
-                            number = selectTemporaryTile();
+                            //nickname = selectTemporaryTile();
+                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
                             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
                         }
                     }
@@ -145,12 +145,20 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer selectTemporaryTile(){
         System.out.println("Which tiles do you want to insert?");
         Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the tile number: ");
+            scanner.next();
+        }
         return scanner.nextInt();
     }
 
     private Integer selectColumnInput(){
         System.out.println("In which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the column: ");
+            scanner.next();
+        }
         return scanner.nextInt();
     }
     private boolean chooseTiles(){
@@ -161,18 +169,26 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("insert the row: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the row: ");
+            scanner.next();
+        }
         int row = scanner.nextInt();
-        System.out.println("Insert the column: ");
+        System.out.println("insert the column: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the column: ");
+            scanner.next();
+        }
         int column = scanner.nextInt();
         return new Point(row, column);
     }
     //TODO :LORE sistemare i metodi della tui adattandoli alla nuova gameView
 
     private void showBoard(GameView model){
-        Board board = new Board();
+        Board board = new Board(model.getSelectablePoints());
         board.setBoard(model.getGameBoard());
         System.out.println("---GAME BOARD---");
-        board.printBoard();
+        board.printBoard(model.getSelectablePoints());
     }
 
     private void showShelf(GameView model){
