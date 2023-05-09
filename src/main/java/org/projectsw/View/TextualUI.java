@@ -72,7 +72,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 if (model.getCurrentPlayerName().equals(nickname))
                     showBoard(model);
             }
-            //TODO sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
+            //TODO LOLLO: sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
             //case UPDATED_SHELF -> showShelf(model);
             case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
