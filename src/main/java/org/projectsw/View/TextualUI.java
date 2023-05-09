@@ -89,10 +89,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                             insertNickname();
                         }
                         case INVALID_NUMBER_OF_PLAYERS -> {
-                            System.out.println("Number of players not valid. Try again...");
-                            Scanner scanner = new Scanner(System.in);
-                            number = Integer.valueOf(scanner.nextLine());
-                            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+                            retryNumberOfPlayers();
                         }
                         case LOBBY_CLOSED -> {
                             System.out.println("Sorry, the lobby is full. Exiting...");
@@ -200,14 +197,30 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
         if (clientUID == 1){
             System.out.println("Insert the number of players: ");
-            number = Integer.valueOf(scanner.nextLine());
+            try {
+                number = Integer.valueOf(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                retryNumberOfPlayers();
+            }
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
         }
         else {
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
         }
     }
+
+    private void retryNumberOfPlayers (){
+        System.out.println("Number of players not valid. Try again... ");
+        Scanner scanner = new Scanner(System.in);
+        try {
+            number = Integer.valueOf(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            retryNumberOfPlayers();
+        }
+        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+    }
 }
+
 
 
 
