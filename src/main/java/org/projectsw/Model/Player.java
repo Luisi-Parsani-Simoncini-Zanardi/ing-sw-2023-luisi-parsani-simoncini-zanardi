@@ -14,9 +14,9 @@ public class Player {
     private int points;
     private Shelf shelf;
     private PersonalGoal personalGoal;
-
     private ArrayList<Tile> temporaryTiles;
     private final ArrayList<Boolean> commonGoalRedeemed;
+    private boolean isActive;
 
     /**
      * Constructs a new player with the given nickname and position.
@@ -36,8 +36,16 @@ public class Player {
         commonGoalRedeemed = new ArrayList<>();
         commonGoalRedeemed.add(false);
         commonGoalRedeemed.add(false);
+        isActive=true;
     }
 
+    /**
+     * Returns true if the player is connected to the server, false otherwise.
+     * @return true if the player is connected to the server, false otherwise
+     */
+    public boolean getIsActive(){
+        return this.isActive;
+    }
     /**
      * Returns the position of the player.
      * @return the position of the player

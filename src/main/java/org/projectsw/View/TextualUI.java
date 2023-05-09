@@ -12,6 +12,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer number;
     private Point point;
     private String nickname;
+    private String string;
     private int clientUID = 0;
 
     private UIState getState(){
@@ -25,6 +26,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             lock.notifyAll();
         }
     }
+    public String getString(){return this.string;}
     public Integer getNumber(){
         return this.number;
     }
