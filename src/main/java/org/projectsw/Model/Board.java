@@ -6,10 +6,14 @@ import org.projectsw.Util.Observable;
 
 import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Exceptions.UnselectableTileException;
+import org.projectsw.View.ConsoleColors;
+
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Formatter;
 
 //TODO DAVIDE: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
 
@@ -355,19 +359,67 @@ public class Board extends Observable<Game.Event> {
     public void printBoard(ArrayList<Point> points){
         //ArrayList<Point> selectablePoints = getSelectablePoints();
         ArrayList<Point> selectablePoints = points;
-        for(int i=0;i<Config.boardLength;i++){
-            for(int j=0;j<Config.boardHeight;j++){
-                if(selectablePoints.contains(new Point(i,j))) System.out.print("[");
-                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
-                System.out.print(board[i][j].toString());
-                if(selectablePoints.contains(new Point(i,j))) System.out.print("]");
-                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
-                System.out.print("\t");
-
+        String printedString = "  ";
+        for(int i=0;i<Config.boardLength;i++) {
+            Integer integer = i+1;
+            printedString = printedString + "     " +  integer.toString() + "      ";
+        }
+        System.out.println(printedString);
+        for(int j=0;j<Config.boardHeight;j++){
+            Integer integer = j+1;
+            printedString = integer.toString() + " ";
+            for(int i=0;i<Config.boardLength;i++) {
+                printedString = printedString + printPadding(true, i,j) + stringColorAndMarker(i,j) + printPadding(false, i,j);
             }
-            System.out.print("\n");
+            System.out.println(printedString);
         }
         System.out.print("\n");
+    }
+
+    private String stringColorAndMarker(int i, int j){
+        String result = "";
+        TilesEnum type = board[i][j].getTile();
+        if(selectablePoints.contains(new Point(i,j))) result = result + "(";
+        if(temporaryPoints.contains(new Point(i,j))) result = result + "[";
+        if(!(selectablePoints.contains(new Point(i,j)) || temporaryPoints.contains(new Point(i,j)))) result = result;
+        switch (type){
+            case CATS -> result = result + ConsoleColors.CATS;
+            case TROPHIES -> result = result + ConsoleColors.TROPHIES;
+            case BOOKS -> result = result + ConsoleColors.BOOKS;
+            case FRAMES -> result = result + ConsoleColors.FRAMES;
+            case GAMES -> result = result + ConsoleColors.GAMES;
+            case PLANTS -> result = result + ConsoleColors.PLANTS;
+            case EMPTY -> result = result + ConsoleColors.EMPTY;
+            case UNUSED -> result = result + " ---------- ";
+
+        }
+        if(selectablePoints.contains(new Point(i,j))) result = result + ")";
+        if(temporaryPoints.contains(new Point(i,j))) result = result + "]";
+        return result;
+    }
+
+    private String printPadding (boolean left, int i, int j){
+        float padding = 12;
+        String paddingSpaces = "";
+        if (board[i][j].getTile() != TilesEnum.UNUSED)
+            padding -= board[i][j].getTile().toString().length();
+        else
+            return "";
+        if(selectablePoints.contains(new Point(i,j)) || temporaryPoints.contains(new Point(i,j))) padding -= 2;
+        if (left) {
+            for (int k=0; k<Math.ceil(padding/2); k++) {
+                if (k == 0) paddingSpaces = paddingSpaces + " ";
+                else paddingSpaces = paddingSpaces + "-";
+
+            }
+        } else {
+            for (int k=0; k<Math.floor(padding/2); k++) {
+                if (k == Math.floor(padding/2)-1) paddingSpaces = paddingSpaces + " ";
+                else paddingSpaces = paddingSpaces + "-";
+            }
+        }
+
+        return paddingSpaces;
     }
 
     /**

@@ -15,6 +15,7 @@ public class ConsoleColors {
     public static final String WHITE = "\033[0;37m";
     public static final String ORANGE = "\033[38;5;206m";
     public static final String MAGENTA = "\033[38;5;198m";
+    public static final String GREY = "\033[38;5;248m";
 
     // Bold Colors
     public static final String BLUE_BOLD = "\033[1;34m";
@@ -27,5 +28,6 @@ public class ConsoleColors {
     public static final String CATS = ConsoleColors.GREEN + "CATS" + ConsoleColors.RESET;
     public static final String BOOKS = ConsoleColors.YELLOW + "BOOKS" + ConsoleColors.RESET;
     public static final String FRAMES = ConsoleColors.BLUE + "FRAMES" + ConsoleColors.RESET;
+    public static final String EMPTY = ConsoleColors.GREY + "EMPTY" + ConsoleColors.RESET;
 
 }
