@@ -13,6 +13,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine();
+    private final Object lock = new Object();
 
     public ServerImpl() throws RemoteException {
         super();
@@ -58,11 +59,13 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void update(InputController input, UIEvent arg) throws RemoteException {
-        try {
-            this.controller.update(input, arg);
-        } catch (UnselectableTileException | NoMoreColumnSpaceException | MaxTemporaryTilesExceededException |
-                 UpdatingOnWrongPlayerException | UnselectableColumnException e) {
-            throw new RuntimeException("Something went wrong :(\nERROR: "+e.getMessage());
+        synchronized(lock){
+            try {
+                this.controller.update(input, arg);
+            } catch (UnselectableTileException | NoMoreColumnSpaceException | MaxTemporaryTilesExceededException |
+                     UpdatingOnWrongPlayerException | UnselectableColumnException e) {
+                throw new RuntimeException("Something went wrong :(\nERROR: " + e.getMessage());
+            }
         }
     }
 }
