@@ -10,6 +10,8 @@ import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Formatter;
 
 //TODO DAVIDE: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
 
@@ -355,18 +357,17 @@ public class Board extends Observable<Game.Event> {
     public void printBoard(ArrayList<Point> points){
         //ArrayList<Point> selectablePoints = getSelectablePoints();
         ArrayList<Point> selectablePoints = points;
-        for(int i=0;i<Config.boardLength;i++){
-            for(int j=0;j<Config.boardHeight;j++){
-                if(selectablePoints.contains(new Point(i,j))) System.out.print("[");
-                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
-                System.out.print(board[i][j].toString());
-                if(selectablePoints.contains(new Point(i,j))) System.out.print("]");
-                if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
-                System.out.print("\t");
-
-            }
-            System.out.print("\n");
+        Formatter f = new Formatter();
+        f.format("%1s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", " ", "1", "2", "3", "4", "5", "6", "7", "8", "9", "\n");
+        for(int j=0;j<Config.boardHeight;j++){
+                //if(selectablePoints.contains(new Point(i,j))) System.out.print("[");
+                //if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
+                f.format("%1s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", j+1, board[0][j].getTile().toString(), board[1][j].getTile().toString(), board[2][j].getTile().toString(), board[3][j].getTile().toString(), board[4][j].getTile().toString(), board[5][j].getTile().toString(), board[6][j].getTile().toString(), board[7][j].getTile().toString(), board[8][j].getTile().toString(), "\n");
+                //if(selectablePoints.contains(new Point(i,j))) System.out.print("]");
+                //if(temporaryPoints.contains(new Point(i,j))) System.out.print("*");
+                //System.out.print("\t");
         }
+        System.out.println(f);
         System.out.print("\n");
     }
 
