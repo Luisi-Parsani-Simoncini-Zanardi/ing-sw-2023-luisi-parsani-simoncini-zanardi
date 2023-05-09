@@ -12,6 +12,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer number;
     private Point point;
     private String nickname;
+    private String string;
     private int clientUID = 0;
 
     private UIState getState(){
@@ -25,6 +26,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             lock.notifyAll();
         }
     }
+    public String getString(){return this.string;}
     public Integer getNumber(){
         return this.number;
     }
@@ -85,38 +87,37 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
                         case INVALID_NAME -> {
-                            System.out.println("Nickname already in use. Try again...");
+                            System.out.println(ConsoleColors.RED + "Nickname already in use. Try again..." + ConsoleColors.RESET);
                             insertNickname();
                         }
                         case INVALID_NUMBER_OF_PLAYERS -> {
                             retryNumberOfPlayers();
                         }
                         case LOBBY_CLOSED -> {
-                            System.out.println("Sorry, the lobby is full. Exiting...");
+                            System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
                             System.exit(0);
                         }
                         case EMPTY_TEMPORARY_POINTS -> {
-                            System.out.println("Please select any tile");
+                            System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
                         }
                         case INVALID_RECIPIENT -> {
                             //TODO LUCA: gestire l'eccezione
                         }
                         case UNSELECTABLE_TILE -> {
-                            System.out.println("Invalid Tile. Try again...");
+                            System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
                             point = selectTilesInput();
                             setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
                         }
                         case UNSELECTABLE_COLUMN -> {
-                            System.out.println("Invalid Column. Try again...");
+                            System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
                             do{
                                 number = selectColumnInput();
                             }while(chooseColumn());
                             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
                         }
                         case INVALID_TEMPORARY_TILE -> {
-                            System.out.println("You don't have this tile. Try again...");
                             //nickname = selectTemporaryTile();
-                            number = selectTemporaryTile();
+                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
                             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
                         }
                     }
@@ -142,7 +143,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private Integer selectTemporaryTile(){
-        System.out.println("Wich tiles do you want to insert?");
+        System.out.println("Which tiles do you want to insert?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
             System.out.println("invalid input \ninsert the tile number: ");
@@ -161,7 +162,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         return scanner.nextInt();
     }
     private boolean chooseTiles(){
-        System.out.println("do you want to choose another tile?\n1: yes\n2: no");
+        System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt() == 1;
     }
@@ -227,7 +228,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void retryNumberOfPlayers (){
-        System.out.println("Number of players not valid. Try again... ");
+        System.out.println(ConsoleColors.RED + "Number of players not valid. Try again... " + ConsoleColors.RESET);
         Scanner scanner = new Scanner(System.in);
         try {
             number = Integer.valueOf(scanner.nextLine());
@@ -236,6 +237,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
         setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
     }
+
 }
 
 
