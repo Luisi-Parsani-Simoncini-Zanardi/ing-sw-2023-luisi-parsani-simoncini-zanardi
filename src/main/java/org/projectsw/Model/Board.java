@@ -362,15 +362,15 @@ public class Board extends Observable<Game.Event> {
         String printedString = "  ";
         for(int i=0;i<Config.boardLength;i++) {
             Integer integer = i+1;
-            printedString = printedString + integer.toString() + "           ";
+            printedString = printedString + "     " +  integer.toString() + "      ";
         }
         System.out.println(printedString);
         for(int j=0;j<Config.boardHeight;j++){
             Integer integer = j+1;
             printedString = integer.toString() + " ";
             for(int i=0;i<Config.boardLength;i++) {
-                printedString = printedString + stringColorAndMarker(i,j) + printPadding(i,j);
-        }
+                printedString = printedString + printPadding(true, i,j) + stringColorAndMarker(i,j) + printPadding(false, i,j);
+            }
             System.out.println(printedString);
         }
         System.out.print("\n");
@@ -381,6 +381,7 @@ public class Board extends Observable<Game.Event> {
         TilesEnum type = board[i][j].getTile();
         if(selectablePoints.contains(new Point(i,j))) result = result + "(";
         if(temporaryPoints.contains(new Point(i,j))) result = result + "[";
+        if(!(selectablePoints.contains(new Point(i,j)) || temporaryPoints.contains(new Point(i,j)))) result = result;
         switch (type){
             case CATS -> result = result + ConsoleColors.CATS;
             case TROPHIES -> result = result + ConsoleColors.TROPHIES;
@@ -389,7 +390,7 @@ public class Board extends Observable<Game.Event> {
             case GAMES -> result = result + ConsoleColors.GAMES;
             case PLANTS -> result = result + ConsoleColors.PLANTS;
             case EMPTY -> result = result + ConsoleColors.EMPTY;
-            case UNUSED -> result = result + "//////      ";
+            case UNUSED -> result = result + " ---------- ";
 
         }
         if(selectablePoints.contains(new Point(i,j))) result = result + ")";
@@ -397,17 +398,27 @@ public class Board extends Observable<Game.Event> {
         return result;
     }
 
-    private String printPadding (int i, int j){
-        int padding = 12;
+    private String printPadding (boolean left, int i, int j){
+        float padding = 12;
         String paddingSpaces = "";
         if (board[i][j].getTile() != TilesEnum.UNUSED)
             padding -= board[i][j].getTile().toString().length();
         else
             return "";
         if(selectablePoints.contains(new Point(i,j)) || temporaryPoints.contains(new Point(i,j))) padding -= 2;
-        for (int k=0; k<padding; k++) {
-            paddingSpaces = paddingSpaces + " ";
+        if (left) {
+            for (int k=0; k<Math.ceil(padding/2); k++) {
+                if (k == 0) paddingSpaces = paddingSpaces + " ";
+                else paddingSpaces = paddingSpaces + "-";
+
+            }
+        } else {
+            for (int k=0; k<Math.floor(padding/2); k++) {
+                if (k == Math.floor(padding/2)-1) paddingSpaces = paddingSpaces + " ";
+                else paddingSpaces = paddingSpaces + "-";
+            }
         }
+
         return paddingSpaces;
     }
 
