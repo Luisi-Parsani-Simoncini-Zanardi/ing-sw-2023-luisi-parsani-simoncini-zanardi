@@ -143,12 +143,20 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Integer selectTemporaryTile(){
         System.out.println("Wich tiles do you want to insert?");
         Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the tile number: ");
+            scanner.next();
+        }
         return scanner.nextInt();
     }
 
     private Integer selectColumnInput(){
         System.out.println("In which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the column: ");
+            scanner.next();
+        }
         return scanner.nextInt();
     }
     private boolean chooseTiles(){
@@ -159,8 +167,16 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("insert the row: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the row: ");
+            scanner.next();
+        }
         int row = scanner.nextInt();
         System.out.println("insert the column: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("invalid input \ninsert the column: ");
+            scanner.next();
+        }
         int column = scanner.nextInt();
         return new Point(row, column);
     }
