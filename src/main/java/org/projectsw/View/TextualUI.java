@@ -37,7 +37,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     @Override
     public void run() {
         insertNickname();
-        //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
+        //TODO: LORE sistemare i metodi della tui adattandoli alla nuova gameView
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 /*synchronized (lock){//forse va eliminata perchè superflua
@@ -167,7 +167,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         int column = scanner.nextInt();
         return new Point(row, column);
     }
-    //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
+    //TODO :LORE sistemare i metodi della tui adattandoli alla nuova gameView
 
     private void showBoard(GameView model){
         Board board = new Board();
