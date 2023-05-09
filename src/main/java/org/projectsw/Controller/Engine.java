@@ -213,6 +213,20 @@ public class Engine{
         }
     }
 
+    public void placeMultipleTiles(String order) {
+        if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
+            for (int i = 0; i < order.length(); i++) {
+                Integer tile = Character.getNumericValue(order.charAt(i));
+                try {
+                    placeTiles(tile);
+                } catch (UpdatingOnWrongPlayerException e) {
+                }
+            }
+        } else {
+            game.setError(ErrorName.INVALID_TEMPORARY_TILE);
+        }
+    }
+
     /**
      * Calls place tiles for all the indexes contained in order arrayList.
      * @param order the arraylist that contains all the indexes of the TemporaryTiles sorted by selection order.
@@ -494,6 +508,7 @@ public class Engine{
             case TILE_SELECTION -> selectTiles(input.getCoordinate());
             case CONFIRM_SELECTION -> confirmSelectedTiles();
             case COLUMN_SELECTION -> selectColumn(input.getIndex());
+            //case TILE_INSERTION -> placeMultipleTiles(input.getString());
             case TILE_INSERTION -> placeTiles(input.getIndex());
         }
     }

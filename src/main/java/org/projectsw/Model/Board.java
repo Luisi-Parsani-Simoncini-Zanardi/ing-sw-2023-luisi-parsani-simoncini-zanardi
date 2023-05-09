@@ -26,12 +26,12 @@ public class Board extends Observable<Game.Event> {
     /**
      * Constructs a Board full of unused tiles.
      */
-    public Board(){
+    public Board(ArrayList<Point> points){
         board = new Tile[Config.boardHeight][Config.boardLength];
         bag = new Bag();
         endGame = false;
         temporaryPoints = new ArrayList<>();
-        selectablePoints = new ArrayList<>();
+        selectablePoints = points;
         for(int i=0;i<Config.boardHeight;i++){
             for(int j=0;j<Config.boardLength;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
@@ -352,8 +352,9 @@ public class Board extends Observable<Game.Event> {
     /**
      * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
      */
-    public void printBoard(){
-        ArrayList<Point> selectablePoints = getSelectablePoints();
+    public void printBoard(ArrayList<Point> points){
+        //ArrayList<Point> selectablePoints = getSelectablePoints();
+        ArrayList<Point> selectablePoints = points;
         for(int i=0;i<Config.boardLength;i++){
             for(int j=0;j<Config.boardHeight;j++){
                 if(selectablePoints.contains(new Point(i,j))) System.out.print("[");

@@ -2,6 +2,7 @@ package org.projectsw.Model;
 
 import org.projectsw.Exceptions.ErrorName;
 
+import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ public class GameView implements Serializable {
     private final ArrayList<Message> chat;
     private final ErrorName error;
     private final int clientID;
+    private final ArrayList<Point> selectablePoints;
+    private final ArrayList<Tile> temporaryTiles;
 
     public GameView(int clientID){
         this.gameBoard =  new Tile[1][1];
@@ -25,6 +28,8 @@ public class GameView implements Serializable {
         this.chat = new ArrayList<>();
         this.error = ErrorName.NULL;
         this.clientID = clientID;
+        this.selectablePoints = new ArrayList<>();
+        this.temporaryTiles = new ArrayList<>();
     }
 
     public GameView(ErrorName error, int clientID){
@@ -36,6 +41,8 @@ public class GameView implements Serializable {
         this.chat = new ArrayList<>();
         this.error = error;
         this.clientID = clientID;
+        this.selectablePoints = new ArrayList<>();
+        this.temporaryTiles = new ArrayList<>();
     }
 
     public GameView(Game model){
@@ -45,6 +52,8 @@ public class GameView implements Serializable {
         this.chat = model.getChat().getChat();
         this.error = ErrorName.NULL;
         this.clientID = 0;
+        this.selectablePoints = model.getBoard().getSelectablePoints();
+        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
     }
 
     public Tile[][] getGameBoard(){return this.gameBoard;}
@@ -53,5 +62,6 @@ public class GameView implements Serializable {
     public ArrayList<Message> getChat(){return this.chat;}
     public ErrorName getError(){return this.error;}
     public int getClientID(){return this.clientID;}
+    public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
 
 }
