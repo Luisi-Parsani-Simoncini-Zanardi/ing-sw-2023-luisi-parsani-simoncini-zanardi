@@ -181,7 +181,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             scanner.next();
         }
         int column = scanner.nextInt();
-        return new Point(row-1, column-1);
+        return new Point(column-1, row-1);
     }
 
     private void showBoard(GameView model){

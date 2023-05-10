@@ -69,14 +69,14 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                         throw new RuntimeException("Cannot send the tile selection to the server" + e.getMessage());
                     }
                 }
-                case COLUMN_SELECTION -> {
+                case COLUMN_SELECTION,TILE_INSERTION -> {
                     try {
                         server.update(new InputController(tui.getClientUID(), tui.getNumber()), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("Cannot send the chat message to the server: " + e.getMessage());
                     }
                 }
-                case TILE_INSERTION, SAY_IN_CHAT -> {
+                case SAY_IN_CHAT -> {
                     try {
                         server.update(new InputController(tui.getClientUID(), tui.getString()), arg);
                     } catch (RemoteException e) {
