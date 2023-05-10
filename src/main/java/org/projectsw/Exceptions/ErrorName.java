@@ -1,7 +1,7 @@
 package org.projectsw.Exceptions;
 
 public enum ErrorName {
-    NULL,
+    NO_ERROR,
     EMPTY_TEMPORARY_POINTS,
     INVALID_NAME,
     INVALID_RECIPIENT,

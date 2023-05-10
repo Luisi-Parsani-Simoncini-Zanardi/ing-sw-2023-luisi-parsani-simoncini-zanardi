@@ -1,8 +1,5 @@
 package org.projectsw.Model;
-
-import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.InvalidRecipientException;
-
 import java.util.ArrayList;
 
 /**

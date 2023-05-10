@@ -8,7 +8,7 @@ import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
-import static org.projectsw.Exceptions.ErrorName.NULL;
+import static org.projectsw.Exceptions.ErrorName.NO_ERROR;
 
 //TODO DAVIDE: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza
 
@@ -38,7 +38,7 @@ public class Game extends Observable<Game.Event> {
     private ArrayList<CommonGoal> commonGoals;
 
     //attributes designed to send messages
-    private ErrorName error = NULL;
+    private ErrorName error = NO_ERROR;
     private int clientID = 0;
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
@@ -160,9 +160,11 @@ public class Game extends Observable<Game.Event> {
     /**
      * Sets the first player of the game.
      * @param firstPlayer the first player of the game
+     * @throws IllegalArgumentException if the position of the given player is different from 0
      */
     public void setFirstPlayer(Player firstPlayer){
-        this.firstPlayer=firstPlayer;
+        if(firstPlayer.getPosition() == 0) this.firstPlayer=firstPlayer;
+        else throw new IllegalArgumentException();
     }
 
     /**
@@ -178,6 +180,7 @@ public class Game extends Observable<Game.Event> {
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy
      * @throws InvalidNameException if the passed list has duplicated nicknames
+     * @throws IllegalArgumentException if the passed list has players with unsorted positions (thrown in addPlayer)
      */
     public void setPlayers(ArrayList<Player> players) throws InvalidNameException {
         for(Player player : players){
@@ -225,16 +228,16 @@ public class Game extends Observable<Game.Event> {
      * Adds a new player to the game.
      * @param player the player to be added
      * @throws InvalidNameException if the nickname is not unique
+     * @throws IllegalArgumentException if the passed player has a position that not corresponds to the next free one
+     *
      */
     public void addPlayer(Player player) throws InvalidNameException {
         int playerLength = getPlayers().size();
         for (int i = 0; i<playerLength; i++) {
-            if(getPlayers().get(i).getNickname().equals(player.getNickname()))
-            {
-                throw new InvalidNameException();
-            }
+            if(getPlayers().get(i).getNickname().equals(player.getNickname())) throw new InvalidNameException();
         }
-        players.add(player);
+        if(player.getPosition() == getPlayers().get(getPlayers().size() - 1).getPosition() + 1) players.add(player);
+        else throw new IllegalArgumentException();
     }
 
     /**

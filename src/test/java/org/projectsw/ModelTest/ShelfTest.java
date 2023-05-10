@@ -2,6 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Exceptions.UnselectableColumnException;
 import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import org.projectsw.Exceptions.UpdatingOnWrongPlayerException;
@@ -36,9 +37,8 @@ class ShelfTest {
         }
         assertNull(shelf1.getSelectedColumn());
         assertNull(shelf1.getSelectableColumns());
-
-        Player player = new Player("Davide",0);
-        Shelf shelf2 = new Shelf(player);
+        
+        Shelf shelf2 = new Shelf();
         assertEquals(6,shelf2.getShelf().length);
         assertEquals(5,shelf2.getShelf()[0].length);
         for(int i=0; i<6; i++){
@@ -217,7 +217,7 @@ class ShelfTest {
      * Tests if the setter, getter and cleaner of selectedColumn attribute works correctly.
      */
     @Test
-    void setGetAndCleanSelectedColumnTest() {
+    void setGetAndCleanSelectedColumnTest() throws UnselectableColumnException {
         Shelf shelf = new Shelf();
         Integer selectedColumn = 0;
         assertNull(shelf.getSelectedColumn());
@@ -294,7 +294,7 @@ class ShelfTest {
                     //System.out.println("Correct");
                 }
             }
-            shelf = new Shelf(player);
+            shelf = new Shelf();
             player.clearTemporaryTiles();
         }
     }
