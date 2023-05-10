@@ -38,6 +38,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
     @Override
     public void run() {
+        displayLogo();
         insertNickname();
         //TODO: LORE sistemare i metodi della tui adattandoli alla nuova gameView
         while(getState() != UIState.GAME_ENDING){
@@ -133,7 +134,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("Are you sure?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
-        //TODO non capisco il perchè di questo if (continuo a chiedere e quando ho finito notifico)
+        //TODO: non capisco il perchè di questo if (continuo a chiedere e quando ho finito notifico)
         /*if(choice == 2){
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
         }*/
@@ -141,10 +142,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private Integer selectTemporaryTile(){
-        System.out.println("Which tiles do you want to insert?");
+        System.out.println("Which tile do you want to insert?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
-            System.out.println("invalid input \ninsert the tile number: ");
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the tile number: ");
             scanner.next();
         }
         return scanner.nextInt();
@@ -154,31 +155,33 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("In which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
-            System.out.println("invalid input \ninsert the column: ");
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
             scanner.next();
         }
-        return scanner.nextInt();
+        return scanner.nextInt()-1;
     }
     private boolean chooseTiles(){
+        System.out.println("You have selected:");
+        //stampare le temp tiles
         System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt() == 1;
     }
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("insert the row: ");
+        System.out.println("Insert the row: ");
         while (!scanner.hasNextInt()) {
-            System.out.println("invalid input \ninsert the row: ");
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the row: ");
             scanner.next();
         }
         int row = scanner.nextInt();
-        System.out.println("insert the column: ");
+        System.out.println("Insert the column: ");
         while (!scanner.hasNextInt()) {
-            System.out.println("invalid input \ninsert the column: ");
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
             scanner.next();
         }
         int column = scanner.nextInt();
-        return new Point(row, column);
+        return new Point(row-1, column-1);
     }
 
     private void showBoard(GameView model){
@@ -233,6 +236,17 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             retryNumberOfPlayers();
         }
         setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+    }
+
+    public void displayLogo(){
+        System.out.println(ConsoleColors.PURPLE_BOLD + "  __  __" + ConsoleColors.BLUE_BOLD + "        _____ _          _  __ _      ");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " |  \\/  |" + ConsoleColors.BLUE_BOLD + "      / ____| |        | |/ _(_)     ");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " | \\  / |_   _" + ConsoleColors.BLUE_BOLD + "| (___ | |__   ___| | |_ _  ___ ");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " | |\\/| | | | |" + ConsoleColors.BLUE_BOLD + "\\___ \\| '_ \\ / _ \\ |  _| |/ _ \\");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " | |  | | |_| |" + ConsoleColors.BLUE_BOLD + "____) | | | |  __/ | | | |  __/");
+        System.out.println(ConsoleColors.PURPLE_BOLD + " |_|  |_|\\__, |" + ConsoleColors.BLUE_BOLD + "_____/|_| |_|\\___|_|_| |_|\\___|");
+        System.out.println(ConsoleColors.PURPLE_BOLD + "          __/ |                               " );
+        System.out.println("         |___/                                " + ConsoleColors.RESET);
     }
 
 }

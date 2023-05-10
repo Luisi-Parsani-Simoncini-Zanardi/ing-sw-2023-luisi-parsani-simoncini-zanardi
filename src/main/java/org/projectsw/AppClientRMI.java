@@ -1,5 +1,6 @@
 package org.projectsw;
 
+import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.ClientImpl;
 import org.projectsw.Distributed.Server;
 
@@ -13,7 +14,12 @@ public class AppClientRMI {
         Registry registry = LocateRegistry.getRegistry();
         try {
             Server server = (Server) registry.lookup("server");
-            new ClientImpl(server);
+            ClientImpl client = new ClientImpl(server);
+            if ((args.length == 0)||(args[0]!="gui")) { //on a invalid parameter sets tui as default
+                client.setTui(server);
+            } else {
+                client.setTui(server);
+            }
         }catch(NotBoundException e){
             throw new NotBoundException("Server not found");
         }
