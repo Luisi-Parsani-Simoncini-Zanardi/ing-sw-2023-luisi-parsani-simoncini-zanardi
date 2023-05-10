@@ -356,9 +356,8 @@ public class Board extends Observable<Game.Event> {
     /**
      * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
      */
-    public void printBoard(ArrayList<Point> points){
+    public void printBoard(){
         //ArrayList<Point> selectablePoints = getSelectablePoints();
-        ArrayList<Point> selectablePoints = points;
         String printedString = "  ";
         for(int i=0;i<Config.boardLength;i++) {
             Integer integer = i+1;
