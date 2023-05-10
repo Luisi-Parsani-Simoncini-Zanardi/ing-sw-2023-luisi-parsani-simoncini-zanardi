@@ -68,8 +68,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
     public void update(GameView model, Game.Event arg){
         switch(arg){
-            //TODO LORE: sistemare i metodi della tui adattandoli alla nuova gameView
-
             case UPDATED_BOARD -> {
                 if (model.getCurrentPlayerName().equals(nickname))
                     showBoard(model);
@@ -182,7 +180,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         int column = scanner.nextInt();
         return new Point(row, column);
     }
-    //TODO :LORE sistemare i metodi della tui adattandoli alla nuova gameView
 
     private void showBoard(GameView model){
         Board board = new Board(model.getSelectablePoints());

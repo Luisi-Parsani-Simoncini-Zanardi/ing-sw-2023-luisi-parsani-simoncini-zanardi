@@ -38,7 +38,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         try {
             server.register(this);
         } catch (RemoteException e) {
-            throw new RuntimeException("cannot register client on server" + e.getMessage());//TODO: gestire esplicitamente
+            throw new RuntimeException("Cannot register client on server" + e.getMessage());
         }
         chooseUI();
         if(tui != null)
@@ -48,42 +48,42 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                         try {
                             server.update(new InputController(tui.getClientUID(), tui.getPoint()), arg);
                         } catch (RemoteException e) {
-                            throw new RuntimeException("cannot send the client input" + e.getMessage());//TODO: gestire esplicitamente
+                            throw new RuntimeException("Cannot send the tile selection to the server" + e.getMessage());
                         }
                     }
                     case COLUMN_SELECTION -> {
                         try {
                             server.update(new InputController(tui.getClientUID(), tui.getNumber()), arg);
                         } catch (RemoteException e) {
-                            throw new RuntimeException("cannot send the chat message to the server: " + e.getMessage());//TODO: gestire esplicitamente
+                            throw new RuntimeException("Cannot send the chat message to the server: " + e.getMessage());
                         }
                     }
                     case TILE_INSERTION, SAY_IN_CHAT -> {
                         try {
                             server.update(new InputController(tui.getClientUID(), tui.getString()), arg);
                         } catch (RemoteException e) {
-                            throw new RuntimeException("cannot send the chat message to the server: " + e.getMessage());//TODO: gestire esplicitamente
+                            throw new RuntimeException("Cannot send the message to the server: " + e.getMessage());
                         }
                     }
                     case CHOOSE_NICKNAME -> {
                         try {
                             server.update(new InputController(tui.getClientUID(), tui.getNickname()), arg);
                         } catch (RemoteException e) {
-                            throw new RuntimeException("cannot send the client input to the server: " + e.getMessage());//TODO: gestire esplicitamente
+                            throw new RuntimeException("Cannot send the client nickname to the server: " + e.getMessage());
                         }
                     }
                     case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> {
                         try {
                             server.update(new InputController(tui.getClientUID(), tui.getNumber(), tui.getNickname()), arg);
                         } catch (RemoteException e) {
-                            throw new RuntimeException("cannot send the client input to the server: " + e.getMessage());//TODO: gestire esplicitamente
+                            throw new RuntimeException("Cannot send the client nickname and the number of players to the server: " + e.getMessage());
                         }
                     }
                     default -> {
                         try {
                             server.update(new InputController(tui.getClientUID()), arg);
                         } catch (RemoteException e) {
-                            throw new RuntimeException("cannot send the client input to the server: " + e.getMessage());//TODO: gestire esplicitamente
+                            throw new RuntimeException("Cannot send the client input to the server: " + e.getMessage());
                         }
                     }
             }
@@ -94,7 +94,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                     server.update(new InputController(tui.getClientUID(), tui.getPoint(),tui.getNumber(),tui.getNickname()), arg);
                     cambiare una volta finita GUI
                 } catch (RemoteException e) {
-                    throw new RuntimeException("cannot send the client input" + e.getMessage());//TODO: gestire esplicitamente
+                    throw new RuntimeException("Cannot send the client input" + e.getMessage());
                 }*/
             });
         runView();

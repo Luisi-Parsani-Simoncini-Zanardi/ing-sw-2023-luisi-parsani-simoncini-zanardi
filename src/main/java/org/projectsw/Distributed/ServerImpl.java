@@ -13,6 +13,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine();
+    private final Object lock = new Object();
 
     public ServerImpl() throws RemoteException {
         super();
@@ -26,7 +27,8 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void register(Client client) throws RemoteException {
-        //TODO: gestire la possibile reconnect se un savegame è presente
+        //TODO: gestire la possibile reconnect
+        //TODO: gestire se il server crasha
         this.controller.getClients().add(client);
         this.controller.getGame().addObserver((o, arg) -> {
             switch (arg){
@@ -34,21 +36,21 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                     try {
                         client.update(new GameView(this.controller.getGame().getClientID()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
+                        throw new RuntimeException("cannot update the view " + e.getMessage());
                     }
                 }
                 case ERROR -> {
                     try {
                         client.update(new GameView(this.controller.getGame().getError(), this.controller.getGame().getClientID()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
+                        throw new RuntimeException("cannot update the view " + e.getMessage());
                     }
                 }
                 default -> {
                     try {
                         client.update(new GameView(this.controller.getGame()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("cannot update the view " + e.getMessage());//TODO: gestire esplicitamente
+                        throw new RuntimeException("cannot update the view " + e.getMessage());
                     }
                 }
             }
@@ -57,18 +59,13 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void update(InputController input, UIEvent arg) throws RemoteException {
-        try {
-            this.controller.update(input, arg);
-        } catch (UnselectableTileException e) {
-            throw new RuntimeException(e);
-        } catch (NoMoreColumnSpaceException e) {
-            throw new RuntimeException(e);
-        } catch (MaxTemporaryTilesExceededException e) {
-            throw new RuntimeException(e);
-        } catch (UpdatingOnWrongPlayerException e) {
-            throw new RuntimeException(e);
-        } catch (UnselectableColumnException e) {
-            throw new RuntimeException(e);
+        synchronized(lock){
+            try {
+                this.controller.update(input, arg);
+            } catch (UnselectableTileException | NoMoreColumnSpaceException | MaxTemporaryTilesExceededException |
+                     UpdatingOnWrongPlayerException | UnselectableColumnException e) {
+                throw new RuntimeException("Something went wrong :(\nERROR: " + e.getMessage());
+            }
         }
     }
 }
