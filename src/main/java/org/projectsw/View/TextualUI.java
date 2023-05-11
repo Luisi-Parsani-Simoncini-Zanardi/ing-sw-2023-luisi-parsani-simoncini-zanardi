@@ -15,6 +15,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private String nickname;
     private String string;
     private Boolean noMoreSelectableTiles = true;
+    private Boolean noMoreTemporaryTiles = true;
     private int clientUID = 0;
 
     private UIState getState(){
@@ -65,8 +66,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }while(chooseColumn());
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
 
-            number = selectTemporaryTile();
+            do {
+                number = selectTemporaryTile();
             setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+            }while(noMoreTemporaryTiles);
+            noMoreTemporaryTiles = true;
             setState(UIState.OPPONENT_TURN);
         }
     }
@@ -83,17 +87,19 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                     clientUID = model.getClientID();
             }
             case UPDATED_TEMPORARY_TILES -> {
-                System.out.println("You have selected: ");
-                ArrayList<Tile> tiles = model.getTemporaryTiles();
-                for (int i=0; i<tiles.size(); i++){
-                    int integer = i+1;
-                    switch (tiles.get(i).getTile()){
-                        case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
-                        case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
-                        case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
-                        case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
-                        case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
-                        case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
+                if (model.getCurrentPlayerName().equals(nickname)) {
+                    System.out.println("You have selected: ");
+                    ArrayList<Tile> tiles = model.getTemporaryTiles();
+                    for (int i = 0; i < tiles.size(); i++) {
+                        int integer = i + 1;
+                        switch (tiles.get(i).getTile()) {
+                            case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
+                            case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
+                            case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
+                            case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
+                            case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
+                            case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
+                        }
                     }
                 }
             }
@@ -146,6 +152,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }
             case SELECTION_NOT_POSSIBLE -> {
                 noMoreSelectableTiles = false;
+            }
+            case EMPTY_TEMPORARY_TILES -> {
+                noMoreTemporaryTiles = false;
             }
         }
     }

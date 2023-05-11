@@ -28,6 +28,7 @@ public class Game extends Observable<Game.Event> {
         ERROR,
         NEXT_PLAYER_TURN_NOTIFY,
         SELECTION_NOT_POSSIBLE,
+        EMPTY_TEMPORARY_TILES,
     }
 
     private GameStates gameState;
@@ -342,4 +343,5 @@ public class Game extends Observable<Game.Event> {
         setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
     public void noMoreTileSelectables() { setChangedAndNotifyObservers(Event.SELECTION_NOT_POSSIBLE);}
+    public void noMoreTemporaryTiles() { setChangedAndNotifyObservers(Event.EMPTY_TEMPORARY_TILES);}
 }
