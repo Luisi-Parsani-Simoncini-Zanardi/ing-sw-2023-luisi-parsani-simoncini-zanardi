@@ -57,6 +57,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 point = selectTilesInput();
                 setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
             }while(noMoreSelectableTiles && chooseTiles());
+            noMoreSelectableTiles = true;
             setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
 
             do{
