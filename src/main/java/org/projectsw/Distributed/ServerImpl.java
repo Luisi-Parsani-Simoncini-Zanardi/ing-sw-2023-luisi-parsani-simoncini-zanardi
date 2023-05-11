@@ -34,25 +34,25 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         //TODO: gestire la possibile reconnect
         //TODO: gestire se il server crasha
         this.controller.getClients().add(client);
-        this.controller.getGame().addObserver((o, arg) -> {
+        this.model.addObserver((o, arg) -> {
             switch (arg){
                 case SET_CLIENT_ID_RETURN -> {
                     try {
-                        client.update(new GameView(this.controller.getGame().getClientID()), arg);
+                        client.update(new GameView(this.model.getClientID()), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("cannot update the view " + e.getMessage());
                     }
                 }
                 case ERROR -> {
                     try {
-                        client.update(new GameView(this.controller.getGame().getError(), this.controller.getGame().getClientID()), arg);
+                        client.update(new GameView(this.model.getError(), this.model.getClientID()), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("cannot update the view " + e.getMessage());
                     }
                 }
                 default -> {
                     try {
-                        client.update(new GameView(this.controller.getGame()), arg);
+                        client.update(new GameView(this.model), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("cannot update the view " + e.getMessage());
                     }
