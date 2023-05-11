@@ -69,7 +69,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                         throw new RuntimeException("Cannot send the tile selection to the server" + e.getMessage());
                     }
                 }
-                case COLUMN_SELECTION,TILE_INSERTION -> {
+                case COLUMN_SELECTION, TILE_INSERTION, CHOOSE_PLAYER_NUMBER -> {
                     try {
                         server.update(new InputController(tui.getClientUID(), tui.getNumber()), arg);
                     } catch (RemoteException e) {
@@ -88,13 +88,6 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                         server.update(new InputController(tui.getClientUID(), tui.getNickname()), arg);
                     } catch (RemoteException e) {
                         throw new RuntimeException("Cannot send the client nickname to the server: " + e.getMessage());
-                    }
-                }
-                case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> {
-                    try {
-                        server.update(new InputController(tui.getClientUID(), tui.getNumber(), tui.getNickname()), arg);
-                    } catch (RemoteException e) {
-                        throw new RuntimeException("Cannot send the client nickname and the number of players to the server: " + e.getMessage());
                     }
                 }
                 default -> {

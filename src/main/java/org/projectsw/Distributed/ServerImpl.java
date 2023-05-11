@@ -43,7 +43,14 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                         throw new RuntimeException("cannot update the view " + e.getMessage());
                     }
                 }
-                case ERROR -> {
+                case SET_NUMBER_OF_PLAYERS -> {
+                    try {
+                        client.update(new GameView(this.model.getClientID(), this.model.getCurrentPlayer().getNickname()), arg);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("cannot update the view " + e.getMessage());
+                    }
+                }
+                    case ERROR -> {
                     try {
                         client.update(new GameView(this.model.getError(), this.model.getClientID()), arg);
                     } catch (RemoteException e) {

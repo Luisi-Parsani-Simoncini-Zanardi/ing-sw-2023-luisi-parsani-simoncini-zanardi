@@ -1,5 +1,6 @@
 package org.projectsw.View;
 import org.projectsw.Model.*;
+import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 
 import java.awt.*;
@@ -41,7 +42,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public void run() {
         displayLogo();
         insertNickname();
-        //TODO: LORE sistemare i metodi della tui adattandoli alla nuova gameView
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 /*synchronized (lock){//forse va eliminata perchè superflua
@@ -68,6 +68,16 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             setState(UIState.OPPONENT_TURN);
         }
     }
+    private void numberOfPlayers(){
+        Scanner scanner = new Scanner(System.in);
+        do{
+            System.out.println("Choose a number of players: ");
+            number = scanner.nextInt();
+            if(number< Config.minPlayers||number>Config.maxPlayers)
+                System.out.println(ConsoleColors.RED + "Number of players not valid. Try again... " + ConsoleColors.RESET);
+        }while(number<Config.minPlayers||number>Config.maxPlayers);
+        setChangedAndNotifyObservers(UIEvent.CHOOSE_PLAYER_NUMBER);
+    }
     public void update(GameView model, Game.Event arg){
         switch(arg){
             case UPDATED_BOARD -> {
@@ -79,6 +89,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
                     clientUID = model.getClientID();
+            }
+            case SET_NUMBER_OF_PLAYERS -> {
+                if(model.getCurrentPlayerName().equals(nickname)) {
+                    this.numberOfPlayers();
+                }
             }
             case UPDATED_TEMPORARY_TILES -> {
                 System.out.println("You have selected: ");
@@ -103,9 +118,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                         case INVALID_NAME -> {
                             System.out.println(ConsoleColors.RED + "Nickname already in use. Try again..." + ConsoleColors.RESET);
                             insertNickname();
-                        }
-                        case INVALID_NUMBER_OF_PLAYERS -> {
-                            retryNumberOfPlayers();
                         }
                         case LOBBY_CLOSED -> {
                             System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
@@ -228,29 +240,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         nickname = scanner.nextLine();
         point = null;
         setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
-        if (clientUID == 1){
-            System.out.println("Insert the number of players: ");
-            try {
-                number = Integer.valueOf(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                retryNumberOfPlayers();
-            }
-            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
-        }
-        else {
-            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
-        }
-    }
-
-    private void retryNumberOfPlayers (){
-        System.out.println(ConsoleColors.RED + "Number of players not valid. Try again... " + ConsoleColors.RESET);
-        Scanner scanner = new Scanner(System.in);
-        try {
-            number = Integer.valueOf(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            retryNumberOfPlayers();
-        }
-        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
     }
 
     public void displayLogo(){

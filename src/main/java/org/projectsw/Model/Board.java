@@ -49,8 +49,7 @@ public class Board extends Observable<Game.Event> {
      * @param playersNumber the number of players playing the game
      * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
      */
-    public Board(int playersNumber) throws InvalidNumberOfPlayersException {
-        if(playersNumber<Config.minPlayers || playersNumber>Config.maxPlayers) throw new InvalidNumberOfPlayersException("Number of players not valid");
+    public Board(int playersNumber) {
         try{
             Gson gson = new Gson();
             String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);

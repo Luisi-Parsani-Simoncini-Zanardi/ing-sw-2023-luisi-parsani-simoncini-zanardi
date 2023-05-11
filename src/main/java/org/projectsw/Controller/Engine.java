@@ -21,6 +21,8 @@ public class Engine{
     private final ArrayList<Client> clients = new ArrayList<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
+    private boolean chooseNumberOfPlayers=false;
+    private final Object lock = new Object();
 
     /**
      * get the Clients
@@ -28,6 +30,7 @@ public class Engine{
      */
     public ArrayList<Client> getClients() { return this.clients; }
 
+    //TODO: getGame eliminabile usato solo nei test
     /**
      * get the game on which the controller is running
      * @return current game
@@ -43,22 +46,6 @@ public class Engine{
      * @return saveGameStatus of the game
      */
     public SaveGameStatus getSaveGameStatus() { return this.saveGameStatus; }
-
-    /**
-     * Creates a player object with position 0 and create a new game using the game constructor (the one that also sets the first player).
-     * The game is initialized using the first player and the number of players selected, the state of the game at the end of the
-     * execution is LOBBY.
-     * @param nicknameFirstPlayer the nickname of the first player joining in the game.
-     * @param numberOfPlayers the number of players selected by the first player.
-     */
-    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) {
-            Player firstPlayer = new Player(nicknameFirstPlayer,0);
-        try {
-            game.initializeGame(firstPlayer,numberOfPlayers);
-        } catch (InvalidNumberOfPlayersException e) {
-            game.setError(ErrorName.INVALID_NUMBER_OF_PLAYERS);
-        }
-    }
 
     /**
      * If the game state isn't LOBBY the join request is negated. If the game state is LOBBY it creates a new
@@ -78,6 +65,14 @@ public class Engine{
             } catch (InvalidNameException e) {
                 game.setError(ErrorName.INVALID_NAME);
             }
+            synchronized(lock) {
+                if (!chooseNumberOfPlayers) {
+                    chooseNumberOfPlayers = true;
+                    game.setFirstPlayer(newPlayer);
+                    game.setCurrentPlayerLobby(newPlayer);
+                    game.askNumberoOfPlayers();
+                }
+            }
             if (game.getPlayers().size() == game.getNumberOfPlayers()) {
                 startGame();
             }
@@ -86,6 +81,8 @@ public class Engine{
             game.setError(ErrorName.LOBBY_CLOSED);
         }
     }
+
+
 
     /**
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
@@ -499,20 +496,27 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
+    /**
+     * Initialize the number of players
+     * @param numberOfPlayers is the number of players
+     */
+    private void numberOfPlayers(int numberOfPlayers){
+        game.setNumberOfPlayers(numberOfPlayers);
+        game.initializeGame();
+    }
     public void update(InputController input, UIEvent UiEvent) throws UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException, UnselectableColumnException {
         game.setClientID(input.getClientID());
-        switch (UiEvent){
+        switch (UiEvent) {
             case SET_CLIENT_ID -> {
-                if (game.getPlayers() == null){
-                game.initializeClientID(1);
-                } else game.initializeClientID(game.getPlayers().size()+1);
+                if (game.getPlayers() == null) {//TODO: cambiamenti fatti
+                    game.initializeClientID(1);
+                } else game.initializeClientID(game.getPlayers().size() + 1);
             }
             case CHOOSE_NICKNAME -> playerJoin(input.getString());
-            case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> firstPlayerJoin(input.getString(), input.getIndex());
+            case CHOOSE_PLAYER_NUMBER -> numberOfPlayers(input.getIndex());
             case TILE_SELECTION -> selectTiles(input.getCoordinate());
             case CONFIRM_SELECTION -> confirmSelectedTiles();
             case COLUMN_SELECTION -> selectColumn(input.getIndex());
-            //case TILE_INSERTION -> placeMultipleTiles(input.getString());
             case TILE_INSERTION -> placeTiles(input.getIndex());
         }
     }

@@ -23,6 +23,7 @@ public class Game extends Observable<Game.Event> {
         UPDATED_SHELF,
         UPDATED_TEMPORARY_TILES,
         SET_CLIENT_ID_RETURN,
+        SET_NUMBER_OF_PLAYERS,
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR,
@@ -41,37 +42,41 @@ public class Game extends Observable<Game.Event> {
     //attributes designed to send messages
     private ErrorName error = NO_ERROR;
     private int clientID = 0;
+
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
      * a full-unused board and an empty commonGals list. First and current player are not set yet.
      * This is a silly constructor, so the number of players is set to 0;
      */
     public Game(){
-        gameState = GameStates.SILLY;
+        gameState = GameStates.LOBBY;
+        chat = new Chat();
+        players = new ArrayList<>();
+        commonGoals = new ArrayList<>();
+        try {
+            commonGoals = this.randomCommonGoals();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
      * Creates a new instance of a Game in LOBBY state, creating it with a new chat, an empty player list,
      * a board set for the right number of players, the correct number of players and an empty commonGals list.
      * Also sets the given first player to current and first player.
-     * @param firstPlayer the first player joining the game.
-     * @param numberOfPlayers the number of players selected by the first player.
      * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
      *                                  between 2 and 4
      */
-    public void initializeGame(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
-        gameState = GameStates.LOBBY;
-        board = new Board(numberOfPlayers);
-        this.numberOfPlayers = numberOfPlayers;
-        chat = new Chat();
-        players = new ArrayList<>();
-        players.add(firstPlayer);
-        this.firstPlayer = firstPlayer;
-        this.currentPlayer = firstPlayer;
-        commonGoals = new ArrayList<>();
-        try {
-            commonGoals = this.randomCommonGoals();
-        }catch(Exception e){System.err.println(e.getMessage());}
+    public void initializeGame() {
+        board = new Board(this.numberOfPlayers);
+    }
+
+    /**
+     * Sets the number of players
+     * @param numPlayers is the number of player
+     */
+    public void setNumberOfPlayers(int numPlayers){
+            this.numberOfPlayers= numPlayers;
     }
 
     /**
@@ -84,7 +89,9 @@ public class Game extends Observable<Game.Event> {
      * Returns the number of players of the game.
      * @return the number of players of the game.
      */
-    public int getNumberOfPlayers() { return numberOfPlayers; }
+    public int getNumberOfPlayers(){
+            return numberOfPlayers;
+    }
 
     /**
      * Returns the first player of the game.
@@ -177,6 +184,10 @@ public class Game extends Observable<Game.Event> {
         setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
     }
 
+    public void setCurrentPlayerLobby(Player currentPlayer){
+        this.currentPlayer=currentPlayer;
+    }
+
     /**
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy
@@ -224,6 +235,9 @@ public class Game extends Observable<Game.Event> {
         this.clientID = clientID;
     }
 
+    public void askNumberoOfPlayers(){
+        setChangedAndNotifyObservers(Event.SET_NUMBER_OF_PLAYERS);
+    }
 
     /**
      * Adds a new player to the game.
@@ -237,8 +251,7 @@ public class Game extends Observable<Game.Event> {
         for (int i = 0; i<playerLength; i++) {
             if(getPlayers().get(i).getNickname().equals(player.getNickname())) throw new InvalidNameException();
         }
-        if(player.getPosition() == getPlayers().get(getPlayers().size() - 1).getPosition() + 1) players.add(player);
-        else throw new IllegalArgumentException();
+        players.add(player);
     }
 
     /**
