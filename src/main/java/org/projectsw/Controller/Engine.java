@@ -109,12 +109,12 @@ public class Engine{
                 if (selectionPossible()) {
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     game.finishedUpdateBoard();
+                    if (game.getBoard().getSelectablePoints().size() == 0)
+                        game.noMoreTileSelectables();
                 }
             } catch (UnselectableTileException e){
                 game.setError(ErrorName.UNSELECTABLE_TILE);
-            } /*catch (NoMoreColumnSpaceException e){
-                game.setError(ErrorName.NO_MORE_COLUMN_SPACE);
-            }*/
+            }
         }
     }
 

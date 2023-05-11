@@ -26,7 +26,8 @@ public class Game extends Observable<Game.Event> {
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR,
-        NEXT_PLAYER_TURN_NOTIFY
+        NEXT_PLAYER_TURN_NOTIFY,
+        SELECTION_NOT_POSSIBLE,
     }
 
     private GameStates gameState;
@@ -340,4 +341,5 @@ public class Game extends Observable<Game.Event> {
     public void finishedUpdateShelf() {
         setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
+    public void noMoreTileSelectables() { setChangedAndNotifyObservers(Event.SELECTION_NOT_POSSIBLE);}
 }
