@@ -3,6 +3,7 @@ import org.projectsw.Model.*;
 import org.projectsw.Util.Observable;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextualUI extends Observable<UIEvent> implements Runnable{
@@ -79,7 +80,20 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 if (clientUID==0)
                     clientUID = model.getClientID();
             }
-
+            case UPDATED_TEMPORARY_TILES -> {
+                System.out.println("You have selected: ");
+                ArrayList<Tile> tiles = model.getTemporaryTiles();
+                for (Tile tile : tiles){
+                    switch (tile.getTile()){
+                        case CATS -> System.out.println(ConsoleColors.CATS);
+                        case TROPHIES -> System.out.println(ConsoleColors.TROPHIES);
+                        case BOOKS -> System.out.println(ConsoleColors.BOOKS);
+                        case FRAMES -> System.out.println(ConsoleColors.FRAMES);
+                        case GAMES -> System.out.println(ConsoleColors.GAMES);
+                        case PLANTS -> System.out.println(ConsoleColors.PLANTS);
+                    }
+                }
+            }
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);
             case ERROR ->  {
@@ -185,7 +199,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void showBoard(GameView model){
-        Board board = new Board(model.getSelectablePoints());
+        Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
         board.printBoard();
