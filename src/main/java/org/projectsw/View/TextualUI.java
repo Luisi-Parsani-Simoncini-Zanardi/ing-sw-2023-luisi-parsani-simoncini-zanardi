@@ -14,6 +14,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Point point;
     private String nickname;
     private String string;
+    private Boolean noMoreSelectableTiles = true;
     private int clientUID = 0;
 
     private UIState getState(){
@@ -55,7 +56,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             do{
                 point = selectTilesInput();
                 setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
-            }while(chooseTiles());
+            }while(noMoreSelectableTiles && chooseTiles());
+            noMoreSelectableTiles = true;
             setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
 
             do{
@@ -141,6 +143,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 if (model.getCurrentPlayerName().equals(nickname)) {
                     setState(UIState.YOUR_TURN);
                 }
+            }
+            case SELECTION_NOT_POSSIBLE -> {
+                noMoreSelectableTiles = false;
             }
         }
     }
