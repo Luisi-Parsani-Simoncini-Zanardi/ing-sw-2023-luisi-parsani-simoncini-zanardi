@@ -2,6 +2,7 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.*;
+import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.UIEvent;
@@ -13,15 +14,19 @@ import java.rmi.server.UnicastRemoteObject;
 public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine();
+    private final Game model = new Game();
 
     public ServerImpl() throws RemoteException {
         super();
+        controller.setGame(model);
     }
     public ServerImpl(int port) throws RemoteException {
         super(port);
+        controller.setGame(model);
     }
     public ServerImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
+        controller.setGame(model);
     }
 
     @Override

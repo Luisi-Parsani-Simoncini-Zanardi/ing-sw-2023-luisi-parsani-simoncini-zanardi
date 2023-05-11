@@ -19,7 +19,7 @@ import static org.projectsw.Model.TilesEnum.UNUSED;
  */
 public class Engine{
     private final ArrayList<Client> clients = new ArrayList<>();
-    private Game game = new Game();
+    private Game game;
     private SaveGameStatus saveGameStatus;
 
     /**
@@ -34,6 +34,9 @@ public class Engine{
      */
     public Game getGame() { return this.game;}
 
+    public void setGame(Game activeGame){
+        this.game=activeGame;
+    }
 
     /**
      * get the saveGameStatus of the game
