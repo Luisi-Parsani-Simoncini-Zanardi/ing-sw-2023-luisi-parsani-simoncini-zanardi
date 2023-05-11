@@ -21,11 +21,12 @@ public class Game extends Observable<Game.Event> {
     public enum Event{
         UPDATED_BOARD,
         UPDATED_SHELF,
+        UPDATED_TEMPORARY_TILES,
         SET_CLIENT_ID_RETURN,
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR,
-        NEXT_PLAYER_TURN_NOTIFY,
+        NEXT_PLAYER_TURN_NOTIFY
     }
 
     private GameStates gameState;

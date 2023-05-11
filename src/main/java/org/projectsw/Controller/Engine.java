@@ -150,6 +150,7 @@ public class Engine{
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
+        game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
     }
 
     /**

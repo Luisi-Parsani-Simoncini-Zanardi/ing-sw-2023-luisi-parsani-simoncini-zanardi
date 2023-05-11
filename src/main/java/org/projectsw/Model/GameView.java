@@ -68,6 +68,8 @@ public class GameView implements Serializable {
     public int getClientID(){return this.clientID;}
     public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
     public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
+    public ArrayList<Tile> getTemporaryTiles() {return this.temporaryTiles; }
+
 
 
 }
