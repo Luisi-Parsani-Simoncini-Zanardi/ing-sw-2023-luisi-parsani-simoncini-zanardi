@@ -30,12 +30,12 @@ public class Board extends Observable<Game.Event> {
     /**
      * Constructs a Board full of unused tiles.
      */
-    public Board(ArrayList<Point> points){
+    public Board(ArrayList<Point> selPoints, ArrayList<Point> tmpPoints){
         board = new Tile[Config.boardHeight][Config.boardLength];
         bag = new Bag();
         endGame = false;
-        temporaryPoints = new ArrayList<>();
-        selectablePoints = points;
+        temporaryPoints = tmpPoints;
+        selectablePoints = selPoints;
         for(int i=0;i<Config.boardHeight;i++){
             for(int j=0;j<Config.boardLength;j++){
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);

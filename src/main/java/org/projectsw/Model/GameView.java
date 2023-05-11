@@ -17,6 +17,8 @@ public class GameView implements Serializable {
     private final ErrorName error;
     private final int clientID;
     private final ArrayList<Point> selectablePoints;
+    private final ArrayList<Point> temporaryPoints;
+    private final ArrayList<Tile> temporaryTiles;
 
     public GameView(int clientID){
         this.gameBoard =  new Tile[1][1];
@@ -28,6 +30,8 @@ public class GameView implements Serializable {
         this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = new ArrayList<>();
+        this.temporaryPoints = new ArrayList<>();
+        this.temporaryTiles = new ArrayList<>();
     }
 
     public GameView(ErrorName error, int clientID){
@@ -40,6 +44,8 @@ public class GameView implements Serializable {
         this.error = error;
         this.clientID = clientID;
         this.selectablePoints = new ArrayList<>();
+        this.temporaryPoints = new ArrayList<>();
+        this.temporaryTiles = new ArrayList<>();
     }
 
     public GameView(Game model){
@@ -50,7 +56,9 @@ public class GameView implements Serializable {
         this.error = ErrorName.NO_ERROR;
         this.clientID = 0;
         this.selectablePoints = model.getBoard().getSelectablePoints();
-   }
+        this.temporaryPoints = model.getBoard().getTemporaryPoints();
+        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
+    }
 
     public Tile[][] getGameBoard(){return this.gameBoard;}
     public Tile[][] getCurrentPlayerShelf(){return this.currentPlayerShelf;}
@@ -59,5 +67,7 @@ public class GameView implements Serializable {
     public ErrorName getError(){return this.error;}
     public int getClientID(){return this.clientID;}
     public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
+    public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
+
 
 }

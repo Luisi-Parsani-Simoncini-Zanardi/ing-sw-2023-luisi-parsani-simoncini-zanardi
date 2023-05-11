@@ -185,7 +185,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void showBoard(GameView model){
-        Board board = new Board(model.getSelectablePoints());
+        Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
         board.printBoard();
