@@ -83,14 +83,15 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case UPDATED_TEMPORARY_TILES -> {
                 System.out.println("You have selected: ");
                 ArrayList<Tile> tiles = model.getTemporaryTiles();
-                for (Tile tile : tiles){
-                    switch (tile.getTile()){
-                        case CATS -> System.out.println(ConsoleColors.CATS);
-                        case TROPHIES -> System.out.println(ConsoleColors.TROPHIES);
-                        case BOOKS -> System.out.println(ConsoleColors.BOOKS);
-                        case FRAMES -> System.out.println(ConsoleColors.FRAMES);
-                        case GAMES -> System.out.println(ConsoleColors.GAMES);
-                        case PLANTS -> System.out.println(ConsoleColors.PLANTS);
+                for (int i=0; i<tiles.size(); i++){
+                    int integer = i+1;
+                    switch (tiles.get(i).getTile()){
+                        case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
+                        case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
+                        case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
+                        case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
+                        case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
+                        case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
                     }
                 }
             }
@@ -162,7 +163,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the tile number: ");
             scanner.next();
         }
-        return scanner.nextInt();
+        return scanner.nextInt()-1;
     }
 
     private Integer selectColumnInput(){
