@@ -91,6 +91,7 @@ public class Engine{
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         fillBoard();
+        game.setChangedAndNotifyObservers(Game.Event.UPDATED_CURRENT_PLAYER);
         game.nextTurnNotify();
     }
 
