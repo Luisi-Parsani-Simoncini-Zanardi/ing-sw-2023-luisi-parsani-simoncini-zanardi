@@ -91,6 +91,7 @@ public class Engine{
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         fillBoard();
+        game.setChangedAndNotifyObservers(Game.Event.UPDATED_CURRENT_PLAYER);
         game.nextTurnNotify();
     }
 
@@ -193,14 +194,16 @@ public class Engine{
                     if (i != Config.shelfHeight - 1) {
                         game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i + 1, selectedColumn);
                         game.finishedUpdateShelf();
-                        game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+                        if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
+                            game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
                     }
                     break;
                 }
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
                     game.finishedUpdateShelf();
-                    game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+                    if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
+                        game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
                     break;
                 }
             }

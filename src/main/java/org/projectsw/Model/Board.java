@@ -357,16 +357,15 @@ public class Board extends Observable<Game.Event> {
      * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
      */
     public void printBoard(){
-        //ArrayList<Point> selectablePoints = getSelectablePoints();
         String printedString = "  ";
         for(int i=0;i<Config.boardLength;i++) {
             Integer integer = i+1;
-            printedString = printedString + "     " +  integer.toString() + "      ";
+            printedString = printedString + "     " +  integer + "      ";
         }
         System.out.println(printedString);
         for(int j=0;j<Config.boardHeight;j++){
             Integer integer = j+1;
-            printedString = integer.toString() + " ";
+            printedString = integer + " ";
             for(int i=0;i<Config.boardLength;i++) {
                 printedString = printedString + printPadding(true, i,j) + stringColorAndMarker(i,j) + printPadding(false, i,j);
             }
@@ -380,7 +379,6 @@ public class Board extends Observable<Game.Event> {
         TilesEnum type = board[i][j].getTile();
         if(selectablePoints.contains(new Point(i,j))) result = result + "(";
         if(temporaryPoints.contains(new Point(i,j))) result = result + "[";
-        if(!(selectablePoints.contains(new Point(i,j)) || temporaryPoints.contains(new Point(i,j)))) result = result;
         switch (type){
             case CATS -> result = result + ConsoleColors.CATS;
             case TROPHIES -> result = result + ConsoleColors.TROPHIES;

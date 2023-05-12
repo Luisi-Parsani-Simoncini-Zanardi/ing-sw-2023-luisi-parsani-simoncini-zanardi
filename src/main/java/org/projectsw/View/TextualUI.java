@@ -43,7 +43,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public void run() {
         displayLogo();
         insertNickname();
-        //TODO: LORE sistemare i metodi della tui adattandoli alla nuova gameView
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 /*synchronized (lock){//forse va eliminata perchè superflua
@@ -80,8 +79,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 if (model.getCurrentPlayerName().equals(nickname))
                     showBoard(model);
             }
-            //TODO LOLLO: sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
-            //case UPDATED_SHELF -> showShelf(model);
+            case UPDATED_SHELF -> {if (model.getCurrentPlayerName().equals(nickname)) showShelf(model);}
             case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
                     clientUID = model.getClientID();
@@ -190,7 +188,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         return scanner.nextInt()-1;
     }
     private boolean chooseTiles(){
-        System.out.println("You have selected:");
         //stampare le temp tiles
         System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
