@@ -19,6 +19,7 @@ public class GameView implements Serializable {
     private final ArrayList<Point> selectablePoints;
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
+    private final int numberOfPlayers;
 
     public GameView(int clientID){
         this.gameBoard =  new Tile[1][1];
@@ -32,6 +33,7 @@ public class GameView implements Serializable {
         this.selectablePoints = new ArrayList<>();
         this.temporaryPoints = new ArrayList<>();
         this.temporaryTiles = new ArrayList<>();
+        this.numberOfPlayers = 0;
     }
 
     public GameView(int clientID, String nickname){
@@ -46,6 +48,7 @@ public class GameView implements Serializable {
         this.selectablePoints = new ArrayList<>();
         this.temporaryPoints = new ArrayList<>();
         this.temporaryTiles = new ArrayList<>();
+        this.numberOfPlayers = 0;
     }
 
     public GameView(ErrorName error, int clientID){
@@ -60,6 +63,7 @@ public class GameView implements Serializable {
         this.selectablePoints = new ArrayList<>();
         this.temporaryPoints = new ArrayList<>();
         this.temporaryTiles = new ArrayList<>();
+        this.numberOfPlayers = 0;
     }
 
     public GameView(Game model){
@@ -68,12 +72,14 @@ public class GameView implements Serializable {
         this.currentPlayerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getChat();
         this.error = ErrorName.NO_ERROR;
-        this.clientID = 0;//TODO: cambiato
+        this.clientID = 0;
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
+        this.numberOfPlayers = model.getNumberOfPlayers();
     }
 
+    public int getNumberOfPlayers(){return this.numberOfPlayers;}
     public Tile[][] getGameBoard(){return this.gameBoard;}
     public Tile[][] getCurrentPlayerShelf(){return this.currentPlayerShelf;}
     public String getCurrentPlayerName(){return this.currentPlayerName;}

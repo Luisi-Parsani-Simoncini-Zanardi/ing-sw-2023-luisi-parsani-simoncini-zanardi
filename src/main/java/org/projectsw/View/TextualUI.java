@@ -1,9 +1,11 @@
 package org.projectsw.View;
+import org.projectsw.Exceptions.ErrorName;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 
 import java.awt.*;
+import java.awt.desktop.SystemEventListener;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,7 +17,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Point point;
     private String nickname;
     private String string;
-    private int clientUID = 0;
+    private int clientUID=0;
+    private int numberOfPlayers;
+
 
     private UIState getState(){
         synchronized(lock){
@@ -70,6 +74,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
     private void numberOfPlayers(){
         Scanner scanner = new Scanner(System.in);
+        clientUID=1;
         do{
             System.out.println("Choose a number of players: ");
             number = scanner.nextInt();
@@ -77,9 +82,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 System.out.println(ConsoleColors.RED + "Number of players not valid. Try again... " + ConsoleColors.RESET);
         }while(number<Config.minPlayers||number>Config.maxPlayers);
         setChangedAndNotifyObservers(UIEvent.CHOOSE_PLAYER_NUMBER);
+        clientUID=1;
     }
     public void update(GameView model, Game.Event arg){
         switch(arg){
+            case UPDATE_NUMBER_OF_PLAYER -> {
+                this.numberOfPlayers = model.getNumberOfPlayers();
+            }
             case UPDATED_BOARD -> {
                 if (model.getCurrentPlayerName().equals(nickname))
                     showBoard(model);
@@ -87,7 +96,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             //TODO LOLLO: sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
             //case UPDATED_SHELF -> showShelf(model);
             case SET_CLIENT_ID_RETURN -> {
-                if (clientUID==0)
+                if (nickname==null)
                     clientUID = model.getClientID();
             }
             case SET_NUMBER_OF_PLAYERS -> {
@@ -113,16 +122,19 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);
             case ERROR ->  {
+                if (model.getError() == ErrorName.LOBBY_CLOSED) {
+                    if (clientUID==0) {
+                        System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
+                        System.exit(0);
+                    }
+                }
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
                         case INVALID_NAME -> {
                             System.out.println(ConsoleColors.RED + "Nickname already in use. Try again..." + ConsoleColors.RESET);
                             insertNickname();
                         }
-                        case LOBBY_CLOSED -> {
-                            System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
-                            System.exit(0);
-                        }
+
                         case EMPTY_TEMPORARY_POINTS -> {
                             System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
                         }
@@ -239,8 +251,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         Scanner scanner = new Scanner(System.in);
         nickname = scanner.nextLine();
         point = null;
-        setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
-        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_SET_CLIENT_ID);
     }
 
     public void displayLogo(){

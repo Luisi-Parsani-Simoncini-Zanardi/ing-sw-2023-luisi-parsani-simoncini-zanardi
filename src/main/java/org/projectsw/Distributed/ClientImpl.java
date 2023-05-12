@@ -3,15 +3,13 @@ package org.projectsw.Distributed;
 import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
-import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+
 
 public class ClientImpl extends UnicastRemoteObject implements Client{
     private TextualUI tui;
@@ -56,7 +54,6 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
             gui.update(o, arg);
     }
 
-
     public void setTui (Server server) {
         gui = null;
         tui = new TextualUI();
@@ -83,7 +80,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                         throw new RuntimeException("Cannot send the message to the server: " + e.getMessage());
                     }
                 }
-                case CHOOSE_NICKNAME -> {
+                case CHOOSE_NICKNAME_AND_SET_CLIENT_ID -> {
                     try {
                         server.update(new InputController(tui.getClientUID(), tui.getNickname()), arg);
                     } catch (RemoteException e) {

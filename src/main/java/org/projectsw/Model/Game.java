@@ -27,7 +27,8 @@ public class Game extends Observable<Game.Event> {
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR,
-        NEXT_PLAYER_TURN_NOTIFY
+        NEXT_PLAYER_TURN_NOTIFY,
+        UPDATE_NUMBER_OF_PLAYER
     }
 
     private GameStates gameState;
@@ -69,6 +70,7 @@ public class Game extends Observable<Game.Event> {
      */
     public void initializeGame() {
         board = new Board(this.numberOfPlayers);
+        setChangedAndNotifyObservers(Event.UPDATE_NUMBER_OF_PLAYER);
     }
 
     /**

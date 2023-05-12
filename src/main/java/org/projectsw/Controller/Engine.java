@@ -24,6 +24,7 @@ public class Engine{
     private boolean chooseNumberOfPlayers=false;
     private final Object lock = new Object();
 
+
     /**
      * get the Clients
      * @return the clients
@@ -57,29 +58,28 @@ public class Engine{
      *                             of if the function is called when the lobby is closed
      */
     public void playerJoin (String nickname) {
-        if(game.getGameState().equals(GameStates.LOBBY)){
-            int newPlayerPosition = game.getPlayers().size();
-            Player newPlayer = new Player(nickname,newPlayerPosition);
-            try {
-                game.addPlayer(newPlayer);
-            } catch (InvalidNameException e) {
-                game.setError(ErrorName.INVALID_NAME);
-            }
-            synchronized(lock) {
+            if (game.getGameState().equals(GameStates.LOBBY)) {
+                int newPlayerPosition = game.getPlayers().size();
+                Player newPlayer = new Player(nickname, newPlayerPosition);
+                try {
+                    game.addPlayer(newPlayer);
+                } catch (InvalidNameException e) {
+                    game.setError(ErrorName.INVALID_NAME);
+                }
+
                 if (!chooseNumberOfPlayers) {
                     chooseNumberOfPlayers = true;
                     game.setFirstPlayer(newPlayer);
                     game.setCurrentPlayerLobby(newPlayer);
                     game.askNumberoOfPlayers();
                 }
+
+                if (game.getPlayers().size() == game.getNumberOfPlayers()) {
+                    startGame();
+                }
+            } else {
+                game.setError(ErrorName.LOBBY_CLOSED);
             }
-            if (game.getPlayers().size() == game.getNumberOfPlayers()) {
-                startGame();
-            }
-        }
-        else {
-            game.setError(ErrorName.LOBBY_CLOSED);
-        }
     }
 
 
@@ -506,18 +506,19 @@ public class Engine{
     }
     public void update(InputController input, UIEvent UiEvent) throws UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException, UnselectableColumnException {
         game.setClientID(input.getClientID());
-        switch (UiEvent) {
-            case SET_CLIENT_ID -> {
-                if (game.getPlayers() == null) {//TODO: cambiamenti fatti
-                    game.initializeClientID(1);
-                } else game.initializeClientID(game.getPlayers().size() + 1);
+            switch (UiEvent) {
+                case CHOOSE_NICKNAME_AND_SET_CLIENT_ID -> {
+                    synchronized (lock) {
+                        playerJoin(input.getString());
+                        game.initializeClientID(game.getPlayers().size() + 1);
+                    }
+                }
+                case CHOOSE_PLAYER_NUMBER -> numberOfPlayers(input.getIndex());
+                case TILE_SELECTION -> selectTiles(input.getCoordinate());
+                case CONFIRM_SELECTION -> confirmSelectedTiles();
+                case COLUMN_SELECTION -> selectColumn(input.getIndex());
+                case TILE_INSERTION -> placeTiles(input.getIndex());
             }
-            case CHOOSE_NICKNAME -> playerJoin(input.getString());
-            case CHOOSE_PLAYER_NUMBER -> numberOfPlayers(input.getIndex());
-            case TILE_SELECTION -> selectTiles(input.getCoordinate());
-            case CONFIRM_SELECTION -> confirmSelectedTiles();
-            case COLUMN_SELECTION -> selectColumn(input.getIndex());
-            case TILE_INSERTION -> placeTiles(input.getIndex());
-        }
+
     }
 }
