@@ -161,7 +161,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("Are you sure?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
-        //TODO: non capisco il perchè di questo if (continuo a chiedere e quando ho finito notifico)
         /*if(choice == 2){
             setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
         }*/
