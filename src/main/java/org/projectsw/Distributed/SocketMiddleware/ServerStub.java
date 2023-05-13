@@ -59,6 +59,21 @@ public class ServerStub implements Server {
         }
     }
 
+    @Override
+    public void initializePlayer(Client client, InputController input) throws RemoteException {
+
+    }
+
+    @Override
+    public void setNumberOfPlayers(InputController input) throws RemoteException {
+
+    }
+
+    @Override
+    public void setCorrectNick(InputController input) throws RemoteException {
+
+    }
+
     public void receive(Client client) throws RemoteException{
         GameView model;
         try{

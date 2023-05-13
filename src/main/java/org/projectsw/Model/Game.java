@@ -6,6 +6,7 @@ import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
 import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Random;
 import static org.projectsw.Exceptions.ErrorName.NO_ERROR;
@@ -22,13 +23,10 @@ public class Game extends Observable<Game.Event> {
         UPDATED_BOARD,
         UPDATED_SHELF,
         UPDATED_TEMPORARY_TILES,
-        SET_CLIENT_ID_RETURN,
-        SET_NUMBER_OF_PLAYERS,
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR,
-        NEXT_PLAYER_TURN_NOTIFY,
-        UPDATE_NUMBER_OF_PLAYER
+        NEXT_PLAYER_TURN_NOTIFY
     }
 
     private GameStates gameState;
@@ -68,9 +66,9 @@ public class Game extends Observable<Game.Event> {
      * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
      *                                  between 2 and 4
      */
-    public void initializeGame() {
-        board = new Board(this.numberOfPlayers);
-        setChangedAndNotifyObservers(Event.UPDATE_NUMBER_OF_PLAYER);
+    public void initializeGame(int number) {
+        setNumberOfPlayers(number);
+        board = new Board(number);
     }
 
     /**
@@ -183,7 +181,11 @@ public class Game extends Observable<Game.Event> {
      */
     public void setCurrentPlayer(Player currentPlayer){
         this.currentPlayer=currentPlayer;
-        setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error: "+e.getCause());
+        }
     }
 
     public void setCurrentPlayerLobby(Player currentPlayer){
@@ -208,7 +210,11 @@ public class Game extends Observable<Game.Event> {
      */
     public void setBoard(Board board) {
         this.board = board;
-        setChangedAndNotifyObservers(Event.UPDATED_BOARD);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_BOARD);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while setting the board: "+e.getCause());
+        }
     }
 
     /**
@@ -217,7 +223,11 @@ public class Game extends Observable<Game.Event> {
      */
     public void setChat(Chat chat) {
         this.chat = chat;
-        setChangedAndNotifyObservers(Event.UPDATED_CHAT);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_CHAT);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while setting the chat: "+e.getCause());
+        }
     }
 
     /**
@@ -230,15 +240,15 @@ public class Game extends Observable<Game.Event> {
 
     public void setError(ErrorName error) {
         this.error = error;
-        setChangedAndNotifyObservers(Event.ERROR);
+        try {
+            setChangedAndNotifyObservers(Event.ERROR);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while setting the Error: "+e.getCause());
+        }
     }
 
     public void setClientID(int clientID) {
         this.clientID = clientID;
-    }
-
-    public void askNumberoOfPlayers(){
-        setChangedAndNotifyObservers(Event.SET_NUMBER_OF_PLAYERS);
     }
 
     /**
@@ -248,11 +258,7 @@ public class Game extends Observable<Game.Event> {
      * @throws IllegalArgumentException if the passed player has a position that not corresponds to the next free one
      *
      */
-    public void addPlayer(Player player) throws InvalidNameException {
-        int playerLength = getPlayers().size();
-        for (int i = 0; i<playerLength; i++) {
-            if(getPlayers().get(i).getNickname().equals(player.getNickname())) throw new InvalidNameException();
-        }
+    public void addPlayer(Player player) {
         players.add(player);
     }
 
@@ -341,18 +347,25 @@ public class Game extends Observable<Game.Event> {
         return commonGoals;
     }
 
-    public void initializeClientID(int i) {
-        this.clientID = i;
-        setChangedAndNotifyObservers(Event.SET_CLIENT_ID_RETURN);
-    }
-
     public void nextTurnNotify() {
-        setChangedAndNotifyObservers(Event.NEXT_PLAYER_TURN_NOTIFY);
+        try {
+            setChangedAndNotifyObservers(Event.NEXT_PLAYER_TURN_NOTIFY);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
+        }
     }
     public void finishedUpdateBoard() {
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_BOARD);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the board: "+e.getMessage());
+        }
     }
     public void finishedUpdateShelf() {
-        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_SHELF);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the shelf: "+e.getCause());
+        }
     }
 }

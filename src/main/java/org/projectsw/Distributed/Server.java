@@ -15,8 +15,11 @@ public interface Server extends Remote {
 
     /**
      * Notify the server that a client has made a choice
-     * @param ...
+     * @param
      * @param arg     the choice made by the client
      */
     void update(InputController input, UIEvent arg) throws RemoteException;
+    void initializePlayer(Client client, InputController input) throws RemoteException;
+    void setNumberOfPlayers(InputController input) throws RemoteException;
+    void setCorrectNick(InputController input) throws RemoteException;
 }

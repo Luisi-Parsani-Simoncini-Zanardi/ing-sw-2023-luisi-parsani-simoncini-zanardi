@@ -18,7 +18,7 @@ public class AppClientRMI {
             if ((args.length == 0)||(args[0]!="gui")) { //on a invalid parameter sets tui as default
                 client.setTui(server);
             } else {
-                client.setTui(server);
+                client.setGui(server);
             }
         }catch(NotBoundException e){
             throw new NotBoundException("Server not found");

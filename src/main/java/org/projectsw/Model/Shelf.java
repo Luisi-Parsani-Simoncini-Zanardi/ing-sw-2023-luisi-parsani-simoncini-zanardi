@@ -42,7 +42,7 @@ public class Shelf extends Observable<Game.Event> {
         this.selectedColumn = shelf.getSelectedColumn();
         this.shelf = shelf.shelf;
         this.selectionPossible = shelf.isSelectionPossible();
-        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
 
@@ -98,7 +98,7 @@ public class Shelf extends Observable<Game.Event> {
     public void setShelf(Tile[][] shelf) throws IllegalArgumentException{
         if(shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength) throw new IllegalArgumentException();
         this.shelf = shelf;
-        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
     /**
@@ -142,7 +142,7 @@ public class Shelf extends Observable<Game.Event> {
         if( row > Config.shelfHeight-1 || column > Config.shelfLength-1) throw new IndexOutOfBoundsException("Out of bounds");
         else if(tile.getTile().equals(TilesEnum.EMPTY) || tile.getTile().equals(TilesEnum.UNUSED)) throw new IllegalArgumentException("Trying to add a unused or empty tile to the shelf");
         else shelf[row][column] = tile;
-        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
     }
 
     /**

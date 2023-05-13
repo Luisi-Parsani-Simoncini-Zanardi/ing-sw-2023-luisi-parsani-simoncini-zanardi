@@ -41,6 +41,11 @@ public class ClientSkeleton implements Client {
         }
     }
 
+    @Override
+    public void kill() throws RemoteException {
+
+    }
+
 
     public void receive(Server server) throws RemoteException{
         UIEvent arg;
@@ -71,5 +76,30 @@ public class ClientSkeleton implements Client {
     @Override
     public TextualUI getTui() throws RemoteException {
         return null;
+    }
+
+    @Override
+    public void setID(GameView serverResponse) throws RemoteException {
+
+    }
+
+    @Override
+    public void setNickname(GameView serverResponse) throws RemoteException {
+
+    }
+
+    @Override
+    public String getNickname() {
+        return null;
+    }
+
+    @Override
+    public void askNumberOfPlayers() throws RemoteException {
+
+    }
+
+    @Override
+    public void askNewNick(GameView nicks) throws RemoteException {
+
     }
 }

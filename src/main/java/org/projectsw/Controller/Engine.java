@@ -7,6 +7,7 @@ import org.projectsw.Model.*;
 import org.projectsw.View.UIEvent;
 
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -61,19 +62,11 @@ public class Engine{
             if (game.getGameState().equals(GameStates.LOBBY)) {
                 int newPlayerPosition = game.getPlayers().size();
                 Player newPlayer = new Player(nickname, newPlayerPosition);
-                try {
-                    game.addPlayer(newPlayer);
-                } catch (InvalidNameException e) {
-                    game.setError(ErrorName.INVALID_NAME);
+                game.addPlayer(newPlayer);
+                if(this.game.getPlayers().size()==1){
+                    this.game.setFirstPlayer(newPlayer);
+                    this.game.setCurrentPlayerLobby(newPlayer);
                 }
-
-                if (!chooseNumberOfPlayers) {
-                    chooseNumberOfPlayers = true;
-                    game.setFirstPlayer(newPlayer);
-                    game.setCurrentPlayerLobby(newPlayer);
-                    game.askNumberoOfPlayers();
-                }
-
                 if (game.getPlayers().size() == game.getNumberOfPlayers()) {
                     startGame();
                 }
@@ -150,7 +143,11 @@ public class Engine{
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
-        game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+        try {
+            game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error occured: "+e.getCause());
+        }
     }
 
     /**
@@ -496,24 +493,9 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    /**
-     * Initialize the number of players
-     * @param numberOfPlayers is the number of players
-     */
-    private void numberOfPlayers(int numberOfPlayers){
-        game.setNumberOfPlayers(numberOfPlayers);
-        game.initializeGame();
-    }
     public void update(InputController input, UIEvent UiEvent) throws UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException, UnselectableColumnException {
         game.setClientID(input.getClientID());
             switch (UiEvent) {
-                case CHOOSE_NICKNAME_AND_SET_CLIENT_ID -> {
-                    synchronized (lock) {
-                        playerJoin(input.getString());
-                        game.initializeClientID(game.getPlayers().size() + 1);
-                    }
-                }
-                case CHOOSE_PLAYER_NUMBER -> numberOfPlayers(input.getIndex());
                 case TILE_SELECTION -> selectTiles(input.getCoordinate());
                 case CONFIRM_SELECTION -> confirmSelectedTiles();
                 case COLUMN_SELECTION -> selectColumn(input.getIndex());

@@ -41,7 +41,7 @@ public class Board extends Observable<Game.Event> {
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -68,7 +68,7 @@ public class Board extends Observable<Game.Event> {
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -81,7 +81,7 @@ public class Board extends Observable<Game.Event> {
         this.bag = board.getBag();
         this.temporaryPoints = board.getTemporaryPoints();
         this.updateSelectablePoints();
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -133,7 +133,7 @@ public class Board extends Observable<Game.Event> {
         if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
         updateSelectablePoints();
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -142,7 +142,7 @@ public class Board extends Observable<Game.Event> {
      */
     public void setEndGame(boolean endGame) {
         this.endGame = endGame;
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -168,7 +168,7 @@ public class Board extends Observable<Game.Event> {
             Tile tmp = board[(int) point.getX()][(int) point.getY()];
             board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
-            setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+            //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
             return tmp;
         }
     }
@@ -190,7 +190,7 @@ public class Board extends Observable<Game.Event> {
      * notify the completion of the fillBoard
      */
     public void finishedUpdateBoard() {
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**

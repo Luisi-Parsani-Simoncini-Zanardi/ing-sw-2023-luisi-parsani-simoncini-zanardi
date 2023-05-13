@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class InputController implements Serializable{
 
-    private final int clientID;
+    private final Integer clientID;
     private final Point coordinate;
     private final Integer integer;
     private final String string;
@@ -15,6 +15,13 @@ public class InputController implements Serializable{
         this.coordinate=coordinate;
         this.integer=null;
         this.string=null;
+    }
+
+    public InputController(String string){
+        this.clientID=null;
+        this.coordinate=null;
+        this.integer=null;
+        this.string=string;
     }
 
     public InputController(int clientID, String string){

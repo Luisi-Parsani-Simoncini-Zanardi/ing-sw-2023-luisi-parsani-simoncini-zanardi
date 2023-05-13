@@ -1,5 +1,4 @@
 package org.projectsw.Distributed;
-
 import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
@@ -14,7 +13,6 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientImpl extends UnicastRemoteObject implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
-
 
     public ClientImpl(Server server) throws RemoteException{
         super();
@@ -35,14 +33,17 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         try {
             server.register(this);
         } catch (RemoteException e) {
-            throw new RuntimeException("Cannot register client on server" + e.getMessage());
+            throw new RemoteException("Cannot register client on server" + e.getCause());
         }
     }
 
-    public TextualUI getTui(){
+    @Override
+    public TextualUI getTui()throws RemoteException{
         return this.tui;
     }
-    public GraphicalUI getGui() {
+
+    @Override
+    public GraphicalUI getGui() throws RemoteException{
         return this.gui;
     }
 
@@ -54,49 +55,91 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
             gui.update(o, arg);
     }
 
-    public void setTui (Server server) {
+
+    public void setTui (Server server){
         gui = null;
-        tui = new TextualUI();
+        tui = new TextualUI(this);
         tui.addObserver((o, arg) -> {
             switch (arg){
+                case CHOOSE_NUMBER_OF_PLAYERS -> {
+                    try {
+                        server.setNumberOfPlayers(new InputController(tui.getClientUID(), tui.getNumber()));
+                    } catch (RemoteException e) {
+                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
+                    }
+                }
+                case CHOOSE_NICKNAME -> {
+                    try {
+                        server.initializePlayer(this, new InputController(tui.getNickname()));
+                    } catch (RemoteException e) {
+                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
+                    }
+                }
+                case NEW_CHOOSE_NICKNAME -> {
+                    try {
+                        server.setCorrectNick(new InputController(tui.getNickname()));
+                    } catch (RemoteException e) {
+                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
+                    }
+                }
                 case TILE_SELECTION -> {
                     try {
                         server.update(new InputController(tui.getClientUID(), tui.getPoint()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("Cannot send the tile selection to the server" + e.getMessage());
-                    }
-                }
-                case COLUMN_SELECTION, TILE_INSERTION, CHOOSE_PLAYER_NUMBER -> {
-                    try {
-                        server.update(new InputController(tui.getClientUID(), tui.getNumber()), arg);
-                    } catch (RemoteException e) {
-                        throw new RuntimeException("Cannot send the chat message to the server: " + e.getMessage());
+                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
                     }
                 }
                 case SAY_IN_CHAT -> {
                     try {
                         server.update(new InputController(tui.getClientUID(), tui.getString()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("Cannot send the message to the server: " + e.getMessage());
-                    }
-                }
-                case CHOOSE_NICKNAME_AND_SET_CLIENT_ID -> {
-                    try {
-                        server.update(new InputController(tui.getClientUID(), tui.getNickname()), arg);
-                    } catch (RemoteException e) {
-                        throw new RuntimeException("Cannot send the client nickname to the server: " + e.getMessage());
+                        throw new RemoteException("Cannot send the message to the server: " + e.getCause());
                     }
                 }
                 default -> {
                     try {
                         server.update(new InputController(tui.getClientUID()), arg);
                     } catch (RemoteException e) {
-                        throw new RuntimeException("Cannot send the client input to the server: " + e.getMessage());
+                        throw new RemoteException("Cannot send the client input to the server: " + e.getCause());
                     }
                 }
             }
         });
         tui.run();
+    }
+    @Override
+    public void setID(GameView serverResponse) throws RemoteException{
+        tui.setID(serverResponse.getClientID());
+    }
+
+    @Override
+    public void setNickname(GameView serverResponse) throws RemoteException{
+        tui.setNickname(serverResponse.getCurrentPlayerName());
+    }
+
+    //usata solo lato server nel arraylist di client
+    @Override
+    public String getNickname() throws RemoteException{
+        return tui.getNickname();
+    }
+
+    @Override
+    public void askNumberOfPlayers() throws RemoteException{
+        tui.askNumber();
+    }
+
+    @Override
+    public void askNewNick(GameView nicks) throws RemoteException{
+        tui.askNewNick(nicks.getPlayerNicks());
+    }
+
+    /**
+     * close the client
+     */
+    @Override
+    public void kill() throws RemoteException{
+        tui.kill();
+        System.exit(0);
     }
 
     public void setGui (Server server) {
@@ -112,5 +155,4 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         });
         gui.run();
     }
-
 }

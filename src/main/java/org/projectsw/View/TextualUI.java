@@ -1,4 +1,5 @@
 package org.projectsw.View;
+import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.ErrorName;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Config;
@@ -6,6 +7,7 @@ import org.projectsw.Util.Observable;
 
 import java.awt.*;
 import java.awt.desktop.SystemEventListener;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,9 +19,12 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private Point point;
     private String nickname;
     private String string;
-    private int clientUID=0;
-    private int numberOfPlayers;
+    private int clientUID;
+    private Client client;
 
+    public TextualUI(Client client){
+        this.client = client;
+    }
 
     private UIState getState(){
         synchronized(lock){
@@ -42,10 +47,67 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public String getNickname(){return this.nickname;}
     public int getClientUID(){return clientUID;}
 
+    public void joinGame() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Insert your nickname: ");
+        nickname = scanner.nextLine();
+        try {
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
+        }
+
+        System.out.println("rimuovere");
+    }
+
+    public void askNewNick(ArrayList<String> nicks){
+        Scanner scanner = new Scanner(System.in);
+        boolean control=false;
+        do{
+            System.out.println(ConsoleColors.RED +"Invalid nickname choose another one please"+ ConsoleColors.RESET+"\nInsert new nickname");
+            nickname = scanner.nextLine();
+            if(!nicks.contains(nickname))
+                control=true;
+        }while(!control);
+        try {
+            setChangedAndNotifyObservers(UIEvent.NEW_CHOOSE_NICKNAME);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
+        }
+    }
+
+    public void askNumber(){
+        Scanner scanner = new Scanner(System.in);
+        do{
+            System.out.print("Insert number of players: ");
+            number = scanner.nextInt();
+            if(number<Config.minPlayers || number>Config.maxPlayers)
+                System.out.println(ConsoleColors.RED +"Invalid Number of players"+ ConsoleColors.RESET);
+        }while(number<Config.minPlayers || number>Config.maxPlayers);
+        try {
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NUMBER_OF_PLAYERS);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
+        }
+    }
+
+    public void setID(int ID){
+        this.clientUID=ID;
+    }
+    public void kill(){
+        System.out.println(ConsoleColors.RED +"Unable to join the game\nClosing the process..."+ ConsoleColors.RESET);
+        printImage();
+        System.exit(0);
+    }
+
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
     @Override
     public void run() {
+        joinGame();
         displayLogo();
-        insertNickname();
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                 /*synchronized (lock){//forse va eliminata perchè superflua
@@ -58,52 +120,44 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             System.out.println("---YOUR TURN---");
             do{
                 point = selectTilesInput();
-                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                try {
+                    setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                } catch (RemoteException e) {
+                    throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
+                }
             }while(chooseTiles());
-            setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
+            try {
+                setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
+            }
 
             do{
                 number = selectColumnInput();
             }while(chooseColumn());
-            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+            try {
+                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
+            }
 
             number = selectTemporaryTile();
-            setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+            try {
+                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
+            }
             setState(UIState.OPPONENT_TURN);
         }
     }
-    private void numberOfPlayers(){
-        Scanner scanner = new Scanner(System.in);
-        clientUID=1;
-        do{
-            System.out.println("Choose a number of players: ");
-            number = scanner.nextInt();
-            if(number< Config.minPlayers||number>Config.maxPlayers)
-                System.out.println(ConsoleColors.RED + "Number of players not valid. Try again... " + ConsoleColors.RESET);
-        }while(number<Config.minPlayers||number>Config.maxPlayers);
-        setChangedAndNotifyObservers(UIEvent.CHOOSE_PLAYER_NUMBER);
-        clientUID=1;
-    }
     public void update(GameView model, Game.Event arg){
         switch(arg){
-            case UPDATE_NUMBER_OF_PLAYER -> {
-                this.numberOfPlayers = model.getNumberOfPlayers();
-            }
             case UPDATED_BOARD -> {
                 if (model.getCurrentPlayerName().equals(nickname))
                     showBoard(model);
             }
             //TODO LOLLO: sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
             //case UPDATED_SHELF -> showShelf(model);
-            case SET_CLIENT_ID_RETURN -> {
-                if (nickname==null)
-                    clientUID = model.getClientID();
-            }
-            case SET_NUMBER_OF_PLAYERS -> {
-                if(model.getCurrentPlayerName().equals(nickname)) {
-                    this.numberOfPlayers();
-                }
-            }
             case UPDATED_TEMPORARY_TILES -> {
                 System.out.println("You have selected: ");
                 ArrayList<Tile> tiles = model.getTemporaryTiles();
@@ -130,11 +184,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 }
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
-                        case INVALID_NAME -> {
-                            System.out.println(ConsoleColors.RED + "Nickname already in use. Try again..." + ConsoleColors.RESET);
-                            insertNickname();
-                        }
-
                         case EMPTY_TEMPORARY_POINTS -> {
                             System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
                         }
@@ -144,19 +193,31 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                         case UNSELECTABLE_TILE -> {
                             System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
                             point = selectTilesInput();
-                            setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                            try {
+                                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                            } catch (RemoteException e) {
+                                throw new RuntimeException("Network error: "+e.getCause());
+                            }
                         }
                         case UNSELECTABLE_COLUMN -> {
                             System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
                             do{
                                 number = selectColumnInput();
                             }while(chooseColumn());
-                            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+                            try {
+                                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+                            } catch (RemoteException e) {
+                                throw new RuntimeException("Network error: "+e.getCause());
+                            }
                         }
                         case INVALID_TEMPORARY_TILE -> {
                             //nickname = selectTemporaryTile();
                             System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
-                            setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+                            try {
+                                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+                            } catch (RemoteException e) {
+                                throw new RuntimeException("Network error: "+e.getCause());
+                            }
                         }
                     }
                 }
@@ -246,14 +307,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
     }
 
-    private void insertNickname(){
-        System.out.println("Insert your nickname: ");
-        Scanner scanner = new Scanner(System.in);
-        nickname = scanner.nextLine();
-        point = null;
-        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_SET_CLIENT_ID);
-    }
-
     public void displayLogo(){
         System.out.println(ConsoleColors.PURPLE_BOLD + "  __  __" + ConsoleColors.BLUE_BOLD + "        _____ _          _  __ _      ");
         System.out.println(ConsoleColors.PURPLE_BOLD + " |  \\/  |" + ConsoleColors.BLUE_BOLD + "      / ____| |        | |/ _(_)     ");
@@ -263,6 +316,72 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println(ConsoleColors.PURPLE_BOLD + " |_|  |_|\\__, |" + ConsoleColors.BLUE_BOLD + "_____/|_| |_|\\___|_|_| |_|\\___|");
         System.out.println(ConsoleColors.PURPLE_BOLD + "          __/ |                               " );
         System.out.println("         |___/                                " + ConsoleColors.RESET);
+    }
+
+    private void printImage(){
+        System.out.println(ConsoleColors.RED +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡠⠴⠒⠚⠋⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⠙⠓⠲⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠖⠒⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠒⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠖⠶⠤⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠖⠚⠉⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠉⠓⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡴⠖⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠤⠂⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠈⠀⣀⣀⠀⠀⠈⠉⠷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠴⠛⠁⠀⠀⠀⠀⠀⠀⢀⠤⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠀⠀⠀⠀⠀⠀⠈⠉⠓⠚⠲⢤⣭⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⠟⠁⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠀⣀⣠⠔⠀⠀⠀⡤⠤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡾⠋⣠⠔⠀⠀⠀⠀⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠌⠒⠉⠀⠀⣀⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠀⠀⠀⠑⠌⠙⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⢟⣁⡴⠚⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠚⠁⠀⠀⠀⠀⡠⠔⠋⠁⠀⠄⠐⠀⠀⠀⠀⠐⠄⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠙⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⢿⢃⡤⠒⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠀⠀⠀⢐⠀⠀⠀⠀⠀⠢⠄⡠⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠚⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣴⣿⣿⣿⡯⣿⣩⠁⠀⠀⠀⠀⠀⠀⠀⠀⣠⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠠⠁⠀⣀⣀⣀⠀⠀⣠⠄⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠂⣦⣄⠀⠀⡀⠀⠘⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡿⢋⡝⢿⡷⣟⣻⠇⠀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠁⠀⠀⡤⠄⠀⠁⠀⢀⠀⠀⠀⠀⢀⠀⠀⢀⣼⡾⠃⠀⠀⠀⠀⠁⠀⠀⡀⠀⠀⠀⠙⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠘⣿⣶⠀⢙⡿⣦⡀⠹⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠿⠛⢠⣯⢞⣼⣿⣿⣿⡆⠀⠀⠄⠀⠀⠐⡠⠶⠁⠀⠀⠀⡠⠀⠖⠀⠀⡡⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠐⠐⠛⠉⠀⠀⠀⠀⠀⢀⣀⢀⣈⣽⣷⣦⣴⣄⣀⡐⠒⠊⠉⠉⠁⠄⠂⠀⠀⠀⠀⠐⠒⢀⡿⢶⣿⣿⠛⣛⣿⡟⠻⣶⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣟⣩⡴⠃⣼⠃⢀⣿⢿⡏⠓⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠀⠐⠶⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⢀⣀⠖⠋⠀⠀⠈⠀⠐⠛⠉⠴⠋⠐⠂⠀⠀⠀⠀⢶⢤⣤⣥⣤⠀⠀⡠⠸⠀⠀⠀⠀⠀⠀⢹⡀⠀⠈⠿⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⡿⠛⠉⢁⡤⢾⡿⢤⣾⣙⣛⣩⡗⠀⠀⠀⠀⠀⠀⢀⠀⣨⡙⠁⠀⠉⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠜⠀⠀⠂⠀⣰⣾⣿⢉⡠⠴⠎⡓⡒⠛⣟⣳⣤⣀⣀⡀⠀⣀⡀⢀⠀⢸⣿⣿⡽⠏⠀⠊⠁⣀⡰⠀⠀⣀⣸⣷⣼⣿⣄⠘⠶⢄⣛⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣰⠟⢛⠁⣤⣶⠿⣳⣿⣀⢻⣿⠿⣿⣯⣹⣴⠶⣄⣀⡀⠀⡬⠕⣫⣽⡿⠀⠀⠀⣁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠄⠀⠖⠉⠀⠀⠉⠁⠀⢀⣀⣤⣾⣿⣇⣰⣾⠋⠁⠈⠉⠁⢀⣌⠙⢻⣷⣿⣾⣿⣆⠧⠀⠀⠀⠉⠀⢀⣠⣿⣿⣿⣿⣿⣉⣙⣷⣶⣬⣉⡻⠶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⣀⣿⠞⣩⡆⣠⡟⠁⢸⣾⣿⠀⠈⠉⢛⠉⠳⣿⣟⣽⣿⣗⠛⣩⠽⠾⠑⣻⣶⣿⠀⡀⢘⠁⠀⡴⠀⠀⠀⠀⠀⢀⡤⠖⠀⠀⠀⣀⣀⣴⣶⣶⣿⣿⣿⣿⣿⣿⠻⣟⣷⢿⣀⠀⠐⠀⡌⠉⠀⣸⣟⣿⡏⠋⠙⠻⣲⡄⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣌⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⢀⣴⠃⢠⡶⡟⠁⢸⠉⠅⢹⡖⣰⣿⣿⣿⢐⡄⠀⢸⠀⢀⡶⢛⣿⠟⣇⠀⠀⠀⣀⣻⠖⢻⡿⣦⣿⣿⣿⡤⠄⠀⠀⠀⠤⠖⠉⠀⠀⣀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡐⢰⣿⣷⣏⡒⠈⠲⣅⣈⣶⣿⣽⣿⢉⡷⢤⡀⢹⣧⣄⣰⣾⣿⣿⣿⣿⣿⣟⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣷⡌⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⣠⡿⠋⢠⡿⠀⠁⢠⡟⠀⠀⠘⣦⣿⣿⣛⠟⢸⠧⡀⠈⠀⠋⣴⣾⣿⠛⢩⣔⣤⡀⡉⢻⠂⣘⣃⣬⣿⣿⣿⡿⠂⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿⡳⣿⣷⢤⡛⠻⢿⣿⠿⢿⣿⣉⡐⣿⣦⡌⢉⡉⠙⡛⠷⣿⡿⠋⣹⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⡇⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⣰⣯⡖⢠⠟⠀⠇⠀⠜⠀⠰⠀⢀⣈⣿⡇⠉⢠⣦⣠⣶⣀⣸⣤⣏⡈⢹⣦⠈⠁⠉⡇⣴⣿⠟⠛⠋⣿⣻⣭⣿⣷⡀⠆⠀⠀⠀⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣯⡼⢿⣷⣿⣿⣿⣤⣙⣶⣿⢦⡈⣻⣽⣟⡿⣿⡏⣳⣿⠇⣨⣷⣦⣽⣄⠈⢷⣾⣷⣼⣿⣻⣏⣵⠿⡿⣿⣏⣷⣿⠻⣟⡇⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⢰⡟⠉⣴⡏⠀⠀⠁⠀⢰⡇⠀⢠⣼⣿⢹⣂⣦⣿⣿⠋⠙⢻⣭⣧⣹⣿⠀⠈⣿⠷⠞⠋⠁⠀⠀⠐⡄⠀⠀⢩⣼⣿⣀⠀⠀⣼⣾⣿⡿⢟⣿⣿⣿⣿⣛⣿⣿⣍⣙⣉⠈⡙⠼⣿⣟⣾⣿⣿⣿⣿⣿⣮⣿⣍⣿⡟⢻⣽⣿⣿⡟⣷⣽⡏⢼⣿⣿⣿⣿⣿⣧⡀⢻⣯⠛⣹⡿⠛⠛⣿⣟⣻⣿⣿⣿⣿⠿⠿⡀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⢀⣿⠀⣾⢁⠀⠀⠁⠀⣠⡏⠑⢶⣾⡇⢠⣿⣿⣇⣼⣿⢁⣠⣿⣿⣧⠤⣼⣷⡾⡏⣤⢀⠀⠁⠘⠠⣄⣈⢻⣶⣠⣾⡏⠉⠛⣷⣿⣿⣿⠻⣻⣿⣿⢿⣿⣽⡿⠛⡿⠋⠈⠳⠴⣦⣽⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣬⣿⣇⠀⣿⣿⣾⣿⣿⠄⣼⣿⣿⣿⣿⣿⣿⣷⠀⠷⠞⠁⠀⢠⣄⣼⠺⢻⣿⣯⡏⠀⡀⠀⣇⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⣾⣏⣼⡥⠚⠀⠀⠀⠈⢠⣇⡀⠻⠁⣅⠸⣾⣽⡿⣤⣾⣫⠟⠿⠈⠹⣆⠀⠚⠚⣿⠻⣬⡷⠿⣶⣾⣷⠟⣿⣿⣿⣿⣥⡆⢰⣿⣿⣿⣿⣿⣿⣿⣿⣛⠛⠏⢣⣾⢃⠼⠛⠂⠀⡤⣤⠸⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣀⠉⢳⣾⠧⣽⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⡓⠀⠀⠀⠀⣄⣵⣾⣾⠞⢻⡟⠤⡀⢸⡄⠛⡄⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⢰⡟⣸⡏⠀⠀⠤⠆⠀⢰⡟⢡⡇⣸⡟⠉⣴⣿⣿⣄⣼⡏⠀⠑⢺⣧⠉⠛⢳⣄⠀⠘⢳⣾⣽⣶⣿⣿⣿⣿⣿⣿⣿⢿⢧⡄⠀⢿⣿⣿⣮⣿⣿⣿⢿⣿⣟⡳⠚⢻⣿⢧⣀⠀⠐⢧⡸⣄⣾⣿⣿⣿⣿⣿⣿⣽⣿⡿⠏⠁⢘⣸⠏⣿⠃⢰⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⡀⠀⣠⡀⢻⣾⢻⣧⣤⣾⠃⣀⠀⠸⡇⠀⡇⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⣼⣻⣿⠀⠀⠀⡆⠀⣰⡏⣠⣆⠠⠦⢤⣿⣿⣿⣿⢛⣋⣁⡀⠀⡸⢿⣆⡀⣠⠙⠲⣄⡸⣿⣿⢿⣿⣿⣿⣿⣿⣿⣏⣸⡎⠁⠀⠘⣻⣿⣿⡹⢿⣯⣿⠿⡿⣿⣧⡬⣭⣁⣹⣧⢀⢘⣿⣿⣿⣿⣿⣿⣭⣿⣿⣿⣿⡷⠀⢠⡏⠉⣰⣟⠀⣿⣿⣿⣿⡼⣿⣿⣿⣿⣿⣿⣷⠀⣌⡁⣾⡟⠛⣿⡿⠛⠛⠃⡠⣴⣷⡄⢸⡀⠀⠀⠀⠀⠀\n" +
+                "⠀⣿⣽⠁⠒⠀⠼⠀⣴⡟⠋⣿⣷⠀⢠⣈⡽⠋⣿⡥⠠⣟⠿⣇⣰⣧⠘⣿⣏⠉⠛⠀⠉⢉⡻⠿⣿⣿⣝⣻⣿⣿⣿⣿⡟⢃⡀⠀⠀⠙⢻⣿⣷⣬⡿⣿⣿⣥⣿⣿⣿⣿⣿⣿⣷⣯⣠⣿⣿⠿⣿⣿⣿⣿⣿⣿⡿⠋⠛⠶⡿⢃⣾⠿⠁⢸⣿⣿⣿⣿⢣⣿⣿⣿⣿⣿⣿⣿⣶⡍⠛⠿⠿⣽⣿⣧⣬⣀⣀⣠⣼⣿⡇⠈⢧⠀⠀⠀⠀⠀\n" +
+                "⢀⣿⣿⣤⢠⣟⣴⠟⠃⣠⣿⢿⣶⠀⣻⣻⣴⣾⠇⢠⣶⣿⣤⣾⣇⣿⠀⠘⣿⠰⡶⠀⠀⢻⡀⠀⡀⠸⣿⣿⣿⣿⣿⣿⣧⡿⠇⠀⢷⡀⠀⢿⣿⣿⣷⢛⢧⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣼⣿⣿⣿⣿⣿⣿⠀⣀⣴⣾⣳⣿⢿⠀⠀⣼⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣆⠀⢀⡀⠀⢘⡛⠛⣟⡿⠿⠿⣇⣠⣼⣇⠀⠀⠀⠀\n" +
+                "⢘⣿⣿⡟⠈⡻⠁⣶⢠⣿⡟⠀⣻⣶⡿⣿⣟⠁⠰⣻⣿⡏⣥⣼⣿⣿⣿⡿⠁⡾⢡⠀⠀⠀⠁⠀⡿⠀⢸⣿⣿⣿⣿⣿⣿⣦⣤⡄⠈⠻⣷⣄⠙⢿⣷⣬⡰⢿⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢻⣛⣿⡴⠋⠁⢶⠋⢸⡿⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⢿⣆⠈⢷⣦⣟⣛⡆⣿⣛⢻⣶⣟⣿⣿⣟⣧⠀⠀⠀\n" +
+                "⢘⣿⣿⣇⣸⣧⣀⣿⣾⣿⣶⣾⣿⣿⡿⠛⣉⣤⣾⣿⠏⠁⢾⣏⣡⠟⢀⣁⡀⠀⠈⢻⡄⠀⠀⢶⠇⠀⣠⣽⣿⣿⣿⣿⣿⣿⠶⠇⡀⠀⠻⢿⣷⡆⠈⠙⠛⠻⠿⠷⣿⡿⠿⠿⠿⠿⠟⠛⠛⠛⠁⠀⠀⢈⡉⠰⠀⠰⠀⢠⠀⢸⡇⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠘⢿⢠⣆⣸⣿⣟⣧⣄⣽⡿⠿⢿⡿⣿⣿⢿⣆⠀⠀\n" +
+                "⢘⣿⣿⣿⣿⡉⣿⣿⡿⠛⢀⣿⣿⣧⣧⣶⣟⣵⢟⣡⡄⣀⣾⣿⣿⣄⡘⠛⠟⣸⠀⠀⢿⣆⣀⠸⠃⢸⣿⣿⣿⣿⣿⣿⣿⣧⡶⠟⠃⠀⠀⠀⠉⠀⠘⠀⠰⠞⠇⢀⠀⠀⠀⠀⢀⣠⣤⣴⣶⠟⠀⠀⠘⠛⠃⠀⢶⣶⣆⠀⢰⣷⣷⢀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⣠⣿⣿⣿⣿⣻⠿⣿⣿⣦⡄⡇⢻⣎⣿⣿⣆⠀\n" +
+                "⠈⣿⢻⣿⣿⠁⣿⡏⠀⣤⣿⣿⣷⣿⣿⣿⣿⣥⡘⢿⣿⣿⡿⠉⢀⣬⢙⣿⡿⠿⣤⠀⠀⠛⠋⠀⡀⠀⠰⣿⣿⣿⣿⣿⣿⠁⣤⣀⣾⣧⣤⣤⣴⠆⠃⠀⠀⢠⡀⠘⠀⢀⣤⣴⡿⣻⣿⣾⣥⠀⠀⠃⢠⣦⠰⣾⣿⣿⣿⣴⢿⣯⣼⣿⠆⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⢸⡿⢿⣿⡿⠛⠁⠀⠋⠈⠰⠿⠻⠀⢿⣿⣿⣿⠀\n" +
+                "⠀⢿⢸⣿⢦⠀⢻⡷⢴⣷⣿⣧⢿⣿⡿⢁⣼⣿⣥⣬⡿⢿⣧⣴⣾⣽⣾⣅⡤⠀⠀⠀⠀⠀⠀⠀⠇⠀⣶⡯⣿⣿⣿⣿⡋⣠⠿⠟⣉⡩⠄⠒⠲⠀⢀⠰⢶⣬⠳⣀⣠⣼⣿⣯⡑⢻⣿⣷⣼⡆⠀⢠⣾⣽⣶⣿⣿⣿⡿⣅⣨⡿⠋⠀⠀⠸⣿⣿⣿⣿⣭⣿⢻⡿⠿⢿⣿⠿⢿⣿⣄⠀⢧⠸⠿⡇⠀⠰⠄⠀⠐⠄⠀⢀⣀⠘⣷⢿⣿⡀\n" +
+                "⠀⠘⡏⣻⣻⡷⢾⣷⠼⣿⣿⣧⠞⠛⠻⣏⡽⠻⠿⢿⣆⡸⠿⣉⡁⢠⣀⠉⠡⠇⠀⠀⠀⠀⠀⠀⠀⣶⣿⡿⢿⣯⣭⡯⠵⠆⣀⡾⢗⣲⣶⣶⣾⡶⠉⠀⢨⣬⡉⠉⣹⡷⢍⡽⢿⣿⣷⡿⠁⠀⣠⣿⣿⣿⣯⣿⣼⣿⣵⣾⡉⠙⣄⢀⠀⠘⠛⣿⣿⣿⣿⣿⣿⣿⣶⠾⢉⣤⣸⣿⣿⣗⣾⡆⢀⡴⢇⣀⡌⢦⣰⣤⣶⣾⣷⣿⡿⢨⣿⡇\n" +
+                "⠀⠀⣧⠁⢼⣿⡐⠻⣶⢿⣟⠉⠳⠶⡤⡵⢧⡀⠰⠎⠛⠁⠀⠀⠀⠀⠀⠀⣀⠐⠚⠀⠀⣠⣤⣾⣟⣿⣧⣿⠏⢉⣠⡄⣀⠈⠉⣷⣷⣿⣭⡿⠛⠀⠀⠀⢉⣈⣿⣿⠋⠀⠈⠀⠀⠁⠉⠀⢀⡀⠀⢀⠘⣿⣿⣿⣿⢷⡎⠹⣧⡶⢿⣉⠆⠀⠀⠺⢟⣿⣿⡿⠟⠟⣋⣴⣿⣿⠈⢹⡏⠀⠈⣗⣆⠀⢠⣯⣴⣾⣿⣿⠛⠉⣠⣿⣧⣾⣯⡇\n" +
+                "⠀⠀⢻⠤⣾⣿⣇⠀⢻⣄⣻⣦⣀⠆⠛⠀⢱⠛⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⢀⠀⣀⣴⣿⣿⣿⣷⣾⣿⣟⢿⣧⣼⢯⣄⣼⣷⣿⣿⣿⣏⣵⣦⠈⠀⠀⠀⠈⢹⣿⡟⣇⠀⡀⠀⠀⠀⠀⠀⠘⣷⠒⠯⠭⠉⡍⠙⢧⠉⣴⢀⡼⢳⣼⣏⠀⣵⣆⠀⠠⣦⠃⠀⠶⣾⣿⣽⢸⣿⠆⢈⡈⢦⣀⡸⠿⣿⠽⣿⣿⠏⣹⣿⠽⠿⠿⠿⠯⠿⠟⠀\n" +
+                "⠀⠀⠘⣇⣴⠋⡇⠀⠀⣿⣴⣮⣿⠷⣤⣀⠀⠀⡀⠀⠀⠀⠀⠐⠂⢲⣤⣘⣾⣿⣿⣷⣾⠟⠏⣀⣀⣌⠹⣷⣶⠆⣾⡿⠿⢛⣻⣿⣿⣿⣾⣿⣒⣿⣧⣤⣀⣾⡏⠀⠈⣀⣤⣄⡀⣀⡄⡀⠀⠈⠀⠀⠢⡀⠀⠰⢦⣀⣿⣿⣇⠸⣯⣿⣗⣮⡿⣷⡀⠀⠀⠀⢀⠙⠲⣼⡎⢀⠀⠀⠈⠑⢮⣵⣄⠈⠳⣿⡿⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⢳⣸⡆⠀⠀⢠⠇⣿⢻⣷⣿⡶⠿⠏⠁⠀⠀⠀⠀⢤⣤⣴⣿⣿⡟⣿⣿⣿⣿⣏⣤⣿⡉⢩⣭⣷⡟⠶⠀⢙⣷⣦⣸⣹⣯⣭⣾⣭⡍⣙⠛⠋⢉⠙⠗⠛⠋⠙⠋⢹⣏⣉⣉⣙⣻⣏⡉⠳⢤⠀⠁⡀⠀⠀⠈⣷⣿⡾⠷⢾⣿⣟⣿⣿⠇⠀⠀⠀⠀⠀⠁⣾⠿⠻⠸⠀⠀⠀⠂⠀⠈⠻⣷⣄⣤⣅⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⢻⣧⠀⣦⠀⢸⣿⣿⣿⡄⢠⡤⠀⣀⠀⠀⠢⡴⠶⡦⢿⣻⣤⣿⣿⣿⣿⡟⢷⡆⣘⣻⣿⠚⠛⣀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣤⣤⣬⣤⣤⣤⣾⣷⣶⣦⣿⣿⣿⣍⠉⠻⢽⣳⣤⣤⣤⣭⠀⠀⠀⠘⢿⠂⠀⠀⡼⣿⡟⠀⠀⠀⠀⠀⠀⠁⠐⠣⠀⢠⠀⠀⠀⠀⡄⣴⡀⠀⠘⣦⡈⠻⡟⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠈⣿⠀⢿⡶⡟⠛⠛⣿⣷⡄⠃⢀⣏⣱⣧⣤⣴⣶⣾⣾⣟⣻⣿⣿⣭⣽⣧⡴⠟⢹⡅⠸⣟⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠉⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣬⡻⣾⠛⠿⣿⣿⣿⣤⠀⠀⠋⠀⣀⠀⠈⠉⢿⡄⠀⡁⠀⠀⠀⠠⢀⡀⠀⣀⣇⠀⠀⠀⠉⢻⡉⠳⣄⠉⠳⡀⠙⢎⡳⡄⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠘⣇⡼⢻⣿⠀⠀⢯⡻⣷⣿⡋⠉⣉⣤⣶⡾⢿⣟⣿⠟⠛⢻⣽⣧⣾⣿⣧⣤⣔⣻⣦⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠙⣷⣄⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣞⢧⡀⠙⢿⢨⡛⠿⣦⣤⡀⢠⣄⠀⠀⠀⢻⠂⠑⠆⡀⠀⠐⠃⠳⡀⠙⠛⠒⢄⣀⠀⠀⠀⠀⢀⣵⠦⣬⣤⣤⠉⢻⡄⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠙⣇⢸⣿⢧⡀⢈⣷⡈⠛⣿⠟⠋⠀⠀⠤⣀⠀⢀⣷⣶⣶⣿⣿⣿⣿⣧⡉⠉⠹⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠙⣿⡆⠀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣹⣿⣿⣷⡀⠀⢸⣿⡀⣹⠿⢿⣾⣿⡅⢠⣤⣼⣷⣴⣀⢿⠀⠀⠀⡀⣀⣷⣆⣤⣟⡛⠛⣿⣿⣿⣿⣧⣤⣬⣿⣬⣽⡿⣟⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠹⣬⣿⡀⣧⣸⣧⣿⣦⠻⣶⢶⣤⣤⡴⠬⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⢳⣤⡀⠹⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⢿⣭⣥⡀⠸⠽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⢻⣧⣠⠾⢻⣿⣙⣟⣢⣽⡟⠻⠀⠠⣷⣠⣿⣿⠿⠻⢿⣿⣿⣿⠛⠛⢿⣿⣿⠀⠈⠙⢿⣿⣟⡂⠀⢻⡇⠘⣷⡶⣆⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⡆⢿⣟⣿⣸⣿⡇⠙⢿⡿⡁⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠙⢦⣀⡈⠙⠻⢿⣿⣿⣿⡿⠏⠀⣻⠙⣯⣹⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⢻⠻⠙⠏⢻⡿⢫⣿⠻⣿⠏⠀⢻⣾⡿⢿⣿⣿⣏⣅⡀⠈⠻⣿⣏⡆⠀⠈⢿⣇⣰⣄⣀⠀⢿⣿⠉⠀⠸⣿⠆⢿⢷⣿⡀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣜⢯⣽⣿⣦⣟⣷⡄⠘⠓⠂⣴⣦⠀⢥⠀⢼⣿⣿⣿⣿⣿⣿⣿⣿⣷⢤⠘⠛⠁⠀⠀⡄⠀⠘⠀⣷⣥⣄⠗⠀⠹⣾⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠻⢿⡚⠀⢀⣦⣞⣶⣄⣽⣷⣴⣶⣶⣿⣿⠀⠀⢿⣿⠸⢿⡇⠀⠀⣻⣿⢿⠀⠀⠘⣿⠤⠤⠀⠀⠀⢿⠀⠀⠀⢹⠄⢸⣾⣈⡇⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣧⢾⣿⣿⣿⣿⣷⣀⠑⠂⣹⣿⣶⣶⣦⠀⣹⣿⠿⡍⢻⣿⣿⣿⣿⣏⣅⡀⠀⢨⠁⠈⠀⡤⣉⠉⢸⣿⢶⡀⣆⠈⠱⣀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣴⣶⣀⣹⣿⣿⣿⡿⠿⣿⣿⠃⠀⢿⣿⡄⠀⠀⢻⡇⠙⠗⠀⠀⢹⣿⣀⠀⠀⠀⢾⡀⠀⠀⠀⣀⣸⣄⣀⣀⣾⣂⣠⣿⠟⠁⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣾⣿⣿⡿⠇⠉⣯⣁⣸⣧⡟⢙⡿⠇⠀⣭⠹⣾⢿⣎⣷⣾⣿⣿⣿⣯⣥⠀⠀⠀⠀⠀⠀⣿⢾⠋⠉⠁⢉⠹⢤⠀⠙⡀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣉⠉⢿⡿⣷⡀⠀⠛⣿⣧⠤⠈⢿⡇⠀⣀⣠⡷⢬⣤⣠⣰⠶⠌⠉⢻⣞⠀⠈⣷⡍⠉⣿⡧⠀⣿⠂⢻⡿⠙⠏⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⡏⣶⠰⣇⢡⣾⣿⠿⢽⠎⠀⢦⡤⠈⢋⠙⢷⣿⣿⣿⣿⣿⣿⣿⣿⣑⠀⠈⢀⡀⠸⠋⠸⣆⢠⡠⡀⠧⣈⠀⠀⢷⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⣸⡀⠘⣷⠈⢿⡀⠀⢻⣿⣦⣄⡼⠷⢶⣞⠋⠀⢀⠀⢹⡟⠁⠀⢠⣿⣯⣁⢸⣿⣇⢀⣿⡇⢀⣿⣷⢸⡏⢘⡏⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣀⣾⠃⠸⡧⠀⠈⠀⠀⠂⠀⢀⠨⠦⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠹⣾⢇⡀⢻⡆⠓⠀⡀⠘⡆⡄⠐⠳⣄⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠉⣻⠚⠻⢶⡾⠋⢻⠋⠉⣿⣿⠆⠀⣟⣿⡦⠄⠘⢦⣾⣧⠂⠄⢰⣿⣿⡳⢾⣿⡯⠿⠟⢿⢿⣿⣇⣿⣷⣾⠃⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣇⠀⠒⣧⡀⡶⠀⠀⠀⢠⠿⠁⣷⡀⠀⠀⢿⣛⣿⣿⣿⣿⣿⣷⡟⣆⠀⣈⡞⠻⡄⢻⣦⡄⠓⠄⢀⡿⢤⠀⠈⢦⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠁⠀⣾⣿⣷⡀⠞⠀⢰⣿⣧⠀⠘⣿⣿⠁⣀⠀⢻⣶⠿⣯⣽⢟⣿⠻⡍⠨⠷⠀⠀⣀⠀⢰⠇⠈⢳⠘⢿⡀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣧⣬⣿⣄⠀⢤⣀⠀⠀⠀⢹⡗⠀⠀⣼⣿⢿⣿⣿⣿⣿⣿⣿⣼⢺⣄⣰⠆⣙⣦⢿⣆⣈⣠⠓⠀⠘⢧⣄⠈⢢⡀⠙⢿⣿⣿⠿⢿⣿⣿⣿⣿⣿⣿⣆⣾⣿⣿⣿⣽⣷⣴⣾⣿⡿⣦⡾⢛⣿⡻⡿⠀⠉⢛⡷⠄⢠⠊⢉⠁⠀⠀⠀⠀⠸⠃⠀⣸⠁⠠⠞⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⣿⣾⣿⣿⣍⣴⠂⡀⠻⠷⠂⠀⣸⣇⣼⣿⣿⣿⣿⣿⣿⣿⠋⣀⣈⡉⠇⠀⠹⠋⠓⠀⢠⣤⡄⠰⣄⠀⠀⢷⣤⡀⠉⠛⠏⡉⢁⣩⣷⡌⠋⠙⠛⠛⠛⠛⠋⢩⠀⠀⠸⠁⠀⠈⠀⢸⡖⠀⠁⠈⠀⢈⠆⠃⠀⠀⢠⣆⠀⠀⠀⠀⢠⠀⠀⡀⢳⡶⠀⣸⡟⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠻⣽⣿⣿⣿⣿⣿⣾⣡⣷⡆⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⢛⡆⠀⢾⣿⠀⡀⠈⠀⠀⠀⠀⡣⠀⠀⠻⣝⣦⢠⠴⠿⠿⠛⠳⣤⡄⠚⠂⠀⠀⣤⠴⠀⣨⡀⠠⠄⢠⠶⣷⡄⠠⠄⠀⠁⠀⠉⠀⠀⣀⠀⠀⠀⠀⠀⠀⠈⠸⠀⠀⢡⠈⢣⡀⠁⡷⡄⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠀⠘⣷⡀⢻⡇⠀⠈⠀⠀⠀⠐⠉⠉⠤⢤⠈⠋⢀⠈⠧⣄⠀⠀⠀⠀⠁⢠⠀⠒⠲⢀⠀⠀⠈⠻⡖⠒⠆⠈⠛⠀⠀⠀⠀⡀⠑⠒⠐⠊⠁⣤⡀⠀⠀⠀⠀⠀⠀⠃⠆⠘⠀⠀⣿⠀⠀⣧⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⣿⣏⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⢀⣿⡇⠀⣷⠀⠀⠀⠀⠀⠀⠀⢀⡴⠈⠻⢶⠀⠀⣄⠀⠙⠂⠀⠀⠀⠀⠈⣶⣾⣄⠳⣶⣀⢄⡀⠂⢾⡆⠀⢋⣁⣀⠀⠨⠔⠀⠀⣀⣠⠀⠀⠀⠘⠀⠀⠀⢀⠀⠠⡄⠨⣅⢸⡀⠀⣬⡧⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⣉⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣤⣿⣿⣿⣄⡘⣆⠀⠀⠀⠀⢠⡀⠚⠀⡘⠓⠈⠁⢀⣾⡆⠀⠀⠀⠀⠀⠀⠋⠉⠑⢼⣛⠆⠈⠀⠄⠀⣼⠆⠀⠈⢧⡈⠿⣦⡀⠘⣿⣿⠏⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⡃⠀⠀⠙⣷⣤⣻⣧⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⢩⡔⣌⣦⣥⣿⣜⠽⣫⢟⡿⣻⣿⣯⡈⠛⢻⣿⠟⠻⠄⠀⢀⠀⠈⠀⠀⠠⢵⠀⠀⢶⣾⣯⡟⢒⠈⠒⠶⠒⣶⣤⠄⠀⠀⠀⠀⠀⠠⣠⣾⣿⣧⣤⣄⣀⣩⠤⠿⠟⠂⠉⠁⠀⠐⠦⣤⠀⠀⠀⠀⠀⢀⠀⠹⣆⠀⠀⢿⣿⣬⣸⣆⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢬⡘⢿⢻⣻⣿⣿⣿⣿⣿⣾⣼⣧⣟⣿⣽⢿⣿⠃⠀⠀⣀⣀⠘⠀⢀⣠⠀⠀⠀⠠⠀⠀⢀⣸⠃⡄⠀⣄⡤⠄⠈⠑⠀⠀⠒⠐⠀⠀⠀⠈⠛⠛⠹⠟⠃⠀⠀⠂⠀⠀⠀⠀⠀⠀⢤⡀⠀⢀⣀⡀⠀⠀⠈⣳⡀⠻⢯⡀⠠⢼⣿⡟⢿⡀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠛⠧⣯⣝⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⣄⣾⢤⣿⡿⣤⣄⠀⠈⠀⠀⠄⠀⠀⣀⣨⠁⠀⠷⠾⠀⠀⠀⠀⠠⣄⠑⠬⢤⡄⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠴⣄⡀⠀⠘⠋⠀⠀⠀⠐⠉⢱⡤⠀⣙⢦⠈⡉⠉⢨⡇⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠿⢿⣿⣿⣾⣻⣿⣿⡻⢿⣿⠈⠻⠿⠾⠆⠀⡀⠀⠀⠀⣨⡿⠆⡖⠰⡀⠀⠀⠀⠀⠀⡰⠛⠀⠀⠓⠀⢀⠀⠒⠾⠧⠥⠼⠤⠄⣠⣀⠀⠀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠠⢀⣧⣾⢁⣸⣾⡿⠳⠦⣄⡀⠺⣷⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠛⠿⠿⣿⣿⣿⣾⣿⣶⣷⣌⣙⣓⣲⡟⠫⢯⣀⠀⠃⣀⠉⠉⠳⠦⢤⣼⡇⠀⠠⣄⠀⠀⣰⣦⡤⠤⠀⣀⠀⠀⠀⠤⠮⢽⣶⣄⣀⠀⠁⠈⠑⣤⣤⠦⣄⣀⡿⢷⡤⣯⣅⣅⣸⣷⣿⣿⣾⡟⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⠛⠛⠛⠿⢿⣿⣷⣶⣾⣷⣶⣤⣄⣃⣄⠀⡄⠋⠀⠔⠛⠛⢷⢶⠏⠿⣦⣀⣀⡈⠀⢲⣦⣤⣀⣴⠄⠀⢹⣿⡇⠠⢶⣀⡄⣼⢿⠋⠀⠀⡀⠘⡯⢻⣿⡿⣷⣾⣿⠁⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠛⠛⠛⠻⠿⢶⣶⣶⣦⣄⣐⣀⣂⣄⣈⠈⡉⠋⠙⠋⠉⠉⠉⠉⡧⣼⣿⣿⣄⣀⣸⣉⣿⣷⣤⣶⣶⣿⣿⣷⣷⡿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠙⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠋⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n\t\t\t\tPROCESS KILLED"+ConsoleColors.RESET);
     }
 
 }
