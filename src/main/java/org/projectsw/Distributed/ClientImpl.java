@@ -96,6 +96,13 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                         throw new RemoteException("Cannot send the message to the server: " + e.getCause());
                     }
                 }
+                case COLUMN_SELECTION, TILE_INSERTION-> {
+                    try {
+                        server.update(new InputController(tui.getClientUID(), tui.getNumber()), arg);
+                    } catch (RemoteException e) {
+                        throw new RemoteException("Cannot send the client input to the server while selecting the column: " + e.getCause());
+                    }
+                }
                 default -> {
                     try {
                         server.update(new InputController(tui.getClientUID()), arg);

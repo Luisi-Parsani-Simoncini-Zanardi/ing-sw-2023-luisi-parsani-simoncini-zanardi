@@ -56,8 +56,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
-
-        System.out.println("rimuovere");
     }
 
     public void askNewNick(ArrayList<String> nicks){
@@ -110,12 +108,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         displayLogo();
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
-                /*synchronized (lock){//forse va eliminata perchè superflua
-                    try{lock.wait();
-                    }catch(InterruptedException e){
-                        System.err.println("Interrupted while waiting for server: " + e.getMessage());
-                    }
-                }*/
+
             }
             System.out.println("---YOUR TURN---");
             do{
@@ -159,17 +152,19 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             //TODO LOLLO: sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
             //case UPDATED_SHELF -> showShelf(model);
             case UPDATED_TEMPORARY_TILES -> {
-                System.out.println("You have selected: ");
-                ArrayList<Tile> tiles = model.getTemporaryTiles();
-                for (int i=0; i<tiles.size(); i++){
-                    int integer = i+1;
-                    switch (tiles.get(i).getTile()){
-                        case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
-                        case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
-                        case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
-                        case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
-                        case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
-                        case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
+                if (this.clientUID == model.getClientID()){
+                    System.out.println("You have selected: ");
+                    ArrayList<Tile> tiles = model.getTemporaryTiles();
+                    for (int i = 0; i < tiles.size(); i++) {
+                        int integer = i + 1;
+                        switch (tiles.get(i).getTile()) {
+                            case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
+                            case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
+                            case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
+                            case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
+                            case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
+                            case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
+                        }
                     }
                 }
             }

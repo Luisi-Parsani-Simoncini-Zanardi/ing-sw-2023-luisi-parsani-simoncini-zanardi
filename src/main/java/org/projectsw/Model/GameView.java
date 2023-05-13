@@ -107,7 +107,7 @@ public class GameView implements Serializable {
         this.currentPlayerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getChat();
         this.error = ErrorName.NO_ERROR;
-        this.clientID = 0;
+        this.clientID = model.getClientID();
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
