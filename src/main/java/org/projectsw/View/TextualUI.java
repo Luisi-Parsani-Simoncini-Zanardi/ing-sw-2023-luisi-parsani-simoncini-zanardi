@@ -256,7 +256,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         return scanner.nextInt()-1;
     }
     private boolean chooseTiles(){
-        System.out.println("You have selected:");
         //stampare le temp tiles
         System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
