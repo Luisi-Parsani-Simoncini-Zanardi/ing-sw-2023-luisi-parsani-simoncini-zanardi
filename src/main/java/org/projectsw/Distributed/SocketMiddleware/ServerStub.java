@@ -45,6 +45,19 @@ public class ServerStub implements Server {
     }
 
     @Override
+    public void initializePlayer(Client client, InputController input) throws RemoteException {
+
+    }
+    @Override
+    public void setNumberOfPlayers(InputController input) throws RemoteException {
+
+    }
+    @Override
+    public void setCorrectNick(InputController input) throws RemoteException {
+
+    }
+
+    @Override
     public void update(InputController input, UIEvent arg) throws RemoteException {
         try{
             oos.writeObject(arg);
@@ -58,22 +71,6 @@ public class ServerStub implements Server {
             throw new RemoteException("Cannot send event: "+ e.getMessage());
         }
     }
-
-    @Override
-    public void initializePlayer(Client client, InputController input) throws RemoteException {
-
-    }
-
-    @Override
-    public void setNumberOfPlayers(InputController input) throws RemoteException {
-
-    }
-
-    @Override
-    public void setCorrectNick(InputController input) throws RemoteException {
-
-    }
-
     public void receive(Client client) throws RemoteException{
         GameView model;
         try{
@@ -95,7 +92,6 @@ public class ServerStub implements Server {
 
         client.update(model, arg);
     }
-
     public void close() throws RemoteException {
         try {
             socket.close();

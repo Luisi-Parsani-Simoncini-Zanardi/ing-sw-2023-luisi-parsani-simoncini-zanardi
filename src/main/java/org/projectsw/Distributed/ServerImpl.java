@@ -21,7 +21,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     private static int counter = 0;
     private String tempNick;
     private int numberOfPlayers;
-    private Map<Client, Observer<Game, Game.Event>> clientObserverHashMap = new HashMap<>();
+    private final Map<Client, Observer<Game, Game.Event>> clientObserverHashMap = new HashMap<>();
 
     public ServerImpl() throws RemoteException {
         super();
@@ -45,20 +45,17 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         //TODO: gestire la possibile reconnect
         //TODO: gestire se il server crasha
         Observer<Game, Game.Event> observer = (o, arg) -> {
-            switch (arg) {
-                case ERROR -> {
-                    try {
-                        client.update(new GameView(this.model.getError(), this.model.getClientID()), arg);
-                    } catch (RemoteException e) {
-                        throw new RemoteException("cannot update the view " + e.getCause());
-                    }
+            if (Objects.requireNonNull(arg) == Game.Event.ERROR) {
+                try {
+                    client.update(new GameView(this.model.getError(), this.model.getClientID()), arg);
+                } catch (RemoteException e) {
+                    throw new RemoteException("cannot update the view " + e.getCause());
                 }
-                default -> {
-                    try {
-                        client.update(new GameView(this.model), arg);
-                    } catch (RemoteException e) {
-                        throw new RemoteException("cannot update the view " + e.getCause());
-                    }
+            } else {
+                try {
+                    client.update(new GameView(this.model), arg);
+                } catch (RemoteException e) {
+                    throw new RemoteException("cannot update the view " + e.getCause());
                 }
             }
         };
@@ -113,10 +110,8 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 this.controller.playerJoin(this.tempNick);
             }else{
                 controller.removeGameObserver(clientObserverHashMap.get(client));
-                Timer timerToDeath = new Timer();
-                long delay = 2000L;
-                TimerTask terminator = new Terminator(client);
-                timerToDeath.schedule(terminator, delay);
+                clientObserverHashMap.remove(client);
+                client.kill();
             }
         }
     }

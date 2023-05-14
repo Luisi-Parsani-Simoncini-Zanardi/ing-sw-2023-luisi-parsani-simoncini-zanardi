@@ -6,14 +6,11 @@ import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.UIEvent;
-
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
 
@@ -25,8 +22,6 @@ public class Engine{
     private final ArrayList<Client> clients = new ArrayList<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
-    private boolean chooseNumberOfPlayers=false;
-    private final Object lock = new Object();
 
 
     /**
@@ -77,8 +72,6 @@ public class Engine{
                 game.setError(ErrorName.LOBBY_CLOSED);
             }
     }
-
-
 
     /**
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
@@ -149,7 +142,7 @@ public class Engine{
         try {
             game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error occured: "+e.getCause());
+            throw new RuntimeException("Network error occurred: "+e.getCause());
         }
     }
 
@@ -212,13 +205,14 @@ public class Engine{
         }
     }
 
-    public void placeMultipleTiles(String order) {
+    public void placeMultipleTiles(String order) throws UpdatingOnWrongPlayerException {
         if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
             for (int i = 0; i < order.length(); i++) {
                 Integer tile = Character.getNumericValue(order.charAt(i));
                 try {
                     placeTiles(tile);
                 } catch (UpdatingOnWrongPlayerException e) {
+                    throw new UpdatingOnWrongPlayerException(e.getMessage());
                 }
             }
         } else {

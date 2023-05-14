@@ -1,40 +1,26 @@
 package org.projectsw.View;
-import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.ErrorName;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
-
 import java.awt.*;
-import java.awt.desktop.SystemEventListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextualUI extends Observable<UIEvent> implements Runnable{
 
-    private UIState state = UIState.OPPONENT_TURN;//in modo da aspettare all'inizio e partire solo quando il server tramite il controller mi da il via
+    private UIState state = UIState.OPPONENT_TURN;
     private final Object lock = new Object();
     private Integer number;
     private Point point;
     private String nickname;
     private String string;
     private int clientUID;
-    private Client client;
-
-    public TextualUI(Client client){
-        this.client = client;
-    }
 
     private UIState getState(){
         synchronized(lock){
             return state;
-        }
-    }
-    public void setState(UIState state){
-        synchronized (lock){
-            this.state = state;
-            lock.notifyAll();
         }
     }
     public String getString(){return this.string;}
@@ -46,60 +32,17 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
     public String getNickname(){return this.nickname;}
     public int getClientUID(){return clientUID;}
-
-    public void joinGame() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Insert your nickname: ");
-        nickname = scanner.nextLine();
-        try {
-            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred: "+e.getCause());
-        }
-    }
-
-    public void askNewNick(ArrayList<String> nicks){
-        Scanner scanner = new Scanner(System.in);
-        boolean control=false;
-        do{
-            System.out.println(ConsoleColors.RED +"Invalid nickname choose another one please"+ ConsoleColors.RESET+"\nInsert new nickname");
-            nickname = scanner.nextLine();
-            if(!nicks.contains(nickname))
-                control=true;
-        }while(!control);
-        try {
-            setChangedAndNotifyObservers(UIEvent.NEW_CHOOSE_NICKNAME);
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred: "+e.getCause());
-        }
-    }
-
-    public void askNumber(){
-        Scanner scanner = new Scanner(System.in);
-        do{
-            System.out.print("Insert number of players: ");
-            number = scanner.nextInt();
-            if(number<Config.minPlayers || number>Config.maxPlayers)
-                System.out.println(ConsoleColors.RED +"Invalid Number of players"+ ConsoleColors.RESET);
-        }while(number<Config.minPlayers || number>Config.maxPlayers);
-        try {
-            setChangedAndNotifyObservers(UIEvent.CHOOSE_NUMBER_OF_PLAYERS);
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred: "+e.getCause());
-        }
-    }
-
     public void setID(int ID){
         this.clientUID=ID;
     }
-    public void kill(){
-        System.out.println(ConsoleColors.RED +"Unable to join the game\nClosing the process..."+ ConsoleColors.RESET);
-        printImage();
-        System.exit(0);
-    }
-
     public void setNickname(String nickname){
         this.nickname = nickname;
+    }
+    public void setState(UIState state){
+        synchronized (lock){
+            this.state = state;
+            lock.notifyAll();
+        }
     }
 
     @Override
@@ -108,7 +51,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         displayLogo();
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
-
+                 //chatting
             }
             System.out.println("---YOUR TURN---");
             do{
@@ -143,6 +86,81 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             setState(UIState.OPPONENT_TURN);
         }
     }
+
+    private boolean chooseColumn(){
+        System.out.println("Are you sure?\n1: yes\n2: no");
+        Scanner scanner = new Scanner(System.in);
+        int choice = scanner.nextInt();
+        return choice == 2;
+    }
+
+    private Integer selectTemporaryTile(){
+        System.out.println("Which tile do you want to insert?");
+        Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNextInt()) {
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the tile number: ");
+            scanner.next();
+        }
+        return scanner.nextInt()-1;
+    }
+
+    private Integer selectColumnInput(){
+        System.out.println("In which column do you want to insert your tiles?");
+        Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNextInt()) {
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
+            scanner.next();
+        }
+        return scanner.nextInt()-1;
+    }
+
+    private boolean chooseTiles(){
+        //stampare le temp tiles
+        System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextInt() == 1;
+    }
+
+    private Point selectTilesInput(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Insert the row: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the row: ");
+            scanner.next();
+        }
+        int row = scanner.nextInt();
+        System.out.println("Insert the column: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
+            scanner.next();
+        }
+        int column = scanner.nextInt();
+        return new Point(column-1, row-1);
+    }
+
+    private void showBoard(GameView model){
+        Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
+        board.setBoard(model.getGameBoard());
+        System.out.println("-----GAME BOARD-----");
+        board.printBoard();
+    }
+
+    private void showShelf(GameView model){
+        System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
+        Shelf shelf = new Shelf();
+        shelf.setShelf(model.getCurrentPlayerShelf());
+        shelf.printShelf();
+    }
+
+    private void showCurrentPlayer(GameView model){
+        System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
+    }
+
+    private void showChat(GameView model){
+        for(Message message : model.getChat())
+            System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
+    }
+
     public void update(GameView model, Game.Event arg){
         switch(arg){
             case UPDATED_BOARD -> {
@@ -179,9 +197,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 }
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
-                        case EMPTY_TEMPORARY_POINTS -> {
-                            System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
-                        }
+                        case EMPTY_TEMPORARY_POINTS -> System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
                         case INVALID_RECIPIENT -> {
                             //TODO LUCA: gestire l'eccezione
                         }
@@ -225,80 +241,52 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
 
-    private boolean chooseColumn(){
-        System.out.println("Are you sure?\n1: yes\n2: no");
+    private void joinGame() {
         Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
-        //TODO: non capisco il perchè di questo if (continuo a chiedere e quando ho finito notifico)
-        /*if(choice == 2){
-            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
-        }*/
-        return choice == 2;
-    }
-
-    private Integer selectTemporaryTile(){
-        System.out.println("Which tile do you want to insert?");
-        Scanner scanner = new Scanner(System.in);
-        while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the tile number: ");
-            scanner.next();
+        System.out.println("Insert your nickname: ");
+        nickname = scanner.nextLine();
+        try {
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
         }
-        return scanner.nextInt()-1;
     }
 
-    private Integer selectColumnInput(){
-        System.out.println("In which column do you want to insert your tiles?");
+    public void askNewNick(ArrayList<String> nicks){
         Scanner scanner = new Scanner(System.in);
-        while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
-            scanner.next();
+        boolean control=false;
+        do{
+            System.out.println(ConsoleColors.RED +"Invalid nickname choose another one please"+ ConsoleColors.RESET+"\nInsert new nickname");
+            nickname = scanner.nextLine();
+            if(!nicks.contains(nickname))
+                control=true;
+        }while(!control);
+        try {
+            setChangedAndNotifyObservers(UIEvent.NEW_CHOOSE_NICKNAME);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
         }
-        return scanner.nextInt()-1;
     }
-    private boolean chooseTiles(){
-        //stampare le temp tiles
-        System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
+
+    public void askNumber(){
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextInt() == 1;
-    }
-    private Point selectTilesInput(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Insert the row: ");
-        while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the row: ");
-            scanner.next();
+        do{
+            System.out.print("Insert number of players: ");
+            number = scanner.nextInt();
+            if(number<Config.minPlayers || number>Config.maxPlayers)
+                System.out.println(ConsoleColors.RED +"Invalid Number of players"+ ConsoleColors.RESET);
+        }while(number<Config.minPlayers || number>Config.maxPlayers);
+        try {
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NUMBER_OF_PLAYERS);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
         }
-        int row = scanner.nextInt();
-        System.out.println("Insert the column: ");
-        while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
-            scanner.next();
-        }
-        int column = scanner.nextInt();
-        return new Point(column-1, row-1);
     }
 
-    private void showBoard(GameView model){
-        Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
-        board.setBoard(model.getGameBoard());
-        System.out.println("-----GAME BOARD-----");
-        board.printBoard();
-    }
-
-    private void showShelf(GameView model){
-        System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
-        Shelf shelf = new Shelf();
-        shelf.setShelf(model.getCurrentPlayerShelf());
-        shelf.printShelf();
-    }
-
-    private void showCurrentPlayer(GameView model){
-        System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
-    }
-
-    private void showChat(GameView model){
-        for(Message message : model.getChat())
-            System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
+    public void kill(){
+        System.out.println(ConsoleColors.RED +"Unable to join the game\nClosing the process..."+ ConsoleColors.RESET);
+        printImage();
+        System.exit(0);
     }
 
     public void displayLogo(){
@@ -379,23 +367,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni giocatore che aspetta
 //per gestirlo bisognerà usare synchronized (lock) la tui si metterà in continuazione in ascolto di un input che verrà mandato
 // ad entrambi i thread di chat e del gioco, ci sarà un controllo di formato (ad esempio: per scrivere in chat bisogna usare un determinato formato

@@ -6,7 +6,6 @@ import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 import org.projectsw.View.UIEvent;
-
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -23,17 +22,14 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         super();
         initialize(server);
     }
-
     public ClientImpl(int port, Server server) throws RemoteException {
         super(port);
         initialize(server);
     }
-
     public ClientImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf, Server server) throws RemoteException {
         super(port, csf, ssf);
         initialize(server);
     }
-
     private void initialize(Server server) throws RemoteException{
         try {
             server.register(this);
@@ -42,28 +38,9 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         }
     }
 
-    @Override
-    public TextualUI getTui()throws RemoteException{
-        return this.tui;
-    }
-
-    @Override
-    public GraphicalUI getGui() throws RemoteException{
-        return this.gui;
-    }
-
-    @Override
-    public void update(GameView o, Game.Event arg) throws RemoteException {
-        if(tui != null)
-            tui.update(o, arg);
-        else
-            gui.update(o, arg);
-    }
-
-
     public void setTui (Server server){
         gui = null;
-        tui = new TextualUI(this);
+        tui = new TextualUI();
         tuiObserver = (o, arg) -> {
             switch (arg){
                 case CHOOSE_NUMBER_OF_PLAYERS -> {
@@ -120,42 +97,6 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         tui.addObserver(tuiObserver);
         tui.run();
     }
-    @Override
-    public void setID(GameView serverResponse) throws RemoteException{
-        tui.setID(serverResponse.getClientID());
-    }
-
-    @Override
-    public void setNickname(GameView serverResponse) throws RemoteException{
-        tui.setNickname(serverResponse.getCurrentPlayerName());
-    }
-
-    //usata solo lato server nel arraylist di client
-    @Override
-    public String getNickname() throws RemoteException{
-        return tui.getNickname();
-    }
-
-    @Override
-    public void askNumberOfPlayers() throws RemoteException{
-        tui.askNumber();
-    }
-
-    @Override
-    public void askNewNick(GameView nicks) throws RemoteException{
-        tui.askNewNick(nicks.getPlayerNicks());
-    }
-
-    /**
-     * close the client
-     */
-    @Override
-    public void kill() throws RemoteException{
-        tui.deleteObserver(tuiObserver);
-        tui.kill();
-        System.exit(0);
-    }
-
     public void setGui (Server server) {
         gui = new GraphicalUI();
         tui = null;
@@ -169,4 +110,43 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         });
         gui.run();
     }
+    @Override
+    public void setID(GameView serverResponse) throws RemoteException{
+        tui.setID(serverResponse.getClientID());
+    }
+    @Override
+    public void setNickname(GameView serverResponse) throws RemoteException{
+        tui.setNickname(serverResponse.getCurrentPlayerName());
+    }
+    @Override
+    public String getNickname() throws RemoteException{
+        return tui.getNickname();
+    }
+
+    @Override
+    public void askNumberOfPlayers() throws RemoteException{
+        tui.askNumber();
+    }
+    @Override
+    public void askNewNick(GameView nicks) throws RemoteException{
+        tui.askNewNick(nicks.getPlayerNicks());
+    }
+    /**
+     * close the client
+     */
+    @Override
+    public void kill() throws RemoteException{
+        tui.deleteObserver(tuiObserver);
+        tui.kill();
+        System.exit(0);
+    }
+
+    @Override
+    public void update(GameView o, Game.Event arg) throws RemoteException {
+        if(tui != null)
+            tui.update(o, arg);
+        else
+            gui.update(o, arg);
+    }
+
 }

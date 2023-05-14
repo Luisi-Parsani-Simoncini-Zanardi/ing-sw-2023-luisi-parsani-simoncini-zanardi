@@ -16,8 +16,6 @@ public interface Client extends Remote {
      */
     void update(GameView o, Game.Event arg) throws RemoteException;
     void kill()throws RemoteException;
-     GraphicalUI getGui() throws RemoteException;
-     TextualUI getTui() throws RemoteException;
     public void setID(GameView serverResponse)throws RemoteException;
     public void setNickname(GameView serverResponse)throws RemoteException;
     public String getNickname()throws RemoteException;;
