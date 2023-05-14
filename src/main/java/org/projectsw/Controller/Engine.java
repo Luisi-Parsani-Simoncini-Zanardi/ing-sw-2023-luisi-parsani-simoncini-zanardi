@@ -4,6 +4,7 @@ import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
+import org.projectsw.Util.Observer;
 import org.projectsw.View.UIEvent;
 
 import java.awt.*;
@@ -11,6 +12,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+
 import static org.projectsw.Model.TilesEnum.EMPTY;
 import static org.projectsw.Model.TilesEnum.UNUSED;
 
@@ -489,6 +492,10 @@ public class Engine{
     private boolean isEmptyOrUnusedBoard (int x, int y){
         return (game.getBoard().getBoard()[y][x].getTile() == EMPTY) ||
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
+    }
+
+    public void removeGameObserver(Observer<Game, Game.Event> observer){
+        this.getGame().deleteObserver(observer);
     }
 
     public void update(InputController input, UIEvent UiEvent) throws UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException, UnselectableColumnException {

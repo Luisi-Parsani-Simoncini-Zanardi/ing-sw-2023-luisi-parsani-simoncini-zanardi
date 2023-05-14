@@ -5,16 +5,13 @@ import org.projectsw.Exceptions.*;
 import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
-import org.projectsw.Util.Observable;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.UIEvent;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class ServerImpl extends UnicastRemoteObject implements Server{
 
@@ -24,6 +21,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     private static int counter = 0;
     private String tempNick;
     private int numberOfPlayers;
+    private Map<Client, Observer<Game, Game.Event>> clientObserverHashMap = new HashMap<>();
 
     public ServerImpl() throws RemoteException {
         super();
@@ -64,6 +62,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 }
             }
         };
+        clientObserverHashMap.put(client, observer);
         this.model.addObserver(observer);
     }
 
@@ -113,6 +112,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 this.controller.getClients().add(client);
                 this.controller.playerJoin(this.tempNick);
             }else{
+                controller.removeGameObserver(clientObserverHashMap.get(client));
                 Timer timerToDeath = new Timer();
                 long delay = 2000L;
                 TimerTask terminator = new Terminator(client);

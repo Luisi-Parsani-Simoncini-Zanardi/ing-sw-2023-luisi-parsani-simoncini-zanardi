@@ -5,6 +5,8 @@ import org.projectsw.Model.InputController;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
+import org.projectsw.View.UIEvent;
+
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -14,7 +16,8 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientImpl extends UnicastRemoteObject implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
-
+    private Observer<TextualUI, UIEvent> tuiObserver;
+    private Observer<GraphicalUI, UIEvent> guiObserver;
 
     public ClientImpl(Server server) throws RemoteException{
         super();
@@ -61,8 +64,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     public void setTui (Server server){
         gui = null;
         tui = new TextualUI(this);
-
-        tui.addObserver((o, arg) -> {
+        tuiObserver = (o, arg) -> {
             switch (arg){
                 case CHOOSE_NUMBER_OF_PLAYERS -> {
                     try {
@@ -114,7 +116,8 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                     }
                 }
             }
-        });
+        };
+        tui.addObserver(tuiObserver);
         tui.run();
     }
     @Override
@@ -148,6 +151,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
      */
     @Override
     public void kill() throws RemoteException{
+        tui.deleteObserver(tuiObserver);
         tui.kill();
         System.exit(0);
     }
