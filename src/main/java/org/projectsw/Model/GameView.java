@@ -1,6 +1,7 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.ErrorName;
+import org.projectsw.Util.Config;
 
 import java.awt.*;
 import java.io.Serial;
@@ -19,6 +20,7 @@ public class GameView implements Serializable {
     private final ArrayList<Point> selectablePoints;
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
+    private final Tile[][] currentPlayerPersonalGoal;
 
     public GameView(int clientID){
         this.gameBoard =  new Tile[1][1];
@@ -32,6 +34,7 @@ public class GameView implements Serializable {
         this.selectablePoints = new ArrayList<>();
         this.temporaryPoints = new ArrayList<>();
         this.temporaryTiles = new ArrayList<>();
+        this.currentPlayerPersonalGoal= new Tile[1][1];
     }
 
     public GameView(ErrorName error, int clientID){
@@ -46,6 +49,7 @@ public class GameView implements Serializable {
         this.selectablePoints = new ArrayList<>();
         this.temporaryPoints = new ArrayList<>();
         this.temporaryTiles = new ArrayList<>();
+        this.currentPlayerPersonalGoal= new Tile[1][1];
     }
 
     public GameView(Game model){
@@ -58,6 +62,17 @@ public class GameView implements Serializable {
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
+        this.currentPlayerPersonalGoal= personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
+    }
+
+    private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
+        Tile[][] goal = new Tile[Config.shelfHeight][Config.shelfLength];
+        for (int i = 0; i < Config.shelfHeight; i++) {
+            for (int j = 0; j < Config.shelfLength; j++) {
+                goal[i][j] = new Tile(personalGoal[i][j], 0);
+            }
+        }
+        return goal;
     }
 
     public Tile[][] getGameBoard(){return this.gameBoard;}
@@ -69,6 +84,7 @@ public class GameView implements Serializable {
     public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
     public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
     public ArrayList<Tile> getTemporaryTiles() {return this.temporaryTiles; }
+    public Tile[][] getCurrentPlayerPersonalGoal() {return this.currentPlayerPersonalGoal; }
 
 
 

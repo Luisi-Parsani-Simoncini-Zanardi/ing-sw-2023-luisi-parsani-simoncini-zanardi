@@ -90,8 +90,9 @@ public class Engine{
     private void startGame(){
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
-        fillBoard();
         game.setChangedAndNotifyObservers(Game.Event.UPDATED_CURRENT_PLAYER);
+        game.personalGoalCreated();
+        fillBoard();
         game.nextTurnNotify();
     }
 

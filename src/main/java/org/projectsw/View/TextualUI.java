@@ -79,6 +79,10 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 if (model.getCurrentPlayerName().equals(nickname))
                     showBoard(model);
             }
+            case PERSONAL_GOAL -> {
+                if (model.getCurrentPlayerName().equals(nickname))
+                    showPersonalGoal(model);
+            }
             case UPDATED_SHELF -> {if (model.getCurrentPlayerName().equals(nickname)) showShelf(model);}
             case SET_CLIENT_ID_RETURN -> {
                 if (clientUID==0)
@@ -220,6 +224,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getCurrentPlayerShelf());
+        shelf.printShelf();
+    }
+
+    private void showPersonalGoal(GameView model){
+        System.out.println("\n--- YOUR PERSONAL GOAL ---\n");
+        Shelf shelf = new Shelf();
+        shelf.setShelf(model.getCurrentPlayerPersonalGoal());
         shelf.printShelf();
     }
 
