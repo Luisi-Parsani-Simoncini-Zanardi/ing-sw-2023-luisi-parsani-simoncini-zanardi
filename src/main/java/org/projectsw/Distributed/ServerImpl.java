@@ -5,6 +5,8 @@ import org.projectsw.Exceptions.*;
 import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
+import org.projectsw.Util.Observable;
+import org.projectsw.Util.Observer;
 import org.projectsw.View.UIEvent;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -44,24 +46,25 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     public void register(Client client) throws RemoteException {
         //TODO: gestire la possibile reconnect
         //TODO: gestire se il server crasha
-            this.model.addObserver((o, arg) -> {
-                switch (arg) {
-                    case ERROR -> {
-                        try {
-                            client.update(new GameView(this.model.getError(), this.model.getClientID()), arg);
-                        } catch (RemoteException e) {
-                            throw new RemoteException("cannot update the view " + e.getCause());
-                        }
-                    }
-                    default -> {
-                        try {
-                            client.update(new GameView(this.model), arg);
-                        } catch (RemoteException e) {
-                            throw new RemoteException("cannot update the view " + e.getCause());
-                        }
+        Observer<Game, Game.Event> observer = (o, arg) -> {
+            switch (arg) {
+                case ERROR -> {
+                    try {
+                        client.update(new GameView(this.model.getError(), this.model.getClientID()), arg);
+                    } catch (RemoteException e) {
+                        throw new RemoteException("cannot update the view " + e.getCause());
                     }
                 }
-            });
+                default -> {
+                    try {
+                        client.update(new GameView(this.model), arg);
+                    } catch (RemoteException e) {
+                        throw new RemoteException("cannot update the view " + e.getCause());
+                    }
+                }
+            }
+        };
+        this.model.addObserver(observer);
     }
 
     @Override

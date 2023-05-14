@@ -2,6 +2,7 @@ package org.projectsw.Distributed;
 import org.projectsw.Model.Game;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
+import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 import java.rmi.RemoteException;
@@ -13,6 +14,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientImpl extends UnicastRemoteObject implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
+
 
     public ClientImpl(Server server) throws RemoteException{
         super();
@@ -59,6 +61,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     public void setTui (Server server){
         gui = null;
         tui = new TextualUI(this);
+
         tui.addObserver((o, arg) -> {
             switch (arg){
                 case CHOOSE_NUMBER_OF_PLAYERS -> {

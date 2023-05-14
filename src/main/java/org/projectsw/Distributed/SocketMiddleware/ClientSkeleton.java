@@ -89,7 +89,7 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public String getNickname() {
+    public String getNickname() throws RemoteException {
         return null;
     }
 

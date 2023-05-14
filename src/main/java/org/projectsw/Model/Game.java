@@ -2,7 +2,6 @@ package org.projectsw.Model;
 
 import org.projectsw.Exceptions.ErrorName;
 import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
 import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
@@ -350,7 +349,7 @@ public class Game extends Observable<Game.Event> {
     public void nextTurnNotify() {
         try {
             setChangedAndNotifyObservers(Event.NEXT_PLAYER_TURN_NOTIFY);
-        } catch (RemoteException e) {
+        } catch (RemoteException e){
             throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
         }
     }
