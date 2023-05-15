@@ -272,7 +272,7 @@ public class Engine{
      * Calls place tiles for all the indexes contained in order arrayList.
      * @param order the arraylist that contains all the indexes of the TemporaryTiles sorted by selection order.
      */
-    public void placeAllTiles(ArrayList<Integer> order) throws UpdatingOnWrongPlayerException {
+    public void placeAllTiles(ArrayList<Integer> order) {
         if(order.size() != game.getCurrentPlayer().getTemporaryTiles().size()) throw new IllegalArgumentException();
         for(Integer index : order){
             placeTiles(index);

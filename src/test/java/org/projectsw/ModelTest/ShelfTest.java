@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.projectsw.Exceptions.UnselectableColumnException;
 import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
-import org.projectsw.Exceptions.UpdatingOnWrongPlayerException;
 import org.projectsw.Model.*;
 
 import java.util.ArrayList;
