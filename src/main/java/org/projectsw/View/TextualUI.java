@@ -309,7 +309,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     public void kill(){
-        System.out.println(ConsoleColors.RED +"Unable to join the game\nClosing the process..."+ ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED +"Unable to join the game: FULL LOBBY\nClosing the process..."+ ConsoleColors.RESET);
         printImageKill();
         System.exit(0);
     }
@@ -326,7 +326,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void printImageKill(){
-        System.out.println(ConsoleColors.YELLOW + "                      "+ConsoleColors.GREY+"/^--^\\     /^--^\\     /^--^\\\n" +
+        System.out.println(ConsoleColors.YELLOW + "\n                      "+ConsoleColors.GREY+"/^--^\\     /^--^\\     /^--^\\\n" +
                 "                      \\____/     \\____/     \\____/\n" +
                 "                     /      \\   /      \\   /      \\\n" +
                 "                    |        | |        | |        |\n" +
