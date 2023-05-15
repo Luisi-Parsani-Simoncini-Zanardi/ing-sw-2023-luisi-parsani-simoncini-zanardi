@@ -282,7 +282,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         Scanner scanner = new Scanner(System.in);
         boolean control=false;
         do{
-            System.out.println(ConsoleColors.RED +"Invalid nickname choose another one please"+ ConsoleColors.RESET+"\nInsert new nickname");
+            System.out.println(ConsoleColors.RED +"Invalid nickname. Try again..."+ ConsoleColors.RESET+"\nInsert new nickname:");
             nickname = scanner.nextLine();
             if(!nicks.contains(nickname))
                 control=true;
@@ -300,7 +300,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             System.out.print("Insert number of players: ");
             number = scanner.nextInt();
             if(number<Config.minPlayers || number>Config.maxPlayers)
-                System.out.println(ConsoleColors.RED +"Invalid Number of players"+ ConsoleColors.RESET);
+                System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
         try {
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NUMBER_OF_PLAYERS);
