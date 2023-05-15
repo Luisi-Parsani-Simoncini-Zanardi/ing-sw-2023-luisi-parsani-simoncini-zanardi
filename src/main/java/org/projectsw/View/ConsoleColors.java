@@ -17,6 +17,7 @@ public class ConsoleColors {
     public static final String GREY = "\033[38;5;248m";
 
     // Bold Colors
+    public static final String RED_BOLD = "\033[1;31m";
     public static final String BLUE_BOLD = "\033[1;34m";
     public static final String PURPLE_BOLD = "\033[1;35m";
 
