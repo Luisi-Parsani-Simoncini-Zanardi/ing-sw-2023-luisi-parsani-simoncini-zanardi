@@ -2,7 +2,6 @@ package org.projectsw.Model;
 
 import org.projectsw.Exceptions.UnselectableColumnException;
 import org.projectsw.Util.Config;
-import org.projectsw.Exceptions.UpdatingOnWrongPlayerException;
 import org.projectsw.Util.Observable;
 import org.projectsw.View.ConsoleColors;
 
