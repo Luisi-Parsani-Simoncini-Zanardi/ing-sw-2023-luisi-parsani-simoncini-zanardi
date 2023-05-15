@@ -67,7 +67,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                     throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
                 }
             }while(noMoreSelectableTiles && chooseTiles());
-            noMoreSelectableTiles = true;
             try {
                 setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
             } catch (RemoteException e) {
@@ -90,7 +89,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             }while(noMoreTemporaryTiles);
-            noMoreTemporaryTiles = true;
             setState(UIState.OPPONENT_TURN);
         }
     }
@@ -175,6 +173,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case NEXT_PLAYER_TURN_NOTIFY -> {
                 if (model.getCurrentPlayerName().equals(nickname)) {
                     setState(UIState.YOUR_TURN);
+                    noMoreSelectableTiles = true;
+                    noMoreTemporaryTiles = true;
                 }
             }
             case SELECTION_NOT_POSSIBLE -> {
@@ -214,7 +214,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private boolean chooseTiles(){
-        //stampare le temp tiles
         System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt() == 1;
