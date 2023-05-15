@@ -1,7 +1,6 @@
 package org.projectsw.ModelTest;
 
 import org.junit.Test;
-import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Exceptions.InvalidRecipientException;
 import org.projectsw.Model.Message;
 import org.projectsw.Model.Player;

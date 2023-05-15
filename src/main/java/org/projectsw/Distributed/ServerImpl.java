@@ -65,12 +65,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     @Override
     public void update(InputController input, UIEvent arg) throws RemoteException {
-            try {
                 this.controller.update(input, arg);
-            } catch (UnselectableTileException | NoMoreColumnSpaceException | MaxTemporaryTilesExceededException |
-                     UpdatingOnWrongPlayerException | UnselectableColumnException e) {
-                throw new RemoteException("Something went wrong :(\nERROR: " + e.getCause());
-            }
     }
 
     private ArrayList<String> getNicks() throws RemoteException {

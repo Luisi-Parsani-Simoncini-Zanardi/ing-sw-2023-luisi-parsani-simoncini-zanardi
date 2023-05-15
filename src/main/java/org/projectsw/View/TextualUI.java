@@ -136,7 +136,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                             System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
                         }
                         case INVALID_RECIPIENT -> {
-                            //TODO LUCA: gestire l'eccezione
+                            //TODO: gestire l'eccezione
                         }
                         case UNSELECTABLE_TILE -> {
                             System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
@@ -326,17 +326,16 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void printImageKill(){
-        System.out.println(ConsoleColors.RED_BOLD + "             .--.           .---.        .-.");
-        System.out.println("         .---|--|   .-.     | A |  .---. |~|    .--.");
-        System.out.println("      .--|===|Ch|---|_|--.__| S |--|:::| |~|-==-|==|---.");
-        System.out.println("      |%%|NT2|oc|===| |~~|%%| C |--|   |_|~|CATS|  |___|-.");
-        System.out.println("      |  |   |ah|===| |==|  | I |  |:::|=| |    |GB|---|=|");
-        System.out.println("      |  |   |ol|   |_|__|  | I |__|   | | |    |  |___| |");
-        System.out.println("      |~~|===|--|===|~|~~|%%|~~~|--|:::|=|~|----|==|---|=|");
-        System.out.println("------^--^---'--^---^-^--^--^---'--^---^-^-^-==-^--^---^-'------");
-        System.out.println("\n");
-        System.out.println("PROCESS CLOSED");
-        System.out.println(ConsoleColors.RESET);
+        System.out.println(ConsoleColors.YELLOW + "                      "+ConsoleColors.GREY+"/^--^\\     /^--^\\     /^--^\\\n" +
+                "                      \\____/     \\____/     \\____/\n" +
+                "                     /      \\   /      \\   /      \\\n" +
+                "                    |        | |        | |        |\n" +
+                "                     \\__  __/   \\__  __/   \\__  __/\n" +ConsoleColors.YELLOW+
+                "|^|^|^|^|^|^|^|^|^|^|^|^"+ConsoleColors.GREY+"\\ \\"+ConsoleColors.YELLOW+"^|^|^|^"+ConsoleColors.GREY+"/ /"+ConsoleColors.YELLOW+"^|^|^|^|^"+ConsoleColors.GREY+"\\ \\"+ConsoleColors.YELLOW+"^|^|^|^|^|^|^|^|^|^|^|^|\n" +
+                "| | | | | | | | | | | | |"+ConsoleColors.GREY+"\\ \\"+ConsoleColors.YELLOW+"| | |"+ConsoleColors.GREY+"/ /"+ConsoleColors.YELLOW+"| | | | | |"+ConsoleColors.GREY+"\\ \\"+ConsoleColors.YELLOW+"| | | | | | | | | | | |\n" +
+                "####### "+ConsoleColors.RED_BOLD+"PROCESS"+ConsoleColors.YELLOW +" ########"+ConsoleColors.GREY+"/ /"+ConsoleColors.YELLOW+"######"+ConsoleColors.GREY+"\\ \\"+ConsoleColors.YELLOW+"###########"+ConsoleColors.GREY+"/ /"+ConsoleColors.YELLOW+"####### "+ConsoleColors.RED_BOLD+"CLOSED"+ConsoleColors.YELLOW+" ########\n" +
+                "| | | | | | | | | | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | | |"+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+" | | | | | | | | | | | |\n" +
+                "|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|"+ConsoleColors.RESET);
     }
 
 }

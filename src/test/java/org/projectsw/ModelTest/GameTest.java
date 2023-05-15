@@ -2,8 +2,6 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.TestUtils;
@@ -12,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest extends TestUtils{
 
-    //TODO DAVIDE: sistemare i test utilizzando il nuovo schema di costruzione di game
+    //TODO: sistemare tutti i test
     /**
      * Cleans the list of used codes before each test.
      */
