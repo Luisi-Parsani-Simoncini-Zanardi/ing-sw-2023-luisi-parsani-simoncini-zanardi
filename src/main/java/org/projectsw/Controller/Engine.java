@@ -79,7 +79,11 @@ public class Engine{
     private void startGame(){
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
-        game.setChangedAndNotifyObservers(Game.Event.UPDATED_CURRENT_PLAYER);
+        try {
+            game.setChangedAndNotifyObservers(Game.Event.UPDATED_CURRENT_PLAYER);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the current player: "+e.getCause());
+        }
         game.personalGoalCreated();
         fillBoard();
         game.nextTurnNotify();
@@ -212,6 +216,8 @@ public class Engine{
             }
         } catch (IndexOutOfBoundsException e) {
             game.setError(ErrorName.INVALID_TEMPORARY_TILE);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while placing tiles: "+e.getCause());
         }
     }
 
