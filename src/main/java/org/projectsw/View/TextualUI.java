@@ -1,32 +1,33 @@
 package org.projectsw.View;
+import org.projectsw.Exceptions.ErrorName;
 import org.projectsw.Model.*;
+import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
-
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextualUI extends Observable<UIEvent> implements Runnable{
 
-    private UIState state = UIState.OPPONENT_TURN;//in modo da aspettare all'inizio e partire solo quando il server tramite il controller mi da il via
+    private UIState state = UIState.OPPONENT_TURN;
     private final Object lock = new Object();
     private Integer number;
     private Point point;
     private String nickname;
     private String string;
+    private int clientUID;
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
-    private int clientUID = 0;
+
+    public TextualUI()
+    {
+        displayLogo();
+    }
 
     private UIState getState(){
         synchronized(lock){
             return state;
-        }
-    }
-    public void setState(UIState state){
-        synchronized (lock){
-            this.state = state;
-            lock.notifyAll();
         }
     }
     public String getString(){return this.string;}
@@ -38,41 +39,65 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
     public String getNickname(){return this.nickname;}
     public int getClientUID(){return clientUID;}
+    public void setID(int ID){
+        this.clientUID=ID;
+    }
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+    public void setState(UIState state){
+        synchronized (lock){
+            this.state = state;
+            lock.notifyAll();
+        }
+    }
 
     @Override
     public void run() {
-        displayLogo();
-        insertNickname();
+        joinGame();
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
-                /*synchronized (lock){//forse va eliminata perchè superflua
-                    try{lock.wait();
-                    }catch(InterruptedException e){
-                        System.err.println("Interrupted while waiting for server: " + e.getMessage());
-                    }
-                }*/
+                 //chatting
             }
             System.out.println("---YOUR TURN---");
             do{
                 point = selectTilesInput();
-                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                try {
+                    setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                } catch (RemoteException e) {
+                    throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
+                }
             }while(noMoreSelectableTiles && chooseTiles());
             noMoreSelectableTiles = true;
-            setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
+            try {
+                setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
+            }
 
             do{
                 number = selectColumnInput();
             }while(chooseColumn());
-            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-
+            try {
+                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
+            }
             do {
                 number = selectTemporaryTile();
-            setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+            try {
+                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
+            }
             }while(noMoreTemporaryTiles);
             noMoreTemporaryTiles = true;
             setState(UIState.OPPONENT_TURN);
         }
     }
+  
+  
+  
     public void update(GameView model, Game.Event arg){
         switch(arg){
             case UPDATED_BOARD -> {
@@ -165,9 +190,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("Are you sure?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
-        /*if(choice == 2){
-            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);//così rimuviamo un automatico la colonna scelta precedentemente
-        }*/
         return choice == 2;
     }
 
@@ -190,12 +212,14 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
         return scanner.nextInt()-1;
     }
+
     private boolean chooseTiles(){
         //stampare le temp tiles
         System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt() == 1;
     }
+
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert the row: ");
@@ -243,35 +267,52 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
     }
 
-    private void insertNickname(){
-        System.out.println("Insert your nickname: ");
+    private void joinGame() {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Insert your nickname: ");
         nickname = scanner.nextLine();
-        point = null;
-        setChangedAndNotifyObservers(UIEvent.SET_CLIENT_ID);
-        if (clientUID == 1){
-            System.out.println("Insert the number of players: ");
-            try {
-                number = Integer.valueOf(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                retryNumberOfPlayers();
-            }
-            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
-        }
-        else {
+        try {
             setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
         }
     }
 
-    private void retryNumberOfPlayers (){
-        System.out.println(ConsoleColors.RED + "Number of players not valid. Try again... " + ConsoleColors.RESET);
+    public void askNewNick(ArrayList<String> nicks){
         Scanner scanner = new Scanner(System.in);
+        boolean control=false;
+        do{
+            System.out.println(ConsoleColors.RED +"Invalid nickname choose another one please"+ ConsoleColors.RESET+"\nInsert new nickname");
+            nickname = scanner.nextLine();
+            if(!nicks.contains(nickname))
+                control=true;
+        }while(!control);
         try {
-            number = Integer.valueOf(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            retryNumberOfPlayers();
+            setChangedAndNotifyObservers(UIEvent.NEW_CHOOSE_NICKNAME);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
         }
-        setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME_AND_PLAYER_NUMBER);
+    }
+
+    public void askNumber(){
+        Scanner scanner = new Scanner(System.in);
+        do{
+            System.out.print("Insert number of players: ");
+            number = scanner.nextInt();
+            if(number<Config.minPlayers || number>Config.maxPlayers)
+                System.out.println(ConsoleColors.RED +"Invalid Number of players"+ ConsoleColors.RESET);
+        }while(number<Config.minPlayers || number>Config.maxPlayers);
+        try {
+            setChangedAndNotifyObservers(UIEvent.CHOOSE_NUMBER_OF_PLAYERS);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: "+e.getCause());
+        }
+    }
+
+    public void kill(){
+        System.out.println(ConsoleColors.RED +"Unable to join the game\nClosing the process..."+ ConsoleColors.RESET);
+        printImage();
+        System.exit(0);
     }
 
     public void displayLogo(){
@@ -285,24 +326,73 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("         |___/                                " + ConsoleColors.RESET);
     }
 
+    private void printImage(){
+        System.out.println(ConsoleColors.RED +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡠⠴⠒⠚⠋⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⠙⠓⠲⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠖⠒⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠒⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠖⠶⠤⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠖⠚⠉⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠉⠓⠶⢤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡴⠖⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠤⠂⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠈⠀⣀⣀⠀⠀⠈⠉⠷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠴⠛⠁⠀⠀⠀⠀⠀⠀⢀⠤⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠀⠀⠀⠀⠀⠀⠈⠉⠓⠚⠲⢤⣭⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⠟⠁⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠀⣀⣠⠔⠀⠀⠀⡤⠤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡾⠋⣠⠔⠀⠀⠀⠀⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠌⠒⠉⠀⠀⣀⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠀⠀⠀⠑⠌⠙⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⢟⣁⡴⠚⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠚⠁⠀⠀⠀⠀⡠⠔⠋⠁⠀⠄⠐⠀⠀⠀⠀⠐⠄⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠙⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⢿⢃⡤⠒⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠀⠀⠀⢐⠀⠀⠀⠀⠀⠢⠄⡠⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠚⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣴⣿⣿⣿⡯⣿⣩⠁⠀⠀⠀⠀⠀⠀⠀⠀⣠⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠠⠁⠀⣀⣀⣀⠀⠀⣠⠄⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠂⣦⣄⠀⠀⡀⠀⠘⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡿⢋⡝⢿⡷⣟⣻⠇⠀⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠁⠀⠀⡤⠄⠀⠁⠀⢀⠀⠀⠀⠀⢀⠀⠀⢀⣼⡾⠃⠀⠀⠀⠀⠁⠀⠀⡀⠀⠀⠀⠙⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠘⣿⣶⠀⢙⡿⣦⡀⠹⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⠿⠛⢠⣯⢞⣼⣿⣿⣿⡆⠀⠀⠄⠀⠀⠐⡠⠶⠁⠀⠀⠀⡠⠀⠖⠀⠀⡡⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠐⠐⠛⠉⠀⠀⠀⠀⠀⢀⣀⢀⣈⣽⣷⣦⣴⣄⣀⡐⠒⠊⠉⠉⠁⠄⠂⠀⠀⠀⠀⠐⠒⢀⡿⢶⣿⣿⠛⣛⣿⡟⠻⣶⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣟⣩⡴⠃⣼⠃⢀⣿⢿⡏⠓⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⠀⠐⠶⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⢀⣀⠖⠋⠀⠀⠈⠀⠐⠛⠉⠴⠋⠐⠂⠀⠀⠀⠀⢶⢤⣤⣥⣤⠀⠀⡠⠸⠀⠀⠀⠀⠀⠀⢹⡀⠀⠈⠿⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⡿⠛⠉⢁⡤⢾⡿⢤⣾⣙⣛⣩⡗⠀⠀⠀⠀⠀⠀⢀⠀⣨⡙⠁⠀⠉⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠜⠀⠀⠂⠀⣰⣾⣿⢉⡠⠴⠎⡓⡒⠛⣟⣳⣤⣀⣀⡀⠀⣀⡀⢀⠀⢸⣿⣿⡽⠏⠀⠊⠁⣀⡰⠀⠀⣀⣸⣷⣼⣿⣄⠘⠶⢄⣛⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣰⠟⢛⠁⣤⣶⠿⣳⣿⣀⢻⣿⠿⣿⣯⣹⣴⠶⣄⣀⡀⠀⡬⠕⣫⣽⡿⠀⠀⠀⣁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠄⠀⠖⠉⠀⠀⠉⠁⠀⢀⣀⣤⣾⣿⣇⣰⣾⠋⠁⠈⠉⠁⢀⣌⠙⢻⣷⣿⣾⣿⣆⠧⠀⠀⠀⠉⠀⢀⣠⣿⣿⣿⣿⣿⣉⣙⣷⣶⣬⣉⡻⠶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⣀⣿⠞⣩⡆⣠⡟⠁⢸⣾⣿⠀⠈⠉⢛⠉⠳⣿⣟⣽⣿⣗⠛⣩⠽⠾⠑⣻⣶⣿⠀⡀⢘⠁⠀⡴⠀⠀⠀⠀⠀⢀⡤⠖⠀⠀⠀⣀⣀⣴⣶⣶⣿⣿⣿⣿⣿⣿⠻⣟⣷⢿⣀⠀⠐⠀⡌⠉⠀⣸⣟⣿⡏⠋⠙⠻⣲⡄⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣌⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⢀⣴⠃⢠⡶⡟⠁⢸⠉⠅⢹⡖⣰⣿⣿⣿⢐⡄⠀⢸⠀⢀⡶⢛⣿⠟⣇⠀⠀⠀⣀⣻⠖⢻⡿⣦⣿⣿⣿⡤⠄⠀⠀⠀⠤⠖⠉⠀⠀⣀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡐⢰⣿⣷⣏⡒⠈⠲⣅⣈⣶⣿⣽⣿⢉⡷⢤⡀⢹⣧⣄⣰⣾⣿⣿⣿⣿⣿⣟⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣷⡌⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⣠⡿⠋⢠⡿⠀⠁⢠⡟⠀⠀⠘⣦⣿⣿⣛⠟⢸⠧⡀⠈⠀⠋⣴⣾⣿⠛⢩⣔⣤⡀⡉⢻⠂⣘⣃⣬⣿⣿⣿⡿⠂⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿⡳⣿⣷⢤⡛⠻⢿⣿⠿⢿⣿⣉⡐⣿⣦⡌⢉⡉⠙⡛⠷⣿⡿⠋⣹⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⡇⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⣰⣯⡖⢠⠟⠀⠇⠀⠜⠀⠰⠀⢀⣈⣿⡇⠉⢠⣦⣠⣶⣀⣸⣤⣏⡈⢹⣦⠈⠁⠉⡇⣴⣿⠟⠛⠋⣿⣻⣭⣿⣷⡀⠆⠀⠀⠀⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣯⡼⢿⣷⣿⣿⣿⣤⣙⣶⣿⢦⡈⣻⣽⣟⡿⣿⡏⣳⣿⠇⣨⣷⣦⣽⣄⠈⢷⣾⣷⣼⣿⣻⣏⣵⠿⡿⣿⣏⣷⣿⠻⣟⡇⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⢰⡟⠉⣴⡏⠀⠀⠁⠀⢰⡇⠀⢠⣼⣿⢹⣂⣦⣿⣿⠋⠙⢻⣭⣧⣹⣿⠀⠈⣿⠷⠞⠋⠁⠀⠀⠐⡄⠀⠀⢩⣼⣿⣀⠀⠀⣼⣾⣿⡿⢟⣿⣿⣿⣿⣛⣿⣿⣍⣙⣉⠈⡙⠼⣿⣟⣾⣿⣿⣿⣿⣿⣮⣿⣍⣿⡟⢻⣽⣿⣿⡟⣷⣽⡏⢼⣿⣿⣿⣿⣿⣧⡀⢻⣯⠛⣹⡿⠛⠛⣿⣟⣻⣿⣿⣿⣿⠿⠿⡀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⢀⣿⠀⣾⢁⠀⠀⠁⠀⣠⡏⠑⢶⣾⡇⢠⣿⣿⣇⣼⣿⢁⣠⣿⣿⣧⠤⣼⣷⡾⡏⣤⢀⠀⠁⠘⠠⣄⣈⢻⣶⣠⣾⡏⠉⠛⣷⣿⣿⣿⠻⣻⣿⣿⢿⣿⣽⡿⠛⡿⠋⠈⠳⠴⣦⣽⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣬⣿⣇⠀⣿⣿⣾⣿⣿⠄⣼⣿⣿⣿⣿⣿⣿⣷⠀⠷⠞⠁⠀⢠⣄⣼⠺⢻⣿⣯⡏⠀⡀⠀⣇⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⣾⣏⣼⡥⠚⠀⠀⠀⠈⢠⣇⡀⠻⠁⣅⠸⣾⣽⡿⣤⣾⣫⠟⠿⠈⠹⣆⠀⠚⠚⣿⠻⣬⡷⠿⣶⣾⣷⠟⣿⣿⣿⣿⣥⡆⢰⣿⣿⣿⣿⣿⣿⣿⣿⣛⠛⠏⢣⣾⢃⠼⠛⠂⠀⡤⣤⠸⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣀⠉⢳⣾⠧⣽⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⡓⠀⠀⠀⠀⣄⣵⣾⣾⠞⢻⡟⠤⡀⢸⡄⠛⡄⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⢰⡟⣸⡏⠀⠀⠤⠆⠀⢰⡟⢡⡇⣸⡟⠉⣴⣿⣿⣄⣼⡏⠀⠑⢺⣧⠉⠛⢳⣄⠀⠘⢳⣾⣽⣶⣿⣿⣿⣿⣿⣿⣿⢿⢧⡄⠀⢿⣿⣿⣮⣿⣿⣿⢿⣿⣟⡳⠚⢻⣿⢧⣀⠀⠐⢧⡸⣄⣾⣿⣿⣿⣿⣿⣿⣽⣿⡿⠏⠁⢘⣸⠏⣿⠃⢰⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⡀⠀⣠⡀⢻⣾⢻⣧⣤⣾⠃⣀⠀⠸⡇⠀⡇⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⣼⣻⣿⠀⠀⠀⡆⠀⣰⡏⣠⣆⠠⠦⢤⣿⣿⣿⣿⢛⣋⣁⡀⠀⡸⢿⣆⡀⣠⠙⠲⣄⡸⣿⣿⢿⣿⣿⣿⣿⣿⣿⣏⣸⡎⠁⠀⠘⣻⣿⣿⡹⢿⣯⣿⠿⡿⣿⣧⡬⣭⣁⣹⣧⢀⢘⣿⣿⣿⣿⣿⣿⣭⣿⣿⣿⣿⡷⠀⢠⡏⠉⣰⣟⠀⣿⣿⣿⣿⡼⣿⣿⣿⣿⣿⣿⣷⠀⣌⡁⣾⡟⠛⣿⡿⠛⠛⠃⡠⣴⣷⡄⢸⡀⠀⠀⠀⠀⠀\n" +
+                "⠀⣿⣽⠁⠒⠀⠼⠀⣴⡟⠋⣿⣷⠀⢠⣈⡽⠋⣿⡥⠠⣟⠿⣇⣰⣧⠘⣿⣏⠉⠛⠀⠉⢉⡻⠿⣿⣿⣝⣻⣿⣿⣿⣿⡟⢃⡀⠀⠀⠙⢻⣿⣷⣬⡿⣿⣿⣥⣿⣿⣿⣿⣿⣿⣷⣯⣠⣿⣿⠿⣿⣿⣿⣿⣿⣿⡿⠋⠛⠶⡿⢃⣾⠿⠁⢸⣿⣿⣿⣿⢣⣿⣿⣿⣿⣿⣿⣿⣶⡍⠛⠿⠿⣽⣿⣧⣬⣀⣀⣠⣼⣿⡇⠈⢧⠀⠀⠀⠀⠀\n" +
+                "⢀⣿⣿⣤⢠⣟⣴⠟⠃⣠⣿⢿⣶⠀⣻⣻⣴⣾⠇⢠⣶⣿⣤⣾⣇⣿⠀⠘⣿⠰⡶⠀⠀⢻⡀⠀⡀⠸⣿⣿⣿⣿⣿⣿⣧⡿⠇⠀⢷⡀⠀⢿⣿⣿⣷⢛⢧⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣼⣿⣿⣿⣿⣿⣿⠀⣀⣴⣾⣳⣿⢿⠀⠀⣼⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣆⠀⢀⡀⠀⢘⡛⠛⣟⡿⠿⠿⣇⣠⣼⣇⠀⠀⠀⠀\n" +
+                "⢘⣿⣿⡟⠈⡻⠁⣶⢠⣿⡟⠀⣻⣶⡿⣿⣟⠁⠰⣻⣿⡏⣥⣼⣿⣿⣿⡿⠁⡾⢡⠀⠀⠀⠁⠀⡿⠀⢸⣿⣿⣿⣿⣿⣿⣦⣤⡄⠈⠻⣷⣄⠙⢿⣷⣬⡰⢿⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢻⣛⣿⡴⠋⠁⢶⠋⢸⡿⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⢿⣆⠈⢷⣦⣟⣛⡆⣿⣛⢻⣶⣟⣿⣿⣟⣧⠀⠀⠀\n" +
+                "⢘⣿⣿⣇⣸⣧⣀⣿⣾⣿⣶⣾⣿⣿⡿⠛⣉⣤⣾⣿⠏⠁⢾⣏⣡⠟⢀⣁⡀⠀⠈⢻⡄⠀⠀⢶⠇⠀⣠⣽⣿⣿⣿⣿⣿⣿⠶⠇⡀⠀⠻⢿⣷⡆⠈⠙⠛⠻⠿⠷⣿⡿⠿⠿⠿⠿⠟⠛⠛⠛⠁⠀⠀⢈⡉⠰⠀⠰⠀⢠⠀⢸⡇⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠘⢿⢠⣆⣸⣿⣟⣧⣄⣽⡿⠿⢿⡿⣿⣿⢿⣆⠀⠀\n" +
+                "⢘⣿⣿⣿⣿⡉⣿⣿⡿⠛⢀⣿⣿⣧⣧⣶⣟⣵⢟⣡⡄⣀⣾⣿⣿⣄⡘⠛⠟⣸⠀⠀⢿⣆⣀⠸⠃⢸⣿⣿⣿⣿⣿⣿⣿⣧⡶⠟⠃⠀⠀⠀⠉⠀⠘⠀⠰⠞⠇⢀⠀⠀⠀⠀⢀⣠⣤⣴⣶⠟⠀⠀⠘⠛⠃⠀⢶⣶⣆⠀⢰⣷⣷⢀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⣠⣿⣿⣿⣿⣻⠿⣿⣿⣦⡄⡇⢻⣎⣿⣿⣆⠀\n" +
+                "⠈⣿⢻⣿⣿⠁⣿⡏⠀⣤⣿⣿⣷⣿⣿⣿⣿⣥⡘⢿⣿⣿⡿⠉⢀⣬⢙⣿⡿⠿⣤⠀⠀⠛⠋⠀⡀⠀⠰⣿⣿⣿⣿⣿⣿⠁⣤⣀⣾⣧⣤⣤⣴⠆⠃⠀⠀⢠⡀⠘⠀⢀⣤⣴⡿⣻⣿⣾⣥⠀⠀⠃⢠⣦⠰⣾⣿⣿⣿⣴⢿⣯⣼⣿⠆⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⢸⡿⢿⣿⡿⠛⠁⠀⠋⠈⠰⠿⠻⠀⢿⣿⣿⣿⠀\n" +
+                "⠀⢿⢸⣿⢦⠀⢻⡷⢴⣷⣿⣧⢿⣿⡿⢁⣼⣿⣥⣬⡿⢿⣧⣴⣾⣽⣾⣅⡤⠀⠀⠀⠀⠀⠀⠀⠇⠀⣶⡯⣿⣿⣿⣿⡋⣠⠿⠟⣉⡩⠄⠒⠲⠀⢀⠰⢶⣬⠳⣀⣠⣼⣿⣯⡑⢻⣿⣷⣼⡆⠀⢠⣾⣽⣶⣿⣿⣿⡿⣅⣨⡿⠋⠀⠀⠸⣿⣿⣿⣿⣭⣿⢻⡿⠿⢿⣿⠿⢿⣿⣄⠀⢧⠸⠿⡇⠀⠰⠄⠀⠐⠄⠀⢀⣀⠘⣷⢿⣿⡀\n" +
+                "⠀⠘⡏⣻⣻⡷⢾⣷⠼⣿⣿⣧⠞⠛⠻⣏⡽⠻⠿⢿⣆⡸⠿⣉⡁⢠⣀⠉⠡⠇⠀⠀⠀⠀⠀⠀⠀⣶⣿⡿⢿⣯⣭⡯⠵⠆⣀⡾⢗⣲⣶⣶⣾⡶⠉⠀⢨⣬⡉⠉⣹⡷⢍⡽⢿⣿⣷⡿⠁⠀⣠⣿⣿⣿⣯⣿⣼⣿⣵⣾⡉⠙⣄⢀⠀⠘⠛⣿⣿⣿⣿⣿⣿⣿⣶⠾⢉⣤⣸⣿⣿⣗⣾⡆⢀⡴⢇⣀⡌⢦⣰⣤⣶⣾⣷⣿⡿⢨⣿⡇\n" +
+                "⠀⠀⣧⠁⢼⣿⡐⠻⣶⢿⣟⠉⠳⠶⡤⡵⢧⡀⠰⠎⠛⠁⠀⠀⠀⠀⠀⠀⣀⠐⠚⠀⠀⣠⣤⣾⣟⣿⣧⣿⠏⢉⣠⡄⣀⠈⠉⣷⣷⣿⣭⡿⠛⠀⠀⠀⢉⣈⣿⣿⠋⠀⠈⠀⠀⠁⠉⠀⢀⡀⠀⢀⠘⣿⣿⣿⣿⢷⡎⠹⣧⡶⢿⣉⠆⠀⠀⠺⢟⣿⣿⡿⠟⠟⣋⣴⣿⣿⠈⢹⡏⠀⠈⣗⣆⠀⢠⣯⣴⣾⣿⣿⠛⠉⣠⣿⣧⣾⣯⡇\n" +
+                "⠀⠀⢻⠤⣾⣿⣇⠀⢻⣄⣻⣦⣀⠆⠛⠀⢱⠛⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⢀⠀⣀⣴⣿⣿⣿⣷⣾⣿⣟⢿⣧⣼⢯⣄⣼⣷⣿⣿⣿⣏⣵⣦⠈⠀⠀⠀⠈⢹⣿⡟⣇⠀⡀⠀⠀⠀⠀⠀⠘⣷⠒⠯⠭⠉⡍⠙⢧⠉⣴⢀⡼⢳⣼⣏⠀⣵⣆⠀⠠⣦⠃⠀⠶⣾⣿⣽⢸⣿⠆⢈⡈⢦⣀⡸⠿⣿⠽⣿⣿⠏⣹⣿⠽⠿⠿⠿⠯⠿⠟⠀\n" +
+                "⠀⠀⠘⣇⣴⠋⡇⠀⠀⣿⣴⣮⣿⠷⣤⣀⠀⠀⡀⠀⠀⠀⠀⠐⠂⢲⣤⣘⣾⣿⣿⣷⣾⠟⠏⣀⣀⣌⠹⣷⣶⠆⣾⡿⠿⢛⣻⣿⣿⣿⣾⣿⣒⣿⣧⣤⣀⣾⡏⠀⠈⣀⣤⣄⡀⣀⡄⡀⠀⠈⠀⠀⠢⡀⠀⠰⢦⣀⣿⣿⣇⠸⣯⣿⣗⣮⡿⣷⡀⠀⠀⠀⢀⠙⠲⣼⡎⢀⠀⠀⠈⠑⢮⣵⣄⠈⠳⣿⡿⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⢳⣸⡆⠀⠀⢠⠇⣿⢻⣷⣿⡶⠿⠏⠁⠀⠀⠀⠀⢤⣤⣴⣿⣿⡟⣿⣿⣿⣿⣏⣤⣿⡉⢩⣭⣷⡟⠶⠀⢙⣷⣦⣸⣹⣯⣭⣾⣭⡍⣙⠛⠋⢉⠙⠗⠛⠋⠙⠋⢹⣏⣉⣉⣙⣻⣏⡉⠳⢤⠀⠁⡀⠀⠀⠈⣷⣿⡾⠷⢾⣿⣟⣿⣿⠇⠀⠀⠀⠀⠀⠁⣾⠿⠻⠸⠀⠀⠀⠂⠀⠈⠻⣷⣄⣤⣅⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⢻⣧⠀⣦⠀⢸⣿⣿⣿⡄⢠⡤⠀⣀⠀⠀⠢⡴⠶⡦⢿⣻⣤⣿⣿⣿⣿⡟⢷⡆⣘⣻⣿⠚⠛⣀⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣤⣤⣬⣤⣤⣤⣾⣷⣶⣦⣿⣿⣿⣍⠉⠻⢽⣳⣤⣤⣤⣭⠀⠀⠀⠘⢿⠂⠀⠀⡼⣿⡟⠀⠀⠀⠀⠀⠀⠁⠐⠣⠀⢠⠀⠀⠀⠀⡄⣴⡀⠀⠘⣦⡈⠻⡟⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠈⣿⠀⢿⡶⡟⠛⠛⣿⣷⡄⠃⢀⣏⣱⣧⣤⣴⣶⣾⣾⣟⣻⣿⣿⣭⣽⣧⡴⠟⢹⡅⠸⣟⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠉⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣬⡻⣾⠛⠿⣿⣿⣿⣤⠀⠀⠋⠀⣀⠀⠈⠉⢿⡄⠀⡁⠀⠀⠀⠠⢀⡀⠀⣀⣇⠀⠀⠀⠉⢻⡉⠳⣄⠉⠳⡀⠙⢎⡳⡄⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠘⣇⡼⢻⣿⠀⠀⢯⡻⣷⣿⡋⠉⣉⣤⣶⡾⢿⣟⣿⠟⠛⢻⣽⣧⣾⣿⣧⣤⣔⣻⣦⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠙⣷⣄⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣞⢧⡀⠙⢿⢨⡛⠿⣦⣤⡀⢠⣄⠀⠀⠀⢻⠂⠑⠆⡀⠀⠐⠃⠳⡀⠙⠛⠒⢄⣀⠀⠀⠀⠀⢀⣵⠦⣬⣤⣤⠉⢻⡄⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠙⣇⢸⣿⢧⡀⢈⣷⡈⠛⣿⠟⠋⠀⠀⠤⣀⠀⢀⣷⣶⣶⣿⣿⣿⣿⣧⡉⠉⠹⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠙⣿⡆⠀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣹⣿⣿⣷⡀⠀⢸⣿⡀⣹⠿⢿⣾⣿⡅⢠⣤⣼⣷⣴⣀⢿⠀⠀⠀⡀⣀⣷⣆⣤⣟⡛⠛⣿⣿⣿⣿⣧⣤⣬⣿⣬⣽⡿⣟⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠹⣬⣿⡀⣧⣸⣧⣿⣦⠻⣶⢶⣤⣤⡴⠬⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⢳⣤⡀⠹⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⢿⣭⣥⡀⠸⠽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⢻⣧⣠⠾⢻⣿⣙⣟⣢⣽⡟⠻⠀⠠⣷⣠⣿⣿⠿⠻⢿⣿⣿⣿⠛⠛⢿⣿⣿⠀⠈⠙⢿⣿⣟⡂⠀⢻⡇⠘⣷⡶⣆⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⡆⢿⣟⣿⣸⣿⡇⠙⢿⡿⡁⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠙⢦⣀⡈⠙⠻⢿⣿⣿⣿⡿⠏⠀⣻⠙⣯⣹⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⢻⠻⠙⠏⢻⡿⢫⣿⠻⣿⠏⠀⢻⣾⡿⢿⣿⣿⣏⣅⡀⠈⠻⣿⣏⡆⠀⠈⢿⣇⣰⣄⣀⠀⢿⣿⠉⠀⠸⣿⠆⢿⢷⣿⡀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣜⢯⣽⣿⣦⣟⣷⡄⠘⠓⠂⣴⣦⠀⢥⠀⢼⣿⣿⣿⣿⣿⣿⣿⣿⣷⢤⠘⠛⠁⠀⠀⡄⠀⠘⠀⣷⣥⣄⠗⠀⠹⣾⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠻⢿⡚⠀⢀⣦⣞⣶⣄⣽⣷⣴⣶⣶⣿⣿⠀⠀⢿⣿⠸⢿⡇⠀⠀⣻⣿⢿⠀⠀⠘⣿⠤⠤⠀⠀⠀⢿⠀⠀⠀⢹⠄⢸⣾⣈⡇⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣧⢾⣿⣿⣿⣿⣷⣀⠑⠂⣹⣿⣶⣶⣦⠀⣹⣿⠿⡍⢻⣿⣿⣿⣿⣏⣅⡀⠀⢨⠁⠈⠀⡤⣉⠉⢸⣿⢶⡀⣆⠈⠱⣀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣴⣶⣀⣹⣿⣿⣿⡿⠿⣿⣿⠃⠀⢿⣿⡄⠀⠀⢻⡇⠙⠗⠀⠀⢹⣿⣀⠀⠀⠀⢾⡀⠀⠀⠀⣀⣸⣄⣀⣀⣾⣂⣠⣿⠟⠁⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣾⣿⣿⡿⠇⠉⣯⣁⣸⣧⡟⢙⡿⠇⠀⣭⠹⣾⢿⣎⣷⣾⣿⣿⣿⣯⣥⠀⠀⠀⠀⠀⠀⣿⢾⠋⠉⠁⢉⠹⢤⠀⠙⡀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣉⠉⢿⡿⣷⡀⠀⠛⣿⣧⠤⠈⢿⡇⠀⣀⣠⡷⢬⣤⣠⣰⠶⠌⠉⢻⣞⠀⠈⣷⡍⠉⣿⡧⠀⣿⠂⢻⡿⠙⠏⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⡏⣶⠰⣇⢡⣾⣿⠿⢽⠎⠀⢦⡤⠈⢋⠙⢷⣿⣿⣿⣿⣿⣿⣿⣿⣑⠀⠈⢀⡀⠸⠋⠸⣆⢠⡠⡀⠧⣈⠀⠀⢷⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⣸⡀⠘⣷⠈⢿⡀⠀⢻⣿⣦⣄⡼⠷⢶⣞⠋⠀⢀⠀⢹⡟⠁⠀⢠⣿⣯⣁⢸⣿⣇⢀⣿⡇⢀⣿⣷⢸⡏⢘⡏⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣀⣾⠃⠸⡧⠀⠈⠀⠀⠂⠀⢀⠨⠦⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠹⣾⢇⡀⢻⡆⠓⠀⡀⠘⡆⡄⠐⠳⣄⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠉⣻⠚⠻⢶⡾⠋⢻⠋⠉⣿⣿⠆⠀⣟⣿⡦⠄⠘⢦⣾⣧⠂⠄⢰⣿⣿⡳⢾⣿⡯⠿⠟⢿⢿⣿⣇⣿⣷⣾⠃⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣇⠀⠒⣧⡀⡶⠀⠀⠀⢠⠿⠁⣷⡀⠀⠀⢿⣛⣿⣿⣿⣿⣿⣷⡟⣆⠀⣈⡞⠻⡄⢻⣦⡄⠓⠄⢀⡿⢤⠀⠈⢦⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠁⠀⣾⣿⣷⡀⠞⠀⢰⣿⣧⠀⠘⣿⣿⠁⣀⠀⢻⣶⠿⣯⣽⢟⣿⠻⡍⠨⠷⠀⠀⣀⠀⢰⠇⠈⢳⠘⢿⡀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣧⣬⣿⣄⠀⢤⣀⠀⠀⠀⢹⡗⠀⠀⣼⣿⢿⣿⣿⣿⣿⣿⣿⣼⢺⣄⣰⠆⣙⣦⢿⣆⣈⣠⠓⠀⠘⢧⣄⠈⢢⡀⠙⢿⣿⣿⠿⢿⣿⣿⣿⣿⣿⣿⣆⣾⣿⣿⣿⣽⣷⣴⣾⣿⡿⣦⡾⢛⣿⡻⡿⠀⠉⢛⡷⠄⢠⠊⢉⠁⠀⠀⠀⠀⠸⠃⠀⣸⠁⠠⠞⢰⣿⡇⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⣿⣾⣿⣿⣍⣴⠂⡀⠻⠷⠂⠀⣸⣇⣼⣿⣿⣿⣿⣿⣿⣿⠋⣀⣈⡉⠇⠀⠹⠋⠓⠀⢠⣤⡄⠰⣄⠀⠀⢷⣤⡀⠉⠛⠏⡉⢁⣩⣷⡌⠋⠙⠛⠛⠛⠛⠋⢩⠀⠀⠸⠁⠀⠈⠀⢸⡖⠀⠁⠈⠀⢈⠆⠃⠀⠀⢠⣆⠀⠀⠀⠀⢠⠀⠀⡀⢳⡶⠀⣸⡟⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠻⣽⣿⣿⣿⣿⣿⣾⣡⣷⡆⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⢛⡆⠀⢾⣿⠀⡀⠈⠀⠀⠀⠀⡣⠀⠀⠻⣝⣦⢠⠴⠿⠿⠛⠳⣤⡄⠚⠂⠀⠀⣤⠴⠀⣨⡀⠠⠄⢠⠶⣷⡄⠠⠄⠀⠁⠀⠉⠀⠀⣀⠀⠀⠀⠀⠀⠀⠈⠸⠀⠀⢡⠈⢣⡀⠁⡷⡄⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠀⠘⣷⡀⢻⡇⠀⠈⠀⠀⠀⠐⠉⠉⠤⢤⠈⠋⢀⠈⠧⣄⠀⠀⠀⠀⠁⢠⠀⠒⠲⢀⠀⠀⠈⠻⡖⠒⠆⠈⠛⠀⠀⠀⠀⡀⠑⠒⠐⠊⠁⣤⡀⠀⠀⠀⠀⠀⠀⠃⠆⠘⠀⠀⣿⠀⠀⣧⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠿⣿⣏⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⢀⣿⡇⠀⣷⠀⠀⠀⠀⠀⠀⠀⢀⡴⠈⠻⢶⠀⠀⣄⠀⠙⠂⠀⠀⠀⠀⠈⣶⣾⣄⠳⣶⣀⢄⡀⠂⢾⡆⠀⢋⣁⣀⠀⠨⠔⠀⠀⣀⣠⠀⠀⠀⠘⠀⠀⠀⢀⠀⠠⡄⠨⣅⢸⡀⠀⣬⡧⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⣉⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣤⣿⣿⣿⣄⡘⣆⠀⠀⠀⠀⢠⡀⠚⠀⡘⠓⠈⠁⢀⣾⡆⠀⠀⠀⠀⠀⠀⠋⠉⠑⢼⣛⠆⠈⠀⠄⠀⣼⠆⠀⠈⢧⡈⠿⣦⡀⠘⣿⣿⠏⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⡃⠀⠀⠙⣷⣤⣻⣧⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⢩⡔⣌⣦⣥⣿⣜⠽⣫⢟⡿⣻⣿⣯⡈⠛⢻⣿⠟⠻⠄⠀⢀⠀⠈⠀⠀⠠⢵⠀⠀⢶⣾⣯⡟⢒⠈⠒⠶⠒⣶⣤⠄⠀⠀⠀⠀⠀⠠⣠⣾⣿⣧⣤⣄⣀⣩⠤⠿⠟⠂⠉⠁⠀⠐⠦⣤⠀⠀⠀⠀⠀⢀⠀⠹⣆⠀⠀⢿⣿⣬⣸⣆⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢬⡘⢿⢻⣻⣿⣿⣿⣿⣿⣾⣼⣧⣟⣿⣽⢿⣿⠃⠀⠀⣀⣀⠘⠀⢀⣠⠀⠀⠀⠠⠀⠀⢀⣸⠃⡄⠀⣄⡤⠄⠈⠑⠀⠀⠒⠐⠀⠀⠀⠈⠛⠛⠹⠟⠃⠀⠀⠂⠀⠀⠀⠀⠀⠀⢤⡀⠀⢀⣀⡀⠀⠀⠈⣳⡀⠻⢯⡀⠠⢼⣿⡟⢿⡀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠛⠛⠧⣯⣝⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⣄⣾⢤⣿⡿⣤⣄⠀⠈⠀⠀⠄⠀⠀⣀⣨⠁⠀⠷⠾⠀⠀⠀⠀⠠⣄⠑⠬⢤⡄⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠴⣄⡀⠀⠘⠋⠀⠀⠀⠐⠉⢱⡤⠀⣙⢦⠈⡉⠉⢨⡇⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠿⢿⣿⣿⣾⣻⣿⣿⡻⢿⣿⠈⠻⠿⠾⠆⠀⡀⠀⠀⠀⣨⡿⠆⡖⠰⡀⠀⠀⠀⠀⠀⡰⠛⠀⠀⠓⠀⢀⠀⠒⠾⠧⠥⠼⠤⠄⣠⣀⠀⠀⠀⠀⢀⣀⣀⠀⠀⠀⠀⠠⢀⣧⣾⢁⣸⣾⡿⠳⠦⣄⡀⠺⣷⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠛⠿⠿⣿⣿⣿⣾⣿⣶⣷⣌⣙⣓⣲⡟⠫⢯⣀⠀⠃⣀⠉⠉⠳⠦⢤⣼⡇⠀⠠⣄⠀⠀⣰⣦⡤⠤⠀⣀⠀⠀⠀⠤⠮⢽⣶⣄⣀⠀⠁⠈⠑⣤⣤⠦⣄⣀⡿⢷⡤⣯⣅⣅⣸⣷⣿⣿⣾⡟⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⠛⠛⠛⠿⢿⣿⣷⣶⣾⣷⣶⣤⣄⣃⣄⠀⡄⠋⠀⠔⠛⠛⢷⢶⠏⠿⣦⣀⣀⡈⠀⢲⣦⣤⣀⣴⠄⠀⢹⣿⡇⠠⢶⣀⡄⣼⢿⠋⠀⠀⡀⠘⡯⢻⣿⡿⣷⣾⣿⠁⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠛⠛⠛⠻⠿⢶⣶⣶⣦⣄⣐⣀⣂⣄⣈⠈⡉⠋⠙⠋⠉⠉⠉⠉⡧⣼⣿⣿⣄⣀⣸⣉⣿⣷⣤⣶⣶⣿⣿⣷⣷⡿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠙⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠋⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n\t\t\t\tPROCESS KILLED"+ConsoleColors.RESET);
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni giocatore che aspetta
 //per gestirlo bisognerà usare synchronized (lock) la tui si metterà in continuazione in ascolto di un input che verrà mandato
 // ad entrambi i thread di chat e del gioco, ci sarà un controllo di formato (ad esempio: per scrivere in chat bisogna usare un determinato formato

@@ -4,9 +4,10 @@ import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
+import org.projectsw.Util.Observer;
 import org.projectsw.View.UIEvent;
-
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,8 +20,9 @@ import static org.projectsw.Model.TilesEnum.UNUSED;
  */
 public class Engine{
     private final ArrayList<Client> clients = new ArrayList<>();
-    private Game game = new Game();
+    private Game game;
     private SaveGameStatus saveGameStatus;
+
 
     /**
      * get the Clients
@@ -28,34 +30,22 @@ public class Engine{
      */
     public ArrayList<Client> getClients() { return this.clients; }
 
+    //TODO: getGame eliminabile usato solo nei test
     /**
      * get the game on which the controller is running
      * @return current game
      */
     public Game getGame() { return this.game;}
 
+    public void setGame(Game activeGame){
+        this.game=activeGame;
+    }
 
     /**
      * get the saveGameStatus of the game
      * @return saveGameStatus of the game
      */
     public SaveGameStatus getSaveGameStatus() { return this.saveGameStatus; }
-
-    /**
-     * Creates a player object with position 0 and create a new game using the game constructor (the one that also sets the first player).
-     * The game is initialized using the first player and the number of players selected, the state of the game at the end of the
-     * execution is LOBBY.
-     * @param nicknameFirstPlayer the nickname of the first player joining in the game.
-     * @param numberOfPlayers the number of players selected by the first player.
-     */
-    public void firstPlayerJoin(String nicknameFirstPlayer, int numberOfPlayers) {
-            Player firstPlayer = new Player(nicknameFirstPlayer,0);
-        try {
-            game.initializeGame(firstPlayer,numberOfPlayers);
-        } catch (InvalidNumberOfPlayersException e) {
-            game.setError(ErrorName.INVALID_NUMBER_OF_PLAYERS);
-        }
-    }
 
     /**
      * If the game state isn't LOBBY the join request is negated. If the game state is LOBBY it creates a new
@@ -67,21 +57,20 @@ public class Engine{
      *                             of if the function is called when the lobby is closed
      */
     public void playerJoin (String nickname) {
-        if(game.getGameState().equals(GameStates.LOBBY)){
-            int newPlayerPosition = game.getPlayers().size();
-            Player newPlayer = new Player(nickname,newPlayerPosition);
-            try {
+            if (game.getGameState().equals(GameStates.LOBBY)) {
+                int newPlayerPosition = game.getPlayers().size();
+                Player newPlayer = new Player(nickname, newPlayerPosition);
                 game.addPlayer(newPlayer);
-            } catch (InvalidNameException e) {
-                game.setError(ErrorName.INVALID_NAME);
+                if(this.game.getPlayers().size()==1){
+                    this.game.setFirstPlayer(newPlayer);
+                    this.game.setCurrentPlayerLobby(newPlayer);
+                }
+                if (game.getPlayers().size() == game.getNumberOfPlayers()) {
+                    startGame();
+                }
+            } else {
+                game.setError(ErrorName.LOBBY_CLOSED);
             }
-            if (game.getPlayers().size() == game.getNumberOfPlayers()) {
-                startGame();
-            }
-        }
-        else {
-            game.setError(ErrorName.LOBBY_CLOSED);
-        }
     }
 
     /**
@@ -152,7 +141,11 @@ public class Engine{
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
-        game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+        try {
+            game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error occurred: "+e.getCause());
+        }
     }
 
     /**
@@ -195,14 +188,17 @@ public class Engine{
                     if (i != Config.shelfHeight - 1) {
                         game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i + 1, selectedColumn);
                         game.finishedUpdateShelf();
+
                         if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
                             game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+
                     }
                     break;
                 }
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
                     game.finishedUpdateShelf();
+
                     if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
                         game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
                     break;
@@ -219,13 +215,14 @@ public class Engine{
         }
     }
 
-    public void placeMultipleTiles(String order) {
+    public void placeMultipleTiles(String order) throws UpdatingOnWrongPlayerException {
         if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
             for (int i = 0; i < order.length(); i++) {
                 Integer tile = Character.getNumericValue(order.charAt(i));
                 try {
                     placeTiles(tile);
                 } catch (UpdatingOnWrongPlayerException e) {
+                    throw new UpdatingOnWrongPlayerException(e.getMessage());
                 }
             }
         } else {
@@ -501,21 +498,18 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
+    public void removeGameObserver(Observer<Game, Game.Event> observer){
+        this.getGame().deleteObserver(observer);
+    }
+
     public void update(InputController input, UIEvent UiEvent) throws UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException, UnselectableColumnException {
         game.setClientID(input.getClientID());
-        switch (UiEvent){
-            case SET_CLIENT_ID -> {
-                if (game.getPlayers() == null){
-                game.initializeClientID(1);
-                } else game.initializeClientID(game.getPlayers().size()+1);
+            switch (UiEvent) {
+                case TILE_SELECTION -> selectTiles(input.getCoordinate());
+                case CONFIRM_SELECTION -> confirmSelectedTiles();
+                case COLUMN_SELECTION -> selectColumn(input.getIndex());
+                case TILE_INSERTION -> placeTiles(input.getIndex());
             }
-            case CHOOSE_NICKNAME -> playerJoin(input.getString());
-            case CHOOSE_NICKNAME_AND_PLAYER_NUMBER -> firstPlayerJoin(input.getString(), input.getIndex());
-            case TILE_SELECTION -> selectTiles(input.getCoordinate());
-            case CONFIRM_SELECTION -> confirmSelectedTiles();
-            case COLUMN_SELECTION -> selectColumn(input.getIndex());
-            //case TILE_INSERTION -> placeMultipleTiles(input.getString());
-            case TILE_INSERTION -> placeTiles(input.getIndex());
-        }
+
     }
 }

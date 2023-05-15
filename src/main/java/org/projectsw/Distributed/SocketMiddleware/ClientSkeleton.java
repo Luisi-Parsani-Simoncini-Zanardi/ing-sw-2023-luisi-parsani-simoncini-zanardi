@@ -32,6 +32,32 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
+    public void setID(GameView serverResponse) throws RemoteException {
+
+    }
+    @Override
+    public void setNickname(GameView serverResponse) throws RemoteException {
+
+    }
+    @Override
+    public String getNickname() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public void kill() throws RemoteException {
+
+    }
+    @Override
+    public void askNumberOfPlayers() throws RemoteException {
+
+    }
+    @Override
+    public void askNewNick(GameView nicks) throws RemoteException {
+
+    }
+
+    @Override
     public void update(GameView o, Game.Event arg) throws RemoteException {
         try{
             oos.writeObject(o);
@@ -40,8 +66,6 @@ public class ClientSkeleton implements Client {
             throw new RemoteException("Cannot send event: " + e.getMessage());
         }
     }
-
-
     public void receive(Server server) throws RemoteException{
         UIEvent arg;
         try{
@@ -61,15 +85,5 @@ public class ClientSkeleton implements Client {
             throw new RemoteException("Cannot cast event: "+e.getMessage());
         }
         server.update(input, arg);
-    }
-
-    @Override
-    public GraphicalUI getGui() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public TextualUI getTui() throws RemoteException {
-        return null;
     }
 }

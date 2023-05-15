@@ -2,10 +2,10 @@ package org.projectsw.Model;
 
 import org.projectsw.Exceptions.ErrorName;
 import org.projectsw.Exceptions.InvalidNameException;
-import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Model.CommonGoal.*;
 import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Random;
 import static org.projectsw.Exceptions.ErrorName.NO_ERROR;
@@ -22,7 +22,6 @@ public class Game extends Observable<Game.Event> {
         UPDATED_BOARD,
         UPDATED_SHELF,
         UPDATED_TEMPORARY_TILES,
-        SET_CLIENT_ID_RETURN,
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR,
@@ -44,37 +43,42 @@ public class Game extends Observable<Game.Event> {
     //attributes designed to send messages
     private ErrorName error = NO_ERROR;
     private int clientID = 0;
+
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
      * a full-unused board and an empty commonGals list. First and current player are not set yet.
      * This is a silly constructor, so the number of players is set to 0;
      */
     public Game(){
-        gameState = GameStates.SILLY;
+        gameState = GameStates.LOBBY;
+        chat = new Chat();
+        players = new ArrayList<>();
+        commonGoals = new ArrayList<>();
+        try {
+            commonGoals = this.randomCommonGoals();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
      * Creates a new instance of a Game in LOBBY state, creating it with a new chat, an empty player list,
      * a board set for the right number of players, the correct number of players and an empty commonGals list.
      * Also sets the given first player to current and first player.
-     * @param firstPlayer the first player joining the game.
-     * @param numberOfPlayers the number of players selected by the first player.
      * @throws IllegalArgumentException if the position of the player is wrong or if the number of players is not
      *                                  between 2 and 4
      */
-    public void initializeGame(Player firstPlayer, int numberOfPlayers) throws InvalidNumberOfPlayersException {
-        gameState = GameStates.LOBBY;
-        board = new Board(numberOfPlayers);
-        this.numberOfPlayers = numberOfPlayers;
-        chat = new Chat();
-        players = new ArrayList<>();
-        players.add(firstPlayer);
-        this.firstPlayer = firstPlayer;
-        this.currentPlayer = firstPlayer;
-        commonGoals = new ArrayList<>();
-        try {
-            commonGoals = this.randomCommonGoals();
-        }catch(Exception e){System.err.println(e.getMessage());}
+    public void initializeGame(int number) {
+        setNumberOfPlayers(number);
+        board = new Board(number);
+    }
+
+    /**
+     * Sets the number of players
+     * @param numPlayers is the number of player
+     */
+    public void setNumberOfPlayers(int numPlayers){
+            this.numberOfPlayers= numPlayers;
     }
 
     /**
@@ -87,7 +91,9 @@ public class Game extends Observable<Game.Event> {
      * Returns the number of players of the game.
      * @return the number of players of the game.
      */
-    public int getNumberOfPlayers() { return numberOfPlayers; }
+    public int getNumberOfPlayers(){
+            return numberOfPlayers;
+    }
 
     /**
      * Returns the first player of the game.
@@ -177,7 +183,15 @@ public class Game extends Observable<Game.Event> {
      */
     public void setCurrentPlayer(Player currentPlayer){
         this.currentPlayer=currentPlayer;
-        setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error: "+e.getCause());
+        }
+    }
+
+    public void setCurrentPlayerLobby(Player currentPlayer){
+        this.currentPlayer=currentPlayer;
     }
 
     /**
@@ -198,7 +212,11 @@ public class Game extends Observable<Game.Event> {
      */
     public void setBoard(Board board) {
         this.board = board;
-        setChangedAndNotifyObservers(Event.UPDATED_BOARD);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_BOARD);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while setting the board: "+e.getCause());
+        }
     }
 
     /**
@@ -207,7 +225,11 @@ public class Game extends Observable<Game.Event> {
      */
     public void setChat(Chat chat) {
         this.chat = chat;
-        setChangedAndNotifyObservers(Event.UPDATED_CHAT);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_CHAT);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while setting the chat: "+e.getCause());
+        }
     }
 
     /**
@@ -220,13 +242,16 @@ public class Game extends Observable<Game.Event> {
 
     public void setError(ErrorName error) {
         this.error = error;
-        setChangedAndNotifyObservers(Event.ERROR);
+        try {
+            setChangedAndNotifyObservers(Event.ERROR);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while setting the Error: "+e.getCause());
+        }
     }
 
     public void setClientID(int clientID) {
         this.clientID = clientID;
     }
-
 
     /**
      * Adds a new player to the game.
@@ -235,13 +260,8 @@ public class Game extends Observable<Game.Event> {
      * @throws IllegalArgumentException if the passed player has a position that not corresponds to the next free one
      *
      */
-    public void addPlayer(Player player) throws InvalidNameException {
-        int playerLength = getPlayers().size();
-        for (int i = 0; i<playerLength; i++) {
-            if(getPlayers().get(i).getNickname().equals(player.getNickname())) throw new InvalidNameException();
-        }
-        if(player.getPosition() == getPlayers().get(getPlayers().size() - 1).getPosition() + 1) players.add(player);
-        else throw new IllegalArgumentException();
+    public void addPlayer(Player player) {
+        players.add(player);
     }
 
     /**
@@ -329,19 +349,26 @@ public class Game extends Observable<Game.Event> {
         return commonGoals;
     }
 
-    public void initializeClientID(int i) {
-        this.clientID = i;
-        setChangedAndNotifyObservers(Event.SET_CLIENT_ID_RETURN);
-    }
-
     public void nextTurnNotify() {
-        setChangedAndNotifyObservers(Event.NEXT_PLAYER_TURN_NOTIFY);
+        try {
+            setChangedAndNotifyObservers(Event.NEXT_PLAYER_TURN_NOTIFY);
+        } catch (RemoteException e){
+            throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
+        }
     }
     public void finishedUpdateBoard() {
-        setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_BOARD);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the board: "+e.getMessage());
+        }
     }
     public void finishedUpdateShelf() {
-        setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+        try {
+            setChangedAndNotifyObservers(Event.UPDATED_SHELF);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the shelf: "+e.getCause());
+        }
     }
     public void noMoreTileSelectables() { setChangedAndNotifyObservers(Event.SELECTION_NOT_POSSIBLE);}
     public void noMoreTemporaryTiles() { setChangedAndNotifyObservers(Event.EMPTY_TEMPORARY_TILES);}

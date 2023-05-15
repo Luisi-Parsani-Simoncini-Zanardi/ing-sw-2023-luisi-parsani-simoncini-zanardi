@@ -1,5 +1,6 @@
 package org.projectsw.Util;
 
+import java.rmi.RemoteException;
 import java.util.Vector;
 
 /**
@@ -91,7 +92,7 @@ public class Observable<Event extends Enum<Event>> {
      * @see     #hasChanged()
      * @see     Observer#update(Observable, Enum)
      */
-    public void notifyObservers() {
+    public void notifyObservers() throws RemoteException{
         notifyObservers(null);
     }
 
@@ -109,7 +110,7 @@ public class Observable<Event extends Enum<Event>> {
      * @see     #hasChanged()
      * @see     Observer#update(Observable, Enum)
      */
-    public void notifyObservers(Event arg) {
+    public void notifyObservers(Event arg) throws RemoteException {
         /*
          * a temporary array buffer, used as a snapshot of the state of
          * current Observers.
@@ -191,7 +192,7 @@ public class Observable<Event extends Enum<Event>> {
         return obs.size();
     }
 
-    public void setChangedAndNotifyObservers(Event arg) {
+    public void setChangedAndNotifyObservers(Event arg) throws RemoteException{
         setChanged();
         notifyObservers(arg);
     }

@@ -1,5 +1,7 @@
 package org.projectsw.Util;
 
+import java.rmi.RemoteException;
+
 /**
  * A class can implement the {@code Observer} interface when it
  * wants to be informed of changes in observable objects.
@@ -25,5 +27,5 @@ public interface Observer<SubjectType extends Observable<Event>, Event extends E
      *                 method.
      */
 
-    void update(SubjectType o, Event arg);
+    void update(SubjectType o, Event arg) throws RemoteException;
 }
