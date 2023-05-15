@@ -79,6 +79,8 @@ public class Engine{
     private void startGame(){
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
+        game.setChangedAndNotifyObservers(Game.Event.UPDATED_CURRENT_PLAYER);
+        game.personalGoalCreated();
         fillBoard();
         game.nextTurnNotify();
     }
@@ -98,12 +100,12 @@ public class Engine{
                 if (selectionPossible()) {
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     game.finishedUpdateBoard();
+                    if (game.getBoard().getSelectablePoints().size() == 0)
+                        game.noMoreTileSelectables();
                 }
             } catch (UnselectableTileException e){
                 game.setError(ErrorName.UNSELECTABLE_TILE);
-            } /*catch (NoMoreColumnSpaceException e){
-                game.setError(ErrorName.NO_MORE_COLUMN_SPACE);
-            }*/
+            }
         }
     }
 
@@ -186,18 +188,26 @@ public class Engine{
                     if (i != Config.shelfHeight - 1) {
                         game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i + 1, selectedColumn);
                         game.finishedUpdateShelf();
+
+                        if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
+                            game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+
                     }
                     break;
                 }
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
                     game.finishedUpdateShelf();
+
+                    if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
+                        game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
                     break;
                 }
             }
             if (game.getCurrentPlayer().getTemporaryTiles().isEmpty()) {
                 deselectColumn();
                 game.getCurrentPlayer().getShelf().setSelectionPossible(true);
+                game.noMoreTemporaryTiles();
                 endTurn();
             }
         } catch (IndexOutOfBoundsException e) {

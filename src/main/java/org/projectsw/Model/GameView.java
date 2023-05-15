@@ -1,7 +1,7 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.ErrorName;
-
+import org.projectsw.Util.Config;
 import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,6 +19,8 @@ public class GameView implements Serializable {
     private final ArrayList<Point> selectablePoints;
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
+    private final Tile[][] currentPlayerPersonalGoal;
+
     private final int numberOfPlayers;
     private final ArrayList<String> playerNicks;
 
@@ -36,6 +38,7 @@ public class GameView implements Serializable {
         this.temporaryTiles = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.playerNicks = nicksInGame;
+       this.currentPlayerPersonalGoal= new Tile[1][1];
     }
 
     public GameView(int clientID){
@@ -52,7 +55,9 @@ public class GameView implements Serializable {
         this.temporaryTiles = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.playerNicks = null;
+        this.currentPlayerPersonalGoal= new Tile[1][1];
     }
+  
     public GameView(String nickname){
         this.gameBoard =  new Tile[1][1];
         gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
@@ -67,6 +72,7 @@ public class GameView implements Serializable {
         this.temporaryTiles = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.playerNicks = null;
+        this.currentPlayerPersonalGoal= new Tile[1][1];
     }
 
     public GameView(int clientID, String nickname){
@@ -83,6 +89,8 @@ public class GameView implements Serializable {
         this.temporaryTiles = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.playerNicks = null;
+        this.currentPlayerPersonalGoal= new Tile[1][1];
+
     }
 
     public GameView(ErrorName error, int clientID){
@@ -99,6 +107,7 @@ public class GameView implements Serializable {
         this.temporaryTiles = new ArrayList<>();
         this.numberOfPlayers = 0;
         this.playerNicks = null;
+        this.currentPlayerPersonalGoal= new Tile[1][1];
     }
 
     public GameView(Game model){
@@ -113,6 +122,18 @@ public class GameView implements Serializable {
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
         this.numberOfPlayers = model.getNumberOfPlayers();
         this.playerNicks = null;
+        this.currentPlayerPersonalGoal= personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
+    }
+
+    private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
+        Tile[][] goal = new Tile[Config.shelfHeight][Config.shelfLength];
+        for (int i = 0; i < Config.shelfHeight; i++) {
+            for (int j = 0; j < Config.shelfLength; j++) {
+                goal[i][j] = new Tile(personalGoal[i][j], 0);
+            }
+        }
+        return goal;
+
     }
 
     public int getNumberOfPlayers(){return this.numberOfPlayers;}
@@ -126,5 +147,5 @@ public class GameView implements Serializable {
     public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
     public ArrayList<Tile> getTemporaryTiles() {return this.temporaryTiles; }
     public ArrayList<String> getPlayerNicks() {return this.playerNicks; }
-
+    public Tile[][] getCurrentPlayerPersonalGoal() {return this.currentPlayerPersonalGoal; }
 }

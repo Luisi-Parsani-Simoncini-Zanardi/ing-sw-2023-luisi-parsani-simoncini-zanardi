@@ -17,6 +17,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private String nickname;
     private String string;
     private int clientUID;
+    private Boolean noMoreSelectableTiles = true;
+    private Boolean noMoreTemporaryTiles = true;
 
     public TextualUI()
     {
@@ -65,7 +67,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 } catch (RemoteException e) {
                     throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
                 }
-            }while(chooseTiles());
+            }while(noMoreSelectableTiles && chooseTiles());
+            noMoreSelectableTiles = true;
             try {
                 setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
             } catch (RemoteException e) {
@@ -80,14 +83,106 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
             }
-
-            number = selectTemporaryTile();
+            do {
+                number = selectTemporaryTile();
             try {
                 setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
+            }while(noMoreTemporaryTiles);
+            noMoreTemporaryTiles = true;
             setState(UIState.OPPONENT_TURN);
+        }
+    }
+  
+  
+  
+    public void update(GameView model, Game.Event arg){
+        switch(arg){
+            case UPDATED_BOARD -> {
+                if (model.getCurrentPlayerName().equals(nickname))
+                    showBoard(model);
+            }
+            case PERSONAL_GOAL -> {
+                if (model.getCurrentPlayerName().equals(nickname))
+                    showPersonalGoal(model);
+            }
+            case UPDATED_SHELF -> {if (model.getCurrentPlayerName().equals(nickname)) showShelf(model);}
+            case SET_CLIENT_ID_RETURN -> {
+                if (clientUID==0)
+                    clientUID = model.getClientID();
+            }
+            case UPDATED_TEMPORARY_TILES -> {
+                if (model.getCurrentPlayerName().equals(nickname)) {
+                    System.out.println("You have selected: ");
+                    ArrayList<Tile> tiles = model.getTemporaryTiles();
+                    for (int i = 0; i < tiles.size(); i++) {
+                        int integer = i + 1;
+                        switch (tiles.get(i).getTile()) {
+                            case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
+                            case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
+                            case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
+                            case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
+                            case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
+                            case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
+                        }
+                    }
+                }
+            }
+            case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
+            case UPDATED_CHAT -> showChat(model);
+            case ERROR ->  {
+                if (model.getClientID() == clientUID) {
+                    switch (model.getError()) {
+                        case INVALID_NAME -> {
+                            System.out.println(ConsoleColors.RED + "Nickname already in use. Try again..." + ConsoleColors.RESET);
+                            insertNickname();
+                        }
+                        case INVALID_NUMBER_OF_PLAYERS -> {
+                            retryNumberOfPlayers();
+                        }
+                        case LOBBY_CLOSED -> {
+                            System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
+                            System.exit(0);
+                        }
+                        case EMPTY_TEMPORARY_POINTS -> {
+                            System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
+                        }
+                        case INVALID_RECIPIENT -> {
+                            //TODO LUCA: gestire l'eccezione
+                        }
+                        case UNSELECTABLE_TILE -> {
+                            System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
+                            point = selectTilesInput();
+                            setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                        }
+                        case UNSELECTABLE_COLUMN -> {
+                            System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
+                            do{
+                                number = selectColumnInput();
+                            }while(chooseColumn());
+                            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+                        }
+                        case INVALID_TEMPORARY_TILE -> {
+                            //nickname = selectTemporaryTile();
+                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
+                            setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+                        }
+                    }
+                }
+            }
+            case NEXT_PLAYER_TURN_NOTIFY -> {
+                if (model.getCurrentPlayerName().equals(nickname)) {
+                    setState(UIState.YOUR_TURN);
+                }
+            }
+            case SELECTION_NOT_POSSIBLE -> {
+                noMoreSelectableTiles = false;
+            }
+            case EMPTY_TEMPORARY_TILES -> {
+                noMoreTemporaryTiles = false;
+            }
         }
     }
 
@@ -156,6 +251,13 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         shelf.printShelf();
     }
 
+    private void showPersonalGoal(GameView model){
+        System.out.println("\n--- YOUR PERSONAL GOAL ---\n");
+        Shelf shelf = new Shelf();
+        shelf.setShelf(model.getCurrentPlayerPersonalGoal());
+        shelf.printShelf();
+    }
+
     private void showCurrentPlayer(GameView model){
         System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
     }
@@ -163,86 +265,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private void showChat(GameView model){
         for(Message message : model.getChat())
             System.out.println("\n"+message.getSender().getNickname()+": "+message.getContent());
-    }
-
-    public void update(GameView model, Game.Event arg){
-        switch(arg){
-            case UPDATED_BOARD -> {
-                if (model.getCurrentPlayerName().equals(nickname))
-                    showBoard(model);
-            }
-            //TODO LOLLO: sistemare showShelf (quando inserisce la tile va in errore il primo client e stampa la sua shelf sul secondo)
-            //case UPDATED_SHELF -> showShelf(model);
-            case UPDATED_TEMPORARY_TILES -> {
-                if (this.clientUID == model.getClientID()){
-                    System.out.println("You have selected: ");
-                    ArrayList<Tile> tiles = model.getTemporaryTiles();
-                    for (int i = 0; i < tiles.size(); i++) {
-                        int integer = i + 1;
-                        switch (tiles.get(i).getTile()) {
-                            case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
-                            case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
-                            case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
-                            case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
-                            case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
-                            case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
-                        }
-                    }
-                }
-            }
-            case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);
-            case ERROR ->  {
-                if (model.getError() == ErrorName.LOBBY_CLOSED) {
-                    if (clientUID==0) {
-                        System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
-                        System.exit(0);
-                    }
-                }
-                if (model.getClientID() == clientUID) {
-                    switch (model.getError()) {
-                        case EMPTY_TEMPORARY_POINTS -> System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
-                        case INVALID_RECIPIENT -> {
-                            //TODO LUCA: gestire l'eccezione
-                        }
-                        case UNSELECTABLE_TILE -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
-                            point = selectTilesInput();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error: "+e.getCause());
-                            }
-                        }
-                        case UNSELECTABLE_COLUMN -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
-                            do{
-                                number = selectColumnInput();
-                            }while(chooseColumn());
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error: "+e.getCause());
-                            }
-                        }
-                        case INVALID_TEMPORARY_TILE -> {
-                            //nickname = selectTemporaryTile();
-                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error: "+e.getCause());
-                            }
-                        }
-                    }
-                }
-            }
-            case NEXT_PLAYER_TURN_NOTIFY -> {
-                if (model.getCurrentPlayerName().equals(nickname)) {
-                    setState(UIState.YOUR_TURN);
-                }
-            }
-        }
     }
 
     private void joinGame() {

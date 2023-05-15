@@ -25,7 +25,10 @@ public class Game extends Observable<Game.Event> {
         UPDATED_CURRENT_PLAYER,
         UPDATED_CHAT,
         ERROR,
-        NEXT_PLAYER_TURN_NOTIFY
+        NEXT_PLAYER_TURN_NOTIFY,
+        SELECTION_NOT_POSSIBLE,
+        EMPTY_TEMPORARY_TILES,
+        PERSONAL_GOAL,
     }
 
     private GameStates gameState;
@@ -367,4 +370,7 @@ public class Game extends Observable<Game.Event> {
             throw new RuntimeException("Network error while updating the shelf: "+e.getCause());
         }
     }
+    public void noMoreTileSelectables() { setChangedAndNotifyObservers(Event.SELECTION_NOT_POSSIBLE);}
+    public void noMoreTemporaryTiles() { setChangedAndNotifyObservers(Event.EMPTY_TEMPORARY_TILES);}
+    public void personalGoalCreated() { setChangedAndNotifyObservers(Event.PERSONAL_GOAL);}
 }
