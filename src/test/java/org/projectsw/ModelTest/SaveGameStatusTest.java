@@ -2,7 +2,6 @@ package org.projectsw.ModelTest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.junit.jupiter.api.BeforeEach;
-import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.*;
 import org.projectsw.TestUtils;
 import java.lang.reflect.InvocationTargetException;

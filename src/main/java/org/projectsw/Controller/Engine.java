@@ -30,7 +30,6 @@ public class Engine{
      */
     public ArrayList<Client> getClients() { return this.clients; }
 
-    //TODO: getGame eliminabile usato solo nei test
     /**
      * get the game on which the controller is running
      * @return current game
@@ -53,8 +52,6 @@ public class Engine{
      * Then checks if the lobby is fulled: if it is, calls the method to start the game,
      * if it isn't the game state remains LOBBY, waiting for new join requests.
      * @param nickname the nickname of the player to be created.
-     * @throws LobbyClosedException if the name of the player is already used
-     *                             of if the function is called when the lobby is closed
      */
     public void playerJoin (String nickname) {
             if (game.getGameState().equals(GameStates.LOBBY)) {
@@ -105,7 +102,7 @@ public class Engine{
      * @throws UnselectableTileException if the selected point is an empty/unused tile, of if the selected point
      *                                   can't be selected by the rules.
      */
-    public void selectTiles(Point selectedPoint) throws NoMoreColumnSpaceException {
+    public void selectTiles(Point selectedPoint) {
         if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
         else {
             try {
@@ -153,12 +150,16 @@ public class Engine{
      * Thanks to other exceptions in selectTiles the TemporaryPoints passed already do not correspond to empty or unused tiles,
      * but if they don't addTemporaryTile throws InvalidArgumentException.
      */
-    public void confirmSelectedTiles() throws MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException {
+    public void confirmSelectedTiles() {
         if(game.getBoard().getTemporaryPoints().isEmpty()) game.setError(ErrorName.EMPTY_TEMPORARY_POINTS);
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
-            game.getCurrentPlayer().addTemporaryTile(tile);
+            try {
+                game.getCurrentPlayer().addTemporaryTile(tile);
+            } catch (MaxTemporaryTilesExceededException e) {
+                //TODO: gestire exception
+            }
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
@@ -175,7 +176,7 @@ public class Engine{
      * @param index The index of column that player wants to select.
      * @throws UnselectableColumnException if the column is not selectable.
      */
-    public void selectColumn(Integer index) throws UnselectableColumnException, UpdatingOnWrongPlayerException {
+    public void selectColumn(Integer index) {
         if(game.getCurrentPlayer().getShelf().isSelectionPossible()){
             if(game.getCurrentPlayer().getShelf().getSelectedColumn() == null) {
                 try {
@@ -190,7 +191,7 @@ public class Engine{
     /**
      * Sets as null the selected column index and updates the selectable columns arrayList in currentPlayer's shelf.
      */
-    private void deselectColumn() throws UpdatingOnWrongPlayerException {
+    private void deselectColumn() {
         game.getCurrentPlayer().getShelf().cleanSelectedColumn();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
     }
@@ -199,7 +200,7 @@ public class Engine{
      * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
      * @param temporaryIndex the selected index of temporaryTiles.
      */
-    public void placeTiles(Integer temporaryIndex) throws UpdatingOnWrongPlayerException {
+    public void placeTiles(Integer temporaryIndex){
         game.getCurrentPlayer().getShelf().setSelectionPossible(false);
         try {
             Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
@@ -250,6 +251,7 @@ public class Engine{
         }
     }
 
+    /*
     public void placeMultipleTiles(String order) throws UpdatingOnWrongPlayerException {
         if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
             for (int i = 0; i < order.length(); i++) {
@@ -264,6 +266,7 @@ public class Engine{
             game.setError(ErrorName.INVALID_TEMPORARY_TILE);
         }
     }
+     */
 
     /**
      * Calls place tiles for all the indexes contained in order arrayList.
@@ -549,7 +552,7 @@ public class Engine{
         this.getGame().deleteObserver(observer);
     }
 
-    public void update(InputController input, UIEvent UiEvent) throws UnselectableTileException, NoMoreColumnSpaceException, MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException, UnselectableColumnException {
+    public void update(InputController input, UIEvent UiEvent) {
         game.setClientID(input.getClientID());
             switch (UiEvent) {
                 case TILE_SELECTION -> selectTiles(input.getCoordinate());

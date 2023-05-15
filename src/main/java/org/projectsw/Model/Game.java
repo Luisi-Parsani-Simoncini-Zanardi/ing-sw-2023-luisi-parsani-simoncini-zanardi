@@ -1,7 +1,6 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.ErrorName;
-import org.projectsw.Exceptions.InvalidNameException;
 import org.projectsw.Model.CommonGoal.*;
 import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
@@ -197,10 +196,9 @@ public class Game extends Observable<Game.Event> {
     /**
      * Sets the list of players in the game from a given list of players.
      * @param players the list of players to copy
-     * @throws InvalidNameException if the passed list has duplicated nicknames
      * @throws IllegalArgumentException if the passed list has players with unsorted positions (thrown in addPlayer)
      */
-    public void setPlayers(ArrayList<Player> players) throws InvalidNameException {
+    public void setPlayers(ArrayList<Player> players) {
         for(Player player : players){
             addPlayer(player);
         }
@@ -256,7 +254,6 @@ public class Game extends Observable<Game.Event> {
     /**
      * Adds a new player to the game.
      * @param player the player to be added
-     * @throws InvalidNameException if the nickname is not unique
      * @throws IllegalArgumentException if the passed player has a position that not corresponds to the next free one
      *
      */

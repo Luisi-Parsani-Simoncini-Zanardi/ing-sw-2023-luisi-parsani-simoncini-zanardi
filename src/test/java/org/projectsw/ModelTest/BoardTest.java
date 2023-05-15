@@ -1,6 +1,5 @@
 package org.projectsw.ModelTest;
 
-import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Exceptions.UnselectableTileException;
 import org.projectsw.Model.Board;
 import org.projectsw.Model.Tile;
