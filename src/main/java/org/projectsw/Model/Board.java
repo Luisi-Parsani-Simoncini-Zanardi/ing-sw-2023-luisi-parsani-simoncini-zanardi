@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 
-import org.projectsw.Exceptions.InvalidNumberOfPlayersException;
 import org.projectsw.Exceptions.UnselectableTileException;
 import org.projectsw.View.ConsoleColors;
 

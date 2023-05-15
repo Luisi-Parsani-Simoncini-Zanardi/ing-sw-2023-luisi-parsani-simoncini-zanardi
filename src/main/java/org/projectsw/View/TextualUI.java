@@ -136,7 +136,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                             System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
                         }
                         case INVALID_RECIPIENT -> {
-                            //TODO LUCA: gestire l'eccezione
+                            //TODO: gestire l'eccezione
                         }
                         case UNSELECTABLE_TILE -> {
                             System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);

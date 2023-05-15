@@ -165,8 +165,10 @@ public class Shelf extends Observable<Game.Event> {
     /**
      * Updates the selectable columns arrayList after checking the size of temporaryTiles arrayList of the player.
      */
-    public void updateSelectableColumns(Player player) throws UpdatingOnWrongPlayerException {
-        if (!player.getShelf().equals(this)) throw new UpdatingOnWrongPlayerException();
+    public void updateSelectableColumns(Player player) {
+        if (!player.getShelf().equals(this)) {
+            //TODO: gestire exception
+        }
         ArrayList<Integer> selectableColumns = new ArrayList<>();
         for (int j = 0; j < Config.shelfLength; j++) {
             int freeSpace = 0;
