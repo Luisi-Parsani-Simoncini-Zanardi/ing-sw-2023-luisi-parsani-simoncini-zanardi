@@ -18,6 +18,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private String string;
     private int clientUID;
 
+    public TextualUI()
+    {
+        displayLogo();
+    }
+
     private UIState getState(){
         synchronized(lock){
             return state;
@@ -48,7 +53,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     @Override
     public void run() {
         joinGame();
-        displayLogo();
         while(getState() != UIState.GAME_ENDING){
              while(getState() == UIState.OPPONENT_TURN){
                  //chatting
