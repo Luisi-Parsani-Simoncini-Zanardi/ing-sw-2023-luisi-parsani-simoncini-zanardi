@@ -3,6 +3,7 @@ package org.projectsw.Model;
 import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -31,6 +32,10 @@ public class Player {
         this.position=position;
         points=0;
         shelf = new Shelf();
+        //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
+        if (Objects.equals(nickname, "b4ckd00rsh3lf4lm0stfull"))
+            shelf = new Shelf(4);
+        //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
         personalGoal = tryPersonalGoal();
         temporaryTiles = new ArrayList<>();
         commonGoalRedeemed = new ArrayList<>();

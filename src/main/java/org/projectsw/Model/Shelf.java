@@ -34,6 +34,31 @@ public class Shelf extends Observable<Game.Event> {
         selectionPossible = true;
     }
 
+    //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
+    public Shelf(int b) {
+        shelf = new Tile[Config.shelfHeight][Config.shelfLength];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < Config.shelfLength; j++) {
+                shelf[i][j] = new Tile(TilesEnum.CATS, 0);
+            }
+        }
+        for (int i = 3; i < Config.shelfHeight; i++) {
+            for (int j = 0; j < 3; j++) {
+                shelf[i][j] = new Tile(TilesEnum.CATS, 0);
+            }
+        }
+        for (int i = 3; i < Config.shelfHeight; i++) {
+            for (int j = 3; j < Config.shelfLength; j++) {
+                shelf[i][j] = new Tile(TilesEnum.EMPTY, 0);
+            }
+        }
+        selectableColumns = null;
+        selectedColumn = null;
+        selectionPossible = true;
+    }
+    //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
+
+
     /**
      * Constructs a new shelf with the same contents as the given shelf.
      *
