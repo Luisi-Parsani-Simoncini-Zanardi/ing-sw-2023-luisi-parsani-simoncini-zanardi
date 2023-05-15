@@ -21,93 +21,83 @@ public class GameView implements Serializable {
     private final ArrayList<Tile> temporaryTiles;
     private final Tile[][] currentPlayerPersonalGoal;
 
-    private final int numberOfPlayers;
+    private final Integer numberOfPlayers;
     private final ArrayList<String> playerNicks;
 
     public GameView(ArrayList<String> nicksInGame){
-        this.gameBoard =  new Tile[1][1];
-        gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerShelf = new Tile[1][1];
-        currentPlayerShelf[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerName = "a";
-        this.chat = new ArrayList<>();
+        this.gameBoard =  null;
+        this.currentPlayerShelf = null;
+        this.currentPlayerName = null;
+        this.chat = null;
         this.error = ErrorName.NO_ERROR;
         this.clientID = null;
-        this.selectablePoints = new ArrayList<>();
-        this.temporaryPoints = new ArrayList<>();
-        this.temporaryTiles = new ArrayList<>();
-        this.numberOfPlayers = 0;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
         this.playerNicks = nicksInGame;
-       this.currentPlayerPersonalGoal= new Tile[1][1];
+        this.currentPlayerPersonalGoal = null;
     }
 
     public GameView(int clientID){
-        this.gameBoard =  new Tile[1][1];
-        gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerShelf = new Tile[1][1];
-        currentPlayerShelf[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerName = "a";
-        this.chat = new ArrayList<>();
+        this.gameBoard =  null;
+        this.currentPlayerShelf = null;
+        this.currentPlayerName = null;
+        this.chat = null;
         this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
-        this.selectablePoints = new ArrayList<>();
-        this.temporaryPoints = new ArrayList<>();
-        this.temporaryTiles = new ArrayList<>();
-        this.numberOfPlayers = 0;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
         this.playerNicks = null;
-        this.currentPlayerPersonalGoal= new Tile[1][1];
+        this.currentPlayerPersonalGoal = null;
     }
   
     public GameView(String nickname){
-        this.gameBoard =  new Tile[1][1];
-        gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerShelf = new Tile[1][1];
-        currentPlayerShelf[0][0] = new Tile(TilesEnum.CATS, 1);
+        this.gameBoard = null;
+        this.currentPlayerShelf = null;
         this.currentPlayerName = nickname;
-        this.chat = new ArrayList<>();
+        this.chat = null;
         this.error = ErrorName.NO_ERROR;
-        this.clientID = 0;
-        this.selectablePoints = new ArrayList<>();
-        this.temporaryPoints = new ArrayList<>();
-        this.temporaryTiles = new ArrayList<>();
-        this.numberOfPlayers = 0;
+        this.clientID = null;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
         this.playerNicks = null;
-        this.currentPlayerPersonalGoal= new Tile[1][1];
+        this.currentPlayerPersonalGoal = null;
     }
 
     public GameView(int clientID, String nickname){
-        this.gameBoard =  new Tile[1][1];
-        gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerShelf = new Tile[1][1];
-        currentPlayerShelf[0][0] = new Tile(TilesEnum.CATS, 1);
+        this.gameBoard =  null;
+        this.currentPlayerShelf = null;
         this.currentPlayerName = nickname;
-        this.chat = new ArrayList<>();
+        this.chat = null;
         this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
-        this.selectablePoints = new ArrayList<>();
-        this.temporaryPoints = new ArrayList<>();
-        this.temporaryTiles = new ArrayList<>();
-        this.numberOfPlayers = 0;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
         this.playerNicks = null;
-        this.currentPlayerPersonalGoal= new Tile[1][1];
+        this.currentPlayerPersonalGoal = null;
 
     }
 
     public GameView(ErrorName error, int clientID){
-        this.gameBoard =  new Tile[1][1];
-        gameBoard[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerShelf = new Tile[1][1];
-        currentPlayerShelf[0][0] = new Tile(TilesEnum.CATS, 1);
-        this.currentPlayerName = "a";
-        this.chat = new ArrayList<>();
+        this.gameBoard =  null;
+        this.currentPlayerShelf = null;
+        this.currentPlayerName = null;
+        this.chat = null;
         this.error = error;
         this.clientID = clientID;
-        this.selectablePoints = new ArrayList<>();
-        this.temporaryPoints = new ArrayList<>();
-        this.temporaryTiles = new ArrayList<>();
-        this.numberOfPlayers = 0;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
         this.playerNicks = null;
-        this.currentPlayerPersonalGoal= new Tile[1][1];
+        this.currentPlayerPersonalGoal = null;
     }
 
     public GameView(Game model){
