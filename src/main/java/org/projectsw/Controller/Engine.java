@@ -116,6 +116,7 @@ public class Engine{
                     } catch (RemoteException e) {
                         throw new RuntimeException("Network error while updating the board: "+e.getMessage());
                     }
+                    game.getBoard().updateSelectablePoints();
                     if (game.getBoard().getSelectablePoints().size() == 0)
                         try {
                             game.setChangedAndNotifyObservers(Game.Event.SELECTION_NOT_POSSIBLE);

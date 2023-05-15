@@ -233,7 +233,7 @@ public class Board extends Observable<Game.Event> {
         updateSelectablePoints();
     }
 
-    private void updateSelectablePoints() {
+    public void updateSelectablePoints() {
         ArrayList<Point> newSelectablePoints = new ArrayList<>();
 
         switch (temporaryPoints.size()) {
