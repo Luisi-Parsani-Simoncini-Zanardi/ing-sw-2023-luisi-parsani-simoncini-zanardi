@@ -109,10 +109,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                     showPersonalGoal(model);
             }
             case UPDATED_SHELF -> {if (model.getCurrentPlayerName().equals(nickname)) showShelf(model);}
-            case SET_CLIENT_ID_RETURN -> {
-                if (clientUID==0)
-                    clientUID = model.getClientID();
-            }
             case UPDATED_TEMPORARY_TILES -> {
                 if (model.getCurrentPlayerName().equals(nickname)) {
                     System.out.println("You have selected: ");
@@ -135,13 +131,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case ERROR ->  {
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
-                        case INVALID_NAME -> {
-                            System.out.println(ConsoleColors.RED + "Nickname already in use. Try again..." + ConsoleColors.RESET);
-                            insertNickname();
-                        }
-                        case INVALID_NUMBER_OF_PLAYERS -> {
-                            retryNumberOfPlayers();
-                        }
                         case LOBBY_CLOSED -> {
                             System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
                             System.exit(0);
@@ -155,19 +144,31 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                         case UNSELECTABLE_TILE -> {
                             System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
                             point = selectTilesInput();
-                            setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                            try {
+                                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+                            } catch (RemoteException e) {
+                                throw new RuntimeException("Network error while notifying a tile section error: "+e.getCause());
+                            }
                         }
                         case UNSELECTABLE_COLUMN -> {
                             System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
                             do{
                                 number = selectColumnInput();
                             }while(chooseColumn());
-                            setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+                            try {
+                                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
+                            } catch (RemoteException e) {
+                                throw new RuntimeException("Network error while notifying a column section error: "+e.getCause());
+                            }
                         }
                         case INVALID_TEMPORARY_TILE -> {
                             //nickname = selectTemporaryTile();
                             System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
-                            setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+                            try {
+                                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
+                            } catch (RemoteException e) {
+                                throw new RuntimeException("Network error while notifying a tile insertion error: "+e.getCause());
+                            }
                         }
                     }
                 }
