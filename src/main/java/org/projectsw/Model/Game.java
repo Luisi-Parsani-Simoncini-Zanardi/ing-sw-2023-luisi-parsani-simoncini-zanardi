@@ -348,47 +348,4 @@ public class Game extends Observable<Game.Event> {
 
         return commonGoals;
     }
-
-    public void nextTurnNotify() {
-        try {
-            setChangedAndNotifyObservers(Event.NEXT_PLAYER_TURN_NOTIFY);
-        } catch (RemoteException e){
-            throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
-        }
-    }
-    public void finishedUpdateBoard() {
-        try {
-            setChangedAndNotifyObservers(Event.UPDATED_BOARD);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while updating the board: "+e.getMessage());
-        }
-    }
-    public void finishedUpdateShelf() {
-        try {
-            setChangedAndNotifyObservers(Event.UPDATED_SHELF);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while updating the shelf: "+e.getCause());
-        }
-    }
-    public void noMoreTileSelectables() {
-        try {
-            setChangedAndNotifyObservers(Event.SELECTION_NOT_POSSIBLE);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while notifying that the selection is not possible: "+e.getCause());
-        }
-    }
-    public void noMoreTemporaryTiles() {
-        try {
-            setChangedAndNotifyObservers(Event.EMPTY_TEMPORARY_TILES);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while notifying that the insertion is not possible: "+e.getCause());
-        }
-    }
-    public void personalGoalCreated() {
-        try {
-            setChangedAndNotifyObservers(Event.PERSONAL_GOAL);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while notifying the personal goal was created: "+e.getCause());
-        }
-    }
 }
