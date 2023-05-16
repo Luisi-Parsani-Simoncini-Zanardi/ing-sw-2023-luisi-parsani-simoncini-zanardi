@@ -46,7 +46,7 @@ public class MessageTest {
         Player sender = new Player("Pippo", 1);
         Message message = new Message(sender, "test content");
         String contentTest = "test content";
-        String contentAssert = message.getContent();
+        String contentAssert = message.getPayload();
         assertEquals(contentTest, contentAssert);
     }
 

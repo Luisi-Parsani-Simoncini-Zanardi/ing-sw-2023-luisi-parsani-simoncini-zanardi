@@ -10,14 +10,14 @@ import java.util.ArrayList;
  */
 public class Chat extends Observable<GameEvent> {
 
-    private final ArrayList<Message> chat;
-
+    private final ArrayList<Message> messages;
+    private static int counter = 0;
 
     /**
      * Constructs a Chat object with an empty chat log.
      */
     public Chat (){
-        chat = new ArrayList<>();
+        messages = new ArrayList<>();
     }
 
     /**
@@ -25,14 +25,15 @@ public class Chat extends Observable<GameEvent> {
      * @param message the message to add to the chat log
      */
     public void addChatLog (Message message){
-        chat.add(message);
+        messages.add(counter, message);
+        counter++;
     }
 
     /**
      * Returns the list of messages in the chat log.
      * @return the ArrayList of messages in the chat log
      */
-    public ArrayList<Message> getChat(){
-        return chat;
+    public ArrayList<Message> getMessages(){
+        return messages;
     }
 }

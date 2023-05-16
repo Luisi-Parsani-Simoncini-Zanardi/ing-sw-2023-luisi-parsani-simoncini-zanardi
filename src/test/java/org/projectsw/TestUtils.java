@@ -103,7 +103,7 @@ public class TestUtils {
      * @param messageAssert another test Message object
      */
     public void assertEqualsMessage (Message messageTest, Message messageAssert) {
-        assertEquals(messageTest.getContent(), messageAssert.getContent());
+        assertEquals(messageTest.getPayload(), messageAssert.getPayload());
         assertEqualsPlayer(messageTest.getSender(), messageAssert.getSender());
         for (int i = 0; i<messageTest.getRecipients().size(); i++) {
             assertEqualsPlayer(messageTest.getRecipients().get(i), messageAssert.getRecipients().get(i));
@@ -116,8 +116,8 @@ public class TestUtils {
      * @param chatAssert another test Chat object
      */
     public void assertEqualsChat (Chat chatTest, Chat chatAssert) {
-        for(int i=0; i<chatTest.getChat().size(); i++) {
-            assertEquals(chatTest.getChat().get(i), chatAssert.getChat().get(i));
+        for(int i=0; i<chatTest.getMessages().size(); i++) {
+            assertEquals(chatTest.getMessages().get(i), chatAssert.getMessages().get(i));
         }
     }
 
