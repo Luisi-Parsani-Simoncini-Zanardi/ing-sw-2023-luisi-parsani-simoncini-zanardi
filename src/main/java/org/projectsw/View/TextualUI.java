@@ -15,7 +15,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
     private UIState state = UIState.OPPONENT_TURN;
     private final Object lock = new Object();
-    private boolean timer;
     private Integer number;
     private Point point;
     private String nickname;
