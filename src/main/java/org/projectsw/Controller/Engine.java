@@ -83,7 +83,7 @@ public class Engine{
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
     private void startGame(){
-        game.setGameState(GameStates.RUNNING);
+        game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
         try {
             game.setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
