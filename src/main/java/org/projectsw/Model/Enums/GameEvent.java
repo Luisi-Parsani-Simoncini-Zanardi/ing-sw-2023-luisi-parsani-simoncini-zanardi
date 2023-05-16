@@ -11,4 +11,6 @@ public enum GameEvent{
     SELECTION_NOT_POSSIBLE,
     EMPTY_TEMPORARY_TILES,
     PERSONAL_GOAL,
+    ENDGAME,
+    RESULTS
 }

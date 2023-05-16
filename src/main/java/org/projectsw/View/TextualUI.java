@@ -3,17 +3,20 @@ import org.projectsw.Model.*;
 import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
+import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UIEvent;
-import org.projectsw.View.Enums.UIState;
+import org.projectsw.View.Enums.UITurnState;
 
 import java.awt.*;
+import java.awt.desktop.SystemEventListener;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TextualUI extends Observable<UIEvent> implements Runnable{
 
-    private UIState state = UIState.OPPONENT_TURN;
+    private UITurnState turnState = UITurnState.OPPONENT_TURN;
+    private UIEndState endState = UIEndState.RUNNING;
     private final Object lock = new Object();
     private Integer number;
     private Point point;
@@ -28,11 +31,17 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         displayLogo();
     }
 
-    private UIState getState(){
+    private UITurnState getTurnState(){
         synchronized(lock){
-            return state;
+            return turnState;
         }
     }
+    private UIEndState getEndState(){
+        synchronized(lock){
+            return endState;
+        }
+    }
+
     public String getString(){return this.string;}
     public Integer getNumber(){
         return this.number;
@@ -48,18 +57,23 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public void setNickname(String nickname){
         this.nickname = nickname;
     }
-    public void setState(UIState state){
+    public void setTurnState(UITurnState state){
         synchronized (lock){
-            this.state = state;
-            lock.notifyAll();
+            this.turnState = state;
         }
     }
+    public void setEndState(UIEndState state){
+        synchronized (lock){
+            this.endState = state;
+        }
+    }
+
 
     @Override
     public void run() {
         joinGame();
-        while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)){
-             while(getState() == UIState.OPPONENT_TURN){
+        while((endState == UIEndState.RUNNING || (endState == UIEndState.ENDING || this.clientUID != 1)) && turnState != UITurnState.NO_TURN){
+             while(getTurnState() == UITurnState.OPPONENT_TURN){
                  //chatting
             }
             System.out.println("---YOUR TURN---");
@@ -82,7 +96,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             }while(noMoreTemporaryTiles);
-            setState(UIState.OPPONENT_TURN);
+            if (endState == UIEndState.RUNNING)
+                setTurnState(UITurnState.OPPONENT_TURN);
+            else setTurnState(UITurnState.NO_TURN);
         }
     }
   
@@ -116,6 +132,28 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);
+            case ENDGAME -> this.endState = UIEndState.ENDING;
+            case RESULTS -> {
+                this.endState = UIEndState.RESULTS;
+                LinkedHashMap<String, Integer> results = model.getResults().entrySet()
+                        .stream()
+                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                System.out.println("-----RESULTS-----");
+                for (String i : results.keySet()) {
+                    System.out.println(i + ": " + results.get(i) + " points");
+                }
+                int position = (new ArrayList<>(results.keySet()).indexOf(nickname)) +1;
+                switch (position) {
+                    case 1 -> printMedal(ConsoleColors.GOLD, "1st");
+                    case 2 -> printMedal(ConsoleColors.SILVER, "2nd");
+                    case 3 -> printMedal(ConsoleColors.BRONZE, "3rd");
+                    case 4 -> printNoMedal();
+                }
+            }
             case ERROR ->  {
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
@@ -163,7 +201,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }
             case NEXT_PLAYER_TURN_NOTIFY -> {
                 if (model.getCurrentPlayerName().equals(nickname)) {
-                    setState(UIState.YOUR_TURN);
+                    setTurnState(UITurnState.YOUR_TURN);
                     noMoreSelectableTiles = true;
                     noMoreTemporaryTiles = true;
                 }
@@ -214,7 +252,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private boolean chooseTiles(){
-        System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
+        System.out.println("Do you want to choose another tile?\n1: Yes\n2: No");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
             System.out.println(ConsoleColors.RED + "Please insert a number..." + ConsoleColors.RESET);
@@ -225,7 +263,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             return choice == 1;
         else {
             System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
-            return chooseColumn();
+            return chooseTiles();
         }
     }
 
@@ -268,7 +306,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private void showCurrentPlayer(GameView model){
-        System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
+        if (endState != UIEndState.ENDING || clientUID !=1)
+            System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
     }
 
     private void showChat(GameView model){
@@ -335,7 +374,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     public void kill(){
-        System.out.println(ConsoleColors.RED +"Unable to join the game; lobby is full.\nClosing the process..."+ ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
         printImageKill();
         System.exit(0);
     }
@@ -363,4 +402,62 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 "| | | | | | | | | | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | | |"+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+" | | | | | | | | | | | |\n" +
                 "|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|"+ConsoleColors.RESET);
     }
+    private void printMedal(String metal, String place) {
+        System.out.println(ConsoleColors.BLUE + "                        %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%           %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                       \n" +
+                ConsoleColors.BLUE +"                         %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%         %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                        \n" +
+                ConsoleColors.BLUE +"                          %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%       %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                         \n" +
+                ConsoleColors.BLUE +"                           %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%     %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%"+ConsoleColors.RESET+"     You placed "+place+"!                          \n" +
+                ConsoleColors.BLUE +"                            %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%   %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                           \n" +
+                ConsoleColors.BLUE +"                             %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%% %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                            \n" +
+                ConsoleColors.BLUE +"                              %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                             \n" +
+                ConsoleColors.BLUE +"                               %,"+ConsoleColors.RED +"%%%%%%,%%%%%%%%,"+ConsoleColors.BLUE +"%                              \n" +
+                ConsoleColors.BLUE +"                                %,"+ConsoleColors.RED +"%%%%%%,%%%%%%,"+ConsoleColors.BLUE +"%                               \n" +
+                ConsoleColors.BLUE +"                                 %,"+ConsoleColors.RED +"%%%%%%,%%%%,"+ConsoleColors.BLUE +"%                                \n" +
+                ConsoleColors.BLUE +"                                 ,%,#        ,%,                                \n" + metal +
+                "                                 ,,,,,,,,,,,,,,,                                \n" +
+                "                             ,,,,,,,,,,,,,,,,,,,,,,,                            \n" +
+                "                          .,,,,,*//*************,,,,,,                          \n" +
+                "                         ,,,,,//*******************,,,,,                        \n" +
+                "                        ,,,,//*********,,***********.,,,,                       \n" +
+                "                       ,,,,//*********,,,,/**********,,,,,                      \n" +
+                "                       ,,,,/*****,,,,,,,,,,,,,,/******,,,,                      \n" +
+                "                       ,,,,/********,,,,,,,,,/*******,,,,,                      \n" +
+                "                       ,,,,,/*******,,,,,,,,,********,,,,*                      \n" +
+                "                        ,,,,,/******,//****/,/******,,,,*                       \n" +
+                "                         ,,,,,,*******************,,,,,*                        \n" +
+                "                           ,,,,,,,************,,,,,,,*                          \n" +
+                "                             *,,,,,,,,,,,,,,,,,,,,,*                            \n" +
+                "                                 **,,,,,,,,,,,**                                \n" +
+                "                                                                           " +  ConsoleColors.RESET);
+    }
+    private void printNoMedal() {
+        System.out.println("⠀⠀⠀⠀⢀⠀⠀⠀⠀⢀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠠⣤⣤⣤⠤⠤⠤⠤⠤⣤⣤⣤⡴⠶⠶⠶⠤⠤⠤⠤⢤⣤⣤⣶⣦⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⡤⠶⠶⠶⠤⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⣻⣿⣿⣿⣿⣿⣿⣿⣭⣁⠀⢀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⢸⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⣿⣿⡿⣿⣿⣿⣇⡈⠉⠉⠉⠉⠉⣻⠛⠛⠒⠲⢶⣾⣿⡿⠦⢤⣤⣤⣴⣿⣿⣦⣀⣀⣀⣀⣀⡀⠀⠀⠀⡀⠘⣷⣄⠀⠀⡴⠃⠀⠀⠀⠀⠀⠀⢰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⣿⣿⣿⡀⠈⠛⢯⣉⠉⠛⠚⠲⠶⠯⣄⣀⣀⣠⣿⣿⠃⠀⠀⠀⠀⣠⣿⠋⠁⠀⠀⠀⠀⠀⠀⠉⠉⠉⣛⠿⢿⣿⣿⣿⡶⠦⠤⣄⣀⡀⠀⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠸⣿⣿⡨⢷⡀⠀⠠⠉⠳⢦⣀⠀⠀⠀⠈⢻⣿⣿⡿⠿⢧⣄⣀⡀⠸⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣶⠟⠉⠀⠀⠀⠀⠀⠀⠈⠉⠛⠲⢶⣿⣿⣦⣄⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⡿⠙⡇⠀⢳⡤⠋⠀⠀⠀⢹⣷⢦⣤⣴⣿⠿⠿⠃⠀⠈⠀⠿⢿⣿⠿⠷⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠿⠛⠋⠉⠉⠉⠉⠉⠙⠒⠂⠀⠠⠄\n" +
+                "⠀⠀⠀⠀⡏⠀⣿⠉⠠⠿⣄⠀⠀⠀⢀⣿⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⣰⠟⠁⠀⠀⠀⠀⠉⠛⠲⠤⢤⣀⣀⠀⠠⢿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡾⠁⠀⠀⠀⠀⠀⠀     You placed 4th...⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⢸⡟⠛⠻⡆⠀⠀⣿⣿⣶⣾⣿⣿⣿⣿⡿⠀⠉⠳⢤⡀⠀⣴⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣟⢳⣾⣷⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⢸⣇⡀⢀⣿⣶⣾⣿⣿⣿⣿⣿⠟⠉⢻⣆⠀⣰⣧⣀⣹⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠛⠋⠉⠉⠉⢻⡟⠛⠓⠒⠲⠤⢤⣄⡀⢺⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⠀⠀⠉⠻⣟⠀⠀⠀⠉⣿⢿⡟⠋⠉⠉⠉⠙⠻⢦⣄⡀⠀⠀⠀⠀⠀⠀⡼⠋⠀⠀⠀⠀⠀⣰⠟⠀⠀⠀⠀⠀⠀⠀⠘⢹⠻⣷⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⣾⠟⠉⠙⢿⣿⣷⠀⠀⠀⠀⠹⣆⠀⢀⡾⠁⢸⡇⠀⠀⠀⠀⠀⠀⠀⠈⢹⠗⢦⣄⡀⠀⣸⠁⠀⠀⠀⠀⢀⡞⠁⠀⠀⠀⠀⠀⠀⠀⣀⡴⠟⠋⠉⠉⠉⠉⠓⠲⠤⣤⣀⡀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⡏⠀⠀⠀⠈⣿⡟⣷⣤⣤⣀⣠⣾⣶⣾⣃⣤⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⣧⣼⣈⣹⣶⣿⣆⠀⠀⠀⣠⡟⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠒⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⣿⡷⣄⢀⣠⣿⣥⣾⣿⣿⠟⠀⠉⠛⢿⡟⣿⠂⠀⠀⠀⠀⠀⠀⢀⣤⣶⡛⠉⠉⠉⠉⠉⠙⣿⣷⣦⣅⡀⠀⠀⠀⠀⠀⠀⢀⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⣿⡿⠛⠛⢿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⢻⣇⠀⠀⠀⠀⠀⠀⣰⠟⠉⠉⠻⣆⡀⠀⠀⠀⠀⠿⠛⠀⠈⠙⠓⢦⣄⡀⠀⠀⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⢸⡏⠀⠀⠀⠀⠙⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠹⣆⠀⠀⠀⠀⣼⠃⠀⠀⠀⠀⠈⠙⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⣴⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⢸⡇⠀⠀⠀⠀⠀⢹⣿⡷⠶⠂⢀⣤⡄⠀⠀⠀⠘⣆⠀⠀⢰⠇⠀⠀⠀⠀⠀⠀⠀⠸⡆⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣠⣾⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⢸⡇⠀⠀⠀⠀⠀⠸⡟⠀⠀⠀⠈⢧⠀⠀⠀⠀⠀⠘⣦⣀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⡤⠶⠒⠛⠉⠉⠉⠉⠉⠉⠉⠛⠻⠷⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⣸⣷⣄⠀⠀⢀⣠⣼⣿⣄⢠⣤⠶⠛⠛⠛⡛⠓⠶⢶⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⠴⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⢠⣿⡿⠛⠉⠉⠻⢧⣿⣿⣿⠏⠀⠀⠀⠀⢿⠃⠀⠀⠀⠈⠻⣿⡀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠻⡿⠀⠀⠀⠀⠀⠀⠈⠻⣿⠀⠀⠀⠀⢠⡟⠀⠀⠀⠀⠀⠀⠹⣧⠀⠀⠀⣰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⢠⣿⡂⠀⠀⠀⠀⠀⠀⠀⠹⣷⣤⣤⡴⠟⠓⠒⠒⠒⠒⠶⠤⢤⣭⣷⣤⣼⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⢠⣿⠟⠋⠙⠓⠒⠲⠤⣤⣤⢰⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+    }
+
+
 }
+

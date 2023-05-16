@@ -34,7 +34,7 @@ public class Player {
         points=0;
         shelf = new Shelf();
         //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
-        if (Objects.equals(nickname, "b4ckd00rsh3lf4lm0stfull"))
+        if (Objects.equals(nickname, "backdoor"))
             shelf = new Shelf(4);
         //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
         personalGoal = tryPersonalGoal();

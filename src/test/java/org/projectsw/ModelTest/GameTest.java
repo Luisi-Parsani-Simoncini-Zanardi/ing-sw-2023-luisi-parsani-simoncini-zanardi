@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
-import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.TestUtils;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ class GameTest extends TestUtils{
     @Test
     void integritySillyGameTest(){
         Game sillyGame = new Game();
-        assertEquals(GameStates.SILLY,sillyGame.getGameState());
+        assertEquals(GameState.SILLY,sillyGame.getGameState());
         assertEquals(0,sillyGame.getNumberOfPlayers());
         assertEqualsBoard(new Board(),sillyGame.getBoard());
         assertEqualsChat(new Chat(),sillyGame.getChat());
@@ -45,7 +45,7 @@ class GameTest extends TestUtils{
         for(int i=2;i<5;i++){
             Game game = new Game();
             game.initializeGame(firstPlayer,i);
-            assertEquals(GameStates.LOBBY,game.getGameState());
+            assertEquals(GameState.LOBBY,game.getGameState());
             assertEquals(i,game.getNumberOfPlayers());
             assertEqualsBoard(new Board(i),game.getBoard());
             assertEqualsChat(new Chat(),game.getChat());
