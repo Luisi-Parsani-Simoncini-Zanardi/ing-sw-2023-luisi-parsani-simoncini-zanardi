@@ -433,6 +433,11 @@ public class Engine{
         }
         else {
             try {
+                game.setChangedAndNotifyObservers(GameEvent.PERSONAL_GOAL);
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while notifying the personal goal was created: "+e.getCause());
+            }
+            try {
                 game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while updating the board: "+e.getMessage());

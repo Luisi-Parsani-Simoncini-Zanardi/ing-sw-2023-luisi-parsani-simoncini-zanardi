@@ -8,7 +8,7 @@ import org.projectsw.View.Enums.UIEvent;
 import org.projectsw.View.Enums.UITurnState;
 
 import java.awt.*;
-import java.awt.List;
+import java.awt.desktop.SystemEventListener;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -150,12 +150,11 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 }
                 int position = (new ArrayList<>(results.keySet()).indexOf(nickname)) +1;
                 switch (position) {
-                    case 1 -> arrivedFirstScreen();
-                    case 2 -> arrivedSecondScreen();
-                    case 3 -> arrivedThirdScreen();
-                    case 4 -> arrivedFourthScreen();
+                    case 1 -> printMedal(ConsoleColors.GOLD, "1st");
+                    case 2 -> printMedal(ConsoleColors.SILVER, "2nd");
+                    case 3 -> printMedal(ConsoleColors.BRONZE, "3rd");
+                    case 4 -> printNoMedal();
                 }
-
             }
             case ERROR ->  {
                 if (model.getClientID() == clientUID) {
@@ -378,7 +377,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     public void kill(){
-        System.out.println(ConsoleColors.RED +"Unable to join the game; lobby is full.\nClosing the process..."+ ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
         printImageKill();
         System.exit(0);
     }
@@ -407,19 +406,35 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 "|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|"+ConsoleColors.RESET);
     }
 
-    private void arrivedFirstScreen () {
-
+    private void printMedal(String metal, String place) {
+        System.out.println(ConsoleColors.BLUE + "                        %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%           %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                       \n" +
+                ConsoleColors.BLUE +"                         %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%         %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                        \n" +
+                ConsoleColors.BLUE +"                          %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%       %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                         \n" +
+                ConsoleColors.BLUE +"                           %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%     %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%"+ConsoleColors.RESET+"     You placed "+place+"!                          \n" +
+                ConsoleColors.BLUE +"                            %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%   %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                           \n" +
+                ConsoleColors.BLUE +"                             %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%% %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                            \n" +
+                ConsoleColors.BLUE +"                              %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                             \n" +
+                ConsoleColors.BLUE +"                               %,"+ConsoleColors.RED +"%%%%%%,%%%%%%%%,"+ConsoleColors.BLUE +"%                              \n" +
+                ConsoleColors.BLUE +"                                %,"+ConsoleColors.RED +"%%%%%%,%%%%%%,"+ConsoleColors.BLUE +"%                               \n" +
+                ConsoleColors.BLUE +"                                 %,"+ConsoleColors.RED +"%%%%%%,%%%%,"+ConsoleColors.BLUE +"%                                \n" +
+                ConsoleColors.BLUE +"                                 ,%,#        ,%,                                \n" + metal +
+                "                                 ,,,,,,,,,,,,,,,                                \n" +
+                "                             ,,,,,,,,,,,,,,,,,,,,,,,                            \n" +
+                "                          .,,,,,*//*************,,,,,,                          \n" +
+                "                         ,,,,,//*******************,,,,,                        \n" +
+                "                        ,,,,//*********,,***********.,,,,                       \n" +
+                "                       ,,,,//*********,,,,/**********,,,,,                      \n" +
+                "                       ,,,,/*****,,,,,,,,,,,,,,/******,,,,                      \n" +
+                "                       ,,,,/********,,,,,,,,,/*******,,,,,                      \n" +
+                "                       ,,,,,/*******,,,,,,,,,********,,,,*                      \n" +
+                "                        ,,,,,/******,//****/,/******,,,,*                       \n" +
+                "                         ,,,,,,*******************,,,,,*                        \n" +
+                "                           ,,,,,,,************,,,,,,,*                          \n" +
+                "                             *,,,,,,,,,,,,,,,,,,,,,*                            \n" +
+                "                                 **,,,,,,,,,,,**                                \n" +
+                "                                                                           " +  ConsoleColors.RESET);
     }
-
-    private void arrivedSecondScreen () {
-
-    }
-
-    private void arrivedThirdScreen () {
-
-    }
-
-    private void arrivedFourthScreen () {
+    private void printNoMedal() {
 
     }
 
