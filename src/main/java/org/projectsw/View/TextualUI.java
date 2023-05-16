@@ -61,6 +61,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)){
              while(getState() == UIState.OPPONENT_TURN){
                  //chatting
+                 //takeInput();
             }
             System.out.println("---YOUR TURN---");
 
@@ -85,8 +86,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             setState(UIState.OPPONENT_TURN);
         }
     }
-  
-  
   
     public void update(GameView model, GameEvent arg){
         switch(arg){
@@ -176,6 +175,21 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }
             case EMPTY_TEMPORARY_TILES -> {
                 noMoreTemporaryTiles = false;
+            }
+        }
+    }
+
+    private void takeInput() {
+        Scanner scanner = new Scanner(System.in);
+        string = scanner.nextLine();
+        String[] splitted = string.split("/");
+        switch(splitted[1]){
+            case "msg" -> {
+                try {
+                    setChangedAndNotifyObservers(UIEvent.SAY_IN_CHAT);
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while sending the message to the chat: "+e.getMessage());
+                }
             }
         }
     }
@@ -290,7 +304,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
 
-    public void selectTiles(){
+    private void selectTiles(){
         do{
             point = selectTilesInput();
             try {
@@ -343,7 +357,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.exit(0);
     }
 
-    public void displayLogo(){
+    private void displayLogo(){
         System.out.println(ConsoleColors.PURPLE_BOLD + "  __  __" + ConsoleColors.BLUE_BOLD + "        _____ _          _  __ _      ");
         System.out.println(ConsoleColors.PURPLE_BOLD + " |  \\/  |" + ConsoleColors.BLUE_BOLD + "      / ____| |        | |/ _(_)     ");
         System.out.println(ConsoleColors.PURPLE_BOLD + " | \\  / |_   _" + ConsoleColors.BLUE_BOLD + "| (___ | |__   ___| | |_ _  ___ ");
@@ -366,5 +380,4 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 "| | | | | | | | | | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | | |"+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+" | | | | | | | | | | | |\n" +
                 "|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|"+ConsoleColors.RESET);
     }
-
 }
