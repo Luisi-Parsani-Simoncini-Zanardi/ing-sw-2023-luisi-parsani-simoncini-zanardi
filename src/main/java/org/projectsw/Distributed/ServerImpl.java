@@ -70,7 +70,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
 
     private ArrayList<String> getNicks() throws RemoteException {
         ArrayList<String> nicks = new ArrayList<>();
-        for(Client client : this.controller.getClients())
+        for(Client client : this.controller.getClients().getAllKey())
             nicks.add(client.getNickname());
         return nicks;
     }
@@ -82,16 +82,16 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     @Override
     public void initializePlayer(Client client, InputController input) throws RemoteException {
         synchronized(lock){
-            if(this.controller.getClients().size()==0){
+            if(this.controller.getClients().getAllKey().size()==0){
                 counter++;
                 client.setID(new GameView(counter));
                 client.setNickname(new GameView(input.getString()));
-                this.controller.getClients().add(client);
+                this.controller.getClients().put(client, input.getString());
                 client.askNumberOfPlayers();
                 this.model.initializeGame(this.numberOfPlayers);
                 this.controller.playerJoin(input.getString());
-            }else if(this.controller.getClients().size()<this.numberOfPlayers){
-                for(Client chekClient : this.controller.getClients()) {
+            }else if(this.controller.getClients().getAllKey().size()<this.numberOfPlayers){
+                for(Client chekClient : this.controller.getClients().getAllKey()) {
                     if (chekClient.getNickname().equals(input.getString())) {
                         client.askNewNick(new GameView(getNicks()));
                     } else {
@@ -101,7 +101,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
                 counter++;
                 client.setID(new GameView(counter));
                 client.setNickname(new GameView(this.tempNick));
-                this.controller.getClients().add(client);
+                this.controller.getClients().put(client, this.tempNick);
                 this.controller.playerJoin(this.tempNick);
             }else{
                 controller.removeGameObserver(clientObserverHashMap.get(client));

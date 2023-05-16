@@ -9,6 +9,7 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Observer;
+import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.View.Enums.UIEvent;
 import java.awt.*;
 import java.rmi.RemoteException;
@@ -23,7 +24,7 @@ import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
  * The class contains the application logic methods of the game.
  */
 public class Engine{
-    private final ArrayList<Client> clients = new ArrayList<>();
+    private final OneToOneHashmap<Client, String> clients = new OneToOneHashmap<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
 
@@ -32,7 +33,7 @@ public class Engine{
      * get the Clients
      * @return the clients
      */
-    public ArrayList<Client> getClients() { return this.clients; }
+    public OneToOneHashmap<Client, String> getClients() { return this.clients; }
 
     /**
      * get the game on which the controller is running
@@ -504,13 +505,7 @@ public class Engine{
      * @param recipients message recipients
      */
     public void sayInChat(Player sender, String content, ArrayList<Player> recipients) {
-        Message message = new Message(sender, content);
-        try {
-            message.setRecipients(recipients);
-        } catch (InvalidRecipientException e) {
-            game.setError(ErrorName.INVALID_RECIPIENT);
-        }
-        game.getChat().addChatLog(message);
+        //TODO: reimplementare
     }
 
     /**
