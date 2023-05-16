@@ -499,7 +499,7 @@ class EngineTest extends TestUtils {
         messageTest.setRecipients(recipients);
         engine.sayInChat(sender, content, recipients);
 
-        game.getChat().getChat().forEach((element) -> assertEqualsMessage(element, messageTest));
+        game.getChat().getMessages().forEach((element) -> assertEqualsMessage(element, messageTest));
 
     }
 

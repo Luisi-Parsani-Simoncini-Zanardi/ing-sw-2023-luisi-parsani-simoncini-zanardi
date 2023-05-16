@@ -9,6 +9,7 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Observer;
+import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.View.Enums.UIEvent;
 import java.awt.*;
 import java.rmi.RemoteException;
@@ -23,7 +24,7 @@ import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
  * The class contains the application logic methods of the game.
  */
 public class Engine{
-    private final ArrayList<Client> clients = new ArrayList<>();
+    private final OneToOneHashmap<Client, String> clients = new OneToOneHashmap<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
 
@@ -32,7 +33,7 @@ public class Engine{
      * get the Clients
      * @return the clients
      */
-    public ArrayList<Client> getClients() { return this.clients; }
+    public OneToOneHashmap<Client, String> getClients() { return this.clients; }
 
     /**
      * get the game on which the controller is running
@@ -41,7 +42,11 @@ public class Engine{
     public Game getGame() { return this.game;}
 
     public void setGame(Game activeGame){
-        this.game=activeGame;
+        saveGameStatus= new SaveGameStatus(activeGame, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        if(saveGameStatus.checkExistingSaveFile())
+            this.game=saveGameStatus.retrieveGame();
+        else
+            this.game=activeGame;
     }
 
     /**
@@ -78,8 +83,8 @@ public class Engine{
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
     private void startGame(){
-        game.setGameState(GameState.RUNNING);
-        saveGameStatus = new SaveGameStatus(game, "");
+        game.setGameState(GameStates.RUNNING);
+        saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
         try {
             game.setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
         } catch (RemoteException e) {
@@ -423,7 +428,6 @@ public class Engine{
     public void endTurn(){
         this.checkCommonGoals();
         this.checkEndGame();
-        //getSaveGameStatus().saveGame();
         game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
@@ -448,6 +452,7 @@ public class Engine{
                 throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
             }
         }
+        getSaveGameStatus().saveGame();
     }
 
     /**
@@ -517,13 +522,7 @@ public class Engine{
      * @param recipients message recipients
      */
     public void sayInChat(Player sender, String content, ArrayList<Player> recipients) {
-        Message message = new Message(sender, content);
-        try {
-            message.setRecipients(recipients);
-        } catch (InvalidRecipientException e) {
-            game.setError(ErrorName.INVALID_RECIPIENT);
-        }
-        game.getChat().addChatLog(message);
+        //TODO: reimplementare
     }
 
     /**

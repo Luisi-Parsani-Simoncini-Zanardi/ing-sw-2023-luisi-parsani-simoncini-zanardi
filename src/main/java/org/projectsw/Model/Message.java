@@ -1,58 +1,39 @@
 package org.projectsw.Model;
-import org.projectsw.Exceptions.InvalidRecipientException;
-import java.util.ArrayList;
 
 /**
- * This class represent a single message object with a single sender, the content of the message and a
- * list of all the recipients that needs to receive the message.
+ * This class represent a single message object with a single sender, the payload of the message.
  */
 public class Message {
 
     private final Player sender;
-    private final String content;
-    private ArrayList<Player> recipients;
-
+    private final String payload;
+    private final String scope;
 
     /**
      * Constructs a message object with the sender and the content.
      * @param sender the player who sent the message
-     * @param content the content of the message
+     * @param scope if it's everyone the message will be sent to all players, if it's a nickname only to the interested player
+     * @param payload the payload of the message
      */
-    public Message(Player sender, String content) {
+    public Message(Player sender,String scope, String payload) {
         this.sender = sender;
-        this.recipients = new ArrayList<>();
-        this.content = content;
+        this.payload = payload;
+        this.scope = scope;
     }
 
     /**
-     * Sets the list of recipients of the message.
-     * @param recipients the recipients of the message
+     * Returns the payload of the message.
+     * @return the payload of the message
      */
-    public void setRecipients (ArrayList<Player> recipients) throws InvalidRecipientException {
-        ArrayList<String> recipientName = new ArrayList<>();
-        getRecipients().forEach((element) -> recipientName.add(element.getNickname()));
-        if (recipientName.contains(sender.getNickname())) {
-            throw new InvalidRecipientException();
-        }
-        this.recipients = recipients;
-    }
+    public String getPayload() { return this.payload; }
 
-    /**
-     * Returns the content of the message.
-     * @return the content of the message
-     */
-    public String getContent() { return this.content; }
-
-    /**
-     * Returns the list of the recipients of the message.
-     * @return the recipients list
-     */
-    public ArrayList<Player> getRecipients() { return this.recipients; }
 
     /**
      * Returns the sender of the message.
      * @return the sender of the message
      */
     public Player getSender() { return this.sender; }
+
+    public String getScope() { return this.scope; }
 
 }

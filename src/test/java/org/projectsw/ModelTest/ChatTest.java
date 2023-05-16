@@ -23,9 +23,9 @@ class ChatTest extends TestUtils {
         chat.addChatLog(new Message(sender, "Testing"));
         chat.addChatLog(new Message(sender, "class"));
         chat.addChatLog(new Message(sender, "chat"));
-        assertEquals("Testing", chat.getChat().get(0).getContent());
-        assertEquals("class", chat.getChat().get(1).getContent());
-        assertEquals("chat", chat.getChat().get(2).getContent());
+        assertEquals("Testing", chat.getMessages().get(0).getPayload());
+        assertEquals("class", chat.getMessages().get(1).getPayload());
+        assertEquals("chat", chat.getMessages().get(2).getPayload());
     }
 
     /**
@@ -38,8 +38,8 @@ class ChatTest extends TestUtils {
         ArrayList<Message> test = new ArrayList<>();
         chat.addChatLog(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
         test.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
-        for (int i=0; i<chat.getChat().size(); i++)
-            assertEqualsMessage(test.get(i), chat.getChat().get(i));
+        for (int i=0; i<chat.getMessages().size(); i++)
+            assertEqualsMessage(test.get(i), chat.getMessages().get(i));
 
     }
 }
