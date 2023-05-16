@@ -2,13 +2,18 @@ package org.projectsw.ModelTest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
+import org.projectsw.Controller.Engine;
+import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import org.projectsw.Model.*;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.TestUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class SaveGameStatusTest extends TestUtils {
 
@@ -29,19 +34,25 @@ class SaveGameStatusTest extends TestUtils {
      * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
 
-    public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, InvalidNameException {
+    public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Game game = new Game();
-        game.setCommonGoals(game.randomCommonGoals());
-        Player player1 = new Player("Davide", 0);
-        player1.setShelf(new Shelf());
-        Player player2 = new Player("Lorenzo", 1);
-        player2.setShelf(new Shelf());
-        ArrayList<Player> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-        game.setPlayers(players);
+        Engine engine = new Engine();
+        ArrayList<Tile> temporaryPoints= new ArrayList<>();
+        temporaryPoints.add(new Tile(TilesEnum.GAMES, 1));
+        temporaryPoints.add(new Tile(TilesEnum.CATS, 1));
+        engine.setGame(game);
+        game.initializeGame(2);
+        Player player1 = new Player("Ganondorf", 0);
+        try {
+            player1.setTemporaryTiles(temporaryPoints);
+        } catch (MaxTemporaryTilesExceededException e) {
+            throw new RuntimeException(e);
+        }
+        game.addPlayer(player1);
+        game.addPlayer(new Player("xlr8", 1));
+        game.setFirstPlayer(player1);
         game.setCurrentPlayer(player1);
-        game.setFirstPlayer(player2);
+        engine.fillBoard();
         PersonalGoal.cleanUsedCodes();
 
         return game;
@@ -54,36 +65,11 @@ class SaveGameStatusTest extends TestUtils {
      * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
     @Test
-    public void gameDeserializerTest() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, InvalidNameException {
-
+    public void gameSerializeDeserializeTest() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Game game = gameInitializer();
-        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "_");
-        String json = saveGameStatus.gameToJson();
-        Gson gson = new Gson();
-
-        String substring = json.substring(json.indexOf("commonGoals") - 2);
-        String newJson = json.replace(substring, "}");
-        char[] charArray = substring.toCharArray();
-        charArray[0] = '{';
-        String commonGoalString = String.valueOf(charArray);
-
-        Game data = gson.fromJson(newJson, Game.class);
-        JsonElement commonGoalJson = gson.fromJson(commonGoalString, JsonElement.class);
-
-        int strategyCode1 = commonGoalJson.getAsJsonObject().get("commonGoals")
-                .getAsJsonArray().get(0).getAsJsonObject().get("strategy").getAsJsonObject()
-                .get("strategyCode").getAsInt();
-        int strategyCode2 = commonGoalJson.getAsJsonObject().get("commonGoals")
-                .getAsJsonArray().get(1).getAsJsonObject().get("strategy").getAsJsonObject()
-                .get("strategyCode").getAsInt();
-        int redeemedNumber1 = commonGoalJson.getAsJsonObject().get("commonGoals")
-                .getAsJsonArray().get(0).getAsJsonObject().get("redeemedNumber").getAsInt();
-        int redeemedNumber2 = commonGoalJson.getAsJsonObject().get("commonGoals")
-                .getAsJsonArray().get(1).getAsJsonObject().get("redeemedNumber").getAsInt();
-
-        data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
-        data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
-        data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
+        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        saveGameStatus.saveGame();
+        Game data = saveGameStatus.retrieveGame();
 
 
         assertEquals(game.getGameState(), data.getGameState());
@@ -98,6 +84,15 @@ class SaveGameStatusTest extends TestUtils {
         assertEqualsStrategy(game.getCommonGoals().get(0).getStrategy(), data.getCommonGoals().get(0).getStrategy());
         assertEqualsCommonGoal(game.getCommonGoals().get(0), data.getCommonGoals().get(0));
         assertEqualsCommonGoal(game.getCommonGoals().get(1), data.getCommonGoals().get(1));
+    }
+
+    @Test
+    public void deleteTest() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        Game game = gameInitializer();
+        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        saveGameStatus.saveGame();
+        saveGameStatus.deleteSaveFile();
+        assertFalse(saveGameStatus.checkExistingSaveFile("C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt"));
     }
 }
 

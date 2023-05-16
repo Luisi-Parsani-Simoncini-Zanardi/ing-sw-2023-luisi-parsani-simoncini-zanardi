@@ -152,6 +152,8 @@ public class Player {
         this.commonGoalRedeemed.set(index, status);
     }
 
+    public void setIsActive(boolean state){this.isActive=state; }
+
     /**
      * Adds the given tile to the player's temporary tiles.
      * @param tile the tile to be added to the player's temporary tiles
