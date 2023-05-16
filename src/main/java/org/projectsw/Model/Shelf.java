@@ -38,18 +38,18 @@ public class Shelf extends Observable<GameEvent> {
     //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
     public Shelf(int b) {
         shelf = new Tile[Config.shelfHeight][Config.shelfLength];
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             for (int j = 0; j < Config.shelfLength; j++) {
                 shelf[i][j] = new Tile(TilesEnum.CATS, 0);
             }
         }
         for (int i = 3; i < Config.shelfHeight; i++) {
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < 4; j++) {
                 shelf[i][j] = new Tile(TilesEnum.CATS, 0);
             }
         }
-        for (int i = 3; i < Config.shelfHeight; i++) {
-            for (int j = 3; j < Config.shelfLength; j++) {
+        for (int i = 5; i < Config.shelfHeight; i++) {
+            for (int j = 4; j < Config.shelfLength; j++) {
                 shelf[i][j] = new Tile(TilesEnum.EMPTY, 0);
             }
         }

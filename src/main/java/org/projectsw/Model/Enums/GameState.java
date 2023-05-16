@@ -1,5 +1,5 @@
 package org.projectsw.Model.Enums;
 
-public enum GameStates {
+public enum GameState {
     LOBBY,RUNNING,ENDING,SILLY
 }

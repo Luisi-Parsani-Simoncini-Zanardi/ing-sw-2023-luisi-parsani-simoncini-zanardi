@@ -2,7 +2,7 @@ package org.projectsw.Controller;
 
 import org.projectsw.Exceptions.Enums.ErrorName;
 import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
@@ -58,7 +58,7 @@ public class Engine{
      * @param nickname the nickname of the player to be created.
      */
     public void playerJoin (String nickname) {
-            if (game.getGameState().equals(GameStates.LOBBY)) {
+            if (game.getGameState().equals(GameState.LOBBY)) {
                 int newPlayerPosition = game.getPlayers().size();
                 Player newPlayer = new Player(nickname, newPlayerPosition);
                 game.addPlayer(newPlayer);
@@ -78,7 +78,7 @@ public class Engine{
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
     private void startGame(){
-        game.setGameState(GameStates.RUNNING);
+        game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         try {
             game.setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
@@ -427,11 +427,16 @@ public class Engine{
         game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
-        if (getGame().getCurrentPlayer().getPosition() == (getGame().getNumberOfPlayers()-1) && getGame().getBoard().isEndGame()) {
+        getGame().setCurrentPlayer(getGame().getNextPlayer());
+        if (getGame().getCurrentPlayer().getPosition() == 0 && getGame().getBoard().isEndGame()) {
+            try {
+                game.setChangedAndNotifyObservers(GameEvent.RESULTS);
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while updating the status: " + e);
+            }
             this.endGame();
         }
         else {
-            getGame().setCurrentPlayer(getGame().getNextPlayer());
             try {
                 game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
             } catch (RemoteException e) {
@@ -453,6 +458,11 @@ public class Engine{
             if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
                 this.getGame().getBoard().setEndGame(true);
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
+                try {
+                    game.setChangedAndNotifyObservers(GameEvent.ENDGAME);
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while updating the status: " + e);
+                }
             }
         }
     }
@@ -486,7 +496,7 @@ public class Engine{
         this.checkPersonalGoal();
         this.checkEndgameGoal();
         Player winner = this.getWinner();
-        this.resetGame();
+        //this.resetGame();
         return winner;
     }
 

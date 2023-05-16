@@ -2,7 +2,7 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Controller.Engine;
@@ -43,7 +43,7 @@ class EngineTest extends TestUtils {
         assertEquals(0, player1.getPosition());
         assertEquals(player1, engine.getGame().getCurrentPlayer());
         assertEquals(player1, engine.getGame().getFirstPlayer());
-        assertEquals(GameStates.LOBBY, engine.getGame().getGameState());
+        assertEquals(GameState.LOBBY, engine.getGame().getGameState());
         assertEquals(4, engine.getGame().getNumberOfPlayers());
         assertEqualsBoard(new Board(4), engine.getGame().getBoard());
         //calls playerJoin and checks if the player is added correctly
@@ -66,7 +66,7 @@ class EngineTest extends TestUtils {
         assertEquals("Lore", player4.getNickname());
         assertEquals(3, player4.getPosition());
         //checks if now the state of the game is changed
-        assertEquals(GameStates.RUNNING, engine.getGame().getGameState());
+        assertEquals(GameState.RUNNING, engine.getGame().getGameState());
     }
 
     /**

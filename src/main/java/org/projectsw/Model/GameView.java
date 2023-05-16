@@ -21,7 +21,6 @@ public class GameView implements Serializable {
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
     private final Tile[][] currentPlayerPersonalGoal;
-
     private final Integer numberOfPlayers;
     private final ArrayList<String> playerNicks;
 
