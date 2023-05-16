@@ -59,19 +59,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                  //chatting
             }
             System.out.println("---YOUR TURN---");
-            do{
-                point = selectTilesInput();
-                try {
-                    setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
-                } catch (RemoteException e) {
-                    throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
-                }
-            }while(noMoreSelectableTiles && chooseTiles());
-            try {
-                setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
-            }
+
+             selectTiles();
 
             do{
                 number = selectColumnInput();
@@ -133,7 +122,8 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                             System.exit(0);
                         }
                         case EMPTY_TEMPORARY_POINTS -> {
-                            System.out.println(ConsoleColors.RED + "Please select any tile" + ConsoleColors.RESET);
+                            System.out.println(ConsoleColors.RED + "You don't have any tiles selected. Please select any tile..." + ConsoleColors.RESET);
+                            selectTiles();
                         }
                         case INVALID_RECIPIENT -> {
                             //TODO: gestire l'eccezione
@@ -277,6 +267,22 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         }
     }
 
+    public void selectTiles(){
+        do{
+            point = selectTilesInput();
+            try {
+                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
+            }
+        }while(noMoreSelectableTiles && chooseTiles());
+        try {
+            setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
+        }
+    }
+
     public void askNewNick(ArrayList<String> nicks){
         Scanner scanner = new Scanner(System.in);
         boolean control=false;
@@ -296,7 +302,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     public void askNumber(){
         Scanner scanner = new Scanner(System.in);
         do{
-            System.out.print("Insert number of players: ");
+            System.out.println("Insert number of players: ");
             number = scanner.nextInt();
             if(number<Config.minPlayers || number>Config.maxPlayers)
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
@@ -309,7 +315,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     public void kill(){
-        System.out.println(ConsoleColors.RED +"Unable to join the game: FULL LOBBY\nClosing the process..."+ ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED +"Unable to join the game; lobby is full.\nClosing the process..."+ ConsoleColors.RESET);
         printImageKill();
         System.exit(0);
     }

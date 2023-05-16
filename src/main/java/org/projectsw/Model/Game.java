@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import static org.projectsw.Exceptions.ErrorName.NO_ERROR;
 
-//TODO DAVIDE: usando le funzioni setPlayers setFirstPlayer si bypassano vari controlli, queste funzioni devono poter essere usate in sicurezza
 
 /**
  * The class contains information about the game state,

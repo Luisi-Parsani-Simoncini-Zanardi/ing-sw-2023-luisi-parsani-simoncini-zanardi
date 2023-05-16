@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest extends TestUtils{
 
-    //TODO: sistemare tutti i test
     /**
      * Cleans the list of used codes before each test.
      */
