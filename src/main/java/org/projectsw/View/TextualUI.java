@@ -8,9 +8,10 @@ import org.projectsw.View.Enums.UIEvent;
 import org.projectsw.View.Enums.UITurnState;
 
 import java.awt.*;
+import java.awt.List;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TextualUI extends Observable<UIEvent> implements Runnable{
 
@@ -71,7 +72,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     @Override
     public void run() {
         joinGame();
-        while(endState == UIEndState.RUNNING || (endState == UIEndState.ENDING || this.clientUID != 1)){
+        while((endState == UIEndState.RUNNING || (endState == UIEndState.ENDING || this.clientUID != 1)) && turnState != UITurnState.NO_TURN){
              while(getTurnState() == UITurnState.OPPONENT_TURN){
                  //chatting
             }
@@ -95,7 +96,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             }while(noMoreTemporaryTiles);
-            setTurnState(UITurnState.OPPONENT_TURN);
+            if (endState == UIEndState.RUNNING)
+                setTurnState(UITurnState.OPPONENT_TURN);
+            else setTurnState(UITurnState.NO_TURN);
         }
     }
   
@@ -132,7 +135,28 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
             case UPDATED_CHAT -> showChat(model);
             case ENDGAME -> this.endState = UIEndState.ENDING;
-            case RESULTS -> this.endState = UIEndState.RESULTS;
+            case RESULTS -> {
+                this.endState = UIEndState.RESULTS;
+                LinkedHashMap<String, Integer> results = model.getResults().entrySet()
+                        .stream()
+                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                System.out.println("-----RESULTS-----");
+                for (String i : results.keySet()) {
+                    System.out.println(i + ": " + results.get(i) + " points");
+                }
+                int position = (new ArrayList<>(results.keySet()).indexOf(nickname)) +1;
+                switch (position) {
+                    case 1 -> arrivedFirstScreen();
+                    case 2 -> arrivedSecondScreen();
+                    case 3 -> arrivedThirdScreen();
+                    case 4 -> arrivedFourthScreen();
+                }
+
+            }
             case ERROR ->  {
                 if (model.getClientID() == clientUID) {
                     switch (model.getError()) {
@@ -382,6 +406,23 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 "| | | | | | | | | | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | | |"+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+" | | | | | | | | | | | |\n" +
                 "|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|"+ConsoleColors.RESET);
     }
+
+    private void arrivedFirstScreen () {
+
+    }
+
+    private void arrivedSecondScreen () {
+
+    }
+
+    private void arrivedThirdScreen () {
+
+    }
+
+    private void arrivedFourthScreen () {
+
+    }
+
 
 }
 //per gestire la chat si può far partire un tread chat in cui si può solo scrivere in chat per ogni giocatore che aspetta

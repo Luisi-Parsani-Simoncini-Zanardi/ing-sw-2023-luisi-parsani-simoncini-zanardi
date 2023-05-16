@@ -429,11 +429,6 @@ public class Engine{
             this.fillBoard();
         getGame().setCurrentPlayer(getGame().getNextPlayer());
         if (getGame().getCurrentPlayer().getPosition() == 0 && getGame().getBoard().isEndGame()) {
-            try {
-                game.setChangedAndNotifyObservers(GameEvent.RESULTS);
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while updating the status: " + e);
-            }
             this.endGame();
         }
         else {
@@ -492,12 +487,15 @@ public class Engine{
      * logic for the end game. Calculate personalGoals points and return the winner
      * @return winner of the game
      */
-    public Player endGame(){
+    public void endGame(){
         this.checkPersonalGoal();
         this.checkEndgameGoal();
-        Player winner = this.getWinner();
+        try {
+            game.setChangedAndNotifyObservers(GameEvent.RESULTS);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the status: " + e);
+        }
         //this.resetGame();
-        return winner;
     }
 
     /**

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameView implements Serializable {
     @Serial
@@ -23,6 +24,7 @@ public class GameView implements Serializable {
     private final Tile[][] currentPlayerPersonalGoal;
     private final Integer numberOfPlayers;
     private final ArrayList<String> playerNicks;
+    private final HashMap<String, Integer> results;
 
     public GameView(ArrayList<String> nicksInGame){
         this.gameBoard =  null;
@@ -37,6 +39,7 @@ public class GameView implements Serializable {
         this.numberOfPlayers = null;
         this.playerNicks = nicksInGame;
         this.currentPlayerPersonalGoal = null;
+        this.results = null;
     }
 
     public GameView(int clientID){
@@ -52,6 +55,7 @@ public class GameView implements Serializable {
         this.numberOfPlayers = null;
         this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.results = null;
     }
   
     public GameView(String nickname){
@@ -67,6 +71,7 @@ public class GameView implements Serializable {
         this.numberOfPlayers = null;
         this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.results = null;
     }
 
     public GameView(int clientID, String nickname){
@@ -82,6 +87,7 @@ public class GameView implements Serializable {
         this.numberOfPlayers = null;
         this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.results = null;
 
     }
 
@@ -98,6 +104,7 @@ public class GameView implements Serializable {
         this.numberOfPlayers = null;
         this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.results = null;
     }
 
     public GameView(Game model){
@@ -113,6 +120,11 @@ public class GameView implements Serializable {
         this.numberOfPlayers = model.getNumberOfPlayers();
         this.playerNicks = null;
         this.currentPlayerPersonalGoal= personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
+        this.results = new HashMap<>();
+        for (Player p : model.getPlayers())
+        {
+            this.results.put(p.getNickname(), p.getPoints());
+        }
     }
 
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
@@ -138,4 +150,5 @@ public class GameView implements Serializable {
     public ArrayList<Tile> getTemporaryTiles() {return this.temporaryTiles; }
     public ArrayList<String> getPlayerNicks() {return this.playerNicks; }
     public Tile[][] getCurrentPlayerPersonalGoal() {return this.currentPlayerPersonalGoal; }
+    public HashMap<String, Integer> getResults() {return this.results;}
 }
