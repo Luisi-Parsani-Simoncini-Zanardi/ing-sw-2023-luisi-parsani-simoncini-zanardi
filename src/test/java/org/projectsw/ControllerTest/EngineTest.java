@@ -2,6 +2,8 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Exceptions.*;
@@ -10,7 +12,7 @@ import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.RowColumn;
 import org.projectsw.TestUtils;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.projectsw.Model.TilesEnum.*;
+import static org.projectsw.Model.Enums.TilesEnum.*;
 import java.awt.*;
 import java.util.ArrayList;
 

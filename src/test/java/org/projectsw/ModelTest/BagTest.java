@@ -3,7 +3,7 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Bag;
 import org.projectsw.Model.Tile;
-import org.projectsw.Model.TilesEnum;
+import org.projectsw.Model.Enums.TilesEnum;
 
 import java.util.ArrayList;
 

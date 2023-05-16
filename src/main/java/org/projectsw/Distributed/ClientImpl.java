@@ -1,11 +1,11 @@
 package org.projectsw.Distributed;
-import org.projectsw.Model.Game;
+import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
-import org.projectsw.View.UIEvent;
+import org.projectsw.View.Enums.UIEvent;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -142,7 +142,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     @Override
-    public void update(GameView o, Game.Event arg) throws RemoteException {
+    public void update(GameView o, GameEvent arg) throws RemoteException {
         if(tui != null)
             tui.update(o, arg);
         else

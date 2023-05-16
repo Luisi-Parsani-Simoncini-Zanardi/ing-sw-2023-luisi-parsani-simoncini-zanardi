@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Util.Observable;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 /**
  * The Chat class represents a chat log.
  */
-public class Chat extends Observable<Game.Event> {
+public class Chat extends Observable<GameEvent> {
 
     private final ArrayList<Message> chat;
 

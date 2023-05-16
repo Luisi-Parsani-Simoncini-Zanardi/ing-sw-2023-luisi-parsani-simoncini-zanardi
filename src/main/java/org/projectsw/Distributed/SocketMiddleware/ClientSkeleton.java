@@ -3,9 +3,8 @@ package org.projectsw.Distributed.SocketMiddleware;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Model.*;
-import org.projectsw.View.GraphicalUI;
-import org.projectsw.View.TextualUI;
-import org.projectsw.View.UIEvent;
+import org.projectsw.Model.Enums.GameEvent;
+import org.projectsw.View.Enums.UIEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -58,7 +57,7 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public void update(GameView o, Game.Event arg) throws RemoteException {
+    public void update(GameView o, GameEvent arg) throws RemoteException {
         try{
             oos.writeObject(o);
             oos.writeObject(arg);

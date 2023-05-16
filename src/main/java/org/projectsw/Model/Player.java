@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import java.util.ArrayList;

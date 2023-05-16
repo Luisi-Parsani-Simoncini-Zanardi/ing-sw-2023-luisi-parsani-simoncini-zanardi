@@ -1,33 +1,22 @@
 package org.projectsw.Model;
 
-import org.projectsw.Exceptions.ErrorName;
+import org.projectsw.Exceptions.Enums.ErrorName;
 import org.projectsw.Model.CommonGoal.*;
+import org.projectsw.Model.Enums.GameEvent;
+import org.projectsw.Model.Enums.GameStates;
 import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Random;
-import static org.projectsw.Exceptions.ErrorName.NO_ERROR;
+import static org.projectsw.Exceptions.Enums.ErrorName.NO_ERROR;
 
 
 /**
  * The class contains information about the game state,
  * including the board, players (with info on the currently playing one and the first one), chat, and common goals.
  */
-public class Game extends Observable<Game.Event> {
-
-    public enum Event{
-        UPDATED_BOARD,
-        UPDATED_SHELF,
-        UPDATED_TEMPORARY_TILES,
-        UPDATED_CURRENT_PLAYER,
-        UPDATED_CHAT,
-        ERROR,
-        NEXT_PLAYER_TURN_NOTIFY,
-        SELECTION_NOT_POSSIBLE,
-        EMPTY_TEMPORARY_TILES,
-        PERSONAL_GOAL,
-    }
+public class Game extends Observable<GameEvent> {
 
     private GameStates gameState;
     private int numberOfPlayers;
@@ -182,7 +171,7 @@ public class Game extends Observable<Game.Event> {
     public void setCurrentPlayer(Player currentPlayer){
         this.currentPlayer=currentPlayer;
         try {
-            setChangedAndNotifyObservers(Event.UPDATED_CURRENT_PLAYER);
+            setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error: "+e.getCause());
         }
@@ -210,7 +199,7 @@ public class Game extends Observable<Game.Event> {
     public void setBoard(Board board) {
         this.board = board;
         try {
-            setChangedAndNotifyObservers(Event.UPDATED_BOARD);
+            setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while setting the board: "+e.getCause());
         }
@@ -223,7 +212,7 @@ public class Game extends Observable<Game.Event> {
     public void setChat(Chat chat) {
         this.chat = chat;
         try {
-            setChangedAndNotifyObservers(Event.UPDATED_CHAT);
+            setChangedAndNotifyObservers(GameEvent.UPDATED_CHAT);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while setting the chat: "+e.getCause());
         }
@@ -240,7 +229,7 @@ public class Game extends Observable<Game.Event> {
     public void setError(ErrorName error) {
         this.error = error;
         try {
-            setChangedAndNotifyObservers(Event.ERROR);
+            setChangedAndNotifyObservers(GameEvent.ERROR);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while setting the Error: "+e.getCause());
         }

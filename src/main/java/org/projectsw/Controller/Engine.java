@@ -1,18 +1,22 @@
 package org.projectsw.Controller;
 
+import org.projectsw.Exceptions.Enums.ErrorName;
+import org.projectsw.Model.Enums.GameEvent;
+import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Observer;
-import org.projectsw.View.UIEvent;
+import org.projectsw.View.Enums.UIEvent;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import static org.projectsw.Model.TilesEnum.EMPTY;
-import static org.projectsw.Model.TilesEnum.UNUSED;
+import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
+import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
 
 
 /**
@@ -77,18 +81,18 @@ public class Engine{
         game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         try {
-            game.setChangedAndNotifyObservers(Game.Event.UPDATED_CURRENT_PLAYER);
+            game.setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while updating the current player: "+e.getCause());
         }
         try {
-            game.setChangedAndNotifyObservers(Game.Event.PERSONAL_GOAL);
+            game.setChangedAndNotifyObservers(GameEvent.PERSONAL_GOAL);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while notifying the personal goal was created: "+e.getCause());
         }
         fillBoard();
         try {
-            game.setChangedAndNotifyObservers(Game.Event.NEXT_PLAYER_TURN_NOTIFY);
+            game.setChangedAndNotifyObservers(GameEvent.NEXT_PLAYER_TURN_NOTIFY);
         } catch (RemoteException e){
             throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
         }
@@ -109,7 +113,7 @@ public class Engine{
                 if (selectionPossible()) {
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     try {
-                        game.setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+                        game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
                     } catch (RemoteException e) {
                         throw new RuntimeException("Network error while updating the board: "+e.getMessage());
                     }
@@ -117,7 +121,7 @@ public class Engine{
                     if (game.getBoard().getSelectablePoints().size() == 0 ||
                         game.getCurrentPlayer().getShelf().maxFreeColumnSpace() == game.getBoard().getTemporaryPoints().size()) {
                         try {
-                            game.setChangedAndNotifyObservers(Game.Event.SELECTION_NOT_POSSIBLE);
+                            game.setChangedAndNotifyObservers(GameEvent.SELECTION_NOT_POSSIBLE);
                         } catch (RemoteException e) {
                             throw new RuntimeException("Network error while notifying that the selection is not possible: " + e.getCause());
                         }
@@ -136,7 +140,7 @@ public class Engine{
     private void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
         try {
-            game.setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+            game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while updating the board: "+e.getMessage());
         }
@@ -175,7 +179,7 @@ public class Engine{
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
         try {
-            game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+            game.setChangedAndNotifyObservers(GameEvent.UPDATED_TEMPORARY_TILES);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error occurred: "+e.getCause());
         }
@@ -221,13 +225,13 @@ public class Engine{
                     if (i != Config.shelfHeight - 1) {
                         game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i + 1, selectedColumn);
                         try {
-                            game.setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+                            game.setChangedAndNotifyObservers(GameEvent.UPDATED_SHELF);
                         } catch (RemoteException e) {
                             throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
                         }
 
                         if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
-                            game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+                            game.setChangedAndNotifyObservers(GameEvent.UPDATED_TEMPORARY_TILES);
 
                     }
                     break;
@@ -235,13 +239,13 @@ public class Engine{
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
                     try {
-                        game.setChangedAndNotifyObservers(Game.Event.UPDATED_SHELF);
+                        game.setChangedAndNotifyObservers(GameEvent.UPDATED_SHELF);
                     } catch (RemoteException e) {
                         throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
                     }
 
                     if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
-                        game.setChangedAndNotifyObservers(Game.Event.UPDATED_TEMPORARY_TILES);
+                        game.setChangedAndNotifyObservers(GameEvent.UPDATED_TEMPORARY_TILES);
                     break;
                 }
             }
@@ -249,7 +253,7 @@ public class Engine{
                 deselectColumn();
                 game.getCurrentPlayer().getShelf().setSelectionPossible(true);
                 try {
-                    game.setChangedAndNotifyObservers(Game.Event.EMPTY_TEMPORARY_TILES);
+                    game.setChangedAndNotifyObservers(GameEvent.EMPTY_TEMPORARY_TILES);
                 } catch (RemoteException e) {
                     throw new RuntimeException("Network error while notifying that the insertion is not possible: " + e.getCause());
                 }
@@ -429,12 +433,12 @@ public class Engine{
         else {
             getGame().setCurrentPlayer(getGame().getNextPlayer());
             try {
-                game.setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+                game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while updating the board: "+e.getMessage());
             }
             try {
-                game.setChangedAndNotifyObservers(Game.Event.NEXT_PLAYER_TURN_NOTIFY);
+                game.setChangedAndNotifyObservers(GameEvent.NEXT_PLAYER_TURN_NOTIFY);
             } catch (RemoteException e){
                 throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
             }
@@ -522,7 +526,7 @@ public class Engine{
                 }
             }
             try {
-                game.setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+                game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while updating the board: "+e.getMessage());
             }
@@ -560,7 +564,7 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    public void removeGameObserver(Observer<Game, Game.Event> observer){
+    public void removeGameObserver(Observer<Game, GameEvent> observer){
         this.getGame().deleteObserver(observer);
     }
 

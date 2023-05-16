@@ -1,6 +1,8 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
+import org.projectsw.Model.Enums.GameEvent;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 
@@ -11,15 +13,13 @@ import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Formatter;
 
 //TODO DAVIDE: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
 
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
  */
-public class Board extends Observable<Game.Event> {
+public class Board extends Observable<GameEvent> {
     private Tile[][] board;
     private boolean endGame;
     private Bag bag;

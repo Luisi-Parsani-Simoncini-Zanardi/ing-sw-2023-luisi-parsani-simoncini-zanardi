@@ -1,7 +1,7 @@
 package org.projectsw.Model.CommonGoal;
 
 import org.projectsw.Model.Shelf;
-import org.projectsw.Model.TilesEnum;
+import org.projectsw.Model.Enums.TilesEnum;
 
 import java.util.ArrayList;
 

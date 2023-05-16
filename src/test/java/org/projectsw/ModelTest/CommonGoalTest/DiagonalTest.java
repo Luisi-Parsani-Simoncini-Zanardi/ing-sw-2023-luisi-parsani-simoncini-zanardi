@@ -6,7 +6,7 @@ import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Diagonal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Tile;
-import org.projectsw.Model.TilesEnum;
+import org.projectsw.Model.Enums.TilesEnum;
 
 import static org.junit.jupiter.api.Assertions.*;
 
