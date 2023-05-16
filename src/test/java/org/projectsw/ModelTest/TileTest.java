@@ -2,7 +2,7 @@ package org.projectsw.ModelTest;
 
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Tile;
-import org.projectsw.Model.TilesEnum;
+import org.projectsw.Model.Enums.TilesEnum;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TileTest {

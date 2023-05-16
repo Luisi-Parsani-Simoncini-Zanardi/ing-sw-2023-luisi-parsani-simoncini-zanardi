@@ -1,6 +1,7 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 
 import java.io.FileReader;

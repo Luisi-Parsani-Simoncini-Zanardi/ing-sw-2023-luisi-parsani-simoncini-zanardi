@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.TestUtils;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,4 +1,4 @@
-package org.projectsw.Model;
+package org.projectsw.Model.Enums;
 
 /**
  * Enumeration representing all the possible type of tiles.

@@ -1,7 +1,11 @@
 package org.projectsw.View;
 import org.projectsw.Model.*;
+import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
+import org.projectsw.View.Enums.UIEvent;
+import org.projectsw.View.Enums.UIState;
+
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -54,7 +58,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     @Override
     public void run() {
         joinGame();
-        while(getState() != UIState.GAME_ENDING){
+        while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)){
              while(getState() == UIState.OPPONENT_TURN){
                  //chatting
             }
@@ -84,7 +88,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
   
   
   
-    public void update(GameView model, Game.Event arg){
+    public void update(GameView model, GameEvent arg){
         switch(arg){
             case UPDATED_BOARD -> {
                 if (model.getCurrentPlayerName().equals(nickname))

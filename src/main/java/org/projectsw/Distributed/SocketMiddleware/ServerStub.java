@@ -2,10 +2,10 @@ package org.projectsw.Distributed.SocketMiddleware;
 
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Server;
-import org.projectsw.Model.Game;
+import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
-import org.projectsw.View.UIEvent;
+import org.projectsw.View.Enums.UIEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -81,9 +81,9 @@ public class ServerStub implements Server {
             throw  new RemoteException("Cannot cast event: "+e.getMessage());
         }
 
-        Game.Event arg;
+        GameEvent arg;
         try{
-            arg = (Game.Event) ois.readObject();
+            arg = (GameEvent) ois.readObject();
         }catch(IOException e){
             throw new RemoteException("Cannot receive event: "+e.getMessage());
         }catch(ClassNotFoundException e){

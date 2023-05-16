@@ -1,5 +1,6 @@
 package org.projectsw.Model;
 
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import java.util.ArrayList;
 import java.util.Collections;

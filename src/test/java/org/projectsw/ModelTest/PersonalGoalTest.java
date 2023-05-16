@@ -3,7 +3,7 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.PersonalGoal;
-import org.projectsw.Model.TilesEnum;
+import org.projectsw.Model.Enums.TilesEnum;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;

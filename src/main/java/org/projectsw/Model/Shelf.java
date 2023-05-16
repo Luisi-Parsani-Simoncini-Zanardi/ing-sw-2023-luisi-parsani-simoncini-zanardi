@@ -1,19 +1,20 @@
 package org.projectsw.Model;
 
 import org.projectsw.Exceptions.UnselectableColumnException;
+import org.projectsw.Model.Enums.GameEvent;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 import org.projectsw.View.ConsoleColors;
 
-import java.awt.*;
 import java.util.ArrayList;
-import static org.projectsw.Model.TilesEnum.EMPTY;
+import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
 
 /**
  * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
  */
 
-public class Shelf extends Observable<Game.Event> {
+public class Shelf extends Observable<GameEvent> {
     private Tile[][] shelf;
     private ArrayList<Integer> selectableColumns;
     private Integer selectedColumn;

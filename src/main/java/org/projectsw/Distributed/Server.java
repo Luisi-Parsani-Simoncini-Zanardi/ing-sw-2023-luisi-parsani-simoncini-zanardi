@@ -1,7 +1,7 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Model.InputController;
-import org.projectsw.View.UIEvent;
+import org.projectsw.View.Enums.UIEvent;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

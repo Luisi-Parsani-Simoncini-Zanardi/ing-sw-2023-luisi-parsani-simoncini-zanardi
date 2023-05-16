@@ -1,4 +1,4 @@
-package org.projectsw.Exceptions;
+package org.projectsw.Exceptions.Enums;
 
 public enum ErrorName {
     NO_ERROR,

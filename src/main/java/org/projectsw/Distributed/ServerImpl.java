@@ -1,12 +1,12 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
-import org.projectsw.Exceptions.*;
 import org.projectsw.Model.Game;
+import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.Util.Observer;
-import org.projectsw.View.UIEvent;
+import org.projectsw.View.Enums.UIEvent;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -21,7 +21,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     private static int counter = 0;
     private String tempNick;
     private int numberOfPlayers;
-    private final Map<Client, Observer<Game, Game.Event>> clientObserverHashMap = new HashMap<>();
+    private final Map<Client, Observer<Game, GameEvent>> clientObserverHashMap = new HashMap<>();
 
     public ServerImpl() throws RemoteException {
         super();
@@ -44,8 +44,8 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     public void register(Client client) throws RemoteException {
         //TODO: gestire la possibile reconnect
         //TODO: gestire se il server crasha
-        Observer<Game, Game.Event> observer = (o, arg) -> {
-            if (Objects.requireNonNull(arg) == Game.Event.ERROR) {
+        Observer<Game, GameEvent> observer = (o, arg) -> {
+            if (Objects.requireNonNull(arg) == GameEvent.ERROR) {
                 try {
                     client.update(new GameView(this.model.getError(), this.model.getClientID()), arg);
                 } catch (RemoteException e) {

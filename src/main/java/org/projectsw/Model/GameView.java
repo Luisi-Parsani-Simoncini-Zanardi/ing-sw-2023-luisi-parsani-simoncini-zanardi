@@ -1,6 +1,7 @@
 package org.projectsw.Model;
 
-import org.projectsw.Exceptions.ErrorName;
+import org.projectsw.Exceptions.Enums.ErrorName;
+import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import java.awt.*;
 import java.io.Serial;
