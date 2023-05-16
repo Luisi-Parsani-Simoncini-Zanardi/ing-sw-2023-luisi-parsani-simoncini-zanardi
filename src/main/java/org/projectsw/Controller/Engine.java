@@ -42,7 +42,11 @@ public class Engine{
     public Game getGame() { return this.game;}
 
     public void setGame(Game activeGame){
-        this.game=activeGame;
+        saveGameStatus= new SaveGameStatus(activeGame, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        if(saveGameStatus.checkExistingSaveFile())
+            this.game=saveGameStatus.retrieveGame();
+        else
+            this.game=activeGame;
     }
 
     /**
@@ -80,7 +84,7 @@ public class Engine{
      */
     private void startGame(){
         game.setGameState(GameStates.RUNNING);
-        saveGameStatus = new SaveGameStatus(game, "");
+        saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
         try {
             game.setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
         } catch (RemoteException e) {
@@ -424,7 +428,6 @@ public class Engine{
     public void endTurn(){
         this.checkCommonGoals();
         this.checkEndGame();
-        //getSaveGameStatus().saveGame();
         game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
@@ -444,6 +447,7 @@ public class Engine{
                 throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
             }
         }
+        getSaveGameStatus().saveGame();
     }
 
     /**
