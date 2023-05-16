@@ -15,6 +15,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
     private UIState state = UIState.OPPONENT_TURN;
     private final Object lock = new Object();
+    private boolean timer;
     private Integer number;
     private Point point;
     private String nickname;
@@ -61,7 +62,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)){
              while(getState() == UIState.OPPONENT_TURN){
                  //chatting
-                 //takeInput();
             }
             System.out.println("---YOUR TURN---");
 
@@ -152,7 +152,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                             }
                         }
                         case INVALID_TEMPORARY_TILE -> {
-                            //nickname = selectTemporaryTile();
                             System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
                             try {
                                 setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
@@ -175,21 +174,6 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             }
             case EMPTY_TEMPORARY_TILES -> {
                 noMoreTemporaryTiles = false;
-            }
-        }
-    }
-
-    private void takeInput() {
-        Scanner scanner = new Scanner(System.in);
-        string = scanner.nextLine();
-        String[] splitted = string.split("/");
-        switch(splitted[1]){
-            case "msg" -> {
-                try {
-                    setChangedAndNotifyObservers(UIEvent.SAY_IN_CHAT);
-                } catch (RemoteException e) {
-                    throw new RuntimeException("Network error while sending the message to the chat: "+e.getMessage());
-                }
             }
         }
     }
