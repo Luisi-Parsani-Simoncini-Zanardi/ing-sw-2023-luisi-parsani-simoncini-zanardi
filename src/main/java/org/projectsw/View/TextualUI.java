@@ -177,10 +177,19 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     }
 
     private boolean chooseColumn(){
-        System.out.println("Are you sure?\n1: yes\n2: no");
+        System.out.println("Are you sure?\n1: Yes\n2: No");
         Scanner scanner = new Scanner(System.in);
+        while (!scanner.hasNextInt()) {
+            System.out.println(ConsoleColors.RED + "Please insert a number..." + ConsoleColors.RESET);
+            scanner.next();
+        }
         int choice = scanner.nextInt();
-        return choice == 2;
+        if (choice == 1 || choice == 2)
+            return choice == 2;
+        else {
+            System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
+            return chooseColumn();
+        }
     }
 
     private Integer selectTemporaryTile(){
@@ -206,20 +215,30 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
     private boolean chooseTiles(){
         System.out.println("Do you want to choose another tile?\n1: yes\n2: no");
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextInt() == 1;
+        while (!scanner.hasNextInt()) {
+            System.out.println(ConsoleColors.RED + "Please insert a number..." + ConsoleColors.RESET);
+            scanner.next();
+        }
+        int choice = scanner.nextInt();
+        if (choice == 1 || choice == 2)
+            return choice == 1;
+        else {
+            System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
+            return chooseColumn();
+        }
     }
 
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert the row: ");
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the row: ");
+            System.out.println(ConsoleColors.RED + "Invalid input... \n" + ConsoleColors.RESET + "Insert the row: ");
             scanner.next();
         }
         int row = scanner.nextInt();
         System.out.println("Insert the column: ");
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
+            System.out.println(ConsoleColors.RED + "Invalid input... \n" + ConsoleColors.RESET + "Insert the column: ");
             scanner.next();
         }
         int column = scanner.nextInt();
