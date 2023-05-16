@@ -135,6 +135,11 @@ public class Engine{
      */
     private void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
+        try {
+            game.setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the board: "+e.getMessage());
+        }
     }
 
     /**
@@ -153,7 +158,11 @@ public class Engine{
      * but if they don't addTemporaryTile throws InvalidArgumentException.
      */
     public void confirmSelectedTiles() {
-        if(game.getBoard().getTemporaryPoints().isEmpty()) game.setError(ErrorName.EMPTY_TEMPORARY_POINTS);
+        if(game.getBoard().getTemporaryPoints().isEmpty()) {
+            game.setError(ErrorName.EMPTY_TEMPORARY_POINTS);
+            return;
+        }
+
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
