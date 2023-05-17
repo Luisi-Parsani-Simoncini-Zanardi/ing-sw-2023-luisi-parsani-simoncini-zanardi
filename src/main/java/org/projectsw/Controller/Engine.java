@@ -2,8 +2,8 @@ package org.projectsw.Controller;
 
 import org.projectsw.Distributed.Messages.InputMessages.InitializePlayer;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
-import org.projectsw.Distributed.Messages.ResponseMessages.AskNumberOfPlayers;
-import org.projectsw.Distributed.Messages.ResponseMessages.SetClientNickname;
+import org.projectsw.Distributed.Messages.ResponseMessages.*;
+import org.projectsw.Distributed.Messages.ResponseMessages.PersonalGoalResponse;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Exceptions.Enums.ErrorName;
 import org.projectsw.Model.Enums.GameStates;
@@ -91,24 +91,24 @@ public class Engine{
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
     private void startGame(){
-      /*  game.setGameState(GameStates.RUNNING);
+        game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         try {
-            game.setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
+            game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while updating the current player: "+e.getCause());
         }
         try {
-            game.setChangedAndNotifyObservers(GameEvent.PERSONAL_GOAL);
+            game.setChangedAndNotifyObservers(new PersonalGoalResponse(new GameView(getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while notifying the personal goal was created: "+e.getCause());
         }
         fillBoard();
         try {
-            game.setChangedAndNotifyObservers(GameEvent.NEXT_PLAYER_TURN_NOTIFY);
+            game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
         } catch (RemoteException e){
             throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
-        }*/
+        }
     }
 
     /**
@@ -119,14 +119,14 @@ public class Engine{
      * @throws UnselectableTileException if the selected point is an empty/unused tile, of if the selected point
      *                                   can't be selected by the rules.
      */
-    public void selectTiles(Point selectedPoint) {
-     /*   if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
+    public void selectTiles(Point selectedPoint){
+        if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
         else {
             try {
                 if (selectionPossible()) {
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     try {
-                        game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
+                        game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
                     } catch (RemoteException e) {
                         throw new RuntimeException("Network error while updating the board: "+e.getMessage());
                     }
@@ -134,16 +134,20 @@ public class Engine{
                     if (game.getBoard().getSelectablePoints().size() == 0 ||
                         game.getCurrentPlayer().getShelf().maxFreeColumnSpace() == game.getBoard().getTemporaryPoints().size()) {
                         try {
-                            game.setChangedAndNotifyObservers(GameEvent.SELECTION_NOT_POSSIBLE);
+                            game.setChangedAndNotifyObservers(new SelectionNotPossible(new GameView(getGame().getClientID())));
                         } catch (RemoteException e) {
                             throw new RuntimeException("Network error while notifying that the selection is not possible: " + e.getCause());
                         }
                     }
                 }
             } catch (UnselectableTileException e){
-                game.setError(ErrorName.UNSELECTABLE_TILE);
+                try {
+                    game.setChangedAndNotifyObservers(new UnselectableTileError(new GameView(game.getClientID())));
+                } catch (RemoteException ex) {
+                    throw new RuntimeException("Network error while notifying that the selection is not possible: " + ex.getCause());
+                }
             }
-        }*/
+        }
     }
 
     /**
@@ -152,11 +156,11 @@ public class Engine{
      */
     private void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
-       /* try {
-            game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
+       try {
+            game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while updating the board: "+e.getMessage());
-        }*/
+        }
     }
 
     /**
@@ -176,7 +180,11 @@ public class Engine{
      */
     public void confirmSelectedTiles() {
         if(game.getBoard().getTemporaryPoints().isEmpty()) {
-            game.setError(ErrorName.EMPTY_TEMPORARY_POINTS);
+            try {
+                game.setChangedAndNotifyObservers(new EmptyTemporaryPoints(new GameView(game.getClientID())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while sending and Empty Temporary Points Error"+e.getMessage());
+            }
             return;
         }
 
@@ -191,11 +199,11 @@ public class Engine{
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
-        /*try {
-            game.setChangedAndNotifyObservers(GameEvent.UPDATED_TEMPORARY_TILES);
+        try {
+            game.setChangedAndNotifyObservers(new UpdatedTemporaryTiles(new GameView(getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error occurred: "+e.getCause());
-        }*/
+        }
     }
 
     /**
@@ -280,9 +288,9 @@ public class Engine{
         }*/
     }
 
-    /*
-    public void placeMultipleTiles(String order) throws UpdatingOnWrongPlayerException {
-        if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
+
+    public void placeMultipleTiles(String order)  {
+       /* if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
             for (int i = 0; i < order.length(); i++) {
                 Integer tile = Character.getNumericValue(order.charAt(i));
                 try {
@@ -293,9 +301,9 @@ public class Engine{
             }
         } else {
             game.setError(ErrorName.INVALID_TEMPORARY_TILE);
-        }
+        }*/
     }
-     */
+
 
     /**
      * Calls place tiles for all the indexes contained in order arrayList.
@@ -623,6 +631,14 @@ public class Engine{
     }
     public void setNumberOfPlayers(int numberOfPlayers){
         getGame().setNumberOfPlayers(numberOfPlayers);
+    }
+
+    public void boardTransfer(){
+        try {
+            game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while transferring the board: "+e.getMessage());
+        }
     }
     public void update(Client client, InputMessage input) throws RemoteException {
         if ((input instanceof InitializePlayer)) {

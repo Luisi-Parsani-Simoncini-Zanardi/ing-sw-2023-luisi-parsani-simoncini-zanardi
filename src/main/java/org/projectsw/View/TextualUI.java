@@ -1,8 +1,6 @@
 package org.projectsw.View;
 import org.projectsw.Controller.Engine;
-import org.projectsw.Distributed.Messages.InputMessages.InitializePlayer;
-import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
-import org.projectsw.Distributed.Messages.InputMessages.NumberOfPlayers;
+import org.projectsw.Distributed.Messages.InputMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.*;
 import org.projectsw.Model.Enums.GameEvent;
@@ -67,13 +65,26 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         int choice;
         do {
             joinGame();
+            if(!isNotCorrect)
+                System.out.println(ConsoleColors.RED+"Nickname already taken!!!"+ConsoleColors.RESET);
         }while(!isNotCorrect);
 
         while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)) {
             printCommandMenu();
             choice = scanner.nextInt();
             switch (choice) {
-                case 1 -> writeInChat();
+                case 1 -> selectTiles();
+                case 2 -> {}
+                case 3 -> {}
+                case 4 -> {}
+                case 5 -> {}
+                case 6 -> askBoard();
+                case 7 -> {}
+                case 8 -> {}
+                case 9 -> writeInChat();
+                case 10 -> {}
+                case 11 -> {}
+                case 12 -> {}
             }
             /*while(getState() == UIState.OPPONENT_TURN){
                  //chatting
@@ -105,7 +116,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private void printCommandMenu(){
         System.out.println("""
                      Choose an action:
-                     1-  Select a tile from the board
+                     1-  Select tiles from the board
                      2-  Select a column from the shelf
                      3-  Put a tile in your shelf
                      4-  See your personal goal
@@ -128,7 +139,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void update(ResponseMessage response){
-        if(response.getClientID()==this.clientUID||response.getClientID()==Config.broadcastID)
+        if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID)
         response.execute(this);
         /*switch(arg){
             case UPDATED_BOARD -> {
@@ -219,7 +230,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             }
         }*/
     }
-
+    public void setNoMoreTemporaryTiles(boolean bool){
+        this.noMoreTemporaryTiles = bool;
+    }
+    public void setNoMoreSelectableTiles(boolean bool){
+        this.noMoreSelectableTiles = bool;
+    }
     private boolean chooseColumn(){
         System.out.println("Are you sure?\n1: Yes\n2: No");
         Scanner scanner = new Scanner(System.in);
@@ -272,6 +288,22 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    private void selectTiles(){
+        do{
+            point = selectTilesInput();
+            try {
+                setChangedAndNotifyObservers(new TileSelection(new InputController(getClientUID(), getPoint())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
+            }
+        }while(noMoreSelectableTiles && chooseTiles());
+        try {
+            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new InputController(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
+        }
+    }
+
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert the row: ");
@@ -289,7 +321,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         return new Point(column-1, row-1);
     }
 
-    private void showBoard(GameView model){
+
+
+    private void askBoard() {
+        try {
+            setChangedAndNotifyObservers(new AskForBoard(new InputController(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while asking for the board: "+e.getMessage());
+        }
+    }
+
+    public void showBoard(GameView model){
         Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
@@ -303,14 +345,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         shelf.printShelf();
     }
 
-    private void showPersonalGoal(GameView model){
+    public void showPersonalGoal(GameView model){
         System.out.println("\n--- YOUR PERSONAL GOAL ---\n");
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getCurrentPlayerPersonalGoal());
         shelf.printShelf();
     }
 
-    private void showCurrentPlayer(GameView model){
+    public void showCurrentPlayer(GameView model){
         System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
     }
 
@@ -329,39 +371,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
     }
-/*
-    private void selectTiles(){
-        do{
-            point = selectTilesInput();
-            try {
-                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
-            }
-        }while(noMoreSelectableTiles && chooseTiles());
-        try {
-            setChangedAndNotifyObservers(UIEvent.CONFIRM_SELECTION);
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
-        }
-    }*/
-
-    /*
-    public void askNewNick(ArrayList<String> nicks){
-        Scanner scanner = new Scanner(System.in);
-        boolean control=false;
-        do{
-            System.out.println(ConsoleColors.RED +"Invalid nickname. Try again..."+ ConsoleColors.RESET+"\nInsert new nickname:");
-            nickname = scanner.nextLine();
-            if(!nicks.contains(nickname))
-                control=true;
-        }while(!control);
-        try {
-            setChangedAndNotifyObservers(UIEvent.NEW_CHOOSE_NICKNAME);
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred: "+e.getCause());
-        }
-    }*/
 
     public void askNumber(){
         Scanner scanner = new Scanner(System.in);
@@ -379,7 +388,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void kill(){
-        System.out.println(ConsoleColors.RED +"Unable to join the game; lobby is full.\nClosing the process..."+ ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED +"Unable to join the game: lobby is full.\nClosing the process..."+ ConsoleColors.RESET);
         printImageKill();
         System.exit(0);
     }
