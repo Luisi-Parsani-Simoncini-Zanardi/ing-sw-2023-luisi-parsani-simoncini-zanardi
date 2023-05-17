@@ -69,26 +69,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             joinGame();
         }while(!isNotCorrect);
 
-        while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)){
-             System.out.println("""
-                     Choose an action:
-                     1-  Select a tile from the board
-                     2-  Select a column from the shelf
-                     3-  Put a tile in your shelf
-                     4-  See your personal goal
-                     5-  See the common goals
-                     6-  Show the board
-                     7-  Show your shelf
-                     8-  Show all the shelves
-                     9-  Write in chat
-                     10- Show the chat
-                     11- Clear the cli
-                     12- Help
-                     """);
-             choice = scanner.nextInt();
-             switch(choice){
-                 case 1 -> writeInChat();
-             }
+        while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)) {
+            printCommandMenu();
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1 -> writeInChat();
+            }
             /*while(getState() == UIState.OPPONENT_TURN){
                  //chatting
             }
@@ -116,6 +102,23 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    private void printCommandMenu(){
+        System.out.println("""
+                     Choose an action:
+                     1-  Select a tile from the board
+                     2-  Select a column from the shelf
+                     3-  Put a tile in your shelf
+                     4-  See your personal goal
+                     5-  See the common goals
+                     6-  Show the board
+                     7-  Show your shelf
+                     8-  Show all the shelves
+                     9-  Write in chat
+                     10- Show the chat
+                     11- Clear the cli
+                     12- Help
+                     """);
+    }
     private void writeInChat(){
         Scanner scanner = new Scanner(System.in);
         System.out.println(ConsoleColors.PURPLE+"Messages should be formatted like this:\n" + ConsoleColors.RESET+
