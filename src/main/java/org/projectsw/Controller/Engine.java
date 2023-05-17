@@ -1,16 +1,19 @@
 package org.projectsw.Controller;
 
+import org.projectsw.Distributed.Messages.InputMessages.InitializePlayer;
+import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.ResponseMessages.AskNumberOfPlayers;
+import org.projectsw.Distributed.Messages.ResponseMessages.SetClientNickname;
+import org.projectsw.Distributed.Server;
 import org.projectsw.Exceptions.Enums.ErrorName;
-import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.Enums.GameStates;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
-import org.projectsw.Util.Observer;
 import org.projectsw.Util.OneToOneHashmap;
-import org.projectsw.View.Enums.UIEvent;
+
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
 import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
-
+//TODO: decommentare le parti commentate per non dare errori
 
 /**
  * The class contains the application logic methods of the game.
@@ -27,8 +30,17 @@ public class Engine{
     private final OneToOneHashmap<Client, String> clients = new OneToOneHashmap<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
+    private static int counter = 0;
+    private final Object lock = new Object();
+    private final Server server;
 
-
+    /**
+     * constructor
+     * @param server is the server bound to this controller
+     */
+    public Engine(Server server){
+        this.server=server;
+    }
     /**
      * get the Clients
      * @return the clients
@@ -79,7 +91,7 @@ public class Engine{
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
     private void startGame(){
-        game.setGameState(GameStates.RUNNING);
+      /*  game.setGameState(GameStates.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "");
         try {
             game.setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
@@ -96,7 +108,7 @@ public class Engine{
             game.setChangedAndNotifyObservers(GameEvent.NEXT_PLAYER_TURN_NOTIFY);
         } catch (RemoteException e){
             throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
-        }
+        }*/
     }
 
     /**
@@ -108,7 +120,7 @@ public class Engine{
      *                                   can't be selected by the rules.
      */
     public void selectTiles(Point selectedPoint) {
-        if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
+     /*   if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
         else {
             try {
                 if (selectionPossible()) {
@@ -131,7 +143,7 @@ public class Engine{
             } catch (UnselectableTileException e){
                 game.setError(ErrorName.UNSELECTABLE_TILE);
             }
-        }
+        }*/
     }
 
     /**
@@ -140,11 +152,11 @@ public class Engine{
      */
     private void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
-        try {
+       /* try {
             game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while updating the board: "+e.getMessage());
-        }
+        }*/
     }
 
     /**
@@ -179,11 +191,11 @@ public class Engine{
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
-        try {
+        /*try {
             game.setChangedAndNotifyObservers(GameEvent.UPDATED_TEMPORARY_TILES);
         } catch (RemoteException e) {
             throw new RuntimeException("Network error occurred: "+e.getCause());
-        }
+        }*/
     }
 
     /**
@@ -217,7 +229,7 @@ public class Engine{
      * @param temporaryIndex the selected index of temporaryTiles.
      */
     public void placeTiles(Integer temporaryIndex){
-        game.getCurrentPlayer().getShelf().setSelectionPossible(false);
+       /* game.getCurrentPlayer().getShelf().setSelectionPossible(false);
         try {
             Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
             int selectedColumn = game.getCurrentPlayer().getShelf().getSelectedColumn();
@@ -239,7 +251,7 @@ public class Engine{
                 }
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
-                    try {
+                   try {
                         game.setChangedAndNotifyObservers(GameEvent.UPDATED_SHELF);
                     } catch (RemoteException e) {
                         throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
@@ -253,7 +265,7 @@ public class Engine{
             if (game.getCurrentPlayer().getTemporaryTiles().isEmpty()) {
                 deselectColumn();
                 game.getCurrentPlayer().getShelf().setSelectionPossible(true);
-                try {
+              /*  try {
                     game.setChangedAndNotifyObservers(GameEvent.EMPTY_TEMPORARY_TILES);
                 } catch (RemoteException e) {
                     throw new RuntimeException("Network error while notifying that the insertion is not possible: " + e.getCause());
@@ -265,7 +277,7 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while placing tiles: " + e.getCause());
 
-        }
+        }*/
     }
 
     /*
@@ -433,7 +445,7 @@ public class Engine{
         }
         else {
             getGame().setCurrentPlayer(getGame().getNextPlayer());
-            try {
+            /*try {
                 game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while updating the board: "+e.getMessage());
@@ -442,7 +454,7 @@ public class Engine{
                 game.setChangedAndNotifyObservers(GameEvent.NEXT_PLAYER_TURN_NOTIFY);
             } catch (RemoteException e){
                 throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
-            }
+            }*/
         }
     }
 
@@ -502,12 +514,28 @@ public class Engine{
      * Creates a message with sender, content and recipients and adds it to the chat.
      * @param sender message sender
      * @param content message content
-     * @param recipients message recipients
+     * @param scope message scope
      */
-    public void sayInChat(Player sender, String content, ArrayList<Player> recipients) {
-        //TODO: reimplementare
+    public void sayInChat(String sender, String content, String scope) {
+       if(scope.equals("everyone")||validNickname(scope))
+           this.getGame().getChat().addChatLog(new Message(sender,scope,content));
+       else{
+           //inviare messaggio di errore
+       }
     }
 
+    /**
+     * Checks if the nickname is a valid nickname
+     * @param nickname is the receiver nickname
+     * @return true if nickname is the nickname of a player in game
+     */
+    private boolean validNickname(String nickname){
+        for(Player player : this.getGame().getPlayers()){
+            if(player.getNickname().equals(nickname))
+                return true;
+        }
+        return false;
+    }
     /**
      * Fills the board if the board contains only tiles with no other adjacent tiles.
      */
@@ -520,11 +548,11 @@ public class Engine{
                     }
                 }
             }
-            try {
+           /* try {
                 game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while updating the board: "+e.getMessage());
-            }
+            }*/
         }
     }
 
@@ -559,18 +587,51 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
-    public void removeGameObserver(Observer<Game, GameEvent> observer){
-        this.getGame().deleteObserver(observer);
+    private ArrayList<String> getNicks() throws RemoteException {
+        ArrayList<String> nicks = new ArrayList<>();
+        for(Client client : this.getClients().getAllKey())
+            nicks.add(client.getNickname());
+        return nicks;
     }
 
-    public void update(InputController input, UIEvent UiEvent) {
-        game.setClientID(input.getClientID());
-            switch (UiEvent) {
-                case TILE_SELECTION -> selectTiles(input.getCoordinate());
-                case CONFIRM_SELECTION -> confirmSelectedTiles();
-                case COLUMN_SELECTION -> selectColumn(input.getIndex());
-                case TILE_INSERTION -> placeTiles(input.getIndex());
-            }
+    public synchronized void initializePlayer(Client client, InputController input) throws RemoteException {
+        if (this.getClients().getAllKey().size() == 0) {
+            counter++;
+            client.setID(new GameView(counter));
+            game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(counter, input.getNickname())));
+            this.getClients().put(client, input.getNickname());
+            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new GameView(counter)));
+            this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
+            this.playerJoin(input.getNickname());
+            client.setCorrectResponse(true);
 
+        } else if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
+            for (Client chekClient : this.getClients().getAllKey()) {
+                if (chekClient.getNickname().equals(input.getNickname()))
+                    return;
+            }
+            counter++;
+            client.setID(new GameView(counter));
+            game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(counter, input.getNickname())));
+            this.getClients().put(client, input.getNickname());
+            this.playerJoin(input.getNickname());
+            client.setCorrectResponse(true);
+        } else {
+            server.removeObserver(client);
+            client.kill();
+        }
+    }
+    public void setNumberOfPlayers(int numberOfPlayers){
+        getGame().setNumberOfPlayers(numberOfPlayers);
+    }
+    public void update(Client client, InputMessage input) throws RemoteException {
+        if ((input instanceof InitializePlayer)) {
+            input.execute(client, this);
+        } else {
+            synchronized (lock) {
+                game.setClientID(input.getInput().getClientID());
+                input.execute(this);
+            }
+        }
     }
 }

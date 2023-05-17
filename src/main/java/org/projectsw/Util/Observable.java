@@ -31,16 +31,16 @@ import java.util.Vector;
  * {@code equals} method returns true for them.
  *
  * @see     #notifyObservers()
- * @see     #notifyObservers(Enum)
+ * @see     #notifyObservers(Event)
  * @see     Observer
- * @see     Observer#update(Observable, Enum)
+ * @see     Observer#update(Observable, Event)
  *
  * @param <Event> the enumeration of the event that this observable is emitting
  *
  * @implNote
  * This class is a Generic Implementation of the deprecated {@link java.util.Observable}.
  */
-public class Observable<Event extends Enum<Event>> {
+public class Observable<Event> {
     private boolean changed = false;
     private Vector<Observer<? extends Observable<Event>, Event>> obs;
 
@@ -90,7 +90,7 @@ public class Observable<Event extends Enum<Event>> {
      *
      * @see     #clearChanged()
      * @see     #hasChanged()
-     * @see     Observer#update(Observable, Enum)
+     * @see     Observer#update(Observable, Event)
      */
     public void notifyObservers() throws RemoteException{
         notifyObservers(null);
@@ -108,7 +108,7 @@ public class Observable<Event extends Enum<Event>> {
      * @param   arg   any object.
      * @see     #clearChanged()
      * @see     #hasChanged()
-     * @see     Observer#update(Observable, Enum)
+     * @see     Observer#update(Observable, Event)
      */
     public void notifyObservers(Event arg) throws RemoteException {
         /*
@@ -162,8 +162,8 @@ public class Observable<Event extends Enum<Event>> {
      * This method is called automatically by the
      * {@code notifyObservers} methods.
      *
-     * @see     #notifyObservers()
-     * @see     #notifyObservers(Enum)
+     * @see     #notifyObservers(Event)
+     * @see     #notifyObservers(Event)
      */
     protected synchronized void clearChanged() {
         changed = false;

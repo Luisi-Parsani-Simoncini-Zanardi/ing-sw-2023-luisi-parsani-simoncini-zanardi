@@ -1,5 +1,6 @@
 package org.projectsw.Distributed;
 
+import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.Enums.UIEvent;
 
@@ -12,14 +13,12 @@ public interface Server extends Remote {
      * @param client the client to register
      */
     void register(Client client) throws RemoteException;
+    public void removeObserver(Client client)throws RemoteException;
 
     /**
      * Notify the server that a client has made a choice
-     * @param
-     * @param arg     the choice made by the client
+     * @param client is the client that is sending the data
+     * @param input all data taken from the client
      */
-    void update(InputController input, UIEvent arg) throws RemoteException;
-    void initializePlayer(Client client, InputController input) throws RemoteException;
-    void setNumberOfPlayers(InputController input) throws RemoteException;
-    void setCorrectNick(InputController input) throws RemoteException;
+    void update(Client client, InputMessage input) throws RemoteException;
 }

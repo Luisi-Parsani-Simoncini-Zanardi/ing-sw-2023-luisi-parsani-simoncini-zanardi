@@ -1,5 +1,6 @@
 package org.projectsw.Distributed;
 
+import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.GameView;
 
@@ -9,14 +10,11 @@ import java.rmi.RemoteException;
 public interface Client extends Remote {
     /**
      * Notify the client of a model change
-     * @param o     The resulting model view
-     * @param arg   The causing event
+     * @param response is the server response to the client
      */
-    void update(GameView o, GameEvent arg) throws RemoteException;
+    void update(ResponseMessage response) throws RemoteException;
     void kill()throws RemoteException;
-    public void setID(GameView serverResponse)throws RemoteException;
-    public void setNickname(GameView serverResponse)throws RemoteException;
-    public String getNickname()throws RemoteException;;
-    public void askNumberOfPlayers()throws RemoteException;
-    public void askNewNick(GameView nicks)throws RemoteException;
+    public void setID(GameView model) throws RemoteException;
+    public String getNickname() throws RemoteException;
+    public void setCorrectResponse(boolean response) throws RemoteException;
 }

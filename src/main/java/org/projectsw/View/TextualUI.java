@@ -1,4 +1,9 @@
 package org.projectsw.View;
+import org.projectsw.Controller.Engine;
+import org.projectsw.Distributed.Messages.InputMessages.InitializePlayer;
+import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.InputMessages.NumberOfPlayers;
+import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.*;
 import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Util.Config;
@@ -11,10 +16,11 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class TextualUI extends Observable<UIEvent> implements Runnable{
+public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private UIState state = UIState.OPPONENT_TURN;
     private final Object lock = new Object();
+    private boolean isNotCorrect;
     private Integer number;
     private Point point;
     private String nickname;
@@ -57,9 +63,20 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
     @Override
     public void run() {
-        joinGame();
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+        do {
+            joinGame();
+        }while(!isNotCorrect);
+
         while(getState() != UIState.GAME_ENDING || (getState() == UIState.GAME_ENDING && this.clientUID != 1)){
-             while(getState() == UIState.OPPONENT_TURN){
+             System.out.println("Choose an action\n" +
+                     "1- Write in chat");
+             choice = scanner.nextInt();
+             switch(choice){
+                 case 1 -> writeInChat();
+             }
+            /*while(getState() == UIState.OPPONENT_TURN){
                  //chatting
             }
             System.out.println("---YOUR TURN---");
@@ -82,12 +99,22 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             }while(noMoreTemporaryTiles);
-            setState(UIState.OPPONENT_TURN);
+            setState(UIState.OPPONENT_TURN);*/
         }
     }
-  
-    public void update(GameView model, GameEvent arg){
-        switch(arg){
+
+    private void writeInChat(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(ConsoleColors.PURPLE+"Messages should be formatted like this:\n" + ConsoleColors.RESET+
+                "nickname/message -> to send a secret message to the player with the specified nickname\n" +
+                "message -> to send a message to everyone");
+        string = scanner.nextLine();
+    }
+
+    public void update(ResponseMessage response){
+        if(response.getClientID()==this.clientUID||response.getClientID()==Config.broadcastID)
+        response.execute(this);
+        /*switch(arg){
             case UPDATED_BOARD -> {
                 if (model.getCurrentPlayerName().equals(nickname))
                     showBoard(model);
@@ -174,7 +201,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
             case EMPTY_TEMPORARY_TILES -> {
                 noMoreTemporaryTiles = false;
             }
-        }
+        }*/
     }
 
     private boolean chooseColumn(){
@@ -273,7 +300,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
 
     private void showChat(GameView model){
         for(Message message : model.getChat())
-            System.out.println("\n"+message.getSender().getNickname()+": "+message.getPayload());
+            System.out.println("\n"+message.getSender()+": "+message.getPayload());
     }
 
     private void joinGame() {
@@ -281,12 +308,12 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         System.out.println("Insert your nickname: ");
         nickname = scanner.nextLine();
         try {
-            setChangedAndNotifyObservers(UIEvent.CHOOSE_NICKNAME);
+            setChangedAndNotifyObservers(new InitializePlayer(new InputController(this.getNickname())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
     }
-
+/*
     private void selectTiles(){
         do{
             point = selectTilesInput();
@@ -301,8 +328,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
         }
-    }
+    }*/
 
+    /*
     public void askNewNick(ArrayList<String> nicks){
         Scanner scanner = new Scanner(System.in);
         boolean control=false;
@@ -317,7 +345,7 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
-    }
+    }*/
 
     public void askNumber(){
         Scanner scanner = new Scanner(System.in);
@@ -328,9 +356,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
         try {
-            setChangedAndNotifyObservers(UIEvent.CHOOSE_NUMBER_OF_PLAYERS);
+            setChangedAndNotifyObservers(new NumberOfPlayers(new InputController(getClientUID(),getNumber())));
         } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred: "+e.getCause());
+            throw new RuntimeException("Network error"+e.getMessage());
         }
     }
 
@@ -362,5 +390,9 @@ public class TextualUI extends Observable<UIEvent> implements Runnable{
                 "####### "+ConsoleColors.RED_BOLD+"PROCESS"+ConsoleColors.YELLOW +" ########"+ConsoleColors.GREY+"/ /"+ConsoleColors.YELLOW+"######"+ConsoleColors.GREY+"\\ \\"+ConsoleColors.YELLOW+"###########"+ConsoleColors.GREY+"/ /"+ConsoleColors.YELLOW+"####### "+ConsoleColors.RED_BOLD+"CLOSED"+ConsoleColors.YELLOW+" ########\n" +
                 "| | | | | | | | | | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | | |"+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+" | | | | | | | | | | | |\n" +
                 "|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|"+ConsoleColors.RESET);
+    }
+
+    public void setIsNotCorrect(boolean resp){
+        this.isNotCorrect=resp;
     }
 }

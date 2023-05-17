@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.SocketMiddleware;
 
 import org.projectsw.Distributed.Client;
+import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.GameView;
@@ -45,52 +46,17 @@ public class ServerStub implements Server {
     }
 
     @Override
-    public void initializePlayer(Client client, InputController input) throws RemoteException {
-
-    }
-    @Override
-    public void setNumberOfPlayers(InputController input) throws RemoteException {
-
-    }
-    @Override
-    public void setCorrectNick(InputController input) throws RemoteException {
+    public void removeObserver(Client client) throws RemoteException {
 
     }
 
     @Override
-    public void update(InputController input, UIEvent arg) throws RemoteException {
-        try{
-            oos.writeObject(arg);
-        }catch(IOException e){
-            throw new RemoteException("Cannot send event: "+ e.getMessage());
-        }
+    public void update(Client client, InputMessage input) throws RemoteException {
 
-        try{
-            oos.writeObject(input);
-        }catch(IOException e){
-            throw new RemoteException("Cannot send event: "+ e.getMessage());
-        }
     }
+
     public void receive(Client client) throws RemoteException{
-        GameView model;
-        try{
-            model = (GameView) ois.readObject();
-        }catch(IOException e){
-            throw new RemoteException("Cannot receive event: "+e.getMessage());
-        }catch(ClassNotFoundException e){
-            throw  new RemoteException("Cannot cast event: "+e.getMessage());
-        }
 
-        GameEvent arg;
-        try{
-            arg = (GameEvent) ois.readObject();
-        }catch(IOException e){
-            throw new RemoteException("Cannot receive event: "+e.getMessage());
-        }catch(ClassNotFoundException e){
-            throw  new RemoteException("Cannot cast event: "+e.getMessage());
-        }
-
-        client.update(model, arg);
     }
     public void close() throws RemoteException {
         try {

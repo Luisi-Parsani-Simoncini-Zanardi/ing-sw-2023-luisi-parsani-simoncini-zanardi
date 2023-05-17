@@ -14,5 +14,8 @@ public class Config {
     public static final int minPlayers = 2;
     public static final int maxPlayers = 4;
     public static final int numberOfCommonGoals = 2;
+
+    //TODO: se il messaggio va inviato a tutti usate il broadcastID
+    public static final int broadcastID = 5;
     private Config() {}
 }

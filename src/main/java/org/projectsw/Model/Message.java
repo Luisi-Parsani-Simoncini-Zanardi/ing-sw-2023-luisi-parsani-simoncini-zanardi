@@ -5,7 +5,7 @@ package org.projectsw.Model;
  */
 public class Message {
 
-    private final Player sender;
+    private final String sender;
     private final String payload;
     private final String scope;
 
@@ -15,7 +15,7 @@ public class Message {
      * @param scope if it's everyone the message will be sent to all players, if it's a nickname only to the interested player
      * @param payload the payload of the message
      */
-    public Message(Player sender,String scope, String payload) {
+    public Message(String sender,String scope, String payload) {
         this.sender = sender;
         this.payload = payload;
         this.scope = scope;
@@ -32,7 +32,7 @@ public class Message {
      * Returns the sender of the message.
      * @return the sender of the message
      */
-    public Player getSender() { return this.sender; }
+    public String getSender() { return this.sender; }
 
     public String getScope() { return this.scope; }
 

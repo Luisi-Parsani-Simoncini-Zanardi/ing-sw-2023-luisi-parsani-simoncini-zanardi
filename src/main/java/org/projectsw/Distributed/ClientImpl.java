@@ -1,4 +1,7 @@
 package org.projectsw.Distributed;
+import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.InputMessages.chatMessage;
+import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
@@ -15,8 +18,8 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientImpl extends UnicastRemoteObject implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
-    private Observer<TextualUI, UIEvent> tuiObserver;
-    private Observer<GraphicalUI, UIEvent> guiObserver;
+    private Observer<TextualUI, InputMessage> tuiObserver;
+    private Observer<GraphicalUI, InputMessage> guiObserver;
 
     public ClientImpl(Server server) throws RemoteException{
         super();
@@ -41,8 +44,13 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     public void setTui (Server server){
         gui = null;
         tui = new TextualUI();
-        tuiObserver = (o, arg) -> {
-            switch (arg){
+        tuiObserver = (o, input) -> {
+            try {
+                server.update(this, input);
+            }catch(RemoteException e){
+                throw new RuntimeException("Network error occurred: "+e.getMessage());
+            }
+            /*switch (arg){
                 case CHOOSE_NUMBER_OF_PLAYERS -> {
                     try {
                         server.setNumberOfPlayers(new InputController(tui.getClientUID(), tui.getNumber()));
@@ -92,7 +100,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
                         throw new RemoteException("Cannot send the client input to the server: " + e.getCause());
                     }
                 }
-            }
+            }*/
         };
         tui.addObserver(tuiObserver);
         tui.run();
@@ -110,27 +118,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         });
         gui.run();
     }
-    @Override
-    public void setID(GameView serverResponse) throws RemoteException{
-        tui.setID(serverResponse.getClientID());
-    }
-    @Override
-    public void setNickname(GameView serverResponse) throws RemoteException{
-        tui.setNickname(serverResponse.getCurrentPlayerName());
-    }
-    @Override
-    public String getNickname() throws RemoteException{
-        return tui.getNickname();
-    }
 
-    @Override
-    public void askNumberOfPlayers() throws RemoteException{
-        tui.askNumber();
-    }
-    @Override
-    public void askNewNick(GameView nicks) throws RemoteException{
-        tui.askNewNick(nicks.getPlayerNicks());
-    }
     /**
      * close the client
      */
@@ -142,11 +130,25 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     @Override
-    public void update(GameView o, GameEvent arg) throws RemoteException {
+    public void update(ResponseMessage response) throws RemoteException {
         if(tui != null)
-            tui.update(o, arg);
+            tui.update(response);
         else
-            gui.update(o, arg);
+            gui.update(response);
+    }
+    @Override
+    public void setID(GameView model){
+        tui.setID(model.getClientID());
+    }
+
+    @Override
+    public String  getNickname() throws RemoteException{
+        return tui.getNickname();
+    }
+
+    @Override
+    public void setCorrectResponse(boolean response){
+        tui.setIsNotCorrect(response);
     }
 
 }
