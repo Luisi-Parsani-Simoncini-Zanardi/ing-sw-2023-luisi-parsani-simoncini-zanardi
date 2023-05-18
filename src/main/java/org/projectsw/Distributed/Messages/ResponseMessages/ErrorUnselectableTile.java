@@ -2,6 +2,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.GameView;
 import org.projectsw.View.ConsoleColors;
+import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -16,5 +17,6 @@ public class ErrorUnselectableTile extends ResponseMessage implements Serializab
     @Override
     public void execute(TextualUI tui) {
         System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
+        tui.setTurnState(UITurnState.YOUR_TURN_PHASE3);
     }
 }

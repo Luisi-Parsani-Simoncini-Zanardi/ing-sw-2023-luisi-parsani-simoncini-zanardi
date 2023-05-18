@@ -5,6 +5,7 @@ import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.Enums.UIEvent;
+import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
@@ -30,6 +31,7 @@ public class ErrorUnselectableColumn extends ResponseMessage implements Serializ
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while notifying a column section error: "+e.getCause());
         }
+        tui.setTurnState(UITurnState.YOUR_TURN_PHASE2);
     }
     public void execute(GraphicalUI gui){}
 }

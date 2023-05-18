@@ -223,7 +223,7 @@ public class Engine{
                     game.getCurrentPlayer().getShelf().setSelectedColumn(index);
                 } catch (UnselectableColumnException e){
                     try {
-                        game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new GameView(game.getClientID())));
+                        game.setChangedAndNotifyObservers(new ErrorUnselectableColumn(new GameView(game.getClientID())));
                     } catch (RemoteException e2) {
                         throw new RuntimeException("An error occurred while sending an Unselectable Column Error"+e2.getMessage());
                     }
