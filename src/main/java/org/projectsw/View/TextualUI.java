@@ -164,6 +164,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 case 13 -> {}
             }
             /*while(getState() == UIState.OPPONENT_TURN){
+
+        joinGame();
+        while((endState == UIEndState.RUNNING || (endState == UIEndState.ENDING || this.clientUID != 1)) && turnState != UITurnState.NO_TURN){
+             while(getTurnState() == UITurnState.OPPONENT_TURN){
+
                  //chatting
             }
             System.out.println("---YOUR TURN---");
@@ -186,6 +191,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             }while(noMoreTemporaryTiles);
+
 
             */
         }
@@ -472,10 +478,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         shelf.setShelf(model.getCurrentPlayerPersonalGoal());
         shelf.printShelf();
     }
-
     public void showCurrentPlayer(GameView model){
         if (endState != UIEndState.ENDING || clientUID !=1)
             System.out.println("\nThe current player is: "+ model.getCurrentPlayerName());
+
     }
 
     private void showChat(GameView model){

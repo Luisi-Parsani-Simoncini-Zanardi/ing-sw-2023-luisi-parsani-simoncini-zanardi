@@ -26,7 +26,6 @@ public class GameView implements Serializable {
     private final Integer numberOfPlayers;
     private final HashMap<String, Integer> results;
 
-
     public GameView(int clientID, boolean correct){
         this.gameBoard =  null;
         this.currentPlayerShelf = null;
