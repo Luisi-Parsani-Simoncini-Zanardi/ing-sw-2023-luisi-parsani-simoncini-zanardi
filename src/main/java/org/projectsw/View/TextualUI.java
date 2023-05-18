@@ -24,7 +24,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private int clientUID;
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
-    private Boolean repeat = true;
 
     public TextualUI()
     {
@@ -57,9 +56,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void setNickname(String nickname){
         this.nickname = nickname;
     }
-    public void setRepeat(Boolean bool){
-        this.repeat = bool;
-    }
 
     public void setTurnState(UITurnState state){
         synchronized (lock){
@@ -84,12 +80,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
-            if (repeat) {
-                repeat = false;
-                printCommandMenu();
-            } else {
-                System.out.println("---CHOOSE AN ACTION---");
-            }
+            System.out.println("---CHOOSE AN ACTION---");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1 -> {
@@ -108,15 +99,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState == UITurnState.YOUR_TURN_PHASE1)
+                        if (turnState == UITurnState.YOUR_TURN_PHASE1) {
                             System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
-                        else if (turnState == UITurnState.YOUR_TURN_PHASE2) {
-                            turnState = UITurnState.YOUR_TURN_PHASE3;
-                            selectColumn();
                         }
-                        else if (turnState == UITurnState.YOUR_TURN_PHASE3) {
-                            turnState = UITurnState.YOUR_TURN_PHASE_END;
-                            selectTemporaryTiles();
+                        else {
+                            if (turnState == UITurnState.YOUR_TURN_PHASE2) {
+                                turnState = UITurnState.YOUR_TURN_PHASE3;
+                                selectColumn();
+                            } else if (turnState == UITurnState.YOUR_TURN_PHASE3) {
+                                turnState = UITurnState.YOUR_TURN_PHASE_END;
+                                selectTemporaryTiles();
+                            }
                         }
                     }
                 }
@@ -477,7 +470,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
         printCommandMenu();
-        repeat = false;
     }
 
     public void askNumber(){
