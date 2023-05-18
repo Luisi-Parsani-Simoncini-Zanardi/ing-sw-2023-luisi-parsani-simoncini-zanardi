@@ -454,7 +454,7 @@ public class Engine{
         }
         else {
             try {
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(Config.broadcastID,getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
