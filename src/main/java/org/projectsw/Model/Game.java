@@ -4,7 +4,7 @@ import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Exceptions.Enums.ErrorName;
 import org.projectsw.Model.CommonGoal.*;
 import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
@@ -20,7 +20,7 @@ import static org.projectsw.Exceptions.Enums.ErrorName.NO_ERROR;
  */
 public class Game extends Observable<ResponseMessage> {
 
-    private GameStates gameState;
+    private GameState gameState;
     private int numberOfPlayers;
     private Player firstPlayer;
     private Player currentPlayer;
@@ -39,7 +39,7 @@ public class Game extends Observable<ResponseMessage> {
      * This is a silly constructor, so the number of players is set to 0;
      */
     public Game(){
-        gameState = GameStates.LOBBY;
+        gameState = GameState.LOBBY;
         chat = new Chat();
         players = new ArrayList<>();
         commonGoals = new ArrayList<>();
@@ -74,7 +74,7 @@ public class Game extends Observable<ResponseMessage> {
      * Returns the current state of the game.
      * @return the current state of the game.
      */
-    public GameStates getGameState() { return gameState; }
+    public GameState getGameState() { return gameState; }
 
     /**
      * Returns the number of players of the game.
@@ -154,7 +154,7 @@ public class Game extends Observable<ResponseMessage> {
      * Sets the game state as the passed parameter.
      * @param gameState the game state to set.
      */
-    public void setGameState(GameStates gameState) { this.gameState = gameState; }
+    public void setGameState(GameState gameState) { this.gameState = gameState; }
 
     /**
      * Sets the first player of the game.

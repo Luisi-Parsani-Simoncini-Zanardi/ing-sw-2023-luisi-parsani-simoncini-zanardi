@@ -58,9 +58,9 @@ public class SaveGameStatus {
      * updated to the last turn
      * @return game object updated to the last turn
      */
-    public Game retrieveGame() {
+    public Game retrieveGame(String path) {
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 
             String json = br.lines().collect(Collectors.joining());
 
@@ -88,13 +88,42 @@ public class SaveGameStatus {
             data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
             data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
             data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
+            for(Player player : data.getPlayers()){
+                player.setIsActive(false);
+            }
+            data.getCurrentPlayer().setIsActive(false);
+            data.getFirstPlayer().setIsActive(false);
 
 
-            return gson.fromJson(br, Game.class);
+            return data;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Game retrieveGame() {
+        return retrieveGame(filePath);
+    }
+
+    public void deleteSaveFile(){
+        File fileDaEliminare = new File(filePath);
+        if (fileDaEliminare.exists()) {
+            fileDaEliminare.delete();
+        } else {
+            System.out.println("Il file non esiste.");
+        }
+    }
+
+    public boolean checkExistingSaveFile(String path) {
+        File file =new File(path);
+        if(file.exists())
+            return true;
+        return false;
+    }
+
+    public boolean checkExistingSaveFile() {
+        return checkExistingSaveFile(filePath);
     }
 
 }

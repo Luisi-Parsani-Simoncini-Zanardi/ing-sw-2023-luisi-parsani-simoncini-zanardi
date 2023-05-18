@@ -15,6 +15,11 @@ public class ConsoleColors {
     public static final String ORANGE = "\033[38;5;206m";
     public static final String MAGENTA = "\033[38;5;198m";
     public static final String GREY = "\033[38;5;248m";
+    public static final String GOLD = "\033[38;5;179m";
+    public static final String SILVER = "\033[38;5;249m";
+    public static final String BRONZE = "\033[38;5;94m";
+
+
 
     // Bold Colors
     public static final String RED_BOLD = "\033[1;31m";

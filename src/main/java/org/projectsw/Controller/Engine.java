@@ -6,14 +6,15 @@ import org.projectsw.Distributed.Messages.ResponseMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.PersonalGoalResponse;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Exceptions.Enums.ErrorName;
-import org.projectsw.Model.Enums.GameStates;
+import org.projectsw.Model.Enums.GameEvent;
+import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Util.OneToOneHashmap;
-
+import org.projectsw.View.Enums.UIEvent;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -54,7 +55,11 @@ public class Engine{
     public Game getGame() { return this.game;}
 
     public void setGame(Game activeGame){
-        this.game=activeGame;
+        saveGameStatus= new SaveGameStatus(activeGame, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        if(saveGameStatus.checkExistingSaveFile())
+            this.game=saveGameStatus.retrieveGame();
+        else
+            this.game=activeGame;
     }
 
     /**
@@ -71,7 +76,7 @@ public class Engine{
      * @param nickname the nickname of the player to be created.
      */
     public void playerJoin (String nickname) {
-            if (game.getGameState().equals(GameStates.LOBBY)) {
+            if (game.getGameState().equals(GameState.LOBBY)) {
                 int newPlayerPosition = game.getPlayers().size();
                 Player newPlayer = new Player(nickname, newPlayerPosition);
                 game.addPlayer(newPlayer);
@@ -91,8 +96,8 @@ public class Engine{
      * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
      */
     private void startGame(){
-        game.setGameState(GameStates.RUNNING);
-        saveGameStatus = new SaveGameStatus(game, "");
+        game.setGameState(GameState.RUNNING);
+        saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
         try {
             game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
         } catch (RemoteException e) {
@@ -259,7 +264,7 @@ public class Engine{
                 }
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
-                   try {
+                    try {
                         game.setChangedAndNotifyObservers(GameEvent.UPDATED_SHELF);
                     } catch (RemoteException e) {
                         throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
@@ -273,7 +278,7 @@ public class Engine{
             if (game.getCurrentPlayer().getTemporaryTiles().isEmpty()) {
                 deselectColumn();
                 game.getCurrentPlayer().getShelf().setSelectionPossible(true);
-              /*  try {
+                try {
                     game.setChangedAndNotifyObservers(GameEvent.EMPTY_TEMPORARY_TILES);
                 } catch (RemoteException e) {
                     throw new RuntimeException("Network error while notifying that the insertion is not possible: " + e.getCause());
@@ -288,9 +293,9 @@ public class Engine{
         }*/
     }
 
-
-    public void placeMultipleTiles(String order)  {
-       /* if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
+    /*
+    public void placeMultipleTiles(String order) throws UpdatingOnWrongPlayerException {
+        if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
             for (int i = 0; i < order.length(); i++) {
                 Integer tile = Character.getNumericValue(order.charAt(i));
                 try {
@@ -301,9 +306,9 @@ public class Engine{
             }
         } else {
             game.setError(ErrorName.INVALID_TEMPORARY_TILE);
-        }*/
+        }
     }
-
+     */
 
     /**
      * Calls place tiles for all the indexes contained in order arrayList.
@@ -444,16 +449,22 @@ public class Engine{
     public void endTurn(){
         this.checkCommonGoals();
         this.checkEndGame();
-        //getSaveGameStatus().saveGame();
         game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
-        if (getGame().getCurrentPlayer().getPosition() == (getGame().getNumberOfPlayers()-1) && getGame().getBoard().isEndGame()) {
+        getGame().setCurrentPlayer(getGame().getNextPlayer());
+        if (getGame().getCurrentPlayer().getPosition() == 0 && getGame().getBoard().isEndGame()) {
             this.endGame();
         }
         else {
-            getGame().setCurrentPlayer(getGame().getNextPlayer());
             /*try {
+                game.setChangedAndNotifyObservers(GameEvent.PERSONAL_GOAL);
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while notifying the personal goal was created: "+e.getCause());
+            }
+            try {
+            getGame().setCurrentPlayer(getGame().getNextPlayer());
+            try {
                 game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while updating the board: "+e.getMessage());
@@ -464,6 +475,7 @@ public class Engine{
                 throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
             }*/
         }
+        getSaveGameStatus().saveGame();
     }
 
     /**
@@ -474,6 +486,11 @@ public class Engine{
             if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
                 this.getGame().getBoard().setEndGame(true);
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
+                /*try {
+                    game.setChangedAndNotifyObservers(GameEvent.ENDGAME);
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while updating the status: " + e);
+                }*/
             }
         }
     }
@@ -503,12 +520,15 @@ public class Engine{
      * logic for the end game. Calculate personalGoals points and return the winner
      * @return winner of the game
      */
-    public Player endGame(){
-        this.checkPersonalGoal();
+    public void endGame(){
+        /*this.checkPersonalGoal();
         this.checkEndgameGoal();
-        Player winner = this.getWinner();
-        this.resetGame();
-        return winner;
+        try {
+            game.setChangedAndNotifyObservers(GameEvent.RESULTS);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while updating the status: " + e);
+        }
+        //this.resetGame();*/
     }
 
     /**
