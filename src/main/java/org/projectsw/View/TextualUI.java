@@ -89,7 +89,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
-            System.out.println("Press 0 to see all possible action :)");
+            System.out.println("Press 0 to see all possible actions...");
             choice = scanner.nextInt();
             switch (choice) {
                 case 0 -> printCommandMenu();
