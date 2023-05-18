@@ -31,7 +31,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         displayLogo();
     }
 
-    private UITurnState getTurnState(){
+    public UITurnState getTurnState(){
         synchronized(lock){
             return turnState;
         }
@@ -85,7 +85,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
             if (repeat) {
-                repeat=false;
+                repeat = false;
                 printCommandMenu();
             } else {
                 System.out.println("---CHOOSE AN ACTION---");
@@ -204,7 +204,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void update(ResponseMessage response){
         if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID)
-        response.execute(this);
+            response.execute(this);
         /*switch(arg){
             case UPDATED_BOARD -> {
                 if (model.getCurrentPlayerName().equals(nickname))
@@ -479,6 +479,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
+        printCommandMenu();
+        repeat = false;
     }
 
     public void askNumber(){
