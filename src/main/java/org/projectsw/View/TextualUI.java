@@ -97,8 +97,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState==UITurnState.YOUR_TURN_PHASE1){
-                            turnState=UITurnState.YOUR_TURN_PHASE2;
+                        if (turnState==UITurnState.YOUR_TURN_SELECTION){
+                            turnState=UITurnState.YOUR_TURN_COLUMN;
                             selectTiles();
                         } else {
                             System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
@@ -109,16 +109,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState == UITurnState.YOUR_TURN_PHASE1) {
+                        if (turnState == UITurnState.YOUR_TURN_SELECTION || turnState == UITurnState.YOUR_TURN_END)  {
                             System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
                         }
                         else {
-                            if (turnState == UITurnState.YOUR_TURN_PHASE2) {
-                                turnState = UITurnState.YOUR_TURN_PHASE3;
+                            if (turnState == UITurnState.YOUR_TURN_COLUMN) {
+                                turnState = UITurnState.YOUR_TURN_INSERTION;
                                 selectColumn();
-                            } else if (turnState == UITurnState.YOUR_TURN_PHASE3) {
-                                turnState = UITurnState.YOUR_TURN_PHASE_END;
+                            }
+                            if (turnState == UITurnState.YOUR_TURN_INSERTION) {
                                 selectTemporaryTiles();
+                                turnState = UITurnState.YOUR_TURN_END;
                             }
                         }
                     }
@@ -131,7 +132,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 case 8 -> writeInChat();
                 case 9 -> {}
                 case 10 -> {
-                    if(turnState==UITurnState.YOUR_TURN_PHASE_END)
+                    if(turnState==UITurnState.YOUR_TURN_END)
                     {
                         System.out.println("You ended your turn.");
                         if (endState == UIEndState.RUNNING) {
@@ -188,19 +189,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     private void printCommandMenu(){
-        System.out.print(ConsoleColors.PURPLE_BOLD+" ---CHOOSE AN ACTION---\n"+ConsoleColors.RED+
-                        "1-  Select tiles from the board\n"+ConsoleColors.YELLOW+
-                        "2-  Insert tiles in your shelf\n"+ConsoleColors.BLUE+
-                        "3-  See your personal goal\n"+ConsoleColors.BRONZE+
-                        "4-  See the common goals\n"+ConsoleColors.CYAN+
-                        "5-  Show the board\n"+ConsoleColors.GREEN+
-                        "6-  Show your shelf\n"+ConsoleColors.MAGENTA+
-                        "7-  Show all the shelves\n"+ConsoleColors.GOLD+
-                        "8-  Write in chat\n"+ConsoleColors.SILVER+
-                        "9-  Show the chat\n"+ConsoleColors.ORANGE+
-                        "10- End your turn\n"+ConsoleColors.RED+
-                        "11- Clear the cli\n"+ConsoleColors.GREY+
-                        "12- Help\n"+ConsoleColors.RESET);
+        System.out.print(ConsoleColors.PURPLE_BOLD+" ---CHOOSE AN ACTION---\n"+
+                        "1-  Select tiles from the board\n"+
+                        "2-  Insert tiles in your shelf\n"+
+                        "3-  See your personal goal\n"+
+                        "4-  See the common goals\n"+
+                        "5-  Show the board\n"+
+                        "6-  Show your shelf\n"+
+                        "7-  Show all the shelves\n"+
+                        "8-  Write in chat\n"+
+                        "9-  Show the chat\n"+
+                        "10- End your turn\n"+
+                        "11- Clear the cli\n");
     }
     private void writeInChat(){
         Scanner scanner = new Scanner(System.in);
