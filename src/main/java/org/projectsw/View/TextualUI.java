@@ -1,20 +1,15 @@
 package org.projectsw.View;
-import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.*;
-import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 import org.projectsw.View.Enums.UIEndState;
-import org.projectsw.View.Enums.UIEvent;
 import org.projectsw.View.Enums.UITurnState;
 
 import java.awt.*;
-import java.awt.desktop.SystemEventListener;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TextualUI extends Observable<InputMessage> implements Runnable{
 
@@ -80,7 +75,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do {
             joinGame();
             if(!isNotCorrect)
-                System.out.println(ConsoleColors.RED+"Nickname already taken!!!"+ConsoleColors.RESET);
+                System.out.println(ConsoleColors.RED+"Nickname already taken..."+ConsoleColors.RESET);
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
@@ -88,29 +83,43 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             choice = scanner.nextInt();
             switch (choice) {
                 case 1 -> {
-                    if (turnState == UITurnState.YOUR_TURN)
-                        selectTiles();
-                    else System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                    if (turnState==UITurnState.YOUR_TURN_PHASE0)
+                        turnState=UITurnState.YOUR_TURN_PHASE1;
+                    if (turnState == UITurnState.OPPONENT_TURN)
+                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                    else {
+                        if (turnState==UITurnState.YOUR_TURN_PHASE1){
+                            selectTiles();
+                        } else {
+                            System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
+                        }
+                    }
                 }
                 case 2 -> {
-                    do{
-                        number = selectColumnInput();
-                    }while(chooseColumn());
-                    try {
-                        setChangedAndNotifyObservers(new ColumnSelection(new InputController(clientUID, number)));
-                    } catch (RemoteException e) {
-                        throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
+                    if (turnState==UITurnState.YOUR_TURN_PHASE1)
+                        turnState=UITurnState.YOUR_TURN_PHASE2;
+                    if (turnState == UITurnState.OPPONENT_TURN)
+                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                    else {
+                        if (turnState==UITurnState.YOUR_TURN_PHASE2){
+                            selectColumn();
+                        } else {
+                            System.out.println(ConsoleColors.RED + "You can't select a column now..." + ConsoleColors.RESET);
+                        }
                     }
                 }
                 case 3 -> {
-                    do {
-                    number = selectTemporaryTile();
-                    try {
-                        setChangedAndNotifyObservers(new TemporaryTileSelection(new InputController(clientUID, number)));
-                    } catch (RemoteException e) {
-                        throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
+                    if (turnState==UITurnState.YOUR_TURN_PHASE2)
+                        turnState=UITurnState.YOUR_TURN_PHASE3;
+                    if (turnState == UITurnState.OPPONENT_TURN)
+                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                    else {
+                        if (turnState==UITurnState.YOUR_TURN_PHASE3){
+                            selectTemporaryTiles();
+                        } else {
+                            System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
+                        }
                     }
-                }while(noMoreTemporaryTiles);
                 }
                 case 4 -> {}
                 case 5 -> {}
@@ -119,8 +128,19 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 case 8 -> {}
                 case 9 -> writeInChat();
                 case 10 -> {}
-                case 11 -> {}
+                case 11 -> {
+                    if (endState == UIEndState.RUNNING) {
+                        setTurnState(UITurnState.OPPONENT_TURN);
+                        try {
+                            setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
+                        } catch (RemoteException e) {
+                            throw new RuntimeException("An error occurred while ending the turn: " + e);
+                        }
+                    }
+                    else setTurnState(UITurnState.NO_TURN);
+                }
                 case 12 -> {}
+                case 13 -> {}
             }
             /*while(getState() == UIState.OPPONENT_TURN){
                  //chatting
@@ -145,9 +165,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             }while(noMoreTemporaryTiles);
-            if (endState == UIEndState.RUNNING)
-                setTurnState(UITurnState.OPPONENT_TURN);
-            else setTurnState(UITurnState.NO_TURN);
+
             */
         }
     }
@@ -165,8 +183,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                      8-  Show all the shelves
                      9-  Write in chat
                      10- Show the chat
-                     11- Clear the cli
-                     12- Help
+                     11- End your turn
+                     12- Clear the cli
+                     13- Help
                      """);
     }
     private void writeInChat(){
@@ -313,7 +332,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
-    public Integer selectTemporaryTile(){
+    public Integer selectTemporaryTileInput(){
         System.out.println("Which tile do you want to insert?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
@@ -365,6 +384,28 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    private void selectColumn(){
+        do{
+            number = selectColumnInput();
+        }while(chooseColumn());
+        try {
+            setChangedAndNotifyObservers(new ColumnSelection(new InputController(clientUID, number)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
+        }
+    }
+
+    private void selectTemporaryTiles(){
+        do {
+            number = selectTemporaryTileInput();
+            try {
+                setChangedAndNotifyObservers(new TemporaryTileSelection(new InputController(clientUID, number)));
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
+            }
+        }while(noMoreTemporaryTiles);
+    }
+
     private Point selectTilesInput(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert the row: ");
@@ -388,7 +429,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         try {
             setChangedAndNotifyObservers(new AskForBoard(new InputController(getClientUID())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while asking for the board: "+e.getMessage());
+            throw new RuntimeException("An error occurred while asking for the board: "+e.getMessage());
         }
     }
 

@@ -91,7 +91,7 @@ public class Engine{
                 try{
                     game.setChangedAndNotifyObservers(new ErrorLobbyClosed(new GameView(game.getClientID())));
                 } catch (RemoteException e) {
-                    throw new RuntimeException("Network error while sending a Lobby Closed Error"+e.getMessage());
+                    throw new RuntimeException("An error occurred while sending a Lobby Closed Error"+e.getMessage());
                 }
             }
     }
@@ -105,18 +105,13 @@ public class Engine{
         try {
             game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while updating the current player: "+e.getCause());
-        }
-        try {
-            game.setChangedAndNotifyObservers(new PersonalGoalResponse(new GameView(getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while notifying the personal goal was created: "+e.getCause());
+            throw new RuntimeException("An error occurred while updating the current player: "+e.getCause());
         }
         fillBoard();
         try {
             game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
         } catch (RemoteException e){
-            throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
+            throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
         }
     }
 
@@ -137,7 +132,7 @@ public class Engine{
                     try {
                         game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
                     } catch (RemoteException e) {
-                        throw new RuntimeException("Network error while updating the board: "+e.getMessage());
+                        throw new RuntimeException("An error occurred while updating the board: "+e.getMessage());
                     }
                     game.getBoard().updateSelectablePoints();
                     if (game.getBoard().getSelectablePoints().size() == 0 ||
@@ -145,7 +140,7 @@ public class Engine{
                         try {
                             game.setChangedAndNotifyObservers(new SelectionNotPossible(new GameView(getGame().getClientID())));
                         } catch (RemoteException e) {
-                            throw new RuntimeException("Network error while notifying that the selection is not possible: " + e.getCause());
+                            throw new RuntimeException("An error occurred while notifying that the selection is not possible: " + e.getCause());
                         }
                     }
                 }
@@ -153,7 +148,7 @@ public class Engine{
                 try {
                     game.setChangedAndNotifyObservers(new ErrorUnselectableTile(new GameView(game.getClientID())));
                 } catch (RemoteException ex) {
-                    throw new RuntimeException("Network error while notifying that the selection is not possible: " + ex.getCause());
+                    throw new RuntimeException("An error occurred while notifying that the selection is not possible: " + ex.getCause());
                 }
             }
         }
@@ -168,7 +163,7 @@ public class Engine{
        try {
             game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while updating the board: "+e.getMessage());
+            throw new RuntimeException("An error occurred while updating the board: "+e.getMessage());
         }
     }
 
@@ -192,7 +187,7 @@ public class Engine{
             try {
                 game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new GameView(game.getClientID())));
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending and Empty Temporary Points Error"+e.getMessage());
+                throw new RuntimeException("An error occurred while sending and Empty Temporary Points Error"+e.getMessage());
             }
             return;
         }
@@ -230,7 +225,7 @@ public class Engine{
                     try {
                         game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new GameView(game.getClientID())));
                     } catch (RemoteException e2) {
-                        throw new RuntimeException("Network error while sending an Unselectable Column Error"+e2.getMessage());
+                        throw new RuntimeException("An error occurred while sending an Unselectable Column Error"+e2.getMessage());
                     }
                 }
             } else deselectColumn();
@@ -261,7 +256,7 @@ public class Engine{
                         try {
                             game.setChangedAndNotifyObservers(new UpdatedShelf(new GameView(game)));
                         } catch (RemoteException e) {
-                            throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
+                            throw new RuntimeException("An error occurred while updating the shelf: " + e.getCause());
                         }
 
                         if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
@@ -275,7 +270,7 @@ public class Engine{
                     try {
                         game.setChangedAndNotifyObservers(new UpdatedShelf(new GameView(game)));
                     } catch (RemoteException e) {
-                        throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
+                        throw new RuntimeException("An error occurred while updating the shelf: " + e.getCause());
                     }
 
                     if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
@@ -289,18 +284,17 @@ public class Engine{
                 try {
                     game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new GameView(game.getClientID())));
                 } catch (RemoteException e) {
-                    throw new RuntimeException("Network error while notifying that the insertion is not possible: " + e.getCause());
+                    throw new RuntimeException("An error occurred while notifying that the insertion is not possible: " + e.getCause());
                 }
-                endTurn();
             }
         } catch (IndexOutOfBoundsException e) {
             try {
                 game.setChangedAndNotifyObservers(new ErrorInvalidTemporaryTile(new GameView(game.getClientID())));
             } catch (RemoteException e2) {
-                throw new RuntimeException("Network error while sending an Invalid Temporary Tile Error"+e2.getMessage());
+                throw new RuntimeException("An error occurred while sending an Invalid Temporary Tile Error"+e2.getMessage());
             }
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while placing tiles: " + e.getCause());
+            throw new RuntimeException("An error occurred while placing tiles: " + e.getCause());
 
         }
     }
@@ -472,7 +466,7 @@ public class Engine{
             try {
                 game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
             } catch (RemoteException e){
-                throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
+                throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
         }
         getSaveGameStatus().saveGame();
@@ -490,7 +484,7 @@ public class Engine{
                     game.setChangedAndNotifyObservers(new EndgameNotify(new GameView(getGame())));
 
                 } catch (RemoteException e) {
-                    throw new RuntimeException("Network error while updating the status: " + e);
+                    throw new RuntimeException("An error occurred while updating the status: " + e);
                 }
             }
         }
@@ -527,7 +521,7 @@ public class Engine{
         try {
             game.setChangedAndNotifyObservers(new ResultsNotify(new GameView(getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while updating the status: " + e);
+            throw new RuntimeException("An error occurred while updating the status: " + e);
         }
         //this.resetGame();
     }
@@ -653,7 +647,7 @@ public class Engine{
         try {
             game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while transferring the board: "+e.getMessage());
+            throw new RuntimeException("An error occurred whileF transferring the board: "+e.getMessage());
         }
     }
     public void update(Client client, InputMessage input) throws RemoteException {
