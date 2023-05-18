@@ -15,7 +15,7 @@ public class EndTurn extends InputMessage implements Serializable {
         super(input);
     }
     @Override
-    public void execute(Client client, Engine engine) throws RemoteException{
+    public void execute(Engine engine) throws RemoteException{
         engine.endTurn();
     }
 }

@@ -25,6 +25,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.RUNNING;
     private final Object lock = new Object();
+    private final Object lock2 = new Object();
     private boolean isNotCorrect;
     private Integer number;
     private Point point;
@@ -45,7 +46,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
     public UIEndState getEndState(){
-        synchronized(lock){
+        synchronized(lock2){
             return endState;
         }
     }
@@ -72,7 +73,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
     public void setEndState(UIEndState state){
-        synchronized (lock){
+        synchronized (lock2){
             this.endState = state;
         }
     }
@@ -95,7 +96,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             switch (choice) {
                 case 0 -> printCommandMenu();
                 case 1 -> {
-                    if (turnState == UITurnState.OPPONENT_TURN)
+                    if (getTurnState() == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
                         if (turnState==UITurnState.YOUR_TURN_SELECTION){
@@ -122,7 +123,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             }
                             if (turnState == UITurnState.YOUR_TURN_INSERTION) {
                                 selectTemporaryTiles();
-                                turnState = UITurnState.YOUR_TURN_END;
+                                try {
+                                    setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
+                                } catch (RemoteException e) {
+                                    throw new RuntimeException("An error occurred while ending the turn: " + e);
+                                }
+                                System.out.println("You ended your turn.");
+                                setTurnState(UITurnState.OPPONENT_TURN);
                             }
                         }
                     }
@@ -133,23 +140,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 case 6 -> {}
                 case 7 -> {}
                 case 8 -> writeInChat();
-                case 9 -> {}
-                case 10 -> {
-                    if(turnState==UITurnState.YOUR_TURN_END)
-                    {
-                        System.out.println("You ended your turn.");
-                        if (endState == UIEndState.RUNNING) {
-                            setTurnState(UITurnState.OPPONENT_TURN);
-                            try {
-                                setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("An error occurred while ending the turn: " + e);
-                            }
-                        }
-                        else setTurnState(UITurnState.NO_TURN);
-                    }}
-                case 11 -> {}
-                case 12 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
+                case 9 -> {}          
+                case 10 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
                     try {
                         if (System.getProperty("os.name").contains("Windows")) {
                             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -160,40 +152,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         e.printStackTrace();
                     }
                 }
-
-                case 13 -> {}
             }
-            /*while(getState() == UIState.OPPONENT_TURN){
-
-        joinGame();
-        while((endState == UIEndState.RUNNING || (endState == UIEndState.ENDING || this.clientUID != 1)) && turnState != UITurnState.NO_TURN){
-             while(getTurnState() == UITurnState.OPPONENT_TURN){
-
-                 //chatting
-            }
-            System.out.println("---YOUR TURN---");
-
-             selectTiles();
-
-            do{
-                number = selectColumnInput();
-            }while(chooseColumn());
-            try {
-                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
-            }
-            do {
-                number = selectTemporaryTile();
-            try {
-                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
-            }
-            }while(noMoreTemporaryTiles);
-
-
-            */
         }
     }
 
@@ -209,8 +168,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 7-  Show all the shelves
                 8-  Write in chat
                 9-  Show the chat
-                10- End your turn
-                11- Clear the CLI
+                10- Clear the cli
                 """);
     }
     private void writeInChat(){
@@ -224,116 +182,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void update(ResponseMessage response){
         if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID)
             response.execute(this);
-        /*switch(arg){
-            case UPDATED_BOARD -> {
-                if (model.getCurrentPlayerName().equals(nickname))
-                    showBoard(model);
-            }
-            case PERSONAL_GOAL -> {
-                if (model.getCurrentPlayerName().equals(nickname))
-                    showPersonalGoal(model);
-            }
-            case UPDATED_SHELF -> {if (model.getCurrentPlayerName().equals(nickname)) showShelf(model);}
-            case UPDATED_TEMPORARY_TILES -> {
-                if (model.getCurrentPlayerName().equals(nickname)) {
-                    System.out.println("You have selected: ");
-                    ArrayList<Tile> tiles = model.getTemporaryTiles();
-                    for (int i = 0; i < tiles.size(); i++) {
-                        int integer = i + 1;
-                        switch (tiles.get(i).getTile()) {
-                            case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
-                            case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
-                            case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
-                            case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
-                            case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
-                            case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
-                        }
-                    }
-                }
-            }
-            case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);
-            case ENDGAME -> this.endState = UIEndState.ENDING;
-            case RESULTS -> {
-                this.endState = UIEndState.RESULTS;
-                LinkedHashMap<String, Integer> results = model.getResults().entrySet()
-                        .stream()
-                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                Map.Entry::getValue,
-                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-                System.out.println("-----RESULTS-----");
-                for (String i : results.keySet()) {
-                    System.out.println(i + ": " + results.get(i) + " points");
-                }
-                int position = (new ArrayList<>(results.keySet()).indexOf(nickname)) +1;
-                switch (position) {
-                    case 1 -> printMedal(ConsoleColors.GOLD, "1st");
-                    case 2 -> printMedal(ConsoleColors.SILVER, "2nd");
-                    case 3 -> printMedal(ConsoleColors.BRONZE, "3rd");
-                    case 4 -> printNoMedal();
-                }
-            }
-            case ERROR ->  {
-                if (model.getClientID() == clientUID) {
-                    switch (model.getError()) {
-                        case LOBBY_CLOSED -> {
-                            System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
-                            System.exit(0);
-                        }
-                        case EMPTY_TEMPORARY_POINTS -> {
-                            System.out.println(ConsoleColors.RED + "You don't have any tiles selected. Please select any tile..." + ConsoleColors.RESET);
-                            selectTiles();
-                        }
-                        case INVALID_RECIPIENT -> {
-                            //TODO: gestire l'eccezione
-                        }
-                        case UNSELECTABLE_TILE -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
-                            point = selectTilesInput();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a tile section error: "+e.getCause());
-                            }
-                        }
-                        case UNSELECTABLE_COLUMN -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
-                            do{
-                                number = selectColumnInput();
-                            }while(chooseColumn());
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a column section error: "+e.getCause());
-                            }
-                        }
-                        case INVALID_TEMPORARY_TILE -> {
-                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a tile insertion error: "+e.getCause());
-                            }
-                        }
-                    }
-                }
-            }
-            case NEXT_PLAYER_TURN_NOTIFY -> {
-                if (model.getCurrentPlayerName().equals(nickname)) {
-                    setTurnState(UITurnState.YOUR_TURN);
-                    noMoreSelectableTiles = true;
-                    noMoreTemporaryTiles = true;
-                }
-            }
-            case SELECTION_NOT_POSSIBLE -> {
-                noMoreSelectableTiles = false;
-            }
-            case EMPTY_TEMPORARY_TILES -> {
-                noMoreTemporaryTiles = false;
-            }
-        }*/
     }
     public void setNoMoreTemporaryTiles(boolean bool){
         this.noMoreTemporaryTiles = bool;
@@ -479,9 +327,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         shelf.printShelf();
     }
     public void showCurrentPlayer(GameView model){
-        if (endState != UIEndState.ENDING || clientUID !=1)
-            System.out.println("\nThe current player is: "+ model.getCurrentPlayerName());
-
+        if (getEndState() != UIEndState.ENDING || clientUID !=1)
+            System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
     }
 
     private void showChat(GameView model){
@@ -498,7 +345,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
-        //printCommandMenu();
     }
 
     public void askNumber(){

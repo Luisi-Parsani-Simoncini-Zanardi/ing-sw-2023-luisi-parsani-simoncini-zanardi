@@ -104,7 +104,7 @@ public class Engine{
         saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
         fillBoard();
         try {
-            game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
+            game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(Config.broadcastID,getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while updating the current player: "+e.getCause());
         }
@@ -459,8 +459,8 @@ public class Engine{
         }
         else {
             try {
-                game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
+                game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(Config.broadcastID,getGame())));
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(Config.broadcastID,getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }

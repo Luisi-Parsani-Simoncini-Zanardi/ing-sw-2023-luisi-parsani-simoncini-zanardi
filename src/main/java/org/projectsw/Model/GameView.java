@@ -89,22 +89,6 @@ public class GameView implements Serializable {
         this.results = null;
     }
 
-    public GameView(ErrorName error, int clientID){
-        this.gameBoard =  null;
-        this.currentPlayerShelf = null;
-        this.currentPlayerName = null;
-        this.chat = null;
-        this.error = error;
-        this.clientID = clientID;
-        this.selectablePoints = null;
-        this.temporaryPoints = null;
-        this.temporaryTiles = null;
-        this.numberOfPlayers = null;
-        this.currentPlayerPersonalGoal = null;
-        this.correct=null;
-        this.results = null;
-    }
-
     public GameView(Game model){
         this.gameBoard =  model.getBoard().getBoard();
         this.currentPlayerShelf = model.getCurrentPlayer().getShelf().getShelf();
@@ -112,6 +96,26 @@ public class GameView implements Serializable {
         this.chat = model.getChat().getMessages();
         this.error = ErrorName.NO_ERROR;
         this.clientID = model.getClientID();
+        this.selectablePoints = model.getBoard().getSelectablePoints();
+        this.temporaryPoints = model.getBoard().getTemporaryPoints();
+        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
+        this.numberOfPlayers = model.getNumberOfPlayers();
+        this.currentPlayerPersonalGoal= personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
+        this.correct=null;
+        this.results = new HashMap<>();
+        for (Player p : model.getPlayers())
+        {
+            this.results.put(p.getNickname(), p.getPoints());
+        }
+    }
+
+    public GameView(int broadcastID,Game model){
+        this.gameBoard =  model.getBoard().getBoard();
+        this.currentPlayerShelf = model.getCurrentPlayer().getShelf().getShelf();
+        this.currentPlayerName = model.getCurrentPlayer().getNickname();
+        this.chat = model.getChat().getMessages();
+        this.error = ErrorName.NO_ERROR;
+        this.clientID = broadcastID;
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
