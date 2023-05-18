@@ -8,6 +8,7 @@ import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 
 import java.awt.*;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -135,7 +136,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         else setTurnState(UITurnState.NO_TURN);
                     }}
                 case 11 -> {}
-                case 12 -> {}
+                case 12 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
+                    try {
+                        if (System.getProperty("os.name").contains("Windows")) {
+                            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                        } else {
+                            Runtime.getRuntime().exec("clear");
+                        }
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 case 13 -> {}
             }
             /*while(getState() == UIState.OPPONENT_TURN){
@@ -177,11 +189,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                      6-  Show your shelf
                      7-  Show all the shelves
                      8-  Write in chat
-                     9- Show the chat
+                     9-  Show the chat
                      10- End your turn
                      11- Clear the cli
                      12- Help
-                     
                      """);
     }
     private void writeInChat(){

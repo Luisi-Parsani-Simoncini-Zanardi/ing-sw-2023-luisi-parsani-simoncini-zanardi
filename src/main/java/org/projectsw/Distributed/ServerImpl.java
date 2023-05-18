@@ -4,11 +4,8 @@ import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.Game;
-import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.Model.GameView;
-import org.projectsw.Model.InputController;
 import org.projectsw.Util.Observer;
-import org.projectsw.View.Enums.UIEvent;
+
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -46,9 +43,11 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
         this.model.addObserver(observer);
     }
 
+    @Override
     public void removeObserver(Client client){
-        clientObserverHashMap.get(client);
+        model.deleteObserver(clientObserverHashMap.get(client));
         clientObserverHashMap.remove(client);
+        System.out.println();
     }
 
     @Override
