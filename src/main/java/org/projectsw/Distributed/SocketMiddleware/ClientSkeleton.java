@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.SocketMiddleware;
 
 import org.projectsw.Distributed.Client;
+import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Model.*;
 import org.projectsw.Model.Enums.GameEvent;
@@ -34,55 +35,27 @@ public class ClientSkeleton implements Client {
     public void setID(GameView serverResponse) throws RemoteException {
 
     }
-    @Override
-    public void setNickname(GameView serverResponse) throws RemoteException {
 
-    }
     @Override
     public String getNickname() throws RemoteException {
         return null;
     }
 
     @Override
+    public void setCorrectResponse(boolean response) throws RemoteException {
+
+    }
+
+    @Override
     public void kill() throws RemoteException {
 
     }
-    @Override
-    public void askNumberOfPlayers() throws RemoteException {
-
-    }
-    @Override
-    public void askNewNick(GameView nicks) throws RemoteException {
-
-    }
 
     @Override
-    public void update(GameView o, GameEvent arg) throws RemoteException {
-        try{
-            oos.writeObject(o);
-            oos.writeObject(arg);
-        }catch(IOException e){
-            throw new RemoteException("Cannot send event: " + e.getMessage());
-        }
+    public void update(ResponseMessage response) throws RemoteException {
+
     }
     public void receive(Server server) throws RemoteException{
-        UIEvent arg;
-        try{
-            arg = (UIEvent) ois.readObject();
-        }catch(IOException e){
-            throw new RemoteException("Cannot receive event: "+e.getMessage());
-        }catch(ClassNotFoundException e){
-            throw new RemoteException("Cannot cast event: "+e.getMessage());
-        }
 
-        InputController input;
-        try{
-            input = (InputController) ois.readObject();
-        }catch(IOException e){
-            throw new RemoteException("Cannot receive event: "+e.getMessage());
-        }catch(ClassNotFoundException e){
-            throw new RemoteException("Cannot cast event: "+e.getMessage());
-        }
-        server.update(input, arg);
     }
 }

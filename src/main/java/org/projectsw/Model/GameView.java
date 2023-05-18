@@ -22,26 +22,25 @@ public class GameView implements Serializable {
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
     private final Tile[][] currentPlayerPersonalGoal;
+    private final Boolean correct;
     private final Integer numberOfPlayers;
-    private final ArrayList<String> playerNicks;
     private final HashMap<String, Integer> results;
 
-    public GameView(ArrayList<String> nicksInGame){
+    public GameView(int clientID, boolean correct){
         this.gameBoard =  null;
         this.currentPlayerShelf = null;
         this.currentPlayerName = null;
         this.chat = null;
         this.error = ErrorName.NO_ERROR;
-        this.clientID = null;
+        this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
         this.numberOfPlayers = null;
-        this.playerNicks = nicksInGame;
         this.currentPlayerPersonalGoal = null;
+        this.correct=correct;
         this.results = null;
     }
-
     public GameView(int clientID){
         this.gameBoard =  null;
         this.currentPlayerShelf = null;
@@ -53,11 +52,11 @@ public class GameView implements Serializable {
         this.temporaryPoints = null;
         this.temporaryTiles = null;
         this.numberOfPlayers = null;
-        this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.correct=null;
         this.results = null;
     }
-  
+
     public GameView(String nickname){
         this.gameBoard = null;
         this.currentPlayerShelf = null;
@@ -69,8 +68,8 @@ public class GameView implements Serializable {
         this.temporaryPoints = null;
         this.temporaryTiles = null;
         this.numberOfPlayers = null;
-        this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.correct=null;
         this.results = null;
     }
 
@@ -85,10 +84,9 @@ public class GameView implements Serializable {
         this.temporaryPoints = null;
         this.temporaryTiles = null;
         this.numberOfPlayers = null;
-        this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.correct=null;
         this.results = null;
-
     }
 
     public GameView(ErrorName error, int clientID){
@@ -102,8 +100,8 @@ public class GameView implements Serializable {
         this.temporaryPoints = null;
         this.temporaryTiles = null;
         this.numberOfPlayers = null;
-        this.playerNicks = null;
         this.currentPlayerPersonalGoal = null;
+        this.correct=null;
         this.results = null;
     }
 
@@ -118,8 +116,8 @@ public class GameView implements Serializable {
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
         this.numberOfPlayers = model.getNumberOfPlayers();
-        this.playerNicks = null;
         this.currentPlayerPersonalGoal= personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
+        this.correct=null;
         this.results = new HashMap<>();
         for (Player p : model.getPlayers())
         {
@@ -137,6 +135,7 @@ public class GameView implements Serializable {
         return goal;
     }
 
+    public Boolean getCorrect(){return this.correct;}
     public int getNumberOfPlayers(){return this.numberOfPlayers;}
     public Tile[][] getGameBoard(){return this.gameBoard;}
     public Tile[][] getCurrentPlayerShelf(){return this.currentPlayerShelf;}
@@ -147,7 +146,6 @@ public class GameView implements Serializable {
     public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
     public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
     public ArrayList<Tile> getTemporaryTiles() {return this.temporaryTiles; }
-    public ArrayList<String> getPlayerNicks() {return this.playerNicks; }
     public Tile[][] getCurrentPlayerPersonalGoal() {return this.currentPlayerPersonalGoal; }
     public HashMap<String, Integer> getResults() {return this.results;}
 }
