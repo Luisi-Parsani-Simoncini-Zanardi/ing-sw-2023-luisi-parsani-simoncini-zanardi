@@ -202,7 +202,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 8-  Write in chat
                 9-  Show the chat
                 10- End your turn
-                11- Clear the cli
+                11- Clear the CLI
                 """);
     }
     private void writeInChat(){
