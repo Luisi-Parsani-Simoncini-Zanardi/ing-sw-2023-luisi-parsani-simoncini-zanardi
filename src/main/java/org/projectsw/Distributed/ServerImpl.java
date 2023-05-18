@@ -22,6 +22,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     public ServerImpl() throws RemoteException {
         super();
         controller.setGame(model);
+
     }
     public ServerImpl(int port) throws RemoteException {
         super(port);
