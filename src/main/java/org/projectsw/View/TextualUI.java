@@ -40,7 +40,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             return turnState;
         }
     }
-    private UIEndState getEndState(){
+    public UIEndState getEndState(){
         synchronized(lock){
             return endState;
         }
@@ -87,9 +87,31 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             printCommandMenu();
             choice = scanner.nextInt();
             switch (choice) {
-                case 1 -> selectTiles();
-                case 2 -> {}
-                case 3 -> {}
+                case 1 -> {
+                    if (turnState == UITurnState.YOUR_TURN)
+                        selectTiles();
+                    else System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                }
+                case 2 -> {
+                    do{
+                        number = selectColumnInput();
+                    }while(chooseColumn());
+                    try {
+                        setChangedAndNotifyObservers(new ColumnSelection(new InputController(clientUID, number)));
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
+                    }
+                }
+                case 3 -> {
+                    do {
+                    number = selectTemporaryTile();
+                    try {
+                        setChangedAndNotifyObservers(new TemporaryTileSelection(new InputController(clientUID, number)));
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
+                    }
+                }while(noMoreTemporaryTiles);
+                }
                 case 4 -> {}
                 case 5 -> {}
                 case 6 -> askBoard();
@@ -126,7 +148,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             if (endState == UIEndState.RUNNING)
                 setTurnState(UITurnState.OPPONENT_TURN);
             else setTurnState(UITurnState.NO_TURN);
-            ;*/
+            */
         }
     }
 
@@ -275,7 +297,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void setNoMoreSelectableTiles(boolean bool){
         this.noMoreSelectableTiles = bool;
     }
-    private boolean chooseColumn(){
+    public boolean chooseColumn(){
         System.out.println("Are you sure?\n1: Yes\n2: No");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
@@ -291,7 +313,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
-    private Integer selectTemporaryTile(){
+    public Integer selectTemporaryTile(){
         System.out.println("Which tile do you want to insert?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
@@ -301,7 +323,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         return scanner.nextInt()-1;
     }
 
-    private Integer selectColumnInput(){
+    public Integer selectColumnInput(){
         System.out.println("In which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
@@ -377,7 +399,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         board.printBoard();
     }
 
-    private void showShelf(GameView model){
+    public void showShelf(GameView model){
         System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getCurrentPlayerShelf());
@@ -456,7 +478,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 "| | | | | | | | | | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | "+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+"| | | | | |"+ConsoleColors.GREY+"\\/"+ConsoleColors.YELLOW+" | | | | | | | | | | | |\n" +
                 "|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|"+ConsoleColors.RESET);
     }
-    private void printMedal(String metal, String place) {
+    public void printMedal(String metal, String place) {
         System.out.println(ConsoleColors.BLUE + "                        %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%           %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                       \n" +
                 ConsoleColors.BLUE +"                         %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%         %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                        \n" +
                 ConsoleColors.BLUE +"                          %,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%%       %%,"+ConsoleColors.RED +"%%%%%%,"+ConsoleColors.BLUE +"%                         \n" +
@@ -484,7 +506,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 "                                 **,,,,,,,,,,,**                                \n" +
                 "                                                                           " +  ConsoleColors.RESET);
     }
-    private void printNoMedal() {
+    public void printNoMedal() {
         System.out.println("⠀⠀⠀⠀⢀⠀⠀⠀⠀⢀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠠⣤⣤⣤⠤⠤⠤⠤⠤⣤⣤⣤⡴⠶⠶⠶⠤⠤⠤⠤⢤⣤⣤⣶⣦⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⡤⠶⠶⠶⠤⠀⠀⠀⠀⠀⠀\n" +
                 "⠀⠀⠀⠀⣻⣿⣿⣿⣿⣿⣿⣿⣭⣁⠀⢀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⢸⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
                 "⠀⠀⠀⠀⣿⣿⡿⣿⣿⣿⣇⡈⠉⠉⠉⠉⠉⣻⠛⠛⠒⠲⢶⣾⣿⡿⠦⢤⣤⣤⣴⣿⣿⣦⣀⣀⣀⣀⣀⡀⠀⠀⠀⡀⠘⣷⣄⠀⠀⡴⠃⠀⠀⠀⠀⠀⠀⢰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +

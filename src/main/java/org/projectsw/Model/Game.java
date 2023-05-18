@@ -228,15 +228,6 @@ public class Game extends Observable<ResponseMessage> {
         this.commonGoals = commonGoals;
     }
 
-    public void setError(ErrorName error) {
-        this.error = error;
-        /*try {
-            setChangedAndNotifyObservers(GameEvent.ERROR);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while setting the Error: "+e.getCause());
-        }*/
-    }
-
     public void setClientID(int clientID) {
         this.clientID = clientID;
     }

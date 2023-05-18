@@ -6,10 +6,10 @@ import org.projectsw.Model.InputController;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class chatMessage extends InputMessage implements Serializable {
+public class ChatMessage extends InputMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public chatMessage(InputController input) {
+    public ChatMessage(InputController input) {
         super(input);
     }
     @Override

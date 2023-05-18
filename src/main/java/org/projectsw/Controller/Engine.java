@@ -14,7 +14,7 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Util.OneToOneHashmap;
-import org.projectsw.View.Enums.UIEvent;
+
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -88,7 +88,11 @@ public class Engine{
                     startGame();
                 }
             } else {
-                game.setError(ErrorName.LOBBY_CLOSED);
+                try{
+                    game.setChangedAndNotifyObservers(new ErrorLobbyClosed(new GameView(game.getClientID())));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while sending a Lobby Closed Error"+e.getMessage());
+                }
             }
     }
 
@@ -147,7 +151,7 @@ public class Engine{
                 }
             } catch (UnselectableTileException e){
                 try {
-                    game.setChangedAndNotifyObservers(new UnselectableTileError(new GameView(game.getClientID())));
+                    game.setChangedAndNotifyObservers(new ErrorUnselectableTile(new GameView(game.getClientID())));
                 } catch (RemoteException ex) {
                     throw new RuntimeException("Network error while notifying that the selection is not possible: " + ex.getCause());
                 }
@@ -186,7 +190,7 @@ public class Engine{
     public void confirmSelectedTiles() {
         if(game.getBoard().getTemporaryPoints().isEmpty()) {
             try {
-                game.setChangedAndNotifyObservers(new EmptyTemporaryPoints(new GameView(game.getClientID())));
+                game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new GameView(game.getClientID())));
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while sending and Empty Temporary Points Error"+e.getMessage());
             }
@@ -223,7 +227,11 @@ public class Engine{
                 try {
                     game.getCurrentPlayer().getShelf().setSelectedColumn(index);
                 } catch (UnselectableColumnException e){
-                    game.setError(ErrorName.UNSELECTABLE_COLUMN);
+                    try {
+                        game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new GameView(game.getClientID())));
+                    } catch (RemoteException e2) {
+                        throw new RuntimeException("Network error while sending an Unselectable Column Error"+e2.getMessage());
+                    }
                 }
             } else deselectColumn();
         } //else throw new UnselectableColumnException("Tiles are already placed, column no longer changeable");
@@ -242,7 +250,7 @@ public class Engine{
      * @param temporaryIndex the selected index of temporaryTiles.
      */
     public void placeTiles(Integer temporaryIndex){
-       /* game.getCurrentPlayer().getShelf().setSelectionPossible(false);
+        game.getCurrentPlayer().getShelf().setSelectionPossible(false);
         try {
             Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
             int selectedColumn = game.getCurrentPlayer().getShelf().getSelectedColumn();
@@ -251,13 +259,13 @@ public class Engine{
                     if (i != Config.shelfHeight - 1) {
                         game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i + 1, selectedColumn);
                         try {
-                            game.setChangedAndNotifyObservers(GameEvent.UPDATED_SHELF);
+                            game.setChangedAndNotifyObservers(new UpdatedShelf(new GameView(game)));
                         } catch (RemoteException e) {
                             throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
                         }
 
                         if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
-                            game.setChangedAndNotifyObservers(GameEvent.UPDATED_TEMPORARY_TILES);
+                            game.setChangedAndNotifyObservers(new UpdatedTemporaryTiles(new GameView(game)));
 
                     }
                     break;
@@ -265,13 +273,13 @@ public class Engine{
                 if (i == 0) {
                     game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);
                     try {
-                        game.setChangedAndNotifyObservers(GameEvent.UPDATED_SHELF);
+                        game.setChangedAndNotifyObservers(new UpdatedShelf(new GameView(game)));
                     } catch (RemoteException e) {
                         throw new RuntimeException("Network error while updating the shelf: " + e.getCause());
                     }
 
                     if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty())
-                        game.setChangedAndNotifyObservers(GameEvent.UPDATED_TEMPORARY_TILES);
+                        game.setChangedAndNotifyObservers(new UpdatedTemporaryTiles(new GameView(game)));
                     break;
                 }
             }
@@ -279,18 +287,22 @@ public class Engine{
                 deselectColumn();
                 game.getCurrentPlayer().getShelf().setSelectionPossible(true);
                 try {
-                    game.setChangedAndNotifyObservers(GameEvent.EMPTY_TEMPORARY_TILES);
+                    game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new GameView(game.getClientID())));
                 } catch (RemoteException e) {
                     throw new RuntimeException("Network error while notifying that the insertion is not possible: " + e.getCause());
                 }
                 endTurn();
             }
         } catch (IndexOutOfBoundsException e) {
-            game.setError(ErrorName.INVALID_TEMPORARY_TILE);
+            try {
+                game.setChangedAndNotifyObservers(new ErrorInvalidTemporaryTile(new GameView(game.getClientID())));
+            } catch (RemoteException e2) {
+                throw new RuntimeException("Network error while sending an Invalid Temporary Tile Error"+e2.getMessage());
+            }
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while placing tiles: " + e.getCause());
 
-        }*/
+        }
     }
 
     /*
@@ -457,23 +469,11 @@ public class Engine{
             this.endGame();
         }
         else {
-            /*try {
-                game.setChangedAndNotifyObservers(GameEvent.PERSONAL_GOAL);
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while notifying the personal goal was created: "+e.getCause());
-            }
             try {
-            getGame().setCurrentPlayer(getGame().getNextPlayer());
-            try {
-                game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while updating the board: "+e.getMessage());
-            }
-            try {
-                game.setChangedAndNotifyObservers(GameEvent.NEXT_PLAYER_TURN_NOTIFY);
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("Network error while notifying the next player: "+e.getCause());
-            }*/
+            }
         }
         getSaveGameStatus().saveGame();
     }
@@ -486,11 +486,12 @@ public class Engine{
             if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
                 this.getGame().getBoard().setEndGame(true);
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
-                /*try {
-                    game.setChangedAndNotifyObservers(GameEvent.ENDGAME);
+                try {
+                    game.setChangedAndNotifyObservers(new EndgameNotify(new GameView(getGame())));
+
                 } catch (RemoteException e) {
                     throw new RuntimeException("Network error while updating the status: " + e);
-                }*/
+                }
             }
         }
     }
@@ -521,14 +522,14 @@ public class Engine{
      * @return winner of the game
      */
     public void endGame(){
-        /*this.checkPersonalGoal();
+        this.checkPersonalGoal();
         this.checkEndgameGoal();
         try {
-            game.setChangedAndNotifyObservers(GameEvent.RESULTS);
+            game.setChangedAndNotifyObservers(new ResultsNotify(new GameView(getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while updating the status: " + e);
         }
-        //this.resetGame();*/
+        //this.resetGame();
     }
 
     /**
@@ -576,11 +577,6 @@ public class Engine{
                     }
                 }
             }
-           /* try {
-                game.setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while updating the board: "+e.getMessage());
-            }*/
         }
     }
 

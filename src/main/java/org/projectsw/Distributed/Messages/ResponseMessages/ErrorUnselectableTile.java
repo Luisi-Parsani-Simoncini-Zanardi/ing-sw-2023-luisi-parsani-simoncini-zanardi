@@ -7,10 +7,10 @@ import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class UnselectableTileError extends ResponseMessage implements Serializable {
+public class ErrorUnselectableTile extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public UnselectableTileError(GameView model) {
+    public ErrorUnselectableTile(GameView model) {
         super(model);
     }
     @Override

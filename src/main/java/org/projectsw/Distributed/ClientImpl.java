@@ -1,14 +1,11 @@
 package org.projectsw.Distributed;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
-import org.projectsw.Distributed.Messages.InputMessages.chatMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.GameView;
-import org.projectsw.Model.InputController;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
-import org.projectsw.View.Enums.UIEvent;
+
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
