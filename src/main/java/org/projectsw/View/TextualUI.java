@@ -25,6 +25,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.RUNNING;
     private final Object lock = new Object();
+    private final Object lock2 = new Object();
     private boolean isNotCorrect;
     private Integer number;
     private Point point;
@@ -45,7 +46,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
     public UIEndState getEndState(){
-        synchronized(lock){
+        synchronized(lock2){
             return endState;
         }
     }
@@ -72,7 +73,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
     public void setEndState(UIEndState state){
-        synchronized (lock){
+        synchronized (lock2){
             this.endState = state;
         }
     }
@@ -94,11 +95,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             switch (choice) {
                 case 0 -> printCommandMenu();
                 case 1 -> {
-                    if (turnState == UITurnState.OPPONENT_TURN)
+                    if (getTurnState() == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState==UITurnState.YOUR_TURN_PHASE1){
-                            turnState=UITurnState.YOUR_TURN_PHASE2;
+                        if (getTurnState()==UITurnState.YOUR_TURN_PHASE1){
+                            setTurnState(UITurnState.YOUR_TURN_PHASE2);
                             selectTiles();
                         } else {
                             System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
@@ -106,19 +107,24 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
                 case 2 -> {
-                    if (turnState == UITurnState.OPPONENT_TURN)
+                    if (getTurnState() == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState == UITurnState.YOUR_TURN_PHASE1) {
+                        if (getTurnState() == UITurnState.YOUR_TURN_PHASE1) {
                             System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
-                        }
-                        else {
-                            if (turnState == UITurnState.YOUR_TURN_PHASE2) {
-                                turnState = UITurnState.YOUR_TURN_PHASE3;
+                        } else {
+                            if (getTurnState() == UITurnState.YOUR_TURN_PHASE2) {
+                                setTurnState(UITurnState.YOUR_TURN_PHASE3);
                                 selectColumn();
-                            } else if (turnState == UITurnState.YOUR_TURN_PHASE3) {
-                                turnState = UITurnState.YOUR_TURN_PHASE_END;
+                            } else if (getTurnState() == UITurnState.YOUR_TURN_PHASE3) {
                                 selectTemporaryTiles();
+                                try {
+                                    setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
+                                } catch (RemoteException e) {
+                                    throw new RuntimeException("An error occurred while ending the turn: " + e);
+                                }
+                                System.out.println("You ended your turn.");
+                                setTurnState(UITurnState.OPPONENT_TURN);
                             }
                         }
                     }
@@ -131,19 +137,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 case 8 -> writeInChat();
                 case 9 -> {}
                 /*case 10 -> {
-                    if(turnState==UITurnState.YOUR_TURN_PHASE_END)
-                    {
-                        System.out.println("You ended your turn.");
-                        if (endState == UIEndState.RUNNING) {
-                            setTurnState(UITurnState.OPPONENT_TURN);
-                            try {
-                                setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("An error occurred while ending the turn: " + e);
-                            }
-                        }
-                        else setTurnState(UITurnState.NO_TURN);
-                    }}*/
+                    }*/
                 case 10 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
                     try {
                         if (System.getProperty("os.name").contains("Windows")) {
@@ -466,7 +460,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void showCurrentPlayer(GameView model){
-        if (endState != UIEndState.ENDING || clientUID !=1)
+        if (getEndState() != UIEndState.ENDING || clientUID !=1)
             System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
     }
 

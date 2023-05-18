@@ -1,7 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.GameView;
-import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.TextualUI;
 import java.io.Serial;
@@ -19,7 +18,7 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
             tui.setTurnState(UITurnState.YOUR_TURN_PHASE1);
             tui.setNoMoreSelectableTiles(true);
             tui.setNoMoreTemporaryTiles(true);
-            System.out.println("---YOUR TURN---");
+            System.out.println("   ---YOUR TURN---");
             System.out.println("---CHOOSE AN ACTION---");
         }
     }
