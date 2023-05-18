@@ -150,31 +150,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            /*while(getState() == UIState.OPPONENT_TURN){
-                 //chatting
-            }
-            System.out.println("---YOUR TURN---");
-
-             selectTiles();
-
-            do{
-                number = selectColumnInput();
-            }while(chooseColumn());
-            try {
-                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
-            }
-            do {
-                number = selectTemporaryTile();
-            try {
-                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
-            }
-            }while(noMoreTemporaryTiles);
-
-            */
         }
     }
 
@@ -204,116 +179,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void update(ResponseMessage response){
         if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID)
             response.execute(this);
-        /*switch(arg){
-            case UPDATED_BOARD -> {
-                if (model.getCurrentPlayerName().equals(nickname))
-                    showBoard(model);
-            }
-            case PERSONAL_GOAL -> {
-                if (model.getCurrentPlayerName().equals(nickname))
-                    showPersonalGoal(model);
-            }
-            case UPDATED_SHELF -> {if (model.getCurrentPlayerName().equals(nickname)) showShelf(model);}
-            case UPDATED_TEMPORARY_TILES -> {
-                if (model.getCurrentPlayerName().equals(nickname)) {
-                    System.out.println("You have selected: ");
-                    ArrayList<Tile> tiles = model.getTemporaryTiles();
-                    for (int i = 0; i < tiles.size(); i++) {
-                        int integer = i + 1;
-                        switch (tiles.get(i).getTile()) {
-                            case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
-                            case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
-                            case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
-                            case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
-                            case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
-                            case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
-                        }
-                    }
-                }
-            }
-            case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);
-            case ENDGAME -> this.endState = UIEndState.ENDING;
-            case RESULTS -> {
-                this.endState = UIEndState.RESULTS;
-                LinkedHashMap<String, Integer> results = model.getResults().entrySet()
-                        .stream()
-                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                Map.Entry::getValue,
-                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-                System.out.println("-----RESULTS-----");
-                for (String i : results.keySet()) {
-                    System.out.println(i + ": " + results.get(i) + " points");
-                }
-                int position = (new ArrayList<>(results.keySet()).indexOf(nickname)) +1;
-                switch (position) {
-                    case 1 -> printMedal(ConsoleColors.GOLD, "1st");
-                    case 2 -> printMedal(ConsoleColors.SILVER, "2nd");
-                    case 3 -> printMedal(ConsoleColors.BRONZE, "3rd");
-                    case 4 -> printNoMedal();
-                }
-            }
-            case ERROR ->  {
-                if (model.getClientID() == clientUID) {
-                    switch (model.getError()) {
-                        case LOBBY_CLOSED -> {
-                            System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
-                            System.exit(0);
-                        }
-                        case EMPTY_TEMPORARY_POINTS -> {
-                            System.out.println(ConsoleColors.RED + "You don't have any tiles selected. Please select any tile..." + ConsoleColors.RESET);
-                            selectTiles();
-                        }
-                        case INVALID_RECIPIENT -> {
-                            //TODO: gestire l'eccezione
-                        }
-                        case UNSELECTABLE_TILE -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
-                            point = selectTilesInput();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a tile section error: "+e.getCause());
-                            }
-                        }
-                        case UNSELECTABLE_COLUMN -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
-                            do{
-                                number = selectColumnInput();
-                            }while(chooseColumn());
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a column section error: "+e.getCause());
-                            }
-                        }
-                        case INVALID_TEMPORARY_TILE -> {
-                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a tile insertion error: "+e.getCause());
-                            }
-                        }
-                    }
-                }
-            }
-            case NEXT_PLAYER_TURN_NOTIFY -> {
-                if (model.getCurrentPlayerName().equals(nickname)) {
-                    setTurnState(UITurnState.YOUR_TURN);
-                    noMoreSelectableTiles = true;
-                    noMoreTemporaryTiles = true;
-                }
-            }
-            case SELECTION_NOT_POSSIBLE -> {
-                noMoreSelectableTiles = false;
-            }
-            case EMPTY_TEMPORARY_TILES -> {
-                noMoreTemporaryTiles = false;
-            }
-        }*/
     }
     public void setNoMoreTemporaryTiles(boolean bool){
         this.noMoreTemporaryTiles = bool;
@@ -478,7 +343,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
-        //printCommandMenu();
     }
 
     public void askNumber(){
