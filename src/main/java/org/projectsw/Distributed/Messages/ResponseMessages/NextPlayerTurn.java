@@ -15,7 +15,7 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
     @Override
     public void execute(TextualUI tui){
         if (model.getCurrentPlayerName().equals(tui.getNickname())) {
-            tui.setTurnState(UITurnState.YOUR_TURN_PHASE1);
+            tui.setTurnState(UITurnState.YOUR_TURN_SELECTION);
             tui.setNoMoreSelectableTiles(true);
             tui.setNoMoreTemporaryTiles(true);
             System.out.println("   ---YOUR TURN---");

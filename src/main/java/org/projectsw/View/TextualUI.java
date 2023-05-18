@@ -90,7 +90,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
-            System.out.println("Press 0 to see all possible action :)");
+            System.out.println("Press 0 to see all possible actions...");
+            System.out.println("---CHOOSE AN ACTION---");
             choice = scanner.nextInt();
             switch (choice) {
                 case 0 -> printCommandMenu();
@@ -98,8 +99,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     if (getTurnState() == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (getTurnState()==UITurnState.YOUR_TURN_PHASE1){
-                            setTurnState(UITurnState.YOUR_TURN_PHASE2);
+                        if (turnState==UITurnState.YOUR_TURN_SELECTION){
+                            turnState=UITurnState.YOUR_TURN_COLUMN;
+                            askBoard();
                             selectTiles();
                         } else {
                             System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
@@ -107,16 +109,19 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
                 case 2 -> {
-                    if (getTurnState() == UITurnState.OPPONENT_TURN)
+                    //show shelf
+                    if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (getTurnState() == UITurnState.YOUR_TURN_PHASE1) {
+                        if (turnState == UITurnState.YOUR_TURN_SELECTION || turnState == UITurnState.YOUR_TURN_END)  {
                             System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
-                        } else {
-                            if (getTurnState() == UITurnState.YOUR_TURN_PHASE2) {
-                                setTurnState(UITurnState.YOUR_TURN_PHASE3);
+                        }
+                        else {
+                            if (turnState == UITurnState.YOUR_TURN_COLUMN) {
+                                turnState = UITurnState.YOUR_TURN_INSERTION;
                                 selectColumn();
-                            } else if (getTurnState() == UITurnState.YOUR_TURN_PHASE3) {
+                            }
+                            if (turnState == UITurnState.YOUR_TURN_INSERTION) {
                                 selectTemporaryTiles();
                                 try {
                                     setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
@@ -135,9 +140,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 case 6 -> {}
                 case 7 -> {}
                 case 8 -> writeInChat();
-                case 9 -> {}
-                /*case 10 -> {
-                    }*/
+                case 9 -> {}          
                 case 10 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
                     try {
                         if (System.getProperty("os.name").contains("Windows")) {
@@ -154,7 +157,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     private void printCommandMenu(){
-        System.out.print("""
+        System.out.println("""
                  ---CHOOSE AN ACTION---
                 1-  Select tiles from the board
                 2-  Insert tiles in your shelf
@@ -323,7 +326,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         shelf.setShelf(model.getCurrentPlayerPersonalGoal());
         shelf.printShelf();
     }
-
     public void showCurrentPlayer(GameView model){
         if (getEndState() != UIEndState.ENDING || clientUID !=1)
             System.out.println("\nThe current player is: "+model.getCurrentPlayerName());

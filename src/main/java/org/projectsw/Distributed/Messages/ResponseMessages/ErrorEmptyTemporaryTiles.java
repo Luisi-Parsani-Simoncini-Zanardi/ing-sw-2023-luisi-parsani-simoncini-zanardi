@@ -17,6 +17,6 @@ public class ErrorEmptyTemporaryTiles extends ResponseMessage implements Seriali
     @Override
     public void execute(TextualUI tui){
         System.out.println(ConsoleColors.RED + "You don't have any tiles selected. Please select any tile..." + ConsoleColors.RESET);
-        tui.setTurnState(UITurnState.YOUR_TURN_PHASE1);
+        tui.setTurnState(UITurnState.YOUR_TURN_SELECTION);
     }
 }

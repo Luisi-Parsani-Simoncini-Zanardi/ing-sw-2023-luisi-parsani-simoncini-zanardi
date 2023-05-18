@@ -17,6 +17,6 @@ public class ErrorUnselectableTile extends ResponseMessage implements Serializab
     @Override
     public void execute(TextualUI tui) {
         System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
-        tui.setTurnState(UITurnState.YOUR_TURN_PHASE1);
+        tui.setTurnState(UITurnState.YOUR_TURN_SELECTION);
     }
 }

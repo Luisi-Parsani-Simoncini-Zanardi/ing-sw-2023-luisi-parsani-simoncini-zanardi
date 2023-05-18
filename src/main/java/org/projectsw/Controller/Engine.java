@@ -102,12 +102,12 @@ public class Engine{
     private void startGame(){
         game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        fillBoard();
         try {
-            game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
+            game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(Config.broadcastID,getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while updating the current player: "+e.getCause());
         }
-        fillBoard();
         try {
             game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
         } catch (RemoteException e){
@@ -130,6 +130,11 @@ public class Engine{
                 if (selectionPossible()) {
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     game.getBoard().updateSelectablePoints();
+                    try {
+                        game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
+                    }
                     if (game.getBoard().getSelectablePoints().size() == 0 ||
                         game.getCurrentPlayer().getShelf().maxFreeColumnSpace() == game.getBoard().getTemporaryPoints().size()) {
                         try {
@@ -454,6 +459,7 @@ public class Engine{
         }
         else {
             try {
+                game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(Config.broadcastID,getGame())));
                 game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(Config.broadcastID,getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
@@ -637,7 +643,7 @@ public class Engine{
         try {
             game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred whileF transferring the board: "+e.getMessage());
+            throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
     }
     public void update(Client client, InputMessage input) throws RemoteException {
