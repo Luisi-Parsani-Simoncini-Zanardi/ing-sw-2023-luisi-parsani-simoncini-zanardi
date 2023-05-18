@@ -189,7 +189,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     private void printCommandMenu(){
-        System.out.print(ConsoleColors.PURPLE_BOLD+" ---CHOOSE AN ACTION---\n"+
+        System.out.print(" ---CHOOSE AN ACTION---\n"+
                         "1-  Select tiles from the board\n"+
                         "2-  Insert tiles in your shelf\n"+
                         "3-  See your personal goal\n"+
