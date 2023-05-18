@@ -24,6 +24,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private int clientUID;
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
+    private Boolean repeat = true;
 
     public TextualUI()
     {
@@ -56,6 +57,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void setNickname(String nickname){
         this.nickname = nickname;
     }
+    public void setRepeat(Boolean bool){
+        this.repeat = bool;
+    }
+
     public void setTurnState(UITurnState state){
         synchronized (lock){
             this.turnState = state;
@@ -79,7 +84,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
-            printCommandMenu();
+            if (repeat) {
+                repeat=false;
+                printCommandMenu();
+            } else {
+                System.out.println("---CHOOSE AN ACTION---");
+            }
             choice = scanner.nextInt();
             switch (choice) {
                 case 1 -> {
@@ -101,12 +111,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         if (turnState==UITurnState.YOUR_TURN_PHASE2){
                             turnState=UITurnState.YOUR_TURN_PHASE3;
                             selectColumn();
-                        } else {
-                            System.out.println(ConsoleColors.RED + "You can't select a column now..." + ConsoleColors.RESET);
                         }
                     }
-                }
-                case 3 -> {
                     if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
@@ -118,16 +124,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         }
                     }
                 }
+                case 3 -> {}
                 case 4 -> {}
-                case 5 -> {}
-                case 6 -> askBoard();
+                case 5 -> askBoard();
+                case 6 -> {}
                 case 7 -> {}
-                case 8 -> {}
-                case 9 -> writeInChat();
-                case 10 -> {}
-                case 11 -> {
+                case 8 -> writeInChat();
+                case 9 -> {}
+                case 10 -> {
                     if(turnState==UITurnState.YOUR_TURN_PHASE_END)
                     {
+                        System.out.println("You ended your turn.");
                         if (endState == UIEndState.RUNNING) {
                             setTurnState(UITurnState.OPPONENT_TURN);
                             try {
@@ -137,8 +144,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             }
                         }
                         else setTurnState(UITurnState.NO_TURN);
-                    }
-                }
+                    }}
+                case 11 -> {}
                 case 12 -> {}
                 case 13 -> {}
             }
@@ -172,20 +179,19 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void printCommandMenu(){
         System.out.print("""
-                     Choose an action:
+                     ---CHOOSE AN ACTION---
                      1-  Select tiles from the board
-                     2-  Select a column from the shelf
-                     3-  Put a tile in your shelf
-                     4-  See your personal goal
-                     5-  See the common goals
-                     6-  Show the board
-                     7-  Show your shelf
-                     8-  Show all the shelves
-                     9-  Write in chat
-                     10- Show the chat
-                     11- End your turn
-                     12- Clear the cli
-                     13- Help
+                     2-  Insert tiles in your shelf
+                     3-  See your personal goal
+                     4-  See the common goals
+                     5-  Show the board
+                     6-  Show your shelf
+                     7-  Show all the shelves
+                     8-  Write in chat
+                     9- Show the chat
+                     10- End your turn
+                     11- Clear the cli
+                     12- Help
                      """);
     }
     private void writeInChat(){

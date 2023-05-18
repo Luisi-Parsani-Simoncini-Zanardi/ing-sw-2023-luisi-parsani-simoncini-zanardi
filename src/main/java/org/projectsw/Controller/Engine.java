@@ -129,11 +129,6 @@ public class Engine{
             try {
                 if (selectionPossible()) {
                     game.getBoard().addTemporaryPoints(selectedPoint);
-                    try {
-                        game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
-                    } catch (RemoteException e) {
-                        throw new RuntimeException("An error occurred while updating the board: "+e.getMessage());
-                    }
                     game.getBoard().updateSelectablePoints();
                     if (game.getBoard().getSelectablePoints().size() == 0 ||
                         game.getCurrentPlayer().getShelf().maxFreeColumnSpace() == game.getBoard().getTemporaryPoints().size()) {
@@ -160,11 +155,6 @@ public class Engine{
      */
     private void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
-       try {
-            game.setChangedAndNotifyObservers(new UpdatedBoard(new GameView(getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while updating the board: "+e.getMessage());
-        }
     }
 
     /**
