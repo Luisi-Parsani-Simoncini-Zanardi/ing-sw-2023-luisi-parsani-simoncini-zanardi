@@ -47,7 +47,6 @@ public class ServerImpl extends UnicastRemoteObject implements Server{
     public void removeObserver(Client client){
         model.deleteObserver(clientObserverHashMap.get(client));
         clientObserverHashMap.remove(client);
-        System.out.println();
     }
 
     @Override

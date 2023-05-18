@@ -13,7 +13,15 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class TextualUI extends Observable<InputMessage> implements Runnable{
-
+    //TODO: idee
+    /*
+    * a inizio turno stampare in automatico la board
+    * a inizio game mostrare i common e personal goal al giocatore
+    * dopo la selezione di una tile bisogna stampare la board con le () e []
+    * se non è il proprio turno stampare la board SENZA () e []
+    * far finire il turno in automatico e far settare al controller/server il niovo giocatore giocante
+    * (da ragionare) fare settare al server tutti le fasi del turno
+    */
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.RUNNING;
     private final Object lock = new Object();
@@ -81,9 +89,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
-            System.out.println("---CHOOSE AN ACTION---");
+            System.out.println("Press 0 to see all possible action :)");
             choice = scanner.nextInt();
             switch (choice) {
+                case 0 -> printCommandMenu();
                 case 1 -> {
                     if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
@@ -179,21 +188,19 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     private void printCommandMenu(){
-        System.out.print("""
-                     ---CHOOSE AN ACTION---
-                     1-  Select tiles from the board
-                     2-  Insert tiles in your shelf
-                     3-  See your personal goal
-                     4-  See the common goals
-                     5-  Show the board
-                     6-  Show your shelf
-                     7-  Show all the shelves
-                     8-  Write in chat
-                     9-  Show the chat
-                     10- End your turn
-                     11- Clear the cli
-                     12- Help
-                     """);
+        System.out.print(ConsoleColors.PURPLE_BOLD+" ---CHOOSE AN ACTION---\n"+ConsoleColors.RED+
+                        "1-  Select tiles from the board\n"+ConsoleColors.YELLOW+
+                        "2-  Insert tiles in your shelf\n"+ConsoleColors.BLUE+
+                        "3-  See your personal goal\n"+ConsoleColors.BRONZE+
+                        "4-  See the common goals\n"+ConsoleColors.CYAN+
+                        "5-  Show the board\n"+ConsoleColors.GREEN+
+                        "6-  Show your shelf\n"+ConsoleColors.MAGENTA+
+                        "7-  Show all the shelves\n"+ConsoleColors.GOLD+
+                        "8-  Write in chat\n"+ConsoleColors.SILVER+
+                        "9-  Show the chat\n"+ConsoleColors.ORANGE+
+                        "10- End your turn\n"+ConsoleColors.RED+
+                        "11- Clear the cli\n"+ConsoleColors.GREY+
+                        "12- Help\n"+ConsoleColors.RESET);
     }
     private void writeInChat(){
         Scanner scanner = new Scanner(System.in);
@@ -480,7 +487,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
-        printCommandMenu();
+        //printCommandMenu();
     }
 
     public void askNumber(){
@@ -496,6 +503,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         } catch (RemoteException e) {
             throw new RuntimeException("Network error"+e.getMessage());
         }
+    }
+
+    public void setIsNotCorrect(boolean resp){
+        this.isNotCorrect=resp;
     }
 
     public void kill(){
@@ -514,7 +525,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println(ConsoleColors.PURPLE_BOLD + "          __/ |                               " );
         System.out.println("         |___/                                " + ConsoleColors.RESET);
     }
-
     private void printImageKill(){
         System.out.println(ConsoleColors.YELLOW + "\n                      "+ConsoleColors.GREY+"/^--^\\     /^--^\\     /^--^\\\n" +
                 "                      \\____/     \\____/     \\____/\n" +
@@ -581,12 +591,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 "⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
                 "⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
-    }
-
-
-
-    public void setIsNotCorrect(boolean resp){
-        this.isNotCorrect=resp;
     }
 }
 
