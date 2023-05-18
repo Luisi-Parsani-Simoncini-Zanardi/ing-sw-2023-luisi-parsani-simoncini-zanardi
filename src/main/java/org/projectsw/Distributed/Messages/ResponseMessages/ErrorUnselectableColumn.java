@@ -22,15 +22,6 @@ public class ErrorUnselectableColumn extends ResponseMessage implements Serializ
     }
     public void execute(TextualUI tui){
         System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
-        int number;
-        do{
-            number = tui.selectColumnInput();
-        }while(tui.chooseColumn());
-        try {
-            tui.setChangedAndNotifyObservers(new ColumnSelection(new InputController(tui.getClientUID(), number)));
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while notifying a column section error: "+e.getCause());
-        }
         tui.setTurnState(UITurnState.YOUR_TURN_PHASE2);
     }
     public void execute(GraphicalUI gui){}

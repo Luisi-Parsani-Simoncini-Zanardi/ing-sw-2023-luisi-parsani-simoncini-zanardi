@@ -4,6 +4,7 @@ import org.projectsw.Distributed.Messages.InputMessages.TemporaryTileSelection;
 import org.projectsw.Model.GameView;
 import org.projectsw.Model.InputController;
 import org.projectsw.View.ConsoleColors;
+import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
@@ -20,12 +21,7 @@ public class ErrorInvalidTemporaryTile extends ResponseMessage implements Serial
     }
     public void execute(TextualUI tui){
         System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);
-        int number = tui.selectTemporaryTileInput();
-        try {
-            tui.setChangedAndNotifyObservers(new TemporaryTileSelection(new InputController(tui.getClientUID(), number)));
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while notifying a tile insertion error: "+e.getCause());
-        }
+        tui.setTurnState(UITurnState.YOUR_TURN_PHASE3);
     }
     public void execute(GraphicalUI gui){}
 }

@@ -108,19 +108,15 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState==UITurnState.YOUR_TURN_PHASE2){
-                            turnState=UITurnState.YOUR_TURN_PHASE3;
+                        if (turnState == UITurnState.YOUR_TURN_PHASE1)
+                            System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
+                        else if (turnState == UITurnState.YOUR_TURN_PHASE2) {
+                            turnState = UITurnState.YOUR_TURN_PHASE3;
                             selectColumn();
                         }
-                    }
-                    if (turnState == UITurnState.OPPONENT_TURN)
-                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
-                    else {
-                        if (turnState==UITurnState.YOUR_TURN_PHASE3){
-                            turnState=UITurnState.YOUR_TURN_PHASE_END;
+                        else if (turnState == UITurnState.YOUR_TURN_PHASE3) {
+                            turnState = UITurnState.YOUR_TURN_PHASE_END;
                             selectTemporaryTiles();
-                        } else {
-                            System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
                         }
                     }
                 }
