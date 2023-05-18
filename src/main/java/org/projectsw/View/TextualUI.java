@@ -90,6 +90,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
             System.out.println("Press 0 to see all possible actions...");
+            System.out.println("---CHOOSE AN ACTION---");
             choice = scanner.nextInt();
             switch (choice) {
                 case 0 -> printCommandMenu();
@@ -189,18 +190,20 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     private void printCommandMenu(){
-        System.out.print(" ---CHOOSE AN ACTION---\n"+
-                        "1-  Select tiles from the board\n"+
-                        "2-  Insert tiles in your shelf\n"+
-                        "3-  See your personal goal\n"+
-                        "4-  See the common goals\n"+
-                        "5-  Show the board\n"+
-                        "6-  Show your shelf\n"+
-                        "7-  Show all the shelves\n"+
-                        "8-  Write in chat\n"+
-                        "9-  Show the chat\n"+
-                        "10- End your turn\n"+
-                        "11- Clear the cli\n");
+        System.out.println("""
+                 ---CHOOSE AN ACTION---
+                1-  Select tiles from the board
+                2-  Insert tiles in your shelf
+                3-  See your personal goal
+                4-  See the common goals
+                5-  Show the board
+                6-  Show your shelf
+                7-  Show all the shelves
+                8-  Write in chat
+                9-  Show the chat
+                10- End your turn
+                11- Clear the cli
+                """);
     }
     private void writeInChat(){
         Scanner scanner = new Scanner(System.in);
