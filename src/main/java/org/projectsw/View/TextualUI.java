@@ -171,7 +171,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     private void printCommandMenu(){
-        System.out.println("""
+        System.out.print("""
                      Choose an action:
                      1-  Select tiles from the board
                      2-  Select a column from the shelf
