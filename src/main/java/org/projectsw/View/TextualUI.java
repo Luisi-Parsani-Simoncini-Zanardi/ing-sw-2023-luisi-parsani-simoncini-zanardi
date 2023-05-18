@@ -83,7 +83,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 System.out.println(ConsoleColors.RED+"Nickname already taken!!!"+ConsoleColors.RESET);
         }while(!isNotCorrect);
 
-        while(getEndState() != UIEndState.GAME_ENDING || (getEndState() == UIEndState.GAME_ENDING && this.clientUID != 1)) {
+        while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
             printCommandMenu();
             choice = scanner.nextInt();
             switch (choice) {
