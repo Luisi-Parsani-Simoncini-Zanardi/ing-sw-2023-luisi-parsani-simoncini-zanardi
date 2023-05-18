@@ -99,8 +99,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     if (getTurnState() == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState==UITurnState.YOUR_TURN_SELECTION){
-                            turnState=UITurnState.YOUR_TURN_COLUMN;
+                        if (getTurnState()==UITurnState.YOUR_TURN_SELECTION){
+                            setTurnState(UITurnState.YOUR_TURN_COLUMN);
                             askBoard();
                             selectTiles();
                         } else {
@@ -110,18 +110,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 }
                 case 2 -> {
                     //show shelf
-                    if (turnState == UITurnState.OPPONENT_TURN)
+                    if (getTurnState() == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
-                        if (turnState == UITurnState.YOUR_TURN_SELECTION || turnState == UITurnState.YOUR_TURN_END)  {
+                        if (getTurnState() == UITurnState.YOUR_TURN_SELECTION)  {
                             System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
                         }
                         else {
-                            if (turnState == UITurnState.YOUR_TURN_COLUMN) {
-                                turnState = UITurnState.YOUR_TURN_INSERTION;
+                            if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
+                                setTurnState(UITurnState.YOUR_TURN_INSERTION);
                                 selectColumn();
                             }
-                            if (turnState == UITurnState.YOUR_TURN_INSERTION) {
+                            if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                 selectTemporaryTiles();
                                 try {
                                     setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
