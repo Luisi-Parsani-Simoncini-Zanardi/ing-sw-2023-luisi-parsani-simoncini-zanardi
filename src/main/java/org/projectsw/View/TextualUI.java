@@ -100,6 +100,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     else {
                         if (turnState==UITurnState.YOUR_TURN_SELECTION){
                             turnState=UITurnState.YOUR_TURN_COLUMN;
+                            askBoard();
                             selectTiles();
                         } else {
                             System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
@@ -107,6 +108,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
                 case 2 -> {
+                    //show shelf
                     if (turnState == UITurnState.OPPONENT_TURN)
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
                     else {
@@ -473,7 +475,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void showCurrentPlayer(GameView model){
         if (endState != UIEndState.ENDING || clientUID !=1)
-            System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
+            System.out.println("\nThe current player is: "+ model.getCurrentPlayerName());
     }
 
     private void showChat(GameView model){
