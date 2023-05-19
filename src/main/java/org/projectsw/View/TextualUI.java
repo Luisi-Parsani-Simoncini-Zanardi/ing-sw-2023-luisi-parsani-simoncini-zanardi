@@ -91,7 +91,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
             if (getEndState()==UIEndState.LOBBY)
-                System.out.println("Waiting for more people to join...\n");
+                System.out.println("Waiting for more people to join...");
             while (getEndState()==UIEndState.LOBBY)
             {
                 synchronized (this) {
@@ -102,6 +102,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
+            System.out.println("Game started! \n");
             choice = scanner.nextInt();
             switch (choice) {
                 case 0 -> printCommandMenu();

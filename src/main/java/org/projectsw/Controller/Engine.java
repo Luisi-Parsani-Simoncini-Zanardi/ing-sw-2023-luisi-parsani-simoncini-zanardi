@@ -646,9 +646,9 @@ public class Engine{
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
     }
-    public void shelfTransfer(){
+    public void shelfTransfer(int clientID){
         try {
-            game.setChangedAndNotifyObservers(new UpdatedShelf(new GameView(getGame())));
+            game.setChangedAndNotifyObservers(new UpdatedShelf(new GameView(clientID, game.getPlayers().get(clientID-1).getNickname(), game.getPlayers().get(clientID-1).getShelf())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }

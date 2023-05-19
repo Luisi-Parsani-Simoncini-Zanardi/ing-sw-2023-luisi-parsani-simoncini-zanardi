@@ -109,7 +109,7 @@ public class GameView implements Serializable {
         }
     }
 
-    public GameView(int broadcastID,Game model){
+    public GameView(int broadcastID, Game model){
         this.gameBoard =  model.getBoard().getBoard();
         this.currentPlayerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.currentPlayerName = model.getCurrentPlayer().getNickname();
@@ -127,6 +127,22 @@ public class GameView implements Serializable {
         {
             this.results.put(p.getNickname(), p.getPoints());
         }
+    }
+
+    public GameView(int clientID, String nickname, Shelf shelf){
+        this.gameBoard =  null;
+        this.currentPlayerShelf = shelf.getShelf();
+        this.currentPlayerName = nickname;
+        this.chat = null;
+        this.error = ErrorName.NO_ERROR;
+        this.clientID = clientID;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
+        this.currentPlayerPersonalGoal = null;
+        this.correct=null;
+        this.results = null;
     }
 
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
