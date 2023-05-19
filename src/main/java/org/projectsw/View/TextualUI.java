@@ -87,7 +87,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
         int choice;
         do {
             joinGame();
@@ -108,6 +107,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
+            Scanner scanner = new Scanner(System.in);
             choice = scanner.nextInt();
             if (getEndState()!=UIEndState.RESULTS) {
                 switch (choice) {
@@ -156,7 +156,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 4 -> {}
                     case 5 -> askBoard();
                     case 6 -> askShelf();
-                    case 7 -> {}
+                    case 7 -> askAllShelves();
                     case 8 -> writeInChat();
                     case 9 -> {}
                     case 10 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
@@ -337,6 +337,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    private void askAllShelves() {
+        try {
+            setChangedAndNotifyObservers(new AskForAllShelves(new InputController(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
     public void showBoard(GameView model){
         Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
@@ -349,6 +357,16 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getCurrentPlayerShelf());
         shelf.printShelf();
+    }
+
+    public void showAllShelves(GameView model){
+        for (String name : model.getAllShelves().keySet())
+        {
+            System.out.println("\n--- " + nameColors.get(name) + name + ConsoleColors.RESET + " ---");
+            Shelf shelf = new Shelf();
+            shelf.setShelf(model.getAllShelves().get(name));
+            shelf.printShelf();
+        }
     }
 
     public void showPersonalGoal(GameView model){

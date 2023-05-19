@@ -26,6 +26,7 @@ public class GameView implements Serializable {
     private final Integer numberOfPlayers;
     private final HashMap<String, Integer> results;
     private final HashMap<String, String> nameColors;
+    private final HashMap<String, Tile[][]> allShelves;
 
     public GameView(int clientID, boolean correct){
         this.gameBoard =  null;
@@ -42,6 +43,7 @@ public class GameView implements Serializable {
         this.correct=correct;
         this.results = null;
         this.nameColors = null;
+        this.allShelves = null;
     }
     public GameView(int clientID){
         this.gameBoard =  null;
@@ -58,6 +60,7 @@ public class GameView implements Serializable {
         this.correct=null;
         this.results = null;
         this.nameColors = null;
+        this.allShelves = null;
     }
 
     public GameView(String nickname){
@@ -75,6 +78,7 @@ public class GameView implements Serializable {
         this.correct=null;
         this.results = null;
         this.nameColors = null;
+        this.allShelves = null;
     }
 
     public GameView(int clientID, String nickname){
@@ -92,6 +96,7 @@ public class GameView implements Serializable {
         this.correct=null;
         this.results = null;
         this.nameColors = null;
+        this.allShelves = null;
     }
 
     public GameView(Game model){
@@ -113,6 +118,7 @@ public class GameView implements Serializable {
             this.results.put(p.getNickname(), p.getPoints());
         }
         this.nameColors = null;
+        this.allShelves = null;
     }
 
     public GameView(int broadcastID, Game model){
@@ -134,6 +140,7 @@ public class GameView implements Serializable {
             this.results.put(p.getNickname(), p.getPoints());
         }
         this.nameColors = null;
+        this.allShelves = null;
     }
 
     public GameView(int clientID, String nickname, Shelf shelf){
@@ -151,16 +158,29 @@ public class GameView implements Serializable {
         this.correct=null;
         this.results = null;
         this.nameColors = null;
+        this.allShelves = null;
     }
 
-    private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
-        Tile[][] goal = new Tile[Config.shelfHeight][Config.shelfLength];
-        for (int i = 0; i < Config.shelfHeight; i++) {
-            for (int j = 0; j < Config.shelfLength; j++) {
-                goal[i][j] = new Tile(personalGoal[i][j], 0);
-            }
+    public GameView(int clientID, ArrayList<Player> players){
+        this.gameBoard =  null;
+        this.currentPlayerShelf = null;
+        this.currentPlayerName = null;
+        this.chat = null;
+        this.error = ErrorName.NO_ERROR;
+        this.clientID = clientID;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
+        this.currentPlayerPersonalGoal = null;
+        this.correct=null;
+        this.results = null;
+        this.nameColors = null;
+        this.allShelves = new HashMap<>();
+        for (Player p : players)
+        {
+            this.allShelves.put(p.getNickname(), p.getShelf().getShelf());
         }
-        return goal;
     }
 
     public GameView(int clientID, HashMap<String, String> nameColors){
@@ -178,6 +198,17 @@ public class GameView implements Serializable {
         this.correct=null;
         this.results = null;
         this.nameColors = nameColors;
+        this.allShelves = null;
+    }
+
+    private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
+        Tile[][] goal = new Tile[Config.shelfHeight][Config.shelfLength];
+        for (int i = 0; i < Config.shelfHeight; i++) {
+            for (int j = 0; j < Config.shelfLength; j++) {
+                goal[i][j] = new Tile(personalGoal[i][j], 0);
+            }
+        }
+        return goal;
     }
 
     public Boolean getCorrect(){return this.correct;}
@@ -194,5 +225,7 @@ public class GameView implements Serializable {
     public Tile[][] getCurrentPlayerPersonalGoal() {return this.currentPlayerPersonalGoal; }
     public HashMap<String, Integer> getResults() {return this.results;}
     public HashMap<String, String> getNameColors() {return this.nameColors; }
+    public HashMap<String, Tile[][]> getAllShelves() {return this.allShelves; }
+
 
 }
