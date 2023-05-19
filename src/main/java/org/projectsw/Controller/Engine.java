@@ -202,11 +202,7 @@ public class Engine{
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
-        try {
-            game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error occurred: "+e.getCause());
-        }
+        temporaryTilesTransfer();
     }
 
     /**
@@ -671,6 +667,14 @@ public class Engine{
             game.setChangedAndNotifyObservers(new SendPersonalGoal(new SerializableGame(game)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
+        }
+    }
+
+    public void temporaryTilesTransfer(){
+        try {
+            game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error occurred: "+e.getCause());
         }
     }
 

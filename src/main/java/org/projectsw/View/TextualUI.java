@@ -91,16 +91,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         Scanner scanner;
         do {
             joinGame();
-            if(!isNotCorrect)
-                System.out.println(ConsoleColors.RED+"Nickname already taken..."+ConsoleColors.RESET);
-        }while(!isNotCorrect);
+            if (!isNotCorrect)
+                System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
+        } while (!isNotCorrect);
 
-        while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
-            choice = -1;
-            if (getEndState()==UIEndState.LOBBY)
+        while (getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+            if (getEndState() == UIEndState.LOBBY)
                 System.out.println("Waiting for more people to join...");
-            while (getEndState()==UIEndState.LOBBY)
-            {
+            while (getEndState() == UIEndState.LOBBY) {
                 synchronized (this) {
                     try {
                         this.wait();
@@ -110,20 +108,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 }
             }
             scanner = new Scanner(System.in);
-            while (choice<0 ||choice>Config.numberOfChoices)
-            {
-                try {
-                    choice = scanner.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid command. Try again...");
-                    choice = scanner.nextInt();
-                }
-                if (choice<0 ||choice>Config.numberOfChoices)
-                {
-                    System.out.println("Invalid command. Try again...");
-                }
+            choice = -1;
+            try {
+                choice = scanner.nextInt();
+            } catch (InputMismatchException ignored) {
             }
-            if (getEndState()!=UIEndState.RESULTS) {
+            if (getEndState() != UIEndState.RESULTS) {
                 switch (choice) {
                     case 0 -> printCommandMenu();
                     case 1 -> {
@@ -149,6 +139,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                                 System.out.println("---CHOOSE AN ACTION---");
                             } else {
                                 askShelf();
+                                askTemporaryTiles();
                                 if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
                                     setTurnState(UITurnState.YOUR_TURN_INSERTION);
                                     selectColumn();
@@ -173,8 +164,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 7 -> askAllShelves();
                     case 8 -> askCurrentPlayer();
                     case 9 -> writeInChat();
-                    case 10 -> {}
-                    case 11 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
+                    case 10 -> {
+                    }
+                    case 11 -> {
                         try {
                             if (System.getProperty("os.name").contains("Windows")) {
                                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -185,9 +177,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             e.printStackTrace();
                         }
                     }
+                    default -> System.out.println(ConsoleColors.RED +"Invalid command. Try again..."+ConsoleColors.RESET);
                 }
-            } else System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
-            if (choice != 2 && getEndState()!=UIEndState.RESULTS)
+            } else
+                System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
+            if (choice != 2 && getEndState() != UIEndState.RESULTS)
                 System.out.println("---CHOOSE AN ACTION---");
         }
     }
@@ -364,6 +358,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private void askPersonalGoal() {
         try {
             setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askTemporaryTiles() {
+        try {
+            setChangedAndNotifyObservers(new AskForTemporaryTiles(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
