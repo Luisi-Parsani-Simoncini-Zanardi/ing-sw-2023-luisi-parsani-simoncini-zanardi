@@ -666,6 +666,15 @@ public class Engine{
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
     }
+
+    public void personalGoalTransfer(){
+        try {
+            game.setChangedAndNotifyObservers(new PersonalGoalResponse(new GameView(game)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
+        }
+    }
+
     public void update(Client client, InputMessage input) throws RemoteException {
         if ((input instanceof InitializePlayer)) {
             input.execute(client, this);

@@ -14,7 +14,7 @@ public class SetClientNickname extends ResponseMessage implements Serializable {
         super(model);
     }
     public void execute(TextualUI tui){
-        tui.setNickname(model.getCurrentPlayerName());
+        tui.setNickname(model.getPlayerName());
     }
     public void execute(GraphicalUI gui){}
 }

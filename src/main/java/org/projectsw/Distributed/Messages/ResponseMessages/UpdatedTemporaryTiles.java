@@ -17,7 +17,7 @@ public class UpdatedTemporaryTiles extends ResponseMessage implements Serializab
     }
     @Override
     public void execute(TextualUI tui){
-        if (model.getCurrentPlayerName().equals(tui.getNickname())) {
+        if (model.getPlayerName().equals(tui.getNickname())) {
             System.out.println("You have selected: ");
             ArrayList<Tile> tiles = model.getTemporaryTiles();
             for (int i = 0; i < tiles.size(); i++) {

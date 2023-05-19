@@ -16,7 +16,7 @@ public class CurrentPlayer extends ResponseMessage implements Serializable {
     @Override
     public void execute(TextualUI tui){
         if (tui.getEndState() == UIEndState.LOBBY)
-            System.out.println("Game started! \n");
+            System.out.println("Game started!");
         tui.showCurrentPlayer(model);
     }
 }

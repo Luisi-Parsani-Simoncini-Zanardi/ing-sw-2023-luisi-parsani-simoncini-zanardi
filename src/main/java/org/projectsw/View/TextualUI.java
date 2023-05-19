@@ -88,6 +88,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     @Override
     public void run() {
         int choice;
+        Scanner scanner;
         do {
             joinGame();
             if(!isNotCorrect)
@@ -95,6 +96,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+            choice = -1;
             if (getEndState()==UIEndState.LOBBY)
                 System.out.println("Waiting for more people to join...");
             while (getEndState()==UIEndState.LOBBY)
@@ -107,8 +109,20 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            Scanner scanner = new Scanner(System.in);
-            choice = scanner.nextInt();
+            scanner = new Scanner(System.in);
+            while (choice<0 ||choice>11)
+            {
+                try {
+                    choice = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid command. Try again...");
+                    choice = scanner.nextInt();
+                }
+                if (choice<0 ||choice>11)
+                {
+                    System.out.println("Invalid command. Try again...");
+                }
+            }
             if (getEndState()!=UIEndState.RESULTS) {
                 switch (choice) {
                     case 0 -> printCommandMenu();
@@ -152,7 +166,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             }
                         }
                     }
-                    case 3 -> {}
+                    case 3 -> askPersonalGoal();
                     case 4 -> {}
                     case 5 -> askBoard();
                     case 6 -> askShelf();
@@ -181,8 +195,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("""
                 1-  Select tiles from the board
                 2-  Insert tiles in your shelf
-                3-  See your personal goal
-                4-  See the common goals
+                3-  Show your personal goal
+                4-  Show the common goals
                 5-  Show the board
                 6-  Show your shelf
                 7-  Show all the shelves
@@ -345,6 +359,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    private void askPersonalGoal() {
+        try {
+            setChangedAndNotifyObservers(new AskForPersonalGoal(new InputController(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
     public void showBoard(GameView model){
         Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
@@ -353,9 +375,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void showShelf(GameView model){
-        System.out.println("\n--- "+nameColors.get(model.getCurrentPlayerName())+model.getCurrentPlayerName()+ConsoleColors.RESET+" ---");
+        System.out.println("\n--- "+nameColors.get(model.getPlayerName())+model.getPlayerName()+ConsoleColors.RESET+" ---");
         Shelf shelf = new Shelf();
-        shelf.setShelf(model.getCurrentPlayerShelf());
+        shelf.setShelf(model.getPlayerShelf());
         shelf.printShelf();
     }
 
@@ -370,14 +392,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void showPersonalGoal(GameView model){
-        System.out.println("--- YOUR PERSONAL GOAL ---");
+        System.out.println("---YOUR PERSONAL GOAL---");
         Shelf shelf = new Shelf();
-        shelf.setShelf(model.getCurrentPlayerPersonalGoal());
+        shelf.setShelf(model.getPlayerPersonalGoal());
         shelf.printShelf();
     }
     public void showCurrentPlayer(GameView model){
         if (getEndState() != UIEndState.ENDING || clientUID !=1)
-            System.out.println("\nThe current player is: "+nameColors.get(model.getCurrentPlayerName()) + model.getCurrentPlayerName()+ConsoleColors.RESET+"\n");
+            System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
     private void showChat(GameView model){
