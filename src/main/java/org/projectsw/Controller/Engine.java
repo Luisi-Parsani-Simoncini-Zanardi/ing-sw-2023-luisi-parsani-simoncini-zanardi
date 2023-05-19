@@ -3,10 +3,7 @@ package org.projectsw.Controller;
 import org.projectsw.Distributed.Messages.InputMessages.InitializePlayer;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.*;
-import org.projectsw.Distributed.Messages.ResponseMessages.PersonalGoalResponse;
 import org.projectsw.Distributed.Server;
-import org.projectsw.Exceptions.Enums.ErrorName;
-import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
@@ -86,12 +83,6 @@ public class Engine{
                 }
                 if (game.getPlayers().size() == game.getNumberOfPlayers()) {
                     startGame();
-                }
-            } else {
-                try{
-                    game.setChangedAndNotifyObservers(new ErrorLobbyClosed(new GameView(game.getClientID())));
-                } catch (RemoteException e) {
-                    throw new RuntimeException("An error occurred while sending a Lobby Closed Error"+e.getMessage());
                 }
             }
     }

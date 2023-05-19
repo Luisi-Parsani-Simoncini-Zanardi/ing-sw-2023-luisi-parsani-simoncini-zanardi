@@ -1,6 +1,5 @@
 package org.projectsw.Model;
 
-import org.projectsw.Exceptions.Enums.ErrorName;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import java.awt.*;
@@ -16,7 +15,6 @@ public class GameView implements Serializable {
     private final Tile[][] currentPlayerShelf;
     private final String currentPlayerName;
     private final ArrayList<Message> chat;
-    private final ErrorName error;
     private final Integer clientID;
     private final ArrayList<Point> selectablePoints;
     private final ArrayList<Point> temporaryPoints;
@@ -31,7 +29,6 @@ public class GameView implements Serializable {
         this.currentPlayerShelf = null;
         this.currentPlayerName = null;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
@@ -46,7 +43,6 @@ public class GameView implements Serializable {
         this.currentPlayerShelf = null;
         this.currentPlayerName = null;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
@@ -62,7 +58,6 @@ public class GameView implements Serializable {
         this.currentPlayerShelf = null;
         this.currentPlayerName = nickname;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = null;
         this.selectablePoints = null;
         this.temporaryPoints = null;
@@ -78,7 +73,6 @@ public class GameView implements Serializable {
         this.currentPlayerShelf = null;
         this.currentPlayerName = nickname;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
@@ -94,7 +88,6 @@ public class GameView implements Serializable {
         this.currentPlayerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.currentPlayerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getMessages();
-        this.error = ErrorName.NO_ERROR;
         this.clientID = model.getClientID();
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
@@ -114,7 +107,6 @@ public class GameView implements Serializable {
         this.currentPlayerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.currentPlayerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getMessages();
-        this.error = ErrorName.NO_ERROR;
         this.clientID = broadcastID;
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
@@ -145,7 +137,6 @@ public class GameView implements Serializable {
     public Tile[][] getCurrentPlayerShelf(){return this.currentPlayerShelf;}
     public String getCurrentPlayerName(){return this.currentPlayerName;}
     public ArrayList<Message> getChat(){return this.chat;}
-    public ErrorName getError(){return this.error;}
     public int getClientID(){return this.clientID;}
     public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
     public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
