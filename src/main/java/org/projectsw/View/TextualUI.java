@@ -167,7 +167,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         }
                     }
                     case 3 -> askPersonalGoal();
-                    case 4 -> {}
+                    case 4 -> askCommonGoals();
                     case 5 -> askBoard();
                     case 6 -> askShelf();
                     case 7 -> askAllShelves();
@@ -203,7 +203,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 7-  Show all the shelves
                 8-  Show the current player
                 9-  Write in chat
-                10-  Show the chat
+                10- Show the chat
                 11- Clear the cli
                 """);
     }
@@ -369,6 +369,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    private void askCommonGoals() {
+        try {
+            setChangedAndNotifyObservers(new AskForCommonGoals(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
     private void askCurrentPlayer() {
         try {
             setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(getClientUID())));
@@ -407,6 +415,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         shelf.setShelf(model.getPlayerPersonalGoal());
         shelf.printShelf();
     }
+
+    public void showCommonGoals(SerializableGame model){
+        System.out.println("---COMMON GOALS---\n");
+        System.out.println(model.getCommonGoalDesc().get(0) + "\n");
+        System.out.println(model.getCommonGoalDesc().get(1) + "\n");
+    }
+
     public void showCurrentPlayer(SerializableGame model){
         if (getEndState() != UIEndState.ENDING || clientUID !=1)
             System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");

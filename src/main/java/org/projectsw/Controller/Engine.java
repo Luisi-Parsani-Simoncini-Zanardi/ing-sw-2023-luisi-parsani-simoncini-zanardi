@@ -674,6 +674,14 @@ public class Engine{
         }
     }
 
+    public void commonGoalTransfer(){
+        try {
+            game.setChangedAndNotifyObservers(new SendCommonGoals(new SerializableGame(game)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
+        }
+    }
+
     public void currentPlayerTransfer(){
         try {
             game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(getGame())));

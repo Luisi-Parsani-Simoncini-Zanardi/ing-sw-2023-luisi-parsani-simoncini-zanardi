@@ -27,6 +27,7 @@ public class SerializableGame implements Serializable {
     private final HashMap<String, Integer> results;
     private final HashMap<String, String> nameColors;
     private final HashMap<String, Tile[][]> allShelves;
+    private final ArrayList<String> commonGoalDesc;
 
     public SerializableGame(int clientID, boolean correct){
         this.gameBoard =  null;
@@ -44,6 +45,7 @@ public class SerializableGame implements Serializable {
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
+        this.commonGoalDesc = null;
     }
     public SerializableGame(int clientID){
         this.gameBoard =  null;
@@ -61,6 +63,7 @@ public class SerializableGame implements Serializable {
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
+        this.commonGoalDesc = null;
     }
 
     public SerializableGame(String nickname){
@@ -79,6 +82,7 @@ public class SerializableGame implements Serializable {
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
+        this.commonGoalDesc = null;
     }
 
     public SerializableGame(int clientID, String nickname){
@@ -97,6 +101,7 @@ public class SerializableGame implements Serializable {
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
+        this.commonGoalDesc = null;
     }
 
     public SerializableGame(Game model){
@@ -119,6 +124,9 @@ public class SerializableGame implements Serializable {
         }
         this.nameColors = null;
         this.allShelves = null;
+        this.commonGoalDesc = new ArrayList<>();
+        this.commonGoalDesc.add(model.getCommonGoals().get(0).getStrategy().getDescription());
+        this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());
     }
 
     public SerializableGame(int broadcastID, Game model){
@@ -141,6 +149,7 @@ public class SerializableGame implements Serializable {
         }
         this.nameColors = null;
         this.allShelves = null;
+        this.commonGoalDesc = null;
     }
 
     public SerializableGame(int clientID, String nickname, Shelf shelf){
@@ -159,6 +168,7 @@ public class SerializableGame implements Serializable {
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
+        this.commonGoalDesc = null;
     }
 
     public SerializableGame(int clientID, ArrayList<Player> players){
@@ -181,6 +191,7 @@ public class SerializableGame implements Serializable {
         {
             this.allShelves.put(p.getNickname(), p.getShelf().getShelf());
         }
+        this.commonGoalDesc = null;
     }
 
     public SerializableGame(int clientID, HashMap<String, String> nameColors){
@@ -199,6 +210,7 @@ public class SerializableGame implements Serializable {
         this.results = null;
         this.nameColors = nameColors;
         this.allShelves = null;
+        this.commonGoalDesc = null;
     }
 
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
@@ -226,6 +238,8 @@ public class SerializableGame implements Serializable {
     public HashMap<String, Integer> getResults() {return this.results;}
     public HashMap<String, String> getNameColors() {return this.nameColors; }
     public HashMap<String, Tile[][]> getAllShelves() {return this.allShelves; }
+    public ArrayList<String> getCommonGoalDesc() {return this.commonGoalDesc; }
+
 
 
 }
