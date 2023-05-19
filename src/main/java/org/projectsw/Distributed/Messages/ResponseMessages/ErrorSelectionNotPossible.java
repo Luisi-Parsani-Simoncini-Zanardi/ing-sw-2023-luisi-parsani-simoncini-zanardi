@@ -6,14 +6,14 @@ import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class FinishedInserting extends ResponseMessage implements Serializable {
+public class ErrorSelectionNotPossible extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public FinishedInserting(SerializableGame model) {
+    public ErrorSelectionNotPossible(SerializableGame model) {
         super(model);
     }
     @Override
-    public void execute(TextualUI tui) {
-        tui.setNoMoreTemporaryTiles(false);
+    public void execute(TextualUI tui){
+        tui.setNoMoreSelectableTiles(false);
     }
 }

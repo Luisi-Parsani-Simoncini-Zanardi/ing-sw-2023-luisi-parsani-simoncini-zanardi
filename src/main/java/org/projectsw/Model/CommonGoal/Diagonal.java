@@ -11,6 +11,8 @@ public class Diagonal extends CommonGoalStrategy {
      */
     public Diagonal(Integer strategyCode){
         super(strategyCode);
+        this.setDescription("Five tiles of the same type forming a\n" +
+                "diagonal.");
     }
 
     /**

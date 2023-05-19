@@ -19,6 +19,13 @@ public class EdgesEightEquals extends CommonGoalStrategy{
     public EdgesEightEquals(Integer strategyCode){
         super(strategyCode);
         this.edge = this.strategyCode == 8;
+        if (edge)
+            this.setDescription("Four tiles of the same type in the four\n" +
+                    "corners of the bookshelf. ");
+        else this.setDescription("""
+                Eight tiles of the same type. There’s no
+                restriction about the position of these
+                tiles.""");
     }
 
     /**

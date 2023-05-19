@@ -1,6 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.TextualUI;
@@ -8,16 +8,16 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UpdatedTemporaryTiles extends ResponseMessage implements Serializable {
+public class SendTemporaryTiles extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public UpdatedTemporaryTiles(GameView model) {
+    public SendTemporaryTiles(SerializableGame model) {
         super(model);
     }
     @Override
     public void execute(TextualUI tui){
-        if (model.getCurrentPlayerName().equals(tui.getNickname())) {
+        if (model.getPlayerName().equals(tui.getNickname())) {
             System.out.println("You have selected: ");
             ArrayList<Tile> tiles = model.getTemporaryTiles();
             for (int i = 0; i < tiles.size(); i++) {
@@ -31,7 +31,7 @@ public class UpdatedTemporaryTiles extends ResponseMessage implements Serializab
                     case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
                 }
             }
-            System.out.println("\n");
+            System.out.print("\n");
         }
     }
 }

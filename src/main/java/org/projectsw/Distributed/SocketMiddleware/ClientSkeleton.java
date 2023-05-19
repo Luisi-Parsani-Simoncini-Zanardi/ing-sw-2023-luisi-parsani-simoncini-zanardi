@@ -4,8 +4,6 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Model.*;
-import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.View.Enums.UIEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,7 +30,7 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public void setID(GameView serverResponse) throws RemoteException {
+    public void setID(SerializableGame serverResponse) throws RemoteException {
 
     }
 

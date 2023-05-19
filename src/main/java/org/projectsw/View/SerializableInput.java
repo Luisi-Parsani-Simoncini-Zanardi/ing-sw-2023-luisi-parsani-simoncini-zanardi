@@ -1,10 +1,10 @@
-package org.projectsw.Model;
+package org.projectsw.View;
 
 import java.awt.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class InputController implements Serializable{
+public class SerializableInput implements Serializable{
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -14,7 +14,7 @@ public class InputController implements Serializable{
     private final String nickname;
     private final String string;
 
-    public InputController(int clientID, Point coordinate){
+    public SerializableInput(int clientID, Point coordinate){
         this.clientID = clientID;
         this.coordinate = coordinate;
         this.integer = null;
@@ -22,7 +22,7 @@ public class InputController implements Serializable{
         this.nickname = null;
     }
 
-    public InputController(String string){
+    public SerializableInput(String string){
         this.clientID = null;
         this.coordinate = null;
         this.integer = null;
@@ -30,7 +30,7 @@ public class InputController implements Serializable{
         this.nickname = string;
     }
 
-    public InputController(int clientID, String string){
+    public SerializableInput(int clientID, String string){
         this.clientID = clientID;
         this.coordinate = null;
         this.integer = null;
@@ -38,7 +38,7 @@ public class InputController implements Serializable{
         this.nickname = null;
     }
 
-    public InputController(int clientID, int num, String string){
+    public SerializableInput(int clientID, int num, String string){
         this.clientID = clientID;
         this.coordinate = null;
         this.integer = num;
@@ -46,7 +46,7 @@ public class InputController implements Serializable{
         this.nickname = null;
     }
 
-    public InputController(int clientID){
+    public SerializableInput(int clientID){
         this.clientID = clientID;
         this.coordinate = null;
         this.integer = null;
@@ -54,7 +54,7 @@ public class InputController implements Serializable{
         this.nickname = null;
     }
 
-    public InputController(int clientID, int integer){
+    public SerializableInput(int clientID, int integer){
         this.clientID = clientID;
         this.coordinate = null;
         this.integer = integer;
@@ -62,7 +62,7 @@ public class InputController implements Serializable{
         this.nickname = null;
     }
 
-    public InputController(String nickname, String string){
+    public SerializableInput(String nickname, String string){
         this.clientID = null;
         this.coordinate = null;
         this.integer = null;
