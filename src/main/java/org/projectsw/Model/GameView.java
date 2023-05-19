@@ -25,6 +25,7 @@ public class GameView implements Serializable {
     private final Boolean correct;
     private final Integer numberOfPlayers;
     private final HashMap<String, Integer> results;
+    private final HashMap<String, String> nameColors;
 
     public GameView(int clientID, boolean correct){
         this.gameBoard =  null;
@@ -40,6 +41,7 @@ public class GameView implements Serializable {
         this.currentPlayerPersonalGoal = null;
         this.correct=correct;
         this.results = null;
+        this.nameColors = null;
     }
     public GameView(int clientID){
         this.gameBoard =  null;
@@ -55,6 +57,7 @@ public class GameView implements Serializable {
         this.currentPlayerPersonalGoal = null;
         this.correct=null;
         this.results = null;
+        this.nameColors = null;
     }
 
     public GameView(String nickname){
@@ -71,6 +74,7 @@ public class GameView implements Serializable {
         this.currentPlayerPersonalGoal = null;
         this.correct=null;
         this.results = null;
+        this.nameColors = null;
     }
 
     public GameView(int clientID, String nickname){
@@ -87,6 +91,7 @@ public class GameView implements Serializable {
         this.currentPlayerPersonalGoal = null;
         this.correct=null;
         this.results = null;
+        this.nameColors = null;
     }
 
     public GameView(Game model){
@@ -107,6 +112,7 @@ public class GameView implements Serializable {
         {
             this.results.put(p.getNickname(), p.getPoints());
         }
+        this.nameColors = null;
     }
 
     public GameView(int broadcastID, Game model){
@@ -127,6 +133,7 @@ public class GameView implements Serializable {
         {
             this.results.put(p.getNickname(), p.getPoints());
         }
+        this.nameColors = null;
     }
 
     public GameView(int clientID, String nickname, Shelf shelf){
@@ -143,6 +150,7 @@ public class GameView implements Serializable {
         this.currentPlayerPersonalGoal = null;
         this.correct=null;
         this.results = null;
+        this.nameColors = null;
     }
 
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
@@ -153,6 +161,23 @@ public class GameView implements Serializable {
             }
         }
         return goal;
+    }
+
+    public GameView(int clientID, HashMap<String, String> nameColors){
+        this.gameBoard =  null;
+        this.currentPlayerShelf = null;
+        this.currentPlayerName = null;
+        this.chat = null;
+        this.error = ErrorName.NO_ERROR;
+        this.clientID = clientID;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.numberOfPlayers = null;
+        this.currentPlayerPersonalGoal = null;
+        this.correct=null;
+        this.results = null;
+        this.nameColors = nameColors;
     }
 
     public Boolean getCorrect(){return this.correct;}
@@ -168,4 +193,6 @@ public class GameView implements Serializable {
     public ArrayList<Tile> getTemporaryTiles() {return this.temporaryTiles; }
     public Tile[][] getCurrentPlayerPersonalGoal() {return this.currentPlayerPersonalGoal; }
     public HashMap<String, Integer> getResults() {return this.results;}
+    public HashMap<String, String> getNameColors() {return this.nameColors; }
+
 }

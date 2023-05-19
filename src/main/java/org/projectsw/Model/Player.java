@@ -3,6 +3,8 @@ package org.projectsw.Model;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
+import org.projectsw.View.ConsoleColors;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
@@ -29,7 +31,7 @@ public class Player {
      * @param position the position of the player
      */
     public Player(String nickname, int position) {
-        this.nickname=nickname;
+        this.nickname= nickname;
         this.position=position;
         points=0;
         shelf = new Shelf();

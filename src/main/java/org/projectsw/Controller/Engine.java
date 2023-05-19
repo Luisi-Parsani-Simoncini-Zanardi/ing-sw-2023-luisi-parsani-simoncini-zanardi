@@ -14,12 +14,12 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Util.OneToOneHashmap;
+import org.projectsw.View.ConsoleColors;
 
 import java.awt.*;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
+
 import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
 import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
 //TODO: decommentare le parti commentate per non dare errori
@@ -101,6 +101,11 @@ public class Engine{
      */
     private void startGame(){
         game.setGameState(GameState.RUNNING);
+        try {
+            game.setChangedAndNotifyObservers(new NameColors(new GameView(Config.broadcastID, randomColors())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("n error occurred while setting the name colors: " + e);
+        }
         saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
         fillBoard();
         try {
@@ -662,5 +667,31 @@ public class Engine{
                 input.execute(this);
             }
         }
+    }
+
+    private HashMap<String, String> randomColors()
+    {
+        HashMap<String, String> colors = new HashMap<>();
+        ArrayList<Integer> alreadyUsed = new ArrayList<>();
+        for (int i=0; i<game.getPlayers().size(); i++){
+            Random random = new Random();
+            int randomNumber = random.nextInt(8);
+            while (alreadyUsed.contains(randomNumber))
+            {
+                randomNumber = random.nextInt(8);
+            }
+            alreadyUsed.add(randomNumber);
+            switch (randomNumber){
+                case 0 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.RED);
+                case 1 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.GREEN);
+                case 2 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.YELLOW);
+                case 3 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.BLUE);
+                case 4 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.PURPLE);
+                case 5 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.CYAN);
+                case 6 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.ORANGE);
+                case 7 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.MAGENTA);
+            }
+        }
+        return colors;
     }
 }
