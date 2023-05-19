@@ -675,6 +675,14 @@ public class Engine{
         }
     }
 
+    public void currentPlayerTransfer(){
+        try {
+            game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while transferring the current player: "+e.getCause());
+        }
+    }
+
     public void update(Client client, InputMessage input) throws RemoteException {
         if ((input instanceof InitializePlayer)) {
             input.execute(client, this);

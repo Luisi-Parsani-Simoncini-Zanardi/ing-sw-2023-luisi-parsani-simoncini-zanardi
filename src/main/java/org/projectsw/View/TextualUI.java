@@ -110,7 +110,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 }
             }
             scanner = new Scanner(System.in);
-            while (choice<0 ||choice>11)
+            while (choice<0 ||choice>Config.numberOfChoices)
             {
                 try {
                     choice = scanner.nextInt();
@@ -118,7 +118,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     System.out.println("Invalid command. Try again...");
                     choice = scanner.nextInt();
                 }
-                if (choice<0 ||choice>11)
+                if (choice<0 ||choice>Config.numberOfChoices)
                 {
                     System.out.println("Invalid command. Try again...");
                 }
@@ -171,9 +171,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 5 -> askBoard();
                     case 6 -> askShelf();
                     case 7 -> askAllShelves();
-                    case 8 -> writeInChat();
-                    case 9 -> {}
-                    case 10 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
+                    case 8 -> askCurrentPlayer();
+                    case 9 -> writeInChat();
+                    case 10 -> {}
+                    case 11 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
                         try {
                             if (System.getProperty("os.name").contains("Windows")) {
                                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -200,9 +201,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 5-  Show the board
                 6-  Show your shelf
                 7-  Show all the shelves
-                8-  Write in chat
-                9-  Show the chat
-                10- Clear the cli
+                8-  Show the current player
+                9-  Write in chat
+                10-  Show the chat
+                11- Clear the cli
                 """);
     }
     private void writeInChat(){
@@ -364,6 +366,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             setChangedAndNotifyObservers(new AskForPersonalGoal(new InputController(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askCurrentPlayer() {
+        try {
+            setChangedAndNotifyObservers(new AskForCurrentPlayer(new InputController(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the current player: "+e.getMessage());
         }
     }
 
