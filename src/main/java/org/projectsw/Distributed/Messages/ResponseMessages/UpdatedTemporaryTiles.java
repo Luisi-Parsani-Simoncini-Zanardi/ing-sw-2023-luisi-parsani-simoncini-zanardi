@@ -31,7 +31,6 @@ public class UpdatedTemporaryTiles extends ResponseMessage implements Serializab
                     case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
                 }
             }
-            System.out.println("\n");
         }
     }
 }

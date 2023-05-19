@@ -119,14 +119,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
                 case 2 -> {
-                    //show shelf
-                    if (getTurnState() == UITurnState.OPPONENT_TURN)
+                    if (getTurnState() == UITurnState.OPPONENT_TURN) {
                         System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                        System.out.println("---CHOOSE AN ACTION---");
+                    }
                     else {
                         if (getTurnState() == UITurnState.YOUR_TURN_SELECTION)  {
                             System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
+                            System.out.println("---CHOOSE AN ACTION---");
                         }
                         else {
+                            askShelf();
                             if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
                                 setTurnState(UITurnState.YOUR_TURN_INSERTION);
                                 selectColumn();
@@ -147,7 +150,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 case 3 -> {}
                 case 4 -> {}
                 case 5 -> askBoard();
-                case 6 -> {}
+                case 6 -> askShelf();
                 case 7 -> {}
                 case 8 -> writeInChat();
                 case 9 -> {}          
@@ -317,6 +320,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    private void askShelf() {
+        try {
+            setChangedAndNotifyObservers(new AskForShelf(new InputController(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
+        }
+    }
+
     public void showBoard(GameView model){
         Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
@@ -325,26 +336,26 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void showShelf(GameView model){
-        System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
+        System.out.println("\n--- "+model.getCurrentPlayerName()+" ---");
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getCurrentPlayerShelf());
         shelf.printShelf();
     }
 
     public void showPersonalGoal(GameView model){
-        System.out.println("\n--- YOUR PERSONAL GOAL ---\n");
+        System.out.println("--- YOUR PERSONAL GOAL ---");
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getCurrentPlayerPersonalGoal());
         shelf.printShelf();
     }
     public void showCurrentPlayer(GameView model){
         if (getEndState() != UIEndState.ENDING || clientUID !=1)
-            System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
+            System.out.println("The current player is: "+model.getCurrentPlayerName());
     }
 
     private void showChat(GameView model){
         for(Message message : model.getChat())
-            System.out.println("\n"+message.getSender()+": "+message.getPayload());
+            System.out.println(message.getSender()+": "+message.getPayload());
     }
 
     private void joinGame() {
