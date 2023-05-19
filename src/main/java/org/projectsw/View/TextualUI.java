@@ -90,6 +90,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+            if (getEndState()==UIEndState.LOBBY)
+                System.out.println("Waiting for more people to join...");
             while (getEndState()==UIEndState.LOBBY)
             {
                 synchronized (this) {
@@ -100,8 +102,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            System.out.println("Press 0 to see all possible actions...");
-            System.out.println("---CHOOSE AN ACTION---");
             choice = scanner.nextInt();
             switch (choice) {
                 case 0 -> printCommandMenu();
@@ -133,12 +133,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             }
                             if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                 selectTemporaryTiles();
+                                System.out.println("You ended your turn.");
                                 try {
                                     setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
                                 } catch (RemoteException e) {
                                     throw new RuntimeException("An error occurred while ending the turn: " + e);
                                 }
-                                System.out.println("You ended your turn.");
                                 setTurnState(UITurnState.OPPONENT_TURN);
                             }
                         }
@@ -163,6 +163,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
+            if (choice != 2)
+                System.out.println("---CHOOSE AN ACTION---");
         }
     }
 

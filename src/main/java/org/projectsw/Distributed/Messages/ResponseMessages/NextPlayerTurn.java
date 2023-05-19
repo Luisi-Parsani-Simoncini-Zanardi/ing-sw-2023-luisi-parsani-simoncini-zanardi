@@ -27,5 +27,7 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
             tui.setNoMoreTemporaryTiles(true);
             System.out.println("   ---YOUR TURN---");
         }
+        System.out.println("---CHOOSE AN ACTION---");
+        System.out.println("Press 0 to see all possible actions...");
     }
 }

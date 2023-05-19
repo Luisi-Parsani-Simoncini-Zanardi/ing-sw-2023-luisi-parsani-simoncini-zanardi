@@ -515,7 +515,7 @@ public class Engine{
         this.checkPersonalGoal();
         this.checkEndgameGoal();
         try {
-            game.setChangedAndNotifyObservers(new ResultsNotify(new GameView(getGame())));
+            game.setChangedAndNotifyObservers(new ResultsNotify(new GameView(Config.broadcastID, getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while updating the status: " + e);
         }
