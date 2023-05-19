@@ -23,7 +23,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     * (da ragionare) fare settare al server tutti le fasi del turno
     */
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
-    private UIEndState endState = UIEndState.RUNNING;
+    private UIEndState endState = UIEndState.LOBBY;
     private final Object lock = new Object();
     private final Object lock2 = new Object();
     private boolean isNotCorrect;
@@ -90,6 +90,16 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+            while (getEndState()==UIEndState.LOBBY)
+            {
+                synchronized (this) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Error while waiting for the game to start: " + e);
+                    }
+                }
+            }
             System.out.println("Press 0 to see all possible actions...");
             System.out.println("---CHOOSE AN ACTION---");
             choice = scanner.nextInt();
@@ -158,7 +168,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void printCommandMenu(){
         System.out.println("""
-                 ---CHOOSE AN ACTION---
                 1-  Select tiles from the board
                 2-  Insert tiles in your shelf
                 3-  See your personal goal
