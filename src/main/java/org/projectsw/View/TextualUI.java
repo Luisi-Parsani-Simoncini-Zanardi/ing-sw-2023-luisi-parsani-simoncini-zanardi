@@ -7,6 +7,7 @@ import org.projectsw.Util.Observable;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -214,6 +215,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 nickname/message -> to send a secret message to the player with the specified nickname
                 message -> to send a message to everyone""");
         string = scanner.nextLine();
+        try {
+            setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(getClientUID(),getNickname(),getString())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while sending the message: "+e.getMessage());
+        }
     }
 
     public void update(ResponseMessage response){
@@ -335,8 +341,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         return new Point(column-1, row-1);
     }
 
-
-
     private void askBoard() {
         try {
             setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(getClientUID())));
@@ -427,9 +431,32 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
-    private void showChat(SerializableGame model){
-        for(Message message : model.getChat())
-            System.out.println(message.getSender()+": "+message.getPayload());
+    public void showChat(SerializableGame model) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Do you want to print the global chat or the chat with a specific player?\n" +
+                "1- GlobalChat\n" +
+                "2- Specific chat");
+        try {
+            number = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
+        }
+        if (number == 1) {
+            try {
+                //TODO: da sistemare
+                setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while asking for the Global chat"+e.getMessage());
+            }
+        }
+        else {
+            try {
+                setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while asking for a specific chat"+e.getMessage());
+            }
+        }
+
     }
 
     private void joinGame() {

@@ -86,12 +86,6 @@ public class Engine{
                 if (game.getPlayers().size() == game.getNumberOfPlayers()) {
                     startGame();
                 }
-            } else {
-                try{
-                    game.setChangedAndNotifyObservers(new ErrorLobbyClosed(new SerializableGame(game.getClientID())));
-                } catch (RemoteException e) {
-                    throw new RuntimeException("An error occurred while sending a Lobby Closed Error"+e.getMessage());
-                }
             }
     }
 
@@ -540,10 +534,30 @@ public class Engine{
      * @param scope message scope
      */
     public void sayInChat(String sender, String content, String scope) {
-       if(scope.equals("everyone")||validNickname(scope))
-           this.getGame().getChat().addChatLog(new Message(sender,scope,content));
-       else{
-           //inviare messaggio di errore
+       if(scope.equals("error")){
+           try {
+               getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(),new Message(sender,"error",ConsoleColors.RED_BOLD+"Incorrectly formatted message!!!"+ConsoleColors.RESET))));
+               return;
+           } catch (RemoteException e) {
+               throw new RuntimeException("Network error while sending the chatError: "+e.getMessage());
+           }
+       }
+       if(!validNickname(scope)){
+           try {
+               getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(),new Message(sender,"error",ConsoleColors.RED_BOLD+"The nickname entered of the recipient player is wrong!!!"+ConsoleColors.RESET))));
+               return;
+           } catch (RemoteException e) {
+               throw new RuntimeException("Network error while sending the chatError: "+e.getMessage());
+           }
+       }
+       Message message = new Message(sender, scope, content);
+        getGame().getChat().addChatLog(message);
+       if(scope.equals("everyone")) {
+           try {
+               getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(Config.broadcastID, message)));
+           } catch (RemoteException e) {
+               throw new RuntimeException("Error while sending the chat to the clients: " + e.getMessage());
+           }
        }
     }
 
@@ -553,6 +567,8 @@ public class Engine{
      * @return true if nickname is the nickname of a player in game
      */
     private boolean validNickname(String nickname){
+        if(nickname.equals("everyone"))
+            return true;
         for(Player player : this.getGame().getPlayers()){
             if(player.getNickname().equals(nickname))
                 return true;

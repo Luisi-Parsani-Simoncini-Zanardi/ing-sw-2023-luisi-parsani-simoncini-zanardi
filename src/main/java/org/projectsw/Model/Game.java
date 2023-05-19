@@ -315,7 +315,6 @@ public class Game extends Observable<ResponseMessage> {
             commonGoalIst = new CommonGoal(strategyIst);
             commonGoals.add(commonGoalIst);
         }
-
         return commonGoals;
     }
 }

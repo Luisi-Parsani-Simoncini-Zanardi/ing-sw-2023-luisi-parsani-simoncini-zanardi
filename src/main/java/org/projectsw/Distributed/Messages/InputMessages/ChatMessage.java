@@ -22,10 +22,14 @@ public class ChatMessage extends InputMessage implements Serializable {
             sender = input.getNickname();
             payload = input.getString();
             scope = "everyone";
-        }else{
+        }else if(parts.length == 2){
             sender = input.getNickname();
             payload = parts[1];
             scope = parts[0];
+        }else{
+            sender = input.getNickname();
+            payload = "error";
+            scope = "error";
         }
         engine.sayInChat(sender,payload,scope);
     }

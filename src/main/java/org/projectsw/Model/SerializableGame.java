@@ -1,6 +1,5 @@
 package org.projectsw.Model;
 
-import org.projectsw.Exceptions.Enums.ErrorName;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
 import java.awt.*;
@@ -15,55 +14,49 @@ public class SerializableGame implements Serializable {
     private final Tile[][] gameBoard;
     private final Tile[][] playerShelf;
     private final String playerName;
+    private final Message message;
     private final ArrayList<Message> chat;
-    private final ErrorName error;
     private final Integer clientID;
     private final ArrayList<Point> selectablePoints;
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
     private final Tile[][] playerPersonalGoal;
-    private final Boolean correct;
-    private final Integer numberOfPlayers;
     private final HashMap<String, Integer> results;
     private final HashMap<String, String> nameColors;
     private final HashMap<String, Tile[][]> allShelves;
     private final ArrayList<String> commonGoalDesc;
 
-    public SerializableGame(int clientID, boolean correct){
+    public SerializableGame(int clientID, Message message){
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
-        this.numberOfPlayers = null;
         this.playerPersonalGoal = null;
-        this.correct=correct;
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
         this.commonGoalDesc = null;
+        this.message = message;
     }
     public SerializableGame(int clientID){
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
-        this.numberOfPlayers = null;
         this.playerPersonalGoal = null;
-        this.correct=null;
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
         this.commonGoalDesc = null;
+        this.message = null;
     }
 
     public SerializableGame(String nickname){
@@ -71,18 +64,16 @@ public class SerializableGame implements Serializable {
         this.playerShelf = null;
         this.playerName = nickname;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = null;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
-        this.numberOfPlayers = null;
         this.playerPersonalGoal = null;
-        this.correct=null;
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
         this.commonGoalDesc = null;
+        this.message = null;
     }
 
     public SerializableGame(int clientID, String nickname){
@@ -90,18 +81,16 @@ public class SerializableGame implements Serializable {
         this.playerShelf = null;
         this.playerName = nickname;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
-        this.numberOfPlayers = null;
         this.playerPersonalGoal = null;
-        this.correct=null;
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
         this.commonGoalDesc = null;
+        this.message = null;
     }
 
     public SerializableGame(Game model){
@@ -109,14 +98,11 @@ public class SerializableGame implements Serializable {
         this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.playerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getMessages();
-        this.error = ErrorName.NO_ERROR;
         this.clientID = model.getClientID();
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-        this.numberOfPlayers = model.getNumberOfPlayers();
         this.playerPersonalGoal = personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
-        this.correct=null;
         this.results = new HashMap<>();
         for (Player p : model.getPlayers())
         {
@@ -127,6 +113,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = new ArrayList<>();
         this.commonGoalDesc.add(model.getCommonGoals().get(0).getStrategy().getDescription());
         this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());
+        this.message = null;
     }
 
     public SerializableGame(int broadcastID, Game model){
@@ -134,14 +121,11 @@ public class SerializableGame implements Serializable {
         this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.playerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getMessages();
-        this.error = ErrorName.NO_ERROR;
         this.clientID = broadcastID;
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-        this.numberOfPlayers = model.getNumberOfPlayers();
         this.playerPersonalGoal = personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
-        this.correct=null;
         this.results = new HashMap<>();
         for (Player p : model.getPlayers())
         {
@@ -150,6 +134,7 @@ public class SerializableGame implements Serializable {
         this.nameColors = null;
         this.allShelves = null;
         this.commonGoalDesc = null;
+        this.message = null;
     }
 
     public SerializableGame(int clientID, String nickname, Shelf shelf){
@@ -157,18 +142,16 @@ public class SerializableGame implements Serializable {
         this.playerShelf = shelf.getShelf();
         this.playerName = nickname;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
-        this.numberOfPlayers = null;
         this.playerPersonalGoal = null;
-        this.correct=null;
         this.results = null;
         this.nameColors = null;
         this.allShelves = null;
         this.commonGoalDesc = null;
+        this.message = null;
     }
 
     public SerializableGame(int clientID, ArrayList<Player> players){
@@ -176,14 +159,11 @@ public class SerializableGame implements Serializable {
         this.playerShelf = null;
         this.playerName = null;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
-        this.numberOfPlayers = null;
         this.playerPersonalGoal = null;
-        this.correct=null;
         this.results = null;
         this.nameColors = null;
         this.allShelves = new HashMap<>();
@@ -192,6 +172,7 @@ public class SerializableGame implements Serializable {
             this.allShelves.put(p.getNickname(), p.getShelf().getShelf());
         }
         this.commonGoalDesc = null;
+        this.message = null;
     }
 
     public SerializableGame(int clientID, HashMap<String, String> nameColors){
@@ -199,18 +180,16 @@ public class SerializableGame implements Serializable {
         this.playerShelf = null;
         this.playerName = null;
         this.chat = null;
-        this.error = ErrorName.NO_ERROR;
         this.clientID = clientID;
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
-        this.numberOfPlayers = null;
         this.playerPersonalGoal = null;
-        this.correct=null;
         this.results = null;
         this.nameColors = nameColors;
         this.allShelves = null;
         this.commonGoalDesc = null;
+        this.message = null;
     }
 
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
@@ -223,13 +202,10 @@ public class SerializableGame implements Serializable {
         return goal;
     }
 
-    public Boolean getCorrect(){return this.correct;}
-    public int getNumberOfPlayers(){return this.numberOfPlayers;}
     public Tile[][] getGameBoard(){return this.gameBoard;}
     public Tile[][] getPlayerShelf(){return this.playerShelf;}
     public String getPlayerName(){return this.playerName;}
     public ArrayList<Message> getChat(){return this.chat;}
-    public ErrorName getError(){return this.error;}
     public int getClientID(){return this.clientID;}
     public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
     public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
@@ -239,7 +215,5 @@ public class SerializableGame implements Serializable {
     public HashMap<String, String> getNameColors() {return this.nameColors; }
     public HashMap<String, Tile[][]> getAllShelves() {return this.allShelves; }
     public ArrayList<String> getCommonGoalDesc() {return this.commonGoalDesc; }
-
-
-
+    public Message getMessage() {return this.message; }
 }
