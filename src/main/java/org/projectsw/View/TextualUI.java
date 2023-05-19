@@ -91,7 +91,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
             if (getEndState()==UIEndState.LOBBY)
-                System.out.println("Waiting for more people to join...");
+                System.out.println("Waiting for more people to join...\n");
             while (getEndState()==UIEndState.LOBBY)
             {
                 synchronized (this) {
@@ -247,8 +247,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             scanner.next();
         }
         int choice = scanner.nextInt();
-        if (choice == 1 || choice == 2)
+        if (choice == 1 || choice == 2) {
+            setTurnState(UITurnState.YOUR_TURN_COLUMN);
             return choice == 1;
+        }
         else {
             System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
             return chooseTiles();
