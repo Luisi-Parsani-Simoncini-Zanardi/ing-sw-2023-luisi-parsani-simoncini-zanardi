@@ -29,6 +29,6 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
             System.out.println("   ---YOUR TURN---");
         }
         System.out.println("---CHOOSE AN ACTION---");
-        System.out.println("Press 0 to see all possible actions...");
+        System.out.println("Press 0 to see all possible actions...\n");
     }
 }

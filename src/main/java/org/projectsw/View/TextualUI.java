@@ -102,7 +102,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            System.out.println("Game started! \n");
             choice = scanner.nextInt();
             switch (choice) {
                 case 0 -> printCommandMenu();
@@ -353,7 +352,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     public void showCurrentPlayer(GameView model){
         if (getEndState() != UIEndState.ENDING || clientUID !=1)
-            System.out.println("The current player is: "+model.getCurrentPlayerName());
+            System.out.println("The current player is: "+model.getCurrentPlayerName()+"\n");
     }
 
     private void showChat(GameView model){

@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.GameView;
+import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -14,6 +15,8 @@ public class CurrentPlayer extends ResponseMessage implements Serializable {
     }
     @Override
     public void execute(TextualUI tui){
+        if (tui.getEndState() == UIEndState.LOBBY)
+            System.out.println("Game started! \n");
         tui.showCurrentPlayer(model);
     }
 }
