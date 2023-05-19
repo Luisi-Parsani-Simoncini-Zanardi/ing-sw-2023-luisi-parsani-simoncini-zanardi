@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.GameView;
+import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.TextualUI;
@@ -28,6 +29,6 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
             System.out.println("   ---YOUR TURN---");
         }
         System.out.println("---CHOOSE AN ACTION---");
-        System.out.println("Press 0 to see all possible actions...");
+        System.out.println(ConsoleColors.BLUE + "Press 0 to see all possible actions..." + ConsoleColors.RESET);
     }
 }
