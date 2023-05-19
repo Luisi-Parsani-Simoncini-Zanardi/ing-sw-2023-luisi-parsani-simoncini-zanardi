@@ -1,7 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
-import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.GraphicalUI;
@@ -19,7 +18,7 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public ResultsNotify(GameView model) {
+    public ResultsNotify(SerializableGame model) {
         super(model);
     }
     public void execute(TextualUI tui){

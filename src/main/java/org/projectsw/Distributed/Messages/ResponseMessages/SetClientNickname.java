@@ -1,6 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
@@ -10,11 +10,11 @@ import java.io.Serializable;
 public class SetClientNickname extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public SetClientNickname(GameView model) {
+    public SetClientNickname(SerializableGame model) {
         super(model);
     }
     public void execute(TextualUI tui){
-        tui.setNickname(model.getCurrentPlayerName());
+        tui.setNickname(model.getPlayerName());
     }
     public void execute(GraphicalUI gui){}
 }

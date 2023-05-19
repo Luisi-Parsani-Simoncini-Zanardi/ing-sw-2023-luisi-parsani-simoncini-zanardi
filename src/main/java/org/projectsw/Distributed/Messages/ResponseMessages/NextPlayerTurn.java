@@ -1,6 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.TextualUI;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class NextPlayerTurn extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public NextPlayerTurn(GameView model) {
+    public NextPlayerTurn(SerializableGame model) {
         super(model);
     }
     @Override
@@ -21,7 +21,7 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
                 tui.notifyAll();
             }
         }
-        if (model.getCurrentPlayerName().equals(tui.getNickname())) {
+        if (model.getPlayerName().equals(tui.getNickname())) {
             tui.setTurnState(UITurnState.YOUR_TURN_SELECTION);
             tui.setNoMoreSelectableTiles(true);
             tui.setNoMoreTemporaryTiles(true);

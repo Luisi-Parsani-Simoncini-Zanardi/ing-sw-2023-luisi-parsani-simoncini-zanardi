@@ -1,7 +1,7 @@
 package org.projectsw.Distributed;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
@@ -134,7 +134,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
             gui.update(response);
     }
     @Override
-    public void setID(GameView model){
+    public void setID(SerializableGame model){
         tui.setID(model.getClientID());
     }
 

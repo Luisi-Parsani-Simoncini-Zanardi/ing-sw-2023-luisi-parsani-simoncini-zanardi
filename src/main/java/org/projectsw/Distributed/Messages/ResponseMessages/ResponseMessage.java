@@ -1,7 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
-import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
@@ -12,12 +11,12 @@ public abstract class ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    protected final GameView model;
+    protected final SerializableGame model;
 
-    public ResponseMessage(GameView model){
+    public ResponseMessage(SerializableGame model){
         this.model=model;
     }
-    public GameView getModel(){
+    public SerializableGame getModel(){
         return model;
     }
     public void execute(TextualUI tui){}

@@ -1,21 +1,22 @@
 package org.projectsw.Distributed.Messages.InputMessages;
 
 import org.projectsw.Controller.Engine;
-import org.projectsw.Distributed.Client;
 import org.projectsw.View.SerializableInput;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 
-public class InitializePlayer extends InputMessage implements Serializable {
+public class AskForAllShelves extends InputMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public InitializePlayer(SerializableInput input) {
+
+    public AskForAllShelves(SerializableInput input) {
         super(input);
     }
+
     @Override
-    public void execute(Client client, Engine engine) throws RemoteException{
-            engine.initializePlayer(client, input);
+    public void execute(Engine engine) throws RemoteException {
+        engine.shelfTransferAll(input.getClientID());
     }
 }

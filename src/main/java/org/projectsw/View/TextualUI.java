@@ -34,6 +34,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private int clientUID;
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
+    private HashMap<String, String> nameColors;
 
     public TextualUI()
     {
@@ -59,12 +60,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         return this.point;
     }
     public String getNickname(){return this.nickname;}
+    public HashMap<String, String> getNameColors(){return this.nameColors;}
+
     public int getClientUID(){return clientUID;}
     public void setID(int ID){
         this.clientUID=ID;
     }
     public void setNickname(String nickname){
         this.nickname = nickname;
+    }
+    public void setNameColors(HashMap<String, String> nameColors){
+        this.nameColors = nameColors;
     }
 
     public void setTurnState(UITurnState state){
@@ -81,8 +87,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
         int choice;
+        Scanner scanner;
         do {
             joinGame();
             if(!isNotCorrect)
@@ -90,6 +96,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }while(!isNotCorrect);
 
         while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+            choice = -1;
             if (getEndState()==UIEndState.LOBBY)
                 System.out.println("Waiting for more people to join...");
             while (getEndState()==UIEndState.LOBBY)
@@ -102,68 +109,85 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 0 -> printCommandMenu();
-                case 1 -> {
-                    if (getTurnState() == UITurnState.OPPONENT_TURN)
-                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
-                    else {
-                        if (getTurnState()==UITurnState.YOUR_TURN_SELECTION){
-                            setTurnState(UITurnState.YOUR_TURN_COLUMN);
-                            askBoard();
-                            selectTiles();
-                        } else {
-                            System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
-                        }
-                    }
+            scanner = new Scanner(System.in);
+            while (choice<0 ||choice>Config.numberOfChoices)
+            {
+                try {
+                    choice = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid command. Try again...");
+                    choice = scanner.nextInt();
                 }
-                case 2 -> {
-                    //show shelf
-                    if (getTurnState() == UITurnState.OPPONENT_TURN)
-                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
-                    else {
-                        if (getTurnState() == UITurnState.YOUR_TURN_SELECTION)  {
-                            System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
-                        }
-                        else {
-                            if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
-                                setTurnState(UITurnState.YOUR_TURN_INSERTION);
-                                selectColumn();
-                            }
-                            if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
-                                selectTemporaryTiles();
-                                System.out.println("You ended your turn.");
-                                try {
-                                    setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
-                                } catch (RemoteException e) {
-                                    throw new RuntimeException("An error occurred while ending the turn: " + e);
-                                }
-                                setTurnState(UITurnState.OPPONENT_TURN);
-                            }
-                        }
-                    }
-                }
-                case 3 -> {}
-                case 4 -> {}
-                case 5 -> askBoard();
-                case 6 -> {}
-                case 7 -> {}
-                case 8 -> writeInChat();
-                case 9 -> {}          
-                case 10 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
-                    try {
-                        if (System.getProperty("os.name").contains("Windows")) {
-                            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-                        } else {
-                            Runtime.getRuntime().exec("clear");
-                        }
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                if (choice<0 ||choice>Config.numberOfChoices)
+                {
+                    System.out.println("Invalid command. Try again...");
                 }
             }
-            if (choice != 2)
+            if (getEndState()!=UIEndState.RESULTS) {
+                switch (choice) {
+                    case 0 -> printCommandMenu();
+                    case 1 -> {
+                        if (getTurnState() == UITurnState.OPPONENT_TURN)
+                            System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                        else {
+                            if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
+                                setTurnState(UITurnState.YOUR_TURN_COLUMN);
+                                askBoard();
+                                selectTiles();
+                            } else {
+                                System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
+                            }
+                        }
+                    }
+                    case 2 -> {
+                        if (getTurnState() == UITurnState.OPPONENT_TURN) {
+                            System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                            System.out.println("---CHOOSE AN ACTION---");
+                        } else {
+                            if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
+                                System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
+                                System.out.println("---CHOOSE AN ACTION---");
+                            } else {
+                                askShelf();
+                                if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
+                                    setTurnState(UITurnState.YOUR_TURN_INSERTION);
+                                    selectColumn();
+                                }
+                                if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
+                                    selectTemporaryTiles();
+                                    System.out.println("You ended your turn.");
+                                    try {
+                                        setChangedAndNotifyObservers(new EndTurn(new SerializableInput(clientUID)));
+                                    } catch (RemoteException e) {
+                                        throw new RuntimeException("An error occurred while ending the turn: " + e);
+                                    }
+                                    setTurnState(UITurnState.OPPONENT_TURN);
+                                }
+                            }
+                        }
+                    }
+                    case 3 -> askPersonalGoal();
+                    case 4 -> askCommonGoals();
+                    case 5 -> askBoard();
+                    case 6 -> askShelf();
+                    case 7 -> askAllShelves();
+                    case 8 -> askCurrentPlayer();
+                    case 9 -> writeInChat();
+                    case 10 -> {}
+                    case 11 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
+                        try {
+                            if (System.getProperty("os.name").contains("Windows")) {
+                                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                            } else {
+                                Runtime.getRuntime().exec("clear");
+                            }
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } else System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
+            if (choice != 2 && getEndState()!=UIEndState.RESULTS)
                 System.out.println("---CHOOSE AN ACTION---");
         }
     }
@@ -172,21 +196,23 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("""
                 1-  Select tiles from the board
                 2-  Insert tiles in your shelf
-                3-  See your personal goal
-                4-  See the common goals
+                3-  Show your personal goal
+                4-  Show the common goals
                 5-  Show the board
                 6-  Show your shelf
                 7-  Show all the shelves
-                8-  Write in chat
-                9-  Show the chat
-                10- Clear the cli
+                8-  Show the current player
+                9-  Write in chat
+                10- Show the chat
+                11- Clear the cli
                 """);
     }
     private void writeInChat(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println(ConsoleColors.PURPLE+"Messages should be formatted like this:\n" + ConsoleColors.RESET+
-                "nickname/message -> to send a secret message to the player with the specified nickname\n" +
-                "message -> to send a message to everyone");
+        System.out.println("""
+                Messages should be formatted like this:
+                nickname/message -> to send a secret message to the player with the specified nickname
+                message -> to send a message to everyone""");
         string = scanner.nextLine();
     }
 
@@ -244,8 +270,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             scanner.next();
         }
         int choice = scanner.nextInt();
-        if (choice == 1 || choice == 2)
+        if (choice == 1 || choice == 2) {
+            setTurnState(UITurnState.YOUR_TURN_COLUMN);
             return choice == 1;
+        }
         else {
             System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
             return chooseTiles();
@@ -256,13 +284,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do{
             point = selectTilesInput();
             try {
-                setChangedAndNotifyObservers(new TileSelection(new InputController(getClientUID(), getPoint())));
+                setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(getClientUID(), getPoint())));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
         }while(noMoreSelectableTiles && chooseTiles());
         try {
-            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
         }
@@ -273,7 +301,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             number = selectColumnInput();
         }while(chooseColumn());
         try {
-            setChangedAndNotifyObservers(new ColumnSelection(new InputController(clientUID, number)));
+            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(clientUID, number)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
         }
@@ -283,7 +311,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do {
             number = selectTemporaryTileInput();
             try {
-                setChangedAndNotifyObservers(new TemporaryTileSelection(new InputController(clientUID, number)));
+                setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(clientUID, number)));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
@@ -311,40 +339,97 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askBoard() {
         try {
-            setChangedAndNotifyObservers(new AskForBoard(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the board: "+e.getMessage());
         }
     }
 
-    public void showBoard(GameView model){
+    private void askShelf() {
+        try {
+            setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
+        }
+    }
+
+    private void askAllShelves() {
+        try {
+            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askPersonalGoal() {
+        try {
+            setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askCommonGoals() {
+        try {
+            setChangedAndNotifyObservers(new AskForCommonGoals(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askCurrentPlayer() {
+        try {
+            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the current player: "+e.getMessage());
+        }
+    }
+
+    public void showBoard(SerializableGame model){
         Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
         board.printBoard();
     }
 
-    public void showShelf(GameView model){
-        System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
+    public void showShelf(SerializableGame model){
+        System.out.println("\n--- "+nameColors.get(model.getPlayerName())+model.getPlayerName()+ConsoleColors.RESET+" ---");
         Shelf shelf = new Shelf();
-        shelf.setShelf(model.getCurrentPlayerShelf());
+        shelf.setShelf(model.getPlayerShelf());
         shelf.printShelf();
     }
 
-    public void showPersonalGoal(GameView model){
-        System.out.println("\n--- YOUR PERSONAL GOAL ---\n");
+    public void showAllShelves(SerializableGame model){
+        for (String name : model.getAllShelves().keySet())
+        {
+            System.out.println("\n--- " + nameColors.get(name) + name + ConsoleColors.RESET + " ---");
+            Shelf shelf = new Shelf();
+            shelf.setShelf(model.getAllShelves().get(name));
+            shelf.printShelf();
+        }
+    }
+
+    public void showPersonalGoal(SerializableGame model){
+        System.out.println("---YOUR PERSONAL GOAL---");
         Shelf shelf = new Shelf();
-        shelf.setShelf(model.getCurrentPlayerPersonalGoal());
+        shelf.setShelf(model.getPlayerPersonalGoal());
         shelf.printShelf();
     }
-    public void showCurrentPlayer(GameView model){
+
+    public void showCommonGoals(SerializableGame model){
+        System.out.println("---COMMON GOALS---\n");
+        System.out.println(model.getCommonGoalDesc().get(0) + "\n");
+        System.out.println(model.getCommonGoalDesc().get(1) + "\n");
+    }
+
+    public void showCurrentPlayer(SerializableGame model){
         if (getEndState() != UIEndState.ENDING || clientUID !=1)
-            System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
+            System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
-    private void showChat(GameView model){
+    private void showChat(SerializableGame model){
         for(Message message : model.getChat())
-            System.out.println("\n"+message.getSender()+": "+message.getPayload());
+            System.out.println(message.getSender()+": "+message.getPayload());
     }
 
     private void joinGame() {
@@ -352,7 +437,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Insert your nickname: ");
         nickname = scanner.nextLine();
         try {
-            setChangedAndNotifyObservers(new InitializePlayer(new InputController(this.getNickname())));
+            setChangedAndNotifyObservers(new InitializePlayer(new SerializableInput(this.getNickname())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
@@ -367,7 +452,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
         try {
-            setChangedAndNotifyObservers(new NumberOfPlayers(new InputController(getClientUID(),getNumber())));
+            setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(getClientUID(),getNumber())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error"+e.getMessage());
         }

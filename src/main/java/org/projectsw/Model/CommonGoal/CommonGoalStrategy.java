@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 public abstract class CommonGoalStrategy {
     protected int numObjects;
+
     protected int strategyCode;
+    private String description;
 
     public CommonGoalStrategy(Integer code){
         this.strategyCode= code;
@@ -24,6 +26,10 @@ public abstract class CommonGoalStrategy {
      * @return the strategyCode of the commonGoal
      */
     public int getStrategyCode(){return this.strategyCode;}
+
+    public String getDescription(){
+        return this.description;
+    }
 
     /**
      * Checks that the player's shelf meets the strategy requirements
@@ -57,5 +63,7 @@ public abstract class CommonGoalStrategy {
 
         return count;
     }
+
+    public void setDescription(String description) { this.description = description; }
 
 }

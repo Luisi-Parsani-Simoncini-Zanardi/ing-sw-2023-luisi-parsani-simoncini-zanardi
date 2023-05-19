@@ -25,10 +25,20 @@ public class Groups extends CommonGoalStrategy{
         if(this.strategyCode == 3) {
             this.numObjects = 4;
             this.groupDim = 4;
+            this.setDescription("""
+                    Four groups each containing at least
+                    4 tiles of the same type.
+                    The tiles of one group can be different
+                    from those of another group.""");
         }
         else {
             this.numObjects = 6;
             this.groupDim = 2;
+            this.setDescription("""
+                    Six groups each containing at least
+                    2 tiles of the same type.
+                    The tiles of one group can be different
+                    from those of another group.""");
         }
     }
 
