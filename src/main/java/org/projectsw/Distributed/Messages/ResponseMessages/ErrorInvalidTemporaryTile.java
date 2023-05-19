@@ -1,6 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI;
@@ -13,7 +13,7 @@ public class ErrorInvalidTemporaryTile extends ResponseMessage implements Serial
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public ErrorInvalidTemporaryTile(GameView model) {
+    public ErrorInvalidTemporaryTile(SerializableGame model) {
         super(model);
     }
     public void execute(TextualUI tui){

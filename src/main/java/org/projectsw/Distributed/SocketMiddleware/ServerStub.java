@@ -3,10 +3,6 @@ package org.projectsw.Distributed.SocketMiddleware;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Server;
-import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.Model.GameView;
-import org.projectsw.Model.InputController;
-import org.projectsw.View.Enums.UIEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

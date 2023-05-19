@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GameView implements Serializable {
+public class SerializableGame implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private final Tile[][] gameBoard;
@@ -28,7 +28,7 @@ public class GameView implements Serializable {
     private final HashMap<String, String> nameColors;
     private final HashMap<String, Tile[][]> allShelves;
 
-    public GameView(int clientID, boolean correct){
+    public SerializableGame(int clientID, boolean correct){
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -45,7 +45,7 @@ public class GameView implements Serializable {
         this.nameColors = null;
         this.allShelves = null;
     }
-    public GameView(int clientID){
+    public SerializableGame(int clientID){
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -63,7 +63,7 @@ public class GameView implements Serializable {
         this.allShelves = null;
     }
 
-    public GameView(String nickname){
+    public SerializableGame(String nickname){
         this.gameBoard = null;
         this.playerShelf = null;
         this.playerName = nickname;
@@ -81,7 +81,7 @@ public class GameView implements Serializable {
         this.allShelves = null;
     }
 
-    public GameView(int clientID, String nickname){
+    public SerializableGame(int clientID, String nickname){
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = nickname;
@@ -99,7 +99,7 @@ public class GameView implements Serializable {
         this.allShelves = null;
     }
 
-    public GameView(Game model){
+    public SerializableGame(Game model){
         this.gameBoard =  model.getBoard().getBoard();
         this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.playerName = model.getCurrentPlayer().getNickname();
@@ -121,7 +121,7 @@ public class GameView implements Serializable {
         this.allShelves = null;
     }
 
-    public GameView(int broadcastID, Game model){
+    public SerializableGame(int broadcastID, Game model){
         this.gameBoard =  model.getBoard().getBoard();
         this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.playerName = model.getCurrentPlayer().getNickname();
@@ -143,7 +143,7 @@ public class GameView implements Serializable {
         this.allShelves = null;
     }
 
-    public GameView(int clientID, String nickname, Shelf shelf){
+    public SerializableGame(int clientID, String nickname, Shelf shelf){
         this.gameBoard =  null;
         this.playerShelf = shelf.getShelf();
         this.playerName = nickname;
@@ -161,7 +161,7 @@ public class GameView implements Serializable {
         this.allShelves = null;
     }
 
-    public GameView(int clientID, ArrayList<Player> players){
+    public SerializableGame(int clientID, ArrayList<Player> players){
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -183,7 +183,7 @@ public class GameView implements Serializable {
         }
     }
 
-    public GameView(int clientID, HashMap<String, String> nameColors){
+    public SerializableGame(int clientID, HashMap<String, String> nameColors){
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;

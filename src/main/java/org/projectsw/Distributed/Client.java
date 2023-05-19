@@ -1,8 +1,7 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Model.Enums.GameEvent;
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -14,7 +13,7 @@ public interface Client extends Remote {
      */
     void update(ResponseMessage response) throws RemoteException;
     void kill()throws RemoteException;
-    public void setID(GameView model) throws RemoteException;
+    public void setID(SerializableGame model) throws RemoteException;
     public String getNickname() throws RemoteException;
     public void setCorrectResponse(boolean response) throws RemoteException;
 }

@@ -1,6 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
-import org.projectsw.Model.GameView;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.TextualUI;
@@ -8,11 +8,11 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UpdatedTemporaryTiles extends ResponseMessage implements Serializable {
+public class SendTemporaryTiles extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public UpdatedTemporaryTiles(GameView model) {
+    public SendTemporaryTiles(SerializableGame model) {
         super(model);
     }
     @Override

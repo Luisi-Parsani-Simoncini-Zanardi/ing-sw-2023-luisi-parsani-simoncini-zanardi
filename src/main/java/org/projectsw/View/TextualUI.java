@@ -157,7 +157,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                                     selectTemporaryTiles();
                                     System.out.println("You ended your turn.");
                                     try {
-                                        setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
+                                        setChangedAndNotifyObservers(new EndTurn(new SerializableInput(clientUID)));
                                     } catch (RemoteException e) {
                                         throw new RuntimeException("An error occurred while ending the turn: " + e);
                                     }
@@ -284,13 +284,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do{
             point = selectTilesInput();
             try {
-                setChangedAndNotifyObservers(new TileSelection(new InputController(getClientUID(), getPoint())));
+                setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(getClientUID(), getPoint())));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
         }while(noMoreSelectableTiles && chooseTiles());
         try {
-            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
         }
@@ -301,7 +301,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             number = selectColumnInput();
         }while(chooseColumn());
         try {
-            setChangedAndNotifyObservers(new ColumnSelection(new InputController(clientUID, number)));
+            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(clientUID, number)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
         }
@@ -311,7 +311,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do {
             number = selectTemporaryTileInput();
             try {
-                setChangedAndNotifyObservers(new TemporaryTileSelection(new InputController(clientUID, number)));
+                setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(clientUID, number)));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
@@ -339,7 +339,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askBoard() {
         try {
-            setChangedAndNotifyObservers(new AskForBoard(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the board: "+e.getMessage());
         }
@@ -347,7 +347,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askShelf() {
         try {
-            setChangedAndNotifyObservers(new AskForShelf(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
         }
@@ -355,7 +355,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askAllShelves() {
         try {
-            setChangedAndNotifyObservers(new AskForAllShelves(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
@@ -363,7 +363,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askPersonalGoal() {
         try {
-            setChangedAndNotifyObservers(new AskForPersonalGoal(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
@@ -371,27 +371,27 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askCurrentPlayer() {
         try {
-            setChangedAndNotifyObservers(new AskForCurrentPlayer(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the current player: "+e.getMessage());
         }
     }
 
-    public void showBoard(GameView model){
+    public void showBoard(SerializableGame model){
         Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
         board.printBoard();
     }
 
-    public void showShelf(GameView model){
+    public void showShelf(SerializableGame model){
         System.out.println("\n--- "+nameColors.get(model.getPlayerName())+model.getPlayerName()+ConsoleColors.RESET+" ---");
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getPlayerShelf());
         shelf.printShelf();
     }
 
-    public void showAllShelves(GameView model){
+    public void showAllShelves(SerializableGame model){
         for (String name : model.getAllShelves().keySet())
         {
             System.out.println("\n--- " + nameColors.get(name) + name + ConsoleColors.RESET + " ---");
@@ -401,18 +401,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
-    public void showPersonalGoal(GameView model){
+    public void showPersonalGoal(SerializableGame model){
         System.out.println("---YOUR PERSONAL GOAL---");
         Shelf shelf = new Shelf();
         shelf.setShelf(model.getPlayerPersonalGoal());
         shelf.printShelf();
     }
-    public void showCurrentPlayer(GameView model){
+    public void showCurrentPlayer(SerializableGame model){
         if (getEndState() != UIEndState.ENDING || clientUID !=1)
             System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
-    private void showChat(GameView model){
+    private void showChat(SerializableGame model){
         for(Message message : model.getChat())
             System.out.println(message.getSender()+": "+message.getPayload());
     }
@@ -422,7 +422,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Insert your nickname: ");
         nickname = scanner.nextLine();
         try {
-            setChangedAndNotifyObservers(new InitializePlayer(new InputController(this.getNickname())));
+            setChangedAndNotifyObservers(new InitializePlayer(new SerializableInput(this.getNickname())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
@@ -437,7 +437,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
         try {
-            setChangedAndNotifyObservers(new NumberOfPlayers(new InputController(getClientUID(),getNumber())));
+            setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(getClientUID(),getNumber())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error"+e.getMessage());
         }

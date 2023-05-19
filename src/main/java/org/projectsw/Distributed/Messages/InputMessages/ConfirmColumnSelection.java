@@ -1,15 +1,15 @@
 package org.projectsw.Distributed.Messages.InputMessages;
 
 import org.projectsw.Controller.Engine;
-import org.projectsw.Model.InputController;
+import org.projectsw.View.SerializableInput;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-public class ColumnSelection extends InputMessage implements Serializable {
+public class ConfirmColumnSelection extends InputMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public ColumnSelection(InputController input) {
+    public ConfirmColumnSelection(SerializableInput input) {
         super(input);
     }
     @Override
