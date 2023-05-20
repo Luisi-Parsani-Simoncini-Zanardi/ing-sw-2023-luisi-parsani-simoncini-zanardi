@@ -1,16 +1,12 @@
 package org.projectsw.Model;
 
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Exceptions.Enums.ErrorName;
 import org.projectsw.Model.CommonGoal.*;
-import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Util.Observable;
 import java.lang.reflect.InvocationTargetException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Random;
-import static org.projectsw.Exceptions.Enums.ErrorName.NO_ERROR;
 
 //TODO: decommentare le parti commentate per non dare errori
 
@@ -30,7 +26,6 @@ public class Game extends Observable<ResponseMessage> {
     private ArrayList<CommonGoal> commonGoals;
 
     //attributes designed to send messages
-    private ErrorName error = NO_ERROR;
     private int clientID = 0;
 
     /**
@@ -142,9 +137,6 @@ public class Game extends Observable<ResponseMessage> {
         return chat;
     }
 
-    public ErrorName getError() {
-        return error;
-    }
     public int getClientID() {
         return clientID;
     }
@@ -323,7 +315,6 @@ public class Game extends Observable<ResponseMessage> {
             commonGoalIst = new CommonGoal(strategyIst);
             commonGoals.add(commonGoalIst);
         }
-
         return commonGoals;
     }
 }

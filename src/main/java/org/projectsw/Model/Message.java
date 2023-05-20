@@ -1,9 +1,11 @@
 package org.projectsw.Model;
 
+import java.io.Serializable;
+
 /**
  * This class represent a single message object with a single sender, the payload of the message.
  */
-public class Message {
+public class Message implements Serializable {
 
     private final String sender;
     private final String payload;
