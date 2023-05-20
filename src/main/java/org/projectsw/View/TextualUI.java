@@ -14,10 +14,6 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class TextualUI extends Observable<InputMessage> implements Runnable{
-    //TODO: idee
-    /*
-    * a inizio game mostrare i common e personal goal al giocatore
-    */
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
     private final Object lock = new Object();
@@ -428,25 +424,24 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     private void showChat() {
+        number = 0;
         Scanner scanner = new Scanner(System.in);
-        System.out.print("""
-                Do you want to print the global chat or the chat with a specific player?
-                1- GlobalChat
-                2- Specific chat""");
-        //TODO: da sistemare il controllo vedendo che non metta un numero <1 o >2 e che non metta un char
-        try {
-            number = scanner.nextInt();
-        } catch (InputMismatchException e) {
-            System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
-        }
-        if (number == 1) {
-            askGlobalChat();
-        }
-        else if(number == 2){
-            askSpecificChat();
-        }else{
-            System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
-        }
+            System.out.print("""
+                    Do you want to print the global chat or the chat with a specific player?
+                    1- GlobalChat
+                    2- Specific chat
+                    """);
+            try {
+                number = scanner.nextInt();
+            } catch (InputMismatchException ignore) {
+            }
+            if (number == 1) {
+                askGlobalChat();
+            } else if (number == 2) {
+                askSpecificChat();
+            } else {
+                System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
+            }
     }
     private void askGlobalChat(){
         try {
