@@ -16,12 +16,7 @@ import java.util.*;
 public class TextualUI extends Observable<InputMessage> implements Runnable{
     //TODO: idee
     /*
-    * a inizio turno stampare in automatico la board
     * a inizio game mostrare i common e personal goal al giocatore
-    * dopo la selezione di una tile bisogna stampare la board con le () e []
-    * se non è il proprio turno stampare la board SENZA () e []
-    * far finire il turno in automatico e far settare al controller/server il niovo giocatore giocante
-    * (da ragionare) fare settare al server tutti le fasi del turno
     */
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
@@ -174,7 +169,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 7 -> askAllShelves();
                     case 8 -> askCurrentPlayer();
                     case 9 -> writeInChat();
-                    case 10 -> {}
+                    case 10 -> showChat();
                     case 11 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
                         try {
                             if (System.getProperty("os.name").contains("Windows")) {
@@ -431,32 +426,44 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
-    public void showChat(SerializableGame model) {
+    private void showChat() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Do you want to print the global chat or the chat with a specific player?\n" +
-                "1- GlobalChat\n" +
-                "2- Specific chat");
+        System.out.print("""
+                Do you want to print the global chat or the chat with a specific player?
+                1- GlobalChat
+                2- Specific chat""");
+        //TODO: da sistemare il controllo vedendo che non metta un numero <1 o >2 e che non metta un char
         try {
             number = scanner.nextInt();
         } catch (InputMismatchException e) {
             System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
         }
         if (number == 1) {
-            try {
-                //TODO: da sistemare
-                setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while asking for the Global chat"+e.getMessage());
-            }
+            askGlobalChat();
         }
-        else {
-            try {
-                setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while asking for a specific chat"+e.getMessage());
-            }
+        else if(number == 2){
+            askSpecificChat();
+        }else{
+            System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
         }
+    }
+    private void askGlobalChat(){
+        try {
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),"everyone")));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
+        }
+    }
 
+    private void askSpecificChat(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write the name of the player whose private chat you want to see:");
+        string = scanner.nextLine();
+        try {
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),getString())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
+        }
     }
 
     private void joinGame() {

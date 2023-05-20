@@ -93,6 +93,23 @@ public class SerializableGame implements Serializable {
         this.message = null;
     }
 
+    public SerializableGame(Game model, String scope){
+        this.gameBoard =  null;
+        this.playerShelf = null;
+        this.playerName = scope;
+        this.chat = model.getChat().getMessages();
+        this.clientID = model.getClientID();
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.playerPersonalGoal = null;
+        this.results = null;
+        this.nameColors = null;
+        this.allShelves = null;
+        this.commonGoalDesc = null;
+        this.message = null;
+    }
+
     public SerializableGame(Game model){
         this.gameBoard =  model.getBoard().getBoard();
         this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
