@@ -116,8 +116,6 @@ public class Engine{
      * size of temporaryPoints is smaller than the maximum remaining space in player's columns.
      * If the selected point is already selected it calls deselect tiles on that point.
      * @param selectedPoint the point that the player wants to select.
-     * @throws UnselectableTileException if the selected point is an empty/unused tile, of if the selected point
-     *                                   can't be selected by the rules.
      */
     public void selectTiles(Point selectedPoint){
         if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
@@ -201,7 +199,6 @@ public class Engine{
      * Checks if the player has already selected a tile, if he did it, it calls deselectTiles, if he didn't and the column at the
      * specified index is selectable, it sets the passed index as selected column of the player.
      * @param index The index of column that player wants to select.
-     * @throws UnselectableColumnException if the column is not selectable.
      */
     public void selectColumn(Integer index) {
         if(game.getCurrentPlayer().getShelf().isSelectionPossible()){
@@ -283,34 +280,6 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while placing tiles: " + e.getCause());
 
-        }
-    }
-
-    /*
-    public void placeMultipleTiles(String order) throws UpdatingOnWrongPlayerException {
-        if(!(order.length() == game.getCurrentPlayer().getTemporaryTiles().size())) {
-            for (int i = 0; i < order.length(); i++) {
-                Integer tile = Character.getNumericValue(order.charAt(i));
-                try {
-                    placeTiles(tile);
-                } catch (UpdatingOnWrongPlayerException e) {
-                    throw new UpdatingOnWrongPlayerException(e.getMessage());
-                }
-            }
-        } else {
-            game.setError(ErrorName.INVALID_TEMPORARY_TILE);
-        }
-    }
-     */
-
-    /**
-     * Calls place tiles for all the indexes contained in order arrayList.
-     * @param order the arraylist that contains all the indexes of the TemporaryTiles sorted by selection order.
-     */
-    public void placeAllTiles(ArrayList<Integer> order) {
-        if(order.size() != game.getCurrentPlayer().getTemporaryTiles().size()) throw new IllegalArgumentException();
-        for(Integer index : order){
-            placeTiles(index);
         }
     }
 
@@ -500,8 +469,7 @@ public class Engine{
     }
 
     /**
-     * logic for the end game. Calculate personalGoals points and return the winner
-     * @return winner of the game
+     * logic for the end game. Calculate personalGoals and EndgameGoal points, sending them to the clients
      */
     public void endGame(){
         this.checkPersonalGoal();
