@@ -59,14 +59,15 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public void kill(int option) throws RemoteException {
+    public void update(ResponseMessage response) throws RemoteException {
 
     }
 
     @Override
-    public void update(ResponseMessage response) throws RemoteException {
+    public void kill(SerializableGame game) throws RemoteException {
 
     }
+
     public void receive(Server server) throws RemoteException{
 
     }

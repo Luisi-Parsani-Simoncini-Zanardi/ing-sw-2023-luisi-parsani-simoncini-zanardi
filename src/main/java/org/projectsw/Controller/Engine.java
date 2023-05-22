@@ -414,7 +414,9 @@ public class Engine{
         game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
-        getGame().setCurrentPlayer(getGame().getNextPlayer());
+        do {
+            getGame().setCurrentPlayer(getGame().getNextPlayer());
+        }while(!getGame().getCurrentPlayer().getIsActive());
         if (getGame().getCurrentPlayer().getPosition() == 0 && getGame().getBoard().isEndGame()) {
             this.endGame();
         }
@@ -639,7 +641,7 @@ public class Engine{
             client.setCorrectResponse(true);
         } else {
             removeObserver(client);
-            client.kill(0);
+            client.kill(new SerializableGame(getGame().getClientID(),0));
         }
     }
     public void removeObserver(Client client){

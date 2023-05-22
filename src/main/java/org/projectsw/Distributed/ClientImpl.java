@@ -69,9 +69,9 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
      * close the client
      */
     @Override
-    public void kill(int option) throws RemoteException{
+    public void kill(SerializableGame game) throws RemoteException{
         tui.deleteObserver(tuiObserver);
-        tui.kill(option);
+        tui.kill(game.getInteger());
         System.exit(0);
     }
 

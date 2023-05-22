@@ -169,18 +169,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             e.printStackTrace();
                         }
                     }
-                    case 12 ->{
-                        System.out.println("Exiting...");
-                        try {
-                            setChangedAndNotifyObservers(new NotActive(new SerializableInput(getClientUID(), getNickname(), "")));
-                            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(getClientUID(), getNickname(), "")));
-                            if(getTurnState()!=UITurnState.OPPONENT_TURN)
-                                setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(getClientUID())));
-                            client.kill(1);
-                        } catch (RemoteException e) {
-                            throw new RuntimeException("Network error while removing the tui observer: "+e.getMessage());
-                        }
-                    }
+                    case 12 -> exit();
                     default -> System.out.println(ConsoleColors.RED +"Invalid command. Try again..."+ConsoleColors.RESET);
                 }
             } else
@@ -205,6 +194,19 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 11- Clear the cli
                 12- Exit
                 """);
+    }
+
+    public void exit(){
+        System.out.println("Exiting...");
+        try {
+            setChangedAndNotifyObservers(new NotActive(new SerializableInput(getClientUID(), getNickname(), "")));
+            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(getClientUID(), getNickname(), "")));
+            if(getTurnState()!=UITurnState.OPPONENT_TURN)
+                setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(getClientUID())));
+            client.kill(new SerializableGame(getClientUID(),1));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while removing the tui observer: "+e.getMessage());
+        }
     }
     private void writeInChat(){
         Scanner scanner = new Scanner(System.in);
