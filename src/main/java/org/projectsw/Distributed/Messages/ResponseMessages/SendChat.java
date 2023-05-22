@@ -16,14 +16,17 @@ public class SendChat extends ResponseMessage implements Serializable {
     @Override
     public void execute(TextualUI tui) {
         int counter = 0;
-        if (model.getPlayerName().equals("everyone"))
+        if (model.getPlayerName().equals("everyone")){
+            System.out.println("---GLOBAL CHAT---");
             for (Message message : model.getChat()) {
                 if (message.getScope().equals("everyone")) {
                     System.out.println(tui.getNameColors().get(message.getSender()) + message.getSender() + ": " + ConsoleColors.RESET + message.getPayload());
                     counter++;
                 }
             }
+        }
         else {
+            System.out.println("---CHAT WITH "+model.getPlayerName()+"---");
             for (Message message : model.getChat()) {
                 if ((message.getScope().equals(tui.getNickname()) && message.getSender().equals(model.getPlayerName())) ||
                         (message.getScope().equals(model.getPlayerName()) && message.getSender().equals(tui.getNickname()))) {
@@ -33,6 +36,7 @@ public class SendChat extends ResponseMessage implements Serializable {
             }
         }
         if(counter == 0)
-            System.out.println(ConsoleColors.RED_BOLD+"This chat is empty!!!"+ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED+"This chat is empty..."+ConsoleColors.RESET);
+        System.out.print("\n");
     }
 }

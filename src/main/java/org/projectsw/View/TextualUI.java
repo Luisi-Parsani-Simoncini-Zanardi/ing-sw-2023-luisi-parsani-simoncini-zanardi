@@ -426,8 +426,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         Scanner scanner = new Scanner(System.in);
             System.out.print("""
                     Do you want to print the global chat or the chat with a specific player?
-                    1- GlobalChat
-                    2- Specific chat
+                    1- Global chat
+                    2- A specific chat
                     """);
             try {
                 number = scanner.nextInt();
@@ -451,12 +451,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askSpecificChat(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Write the name of the player whose private chat you want to see:");
+        System.out.println("Write the name of the player that you want to see the chat with:");
         string = scanner.nextLine();
         try {
             setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),getString())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
+            throw new RuntimeException("Network error while asking for the Specific chat" + e.getMessage());
         }
     }
 
