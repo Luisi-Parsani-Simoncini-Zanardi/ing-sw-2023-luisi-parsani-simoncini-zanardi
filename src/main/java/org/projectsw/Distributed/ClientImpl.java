@@ -40,64 +40,13 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
 
     public void setTui (Server server){
         gui = null;
-        tui = new TextualUI();
+        tui = new TextualUI(this);
         tuiObserver = (o, input) -> {
             try {
                 server.update(this, input);
             }catch(RemoteException e){
                 throw new RuntimeException("Network error occurred: "+e.getMessage());
             }
-            /*switch (arg){
-                case CHOOSE_NUMBER_OF_PLAYERS -> {
-                    try {
-                        server.setNumberOfPlayers(new InputController(tui.getClientUID(), tui.getNumber()));
-                    } catch (RemoteException e) {
-                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
-                    }
-                }
-                case CHOOSE_NICKNAME -> {
-                    try {
-                        server.initializePlayer(this, new InputController(tui.getNickname()));
-                    } catch (RemoteException e) {
-                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
-                    }
-                }
-                case NEW_CHOOSE_NICKNAME -> {
-                    try {
-                        server.setCorrectNick(new InputController(tui.getNickname()));
-                    } catch (RemoteException e) {
-                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
-                    }
-                }
-                case TILE_SELECTION -> {
-                    try {
-                        server.update(new InputController(tui.getClientUID(), tui.getPoint()), arg);
-                    } catch (RemoteException e) {
-                        throw new RemoteException("Cannot send the tile selection to the server" + e.getCause());
-                    }
-                }
-                case SAY_IN_CHAT -> {
-                    try {
-                        server.update(new InputController(tui.getClientUID(), tui.getString()), arg);
-                    } catch (RemoteException e) {
-                        throw new RemoteException("Cannot send the message to the server: " + e.getCause());
-                    }
-                }
-                case COLUMN_SELECTION, TILE_INSERTION-> {
-                    try {
-                        server.update(new InputController(tui.getClientUID(), tui.getNumber()), arg);
-                    } catch (RemoteException e) {
-                        throw new RemoteException("Cannot send the client input to the server while selecting the column: " + e.getCause());
-                    }
-                }
-                default -> {
-                    try {
-                        server.update(new InputController(tui.getClientUID()), arg);
-                    } catch (RemoteException e) {
-                        throw new RemoteException("Cannot send the client input to the server: " + e.getCause());
-                    }
-                }
-            }*/
         };
         tui.addObserver(tuiObserver);
         tui.run();
@@ -120,9 +69,9 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
      * close the client
      */
     @Override
-    public void kill() throws RemoteException{
+    public void kill(int option) throws RemoteException{
         tui.deleteObserver(tuiObserver);
-        tui.kill();
+        tui.kill(option);
         System.exit(0);
     }
 
@@ -142,7 +91,14 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     public String  getNickname() throws RemoteException{
         return tui.getNickname();
     }
-
+    @Override
+    public Observer<TextualUI, InputMessage>  getTuiObserver() throws RemoteException{
+        return tuiObserver;
+    }
+    @Override
+    public Observer<GraphicalUI, InputMessage>  getGuiObserver()  throws RemoteException{
+        return guiObserver;
+    }
     @Override
     public void setCorrectResponse(boolean response){
         tui.setIsNotCorrect(response);

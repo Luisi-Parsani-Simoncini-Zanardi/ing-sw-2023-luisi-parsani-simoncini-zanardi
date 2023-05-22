@@ -1,7 +1,11 @@
 package org.projectsw.Distributed;
 
+import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.Util.Observer;
+import org.projectsw.View.GraphicalUI;
+import org.projectsw.View.TextualUI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -12,8 +16,10 @@ public interface Client extends Remote {
      * @param response is the server response to the client
      */
     void update(ResponseMessage response) throws RemoteException;
-    void kill()throws RemoteException;
+    void kill(int option)throws RemoteException;
     public void setID(SerializableGame model) throws RemoteException;
     public String getNickname() throws RemoteException;
     public void setCorrectResponse(boolean response) throws RemoteException;
+    public Observer<TextualUI, InputMessage> getTuiObserver() throws  RemoteException;
+    public Observer<GraphicalUI, InputMessage> getGuiObserver() throws  RemoteException;
 }

@@ -1,9 +1,13 @@
 package org.projectsw.Distributed.SocketMiddleware;
 
 import org.projectsw.Distributed.Client;
+import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Model.*;
+import org.projectsw.Util.Observer;
+import org.projectsw.View.GraphicalUI;
+import org.projectsw.View.TextualUI;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,7 +49,17 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public void kill() throws RemoteException {
+    public Observer<TextualUI, InputMessage> getTuiObserver() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public Observer<GraphicalUI, InputMessage> getGuiObserver() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public void kill(int option) throws RemoteException {
 
     }
 

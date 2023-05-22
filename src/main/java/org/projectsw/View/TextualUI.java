@@ -1,4 +1,5 @@
 package org.projectsw.View;
+import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.*;
@@ -25,9 +26,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
     private HashMap<String, String> nameColors;
+    private final Client client;
 
-    public TextualUI()
+    public TextualUI(Client client)
     {
+        this.client = client;
         displayLogo();
     }
 
@@ -166,6 +169,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             e.printStackTrace();
                         }
                     }
+                    case 12 ->{
+                        System.out.println("Exiting...");
+                        try {
+                            setChangedAndNotifyObservers(new NotActive(new SerializableInput(getClientUID(), getNickname(), "")));
+                            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(getClientUID(), getNickname(), "")));
+                            if(getTurnState()!=UITurnState.OPPONENT_TURN)
+                                setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(getClientUID())));
+                            client.kill(1);
+                        } catch (RemoteException e) {
+                            throw new RuntimeException("Network error while removing the tui observer: "+e.getMessage());
+                        }
+                    }
                     default -> System.out.println(ConsoleColors.RED +"Invalid command. Try again..."+ConsoleColors.RESET);
                 }
             } else
@@ -188,6 +203,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 9-  Write in chat
                 10- Show the chat
                 11- Clear the cli
+                12- Exit
                 """);
     }
     private void writeInChat(){
@@ -490,9 +506,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         this.isNotCorrect=resp;
     }
 
-    public void kill(){
-        System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
-        printImageKill();
+    public void kill(int option){
+        if(option==0) {
+            System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
+            printImageKill();
+        }
         System.exit(0);
     }
 
