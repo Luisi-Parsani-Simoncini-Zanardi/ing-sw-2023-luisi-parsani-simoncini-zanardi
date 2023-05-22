@@ -2,6 +2,8 @@ package org.projectsw.Controller;
 
 import org.projectsw.Distributed.Messages.InputMessages.InitializePlayer;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.InputMessages.LoadGameSelection;
+import org.projectsw.Distributed.Messages.InputMessages.SetUID;
 import org.projectsw.Distributed.Messages.ResponseMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.PersonalGoalResponse;
 import org.projectsw.Distributed.Server;
@@ -31,9 +33,12 @@ public class Engine{
     private final OneToOneHashmap<Client, String> clients = new OneToOneHashmap<>();
     private Game game;
     private SaveGameStatus saveGameStatus;
-    private static int counter = 0;
+    private int counter = 0;
     private final Object lock = new Object();
     private final Server server;
+    private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
+
+    public boolean loadFromFile = false;
 
     /**
      * constructor
@@ -54,11 +59,30 @@ public class Engine{
      */
     public Game getGame() { return this.game;}
 
+
+    private boolean saveFileFoundAndSet() {
+        if (saveFileFound()) {
+            try {
+                game.setChangedAndNotifyObservers(new AskLoadGame(new GameView(counter)));
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            this.game = saveGameStatus.retrieveGame();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean saveFileFound(){
+        saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
+        return saveGameStatus.checkExistingSaveFile();
+    }
+    private Game retrieveGame(){
+        saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
+        return saveGameStatus.retrieveGame();
+    }
+
     public void setGame(Game activeGame){
-        saveGameStatus= new SaveGameStatus(activeGame, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
-        if(saveGameStatus.checkExistingSaveFile())
-            this.game=saveGameStatus.retrieveGame();
-        else
             this.game=activeGame;
     }
 
@@ -101,7 +125,7 @@ public class Engine{
      */
     private void startGame(){
         game.setGameState(GameState.RUNNING);
-        saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         try {
             game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
         } catch (RemoteException e) {
@@ -113,6 +137,7 @@ public class Engine{
         } catch (RemoteException e){
             throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
         }
+        saveGameStatus.saveGame();
     }
 
     /**
@@ -612,32 +637,77 @@ public class Engine{
         return nicks;
     }
 
+    private void setGameFromSave(Game gameSave) {
+        this.game.setGameState(gameSave.getGameState());
+        this.game.setNumberOfPlayers(gameSave.getNumberOfPlayers());
+        this.game.setFirstPlayer(gameSave.getFirstPlayer());
+        this.game.setCurrentPlayer(gameSave.getCurrentPlayer());
+        this.game.setPlayers(gameSave.getPlayers());
+        this.game.setBoard(gameSave.getBoard());
+        this.game.setCommonGoals(gameSave.getCommonGoals());
+    }
+    public void initializeFromSave(int selection) {
+        if (selection == 1) {
+            setGameFromSave(retrieveGame());
+            this.loadFromFile = true;
+            this.freeNamesUsedInLastGame = game.getPlayersNickname();
+        } else {
+            this.loadFromFile = false;
+        }
+    }
+
+    public synchronized void setUID(Client client) throws RemoteException {
+        counter++;
+        client.setID(new GameView(counter));
+        if(counter == 1 && saveFileFound()){
+            game.setChangedAndNotifyObservers(new AskLoadGame(new GameView(counter)));
+        }
+        if (counter == 1 && !loadFromFile) {
+            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new GameView(client.getID())));
+            this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
+        }
+        if (counter > game.getNumberOfPlayers()) {
+            server.removeObserver(client);
+            client.kill();
+        }
+    }
+//bug -> se nella reconnect non metto in ordine giusto crasha. capire perchè il client.kill fatto subito non funziona
     public synchronized void initializePlayer(Client client, InputController input) throws RemoteException {
-        if (this.getClients().getAllKey().size() == 0) {
-            counter++;
-            client.setID(new GameView(counter));
-            game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(counter, input.getNickname())));
+        if (this.getClients().getAllKey().size() == 0 && !loadFromFile && false) {
+            /*counter++;
+            client.setID(new GameView(counter));*/
+            game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(client.getID(), input.getNickname())));
             this.getClients().put(client, input.getNickname());
-            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new GameView(counter)));
+            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new GameView(client.getID())));
             this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
             this.playerJoin(input.getNickname());
             client.setCorrectResponse(true);
-
         } else if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
             for (Client chekClient : this.getClients().getAllKey()) {
                 if (chekClient.getNickname().equals(input.getNickname()))
                     return;
             }
-            counter++;
-            client.setID(new GameView(counter));
-            game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(counter, input.getNickname())));
+            /*counter++;
+            client.setID(new GameView(counter));*/
+            if (loadFromFile && freeNamesUsedInLastGame.contains(input.getNickname())) {
+                game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(client.getID(), input.getNickname())));
+                freeNamesUsedInLastGame.remove(input.getNickname());
+            } else if (!loadFromFile) {
+                game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(client.getID(), input.getNickname())));
+            } else {
+            return;
+            }
             this.getClients().put(client, input.getNickname());
-            this.playerJoin(input.getNickname());
+            if(!loadFromFile) this.playerJoin(input.getNickname());
+            if(freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
+                game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
+            }
             client.setCorrectResponse(true);
-        } else {
+        } /*else {
             server.removeObserver(client);
             client.kill();
-        }
+        }*/
     }
     public void setNumberOfPlayers(int numberOfPlayers){
         getGame().setNumberOfPlayers(numberOfPlayers);
@@ -651,7 +721,7 @@ public class Engine{
         }
     }
     public void update(Client client, InputMessage input) throws RemoteException {
-        if ((input instanceof InitializePlayer)) {
+        if ((input instanceof InitializePlayer) || (input instanceof SetUID)) {
             input.execute(client, this);
         } else {
             synchronized (lock) {

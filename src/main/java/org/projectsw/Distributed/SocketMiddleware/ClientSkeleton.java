@@ -47,6 +47,11 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
+    public int getID() throws RemoteException {
+        return 0;
+    }
+
+    @Override
     public void kill() throws RemoteException {
 
     }

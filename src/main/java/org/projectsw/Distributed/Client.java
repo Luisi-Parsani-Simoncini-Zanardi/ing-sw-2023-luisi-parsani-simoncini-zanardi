@@ -17,4 +17,5 @@ public interface Client extends Remote {
     public void setID(GameView model) throws RemoteException;
     public String getNickname() throws RemoteException;
     public void setCorrectResponse(boolean response) throws RemoteException;
+    public int getID() throws RemoteException;
 }

@@ -1,5 +1,6 @@
 package org.projectsw.View;
 import org.projectsw.Distributed.Messages.InputMessages.*;
+import org.projectsw.Distributed.Messages.ResponseMessages.AskLoadGame;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Config;
@@ -72,13 +73,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void run() {
         Scanner scanner = new Scanner(System.in);
         int choice;
+        try {
+            setChangedAndNotifyObservers(new SetUID(new InputController(this.getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
         do {
             joinGame();
             if(!isNotCorrect)
                 System.out.println(ConsoleColors.RED+"Nickname already taken..."+ConsoleColors.RESET);
         }while(!isNotCorrect);
 
-        while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+        while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING /*&& this.clientUID != 1*/)) {
             printCommandMenu();
             choice = scanner.nextInt();
             switch (choice) {
@@ -464,7 +470,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             System.out.println("\n"+message.getSender()+": "+message.getPayload());
     }
 
-    private void joinGame() {
+    public void joinGame() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert your nickname: ");
         nickname = scanner.nextLine();
@@ -484,9 +490,26 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
         try {
-            setChangedAndNotifyObservers(new NumberOfPlayers(new InputController(getClientUID(),getNumber())));
+            setChangedAndNotifyObservers(new NumberOfPlayers(new InputController(getClientUID(),this.getNumber())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error"+e.getMessage());
+        }
+    }
+
+    public void askLoadGame(){
+        Scanner scanner = new Scanner(System.in);
+        do {
+            System.out.println("Save file found. Would you like to load the game from it?\n1: yes\n2:no\n ");
+            number = scanner.nextInt();
+            if(number != 1 && number != 2)
+                System.out.println(ConsoleColors.RED +"Invalid Input, try again..."+ ConsoleColors.RESET);
+        } while (number != 1 && number != 2);
+        if (number == 1) {
+            try {
+                setChangedAndNotifyObservers(new LoadGameSelection(new InputController(getNumber())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error" + e.getMessage());
+            }
         }
     }
 
