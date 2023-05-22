@@ -14,16 +14,21 @@ import java.util.*;
 public class TextualUI extends Observable<InputMessage> implements Runnable{
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
+
     private final Object lock = new Object();
     private final Object lock2 = new Object();
-    private boolean isNotCorrect;
+
     private Integer number;
     private Point point;
     private String nickname;
     private String string;
+
     private int clientUID;
+
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
+    private boolean isNotCorrect;
+
     private HashMap<String, String> nameColors;
 
     public TextualUI()
@@ -51,7 +56,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     public String getNickname(){return this.nickname;}
     public HashMap<String, String> getNameColors(){return this.nameColors;}
-
     public int getClientUID(){return clientUID;}
     public void setID(int ID){
         this.clientUID=ID;
