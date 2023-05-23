@@ -17,6 +17,7 @@ public class SerializableGame implements Serializable {
     private final Message message;
     private final ArrayList<Message> chat;
     private final Integer clientID;
+    private final Integer integer;
     private final ArrayList<Point> selectablePoints;
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
@@ -41,6 +42,7 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = message;
+        this.integer = null;
     }
     public SerializableGame(int clientID){
         this.gameBoard =  null;
@@ -57,6 +59,7 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(String nickname){
@@ -74,6 +77,7 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(int clientID, String nickname){
@@ -91,6 +95,7 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(Game model, String scope){
@@ -108,6 +113,7 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(Game model){
@@ -131,6 +137,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc.add(model.getCommonGoals().get(0).getStrategy().getDescription());
         this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(int broadcastID, Game model){
@@ -152,6 +159,7 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(int clientID, String nickname, Shelf shelf){
@@ -169,6 +177,7 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(int clientID, ArrayList<Player> players){
@@ -190,6 +199,7 @@ public class SerializableGame implements Serializable {
         }
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
     }
 
     public SerializableGame(int clientID, HashMap<String, String> nameColors){
@@ -207,6 +217,25 @@ public class SerializableGame implements Serializable {
         this.allShelves = null;
         this.commonGoalDesc = null;
         this.message = null;
+        this.integer = null;
+    }
+
+    public SerializableGame(int clientID, int num){
+        this.gameBoard =  null;
+        this.playerShelf = null;
+        this.playerName = null;
+        this.chat = null;
+        this.clientID = clientID;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.playerPersonalGoal = null;
+        this.results = null;
+        this.nameColors = null;
+        this.allShelves = null;
+        this.commonGoalDesc = null;
+        this.message = null;
+        this.integer = num;
     }
 
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
@@ -219,6 +248,7 @@ public class SerializableGame implements Serializable {
         return goal;
     }
 
+    public Integer getInteger(){return this.integer;}
     public Tile[][] getGameBoard(){return this.gameBoard;}
     public Tile[][] getPlayerShelf(){return this.playerShelf;}
     public String getPlayerName(){return this.playerName;}

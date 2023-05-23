@@ -410,7 +410,9 @@ public class Engine{
         game.getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
-        getGame().setCurrentPlayer(getGame().getNextPlayer());
+        do {
+            getGame().setCurrentPlayer(getGame().getNextPlayer());
+        }while(!getGame().getCurrentPlayer().getIsActive());
         if (getGame().getCurrentPlayer().getPosition() == 0 && getGame().getBoard().isEndGame()) {
             this.endGame();
         }
@@ -421,6 +423,20 @@ public class Engine{
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
+        }
+        getSaveGameStatus().saveGame();
+    }
+
+    public void endTurnForced(){
+        game.getCurrentPlayer().clearTemporaryTiles();
+        if (getGame().getBoard().isBoardEmpty())
+            this.fillBoard();
+        getGame().setCurrentPlayer(getGame().getNextPlayer());
+        try {
+            game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+            game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
+        } catch (RemoteException e){
+            throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
         }
         getSaveGameStatus().saveGame();
     }
@@ -467,7 +483,7 @@ public class Engine{
     /**
      * logic for the end game. Calculate personalGoals and EndgameGoal points, sending them to the clients
      */
-    public void endGame(){
+    public void endGame() {
         this.checkPersonalGoal();
         this.checkEndgameGoal();
         try {
@@ -475,9 +491,8 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while updating the status: " + e);
         }
-        //this.resetGame();
+            //this.resetGame();
     }
-
     /**
      * reset game
      */
@@ -621,8 +636,15 @@ public class Engine{
             this.playerJoin(input.getNickname());
             client.setCorrectResponse(true);
         } else {
+            removeObserver(client);
+            client.kill(new SerializableGame(getGame().getClientID(),0));
+        }
+    }
+    public void removeObserver(Client client){
+        try {
             server.removeObserver(client);
-            client.kill();
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while removing the observer: "+e.getMessage());
         }
     }
     public void setNumberOfPlayers(int numberOfPlayers){
