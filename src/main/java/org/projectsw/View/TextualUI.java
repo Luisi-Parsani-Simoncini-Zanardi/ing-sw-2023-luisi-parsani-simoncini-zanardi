@@ -15,21 +15,30 @@ import java.util.*;
 public class TextualUI extends Observable<InputMessage> implements Runnable{
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
+
     private final Object lock = new Object();
     private final Object lock2 = new Object();
+
     private boolean isNotCorrect;
     private volatile boolean waitResult = true;
+
     private Integer number;
     private Point point;
     private String nickname;
     private String string;
+
     private int clientUID;
+
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
+    private boolean isNotCorrect;
+
     private HashMap<String, String> nameColors;
     private final Client client;
     Scanner masterScanner = new Scanner(System.in);
-
+  
+    private ArrayList<Message> chatBuffer = new ArrayList<>();
+  
     public TextualUI(Client client)
     {
         this.client = client;
@@ -56,7 +65,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     public String getNickname(){return this.nickname;}
     public HashMap<String, String> getNameColors(){return this.nameColors;}
-
     public int getClientUID(){return clientUID;}
     public Scanner getMasterScanner(){
         return this.masterScanner;
@@ -176,6 +184,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 12 -> exit();
                     default -> System.out.println(ConsoleColors.RED +"Invalid command. Try again..."+ConsoleColors.RESET);
                 }
+                writeBufferMessage();
             } else
                 System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
             if (choice != 2 && getEndState() != UIEndState.RESULTS)
@@ -467,7 +476,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     private void askGlobalChat(){
         try {
-            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),"everyone")));
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),Config.everyone)));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
         }
@@ -599,6 +608,25 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 ⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                 ⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀""");
+    }
+
+    public void addBufferMessage(Message message)
+    {
+        chatBuffer.add(message);
+    }
+
+    public void writeBufferMessage()
+    {
+        if (chatBuffer.size()!=0)
+            System.out.println("---INCOMING MESSAGES---");
+        for (Message message : chatBuffer) {
+            if (message.getScope().equals(Config.everyone)) {
+                System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + " in global chat: " + message.getPayload());
+            } else System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + " in private chat: " + message.getPayload());
+
+        }
+        chatBuffer.clear();
+        System.out.print("\n");
     }
 }
 
