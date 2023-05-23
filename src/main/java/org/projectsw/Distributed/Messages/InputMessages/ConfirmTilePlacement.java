@@ -1,14 +1,15 @@
 package org.projectsw.Distributed.Messages.InputMessages;
-import org.projectsw.Controller.Engine;
-import org.projectsw.Model.InputController;
+
+        import org.projectsw.Controller.Engine;
+        import org.projectsw.View.SerializableInput;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-public class TemporaryTileSelection extends InputMessage implements Serializable {
+public class ConfirmTilePlacement extends InputMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public TemporaryTileSelection(InputController input) {
+    public ConfirmTilePlacement(SerializableInput input) {
         super(input);
     }
     @Override

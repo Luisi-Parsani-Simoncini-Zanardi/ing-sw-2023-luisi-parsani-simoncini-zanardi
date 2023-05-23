@@ -1,7 +1,7 @@
 package org.projectsw.Distributed.Messages.InputMessages;
 
 import org.projectsw.Controller.Engine;
-import org.projectsw.Model.InputController;
+import org.projectsw.View.SerializableInput;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class ChatMessage extends InputMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public ChatMessage(InputController input) {
+    public ChatMessage(SerializableInput input) {
         super(input);
     }
     @Override
@@ -22,10 +22,14 @@ public class ChatMessage extends InputMessage implements Serializable {
             sender = input.getNickname();
             payload = input.getString();
             scope = "everyone";
-        }else{
+        }else if(parts.length == 2){
             sender = input.getNickname();
             payload = parts[1];
             scope = parts[0];
+        }else{
+            sender = input.getNickname();
+            payload = "error";
+            scope = "error";
         }
         engine.sayInChat(sender,payload,scope);
     }

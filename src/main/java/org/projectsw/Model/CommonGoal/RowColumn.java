@@ -26,21 +26,38 @@ public class RowColumn extends CommonGoalStrategy{
                 this.numObjects = 2;
                 this.diffTiles = 6;
                 this.rowColumn = false;
+                this.setDescription("Two columns each formed by 6\n" +
+                        "different types of tiles.");
             }
             case 5 -> {
                 this.numObjects = 3;
                 this.diffTiles = 3;
                 this.rowColumn = false;
+                this.setDescription("""
+                        Three columns each formed by 6 tiles
+                        of maximum three different types. One
+                        column can show the same or a different
+                        combination of another column.""");
             }
             case 6 -> {
                 this.numObjects = 2;
                 this.diffTiles = 5;
                 this.rowColumn = true;
+                this.setDescription("""
+                        Two lines each formed by 5 different
+                        types of tiles. One line can show the
+                        same or a different combination of the
+                        other line.""");
             }
             case 7 -> {
                 this.numObjects = 4;
                 this.diffTiles = 3;
                 this.rowColumn = true;
+                this.setDescription("""
+                        Four lines each formed by 5 tiles of
+                        maximum three different types. One
+                        line can show the same or a different
+                        combination of another line.""");
             }
         }
     }

@@ -1,4 +1,5 @@
 package org.projectsw.View;
+import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.AskLoadGame;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
@@ -7,16 +8,16 @@ import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
-
 import java.awt.*;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
 
 public class TextualUI extends Observable<InputMessage> implements Runnable{
-
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
-    private UIEndState endState = UIEndState.RUNNING;
+    private UIEndState endState = UIEndState.LOBBY;
     private final Object lock = new Object();
+    private final Object lock2 = new Object();
     private boolean isNotCorrect;
     private Integer number;
     private Point point;
@@ -25,19 +26,22 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private int clientUID;
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
+    private HashMap<String, String> nameColors;
+    private final Client client;
 
-    public TextualUI()
+    public TextualUI(Client client)
     {
+        this.client = client;
         displayLogo();
     }
 
-    private UITurnState getTurnState(){
+    public UITurnState getTurnState(){
         synchronized(lock){
             return turnState;
         }
     }
     public UIEndState getEndState(){
-        synchronized(lock){
+        synchronized(lock2){
             return endState;
         }
     }
@@ -50,6 +54,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         return this.point;
     }
     public String getNickname(){return this.nickname;}
+    public HashMap<String, String> getNameColors(){return this.nameColors;}
+
     public int getClientUID(){return clientUID;}
     public void setID(int ID){
         this.clientUID=ID;
@@ -57,13 +63,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void setNickname(String nickname){
         this.nickname = nickname;
     }
+    public void setNameColors(HashMap<String, String> nameColors){
+        this.nameColors = nameColors;
+    }
+
     public void setTurnState(UITurnState state){
         synchronized (lock){
             this.turnState = state;
         }
     }
     public void setEndState(UIEndState state){
-        synchronized (lock){
+        synchronized (lock2){
             this.endState = state;
         }
     }
@@ -73,6 +83,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void run() {
         Scanner scanner = new Scanner(System.in);
         int choice;
+        Scanner scanner;
         try {
             setChangedAndNotifyObservers(new SetUID(new InputController(this.getClientUID())));
         } catch (RemoteException e) {
@@ -80,242 +91,147 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
         do {
             joinGame();
-            if(!isNotCorrect)
-                System.out.println(ConsoleColors.RED+"Nickname already taken..."+ConsoleColors.RESET);
-        }while(!isNotCorrect);
+            if (!isNotCorrect)
+                System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
+        } while (!isNotCorrect);
 
-        while(getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING /*&& this.clientUID != 1*/)) {
-            printCommandMenu();
-            choice = scanner.nextInt();
-            switch (choice) {
-                case 1 -> {
-                    if (turnState == UITurnState.OPPONENT_TURN)
-                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
-                    else {
-                        if (turnState==UITurnState.YOUR_TURN_PHASE1){
-                            turnState=UITurnState.YOUR_TURN_PHASE2;
-                            selectTiles();
-                        } else {
-                            System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
-                        }
+        while (getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+            if (getEndState() == UIEndState.LOBBY)
+                System.out.println("Waiting for more people to join...");
+            while (getEndState() == UIEndState.LOBBY) {
+                synchronized (this) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Error while waiting for the game to start: " + e);
                     }
                 }
-                case 2 -> {
-                    if (turnState == UITurnState.OPPONENT_TURN)
-                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
-                    else {
-                        if (turnState==UITurnState.YOUR_TURN_PHASE2){
-                            turnState=UITurnState.YOUR_TURN_PHASE3;
-                            selectColumn();
-                        } else {
-                            System.out.println(ConsoleColors.RED + "You can't select a column now..." + ConsoleColors.RESET);
-                        }
-                    }
-                }
-                case 3 -> {
-                    if (turnState == UITurnState.OPPONENT_TURN)
-                        System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
-                    else {
-                        if (turnState==UITurnState.YOUR_TURN_PHASE3){
-                            turnState=UITurnState.YOUR_TURN_PHASE_END;
-                            selectTemporaryTiles();
-                        } else {
-                            System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
-                        }
-                    }
-                }
-                case 4 -> {}
-                case 5 -> {}
-                case 6 -> askBoard();
-                case 7 -> {}
-                case 8 -> {}
-                case 9 -> writeInChat();
-                case 10 -> {}
-                case 11 -> {
-                    if(turnState==UITurnState.YOUR_TURN_PHASE_END)
-                    {
-                        if (endState == UIEndState.RUNNING) {
-                            setTurnState(UITurnState.OPPONENT_TURN);
-                            try {
-                                setChangedAndNotifyObservers(new EndTurn(new InputController(clientUID)));
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("An error occurred while ending the turn: " + e);
+            }
+            scanner = new Scanner(System.in);
+            choice = -1;
+            try {
+                choice = scanner.nextInt();
+            } catch (InputMismatchException ignored) {
+            }
+            if (getEndState() != UIEndState.RESULTS) {
+                switch (choice) {
+                    case 0 -> printCommandMenu();
+                    case 1 -> {
+                        if (getTurnState() == UITurnState.OPPONENT_TURN)
+                            System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                        else {
+                            if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
+                                setTurnState(UITurnState.YOUR_TURN_COLUMN);
+                                askBoard();
+                                selectTiles();
+                            } else {
+                                System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
                             }
                         }
-                        else setTurnState(UITurnState.NO_TURN);
                     }
+                    case 2 -> {
+                        if (getTurnState() == UITurnState.OPPONENT_TURN) {
+                            System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                            System.out.println("---CHOOSE AN ACTION---");
+                        } else {
+                            if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
+                                System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
+                                System.out.println("---CHOOSE AN ACTION---");
+                            } else {
+                                askShelf();
+                                askTemporaryTiles();
+                                if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
+                                    setTurnState(UITurnState.YOUR_TURN_INSERTION);
+                                    selectColumn();
+                                }
+                                if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
+                                    selectTemporaryTiles();
+                                    System.out.println("You ended your turn.");
+                                    try {
+                                        setChangedAndNotifyObservers(new EndTurn(new SerializableInput(clientUID)));
+                                    } catch (RemoteException e) {
+                                        throw new RuntimeException("An error occurred while ending the turn: " + e);
+                                    }
+                                    setTurnState(UITurnState.OPPONENT_TURN);
+                                }
+                            }
+                        }
+                    }
+                    case 3 -> askPersonalGoal();
+                    case 4 -> askCommonGoals();
+                    case 5 -> askBoard();
+                    case 6 -> askShelf();
+                    case 7 -> askAllShelves();
+                    case 8 -> askCurrentPlayer();
+                    case 9 -> writeInChat();
+                    case 10 -> showChat();
+                    case 11 -> {//impossibile da testare su intellij, ma solo da cli linux e cli windows
+                        try {
+                            if (System.getProperty("os.name").contains("Windows")) {
+                                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                            } else {
+                                Runtime.getRuntime().exec("clear");
+                            }
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    case 12 -> exit();
+                    default -> System.out.println(ConsoleColors.RED +"Invalid command. Try again..."+ConsoleColors.RESET);
                 }
-                case 12 -> {}
-                case 13 -> {}
-            }
-            /*while(getState() == UIState.OPPONENT_TURN){
-                 //chatting
-            }
-            System.out.println("---YOUR TURN---");
-
-             selectTiles();
-
-            do{
-                number = selectColumnInput();
-            }while(chooseColumn());
-            try {
-                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
-            }
-            do {
-                number = selectTemporaryTile();
-            try {
-                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
-            }
-            }while(noMoreTemporaryTiles);
-
-            */
+            } else
+                System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
+            if (choice != 2 && getEndState() != UIEndState.RESULTS)
+                System.out.println("---CHOOSE AN ACTION---");
         }
     }
 
     private void printCommandMenu(){
-        System.out.print("""
-                     Choose an action:
-                     1-  Select tiles from the board
-                     2-  Select a column from the shelf
-                     3-  Put a tile in your shelf
-                     4-  See your personal goal
-                     5-  See the common goals
-                     6-  Show the board
-                     7-  Show your shelf
-                     8-  Show all the shelves
-                     9-  Write in chat
-                     10- Show the chat
-                     11- End your turn
-                     12- Clear the cli
-                     13- Help
-                     """);
+        System.out.println("""
+                1-  Select tiles from the board
+                2-  Insert tiles in your shelf
+                3-  Show your personal goal
+                4-  Show the common goals
+                5-  Show the board
+                6-  Show your shelf
+                7-  Show all the shelves
+                8-  Show the current player
+                9-  Write in chat
+                10- Show the chat
+                11- Clear the cli
+                12- Exit
+                """);
+    }
+
+    public void exit(){
+        System.out.println("Exiting...");
+        try {
+            setChangedAndNotifyObservers(new NotActive(new SerializableInput(getClientUID(), getNickname(), "")));
+            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(getClientUID(), getNickname(), "")));
+            if(getTurnState()!=UITurnState.OPPONENT_TURN)
+                setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(getClientUID())));
+            client.kill(new SerializableGame(getClientUID(),1));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while removing the tui observer: "+e.getMessage());
+        }
     }
     private void writeInChat(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println(ConsoleColors.PURPLE+"Messages should be formatted like this:\n" + ConsoleColors.RESET+
-                "nickname/message -> to send a secret message to the player with the specified nickname\n" +
-                "message -> to send a message to everyone");
+        System.out.println("""
+                Messages should be formatted like this:
+                nickname/message -> to send a secret message to the player with the specified nickname
+                message -> to send a message to everyone""");
         string = scanner.nextLine();
+        try {
+            setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(getClientUID(),getNickname(),getString())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while sending the message: "+e.getMessage());
+        }
     }
 
     public void update(ResponseMessage response){
-        if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID
-        ||response.getModel().getCurrentPlayerName().equals(this.nickname))
-        response.execute(this);
-        /*switch(arg){
-            case UPDATED_BOARD -> {
-                if (model.getCurrentPlayerName().equals(nickname))
-                    showBoard(model);
-            }
-            case PERSONAL_GOAL -> {
-                if (model.getCurrentPlayerName().equals(nickname))
-                    showPersonalGoal(model);
-            }
-            case UPDATED_SHELF -> {if (model.getCurrentPlayerName().equals(nickname)) showShelf(model);}
-            case UPDATED_TEMPORARY_TILES -> {
-                if (model.getCurrentPlayerName().equals(nickname)) {
-                    System.out.println("You have selected: ");
-                    ArrayList<Tile> tiles = model.getTemporaryTiles();
-                    for (int i = 0; i < tiles.size(); i++) {
-                        int integer = i + 1;
-                        switch (tiles.get(i).getTile()) {
-                            case CATS -> System.out.println(integer + " " + ConsoleColors.CATS);
-                            case TROPHIES -> System.out.println(integer + " " + ConsoleColors.TROPHIES);
-                            case BOOKS -> System.out.println(integer + " " + ConsoleColors.BOOKS);
-                            case FRAMES -> System.out.println(integer + " " + ConsoleColors.FRAMES);
-                            case GAMES -> System.out.println(integer + " " + ConsoleColors.GAMES);
-                            case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
-                        }
-                    }
-                }
-            }
-            case UPDATED_CURRENT_PLAYER -> showCurrentPlayer(model);
-            case UPDATED_CHAT -> showChat(model);
-            case ENDGAME -> this.endState = UIEndState.ENDING;
-            case RESULTS -> {
-                this.endState = UIEndState.RESULTS;
-                LinkedHashMap<String, Integer> results = model.getResults().entrySet()
-                        .stream()
-                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                Map.Entry::getValue,
-                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-                System.out.println("-----RESULTS-----");
-                for (String i : results.keySet()) {
-                    System.out.println(i + ": " + results.get(i) + " points");
-                }
-                int position = (new ArrayList<>(results.keySet()).indexOf(nickname)) +1;
-                switch (position) {
-                    case 1 -> printMedal(ConsoleColors.GOLD, "1st");
-                    case 2 -> printMedal(ConsoleColors.SILVER, "2nd");
-                    case 3 -> printMedal(ConsoleColors.BRONZE, "3rd");
-                    case 4 -> printNoMedal();
-                }
-            }
-            case ERROR ->  {
-                if (model.getClientID() == clientUID) {
-                    switch (model.getError()) {
-                        case LOBBY_CLOSED -> {
-                            System.out.println(ConsoleColors.RED + "Sorry, the lobby is full. Exiting..." + ConsoleColors.RESET);
-                            System.exit(0);
-                        }
-                        case EMPTY_TEMPORARY_POINTS -> {
-                            System.out.println(ConsoleColors.RED + "You don't have any tiles selected. Please select any tile..." + ConsoleColors.RESET);
-                            selectTiles();
-                        }
-                        case INVALID_RECIPIENT -> {
-                            //TODO: gestire l'eccezione
-                        }
-                        case UNSELECTABLE_TILE -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Tile. Try again..." + ConsoleColors.RESET);
-                            point = selectTilesInput();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a tile section error: "+e.getCause());
-                            }
-                        }
-                        case UNSELECTABLE_COLUMN -> {
-                            System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
-                            do{
-                                number = selectColumnInput();
-                            }while(chooseColumn());
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.COLUMN_SELECTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a column section error: "+e.getCause());
-                            }
-                        }
-                        case INVALID_TEMPORARY_TILE -> {
-                            System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);                            number = selectTemporaryTile();
-                            try {
-                                setChangedAndNotifyObservers(UIEvent.TILE_INSERTION);
-                            } catch (RemoteException e) {
-                                throw new RuntimeException("Network error while notifying a tile insertion error: "+e.getCause());
-                            }
-                        }
-                    }
-                }
-            }
-            case NEXT_PLAYER_TURN_NOTIFY -> {
-                if (model.getCurrentPlayerName().equals(nickname)) {
-                    setTurnState(UITurnState.YOUR_TURN);
-                    noMoreSelectableTiles = true;
-                    noMoreTemporaryTiles = true;
-                }
-            }
-            case SELECTION_NOT_POSSIBLE -> {
-                noMoreSelectableTiles = false;
-            }
-            case EMPTY_TEMPORARY_TILES -> {
-                noMoreTemporaryTiles = false;
-            }
-        }*/
+        if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID)
+            response.execute(this);
     }
     public void setNoMoreTemporaryTiles(boolean bool){
         this.noMoreTemporaryTiles = bool;
@@ -367,8 +283,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             scanner.next();
         }
         int choice = scanner.nextInt();
-        if (choice == 1 || choice == 2)
+        if (choice == 1 || choice == 2) {
+            setTurnState(UITurnState.YOUR_TURN_COLUMN);
             return choice == 1;
+        }
         else {
             System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
             return chooseTiles();
@@ -379,13 +297,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do{
             point = selectTilesInput();
             try {
-                setChangedAndNotifyObservers(new TileSelection(new InputController(getClientUID(), getPoint())));
+                setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(getClientUID(), getPoint())));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
         }while(noMoreSelectableTiles && chooseTiles());
         try {
-            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
         }
@@ -396,7 +314,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             number = selectColumnInput();
         }while(chooseColumn());
         try {
-            setChangedAndNotifyObservers(new ColumnSelection(new InputController(clientUID, number)));
+            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(clientUID, number)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
         }
@@ -406,7 +324,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do {
             number = selectTemporaryTileInput();
             try {
-                setChangedAndNotifyObservers(new TemporaryTileSelection(new InputController(clientUID, number)));
+                setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(clientUID, number)));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
@@ -430,53 +348,149 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         return new Point(column-1, row-1);
     }
 
-
-
     private void askBoard() {
         try {
-            setChangedAndNotifyObservers(new AskForBoard(new InputController(getClientUID())));
+            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the board: "+e.getMessage());
         }
     }
 
-    public void showBoard(GameView model){
+    private void askShelf() {
+        try {
+            setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
+        }
+    }
+
+    private void askAllShelves() {
+        try {
+            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askPersonalGoal() {
+        try {
+            setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askTemporaryTiles() {
+        try {
+            setChangedAndNotifyObservers(new AskForTemporaryTiles(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askCommonGoals() {
+        try {
+            setChangedAndNotifyObservers(new AskForCommonGoals(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+    }
+
+    private void askCurrentPlayer() {
+        try {
+            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the current player: "+e.getMessage());
+        }
+    }
+
+    public void showBoard(SerializableGame model){
         Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
         board.printBoard();
     }
 
-    public void showShelf(GameView model){
-        System.out.println("\n--- "+model.getCurrentPlayerName()+" ---\n");
+    public void showShelf(SerializableGame model){
+        System.out.println("\n--- "+nameColors.get(model.getPlayerName())+model.getPlayerName()+ConsoleColors.RESET+" ---");
         Shelf shelf = new Shelf();
-        shelf.setShelf(model.getCurrentPlayerShelf());
+        shelf.setShelf(model.getPlayerShelf());
         shelf.printShelf();
     }
 
-    public void showPersonalGoal(GameView model){
-        System.out.println("\n--- YOUR PERSONAL GOAL ---\n");
+    public void showAllShelves(SerializableGame model){
+        for (String name : model.getAllShelves().keySet())
+        {
+            System.out.println("\n--- " + nameColors.get(name) + name + ConsoleColors.RESET + " ---");
+            Shelf shelf = new Shelf();
+            shelf.setShelf(model.getAllShelves().get(name));
+            shelf.printShelf();
+        }
+    }
+
+    public void showPersonalGoal(SerializableGame model){
+        System.out.println("---YOUR PERSONAL GOAL---");
         Shelf shelf = new Shelf();
-        shelf.setShelf(model.getCurrentPlayerPersonalGoal());
+        shelf.setShelf(model.getPlayerPersonalGoal());
         shelf.printShelf();
     }
 
-    public void showCurrentPlayer(GameView model){
-        if (endState != UIEndState.ENDING || clientUID !=1)
-            System.out.println("\nThe current player is: "+model.getCurrentPlayerName());
+    public void showCommonGoals(SerializableGame model){
+        System.out.println("---COMMON GOALS---\n");
+        System.out.println(model.getCommonGoalDesc().get(0) + "\n");
+        System.out.println(model.getCommonGoalDesc().get(1) + "\n");
     }
 
-    private void showChat(GameView model){
-        for(Message message : model.getChat())
-            System.out.println("\n"+message.getSender()+": "+message.getPayload());
+    public void showCurrentPlayer(SerializableGame model){
+        if (getEndState() != UIEndState.ENDING || clientUID !=1)
+            System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
-    public void joinGame() {
+    private void showChat() {
+        number = 0;
+        Scanner scanner = new Scanner(System.in);
+            System.out.print("""
+                    Do you want to print the global chat or the chat with a specific player?
+                    1- Global chat
+                    2- A specific chat
+                    """);
+            try {
+                number = scanner.nextInt();
+            } catch (InputMismatchException ignore) {
+            }
+            if (number == 1) {
+                askGlobalChat();
+            } else if (number == 2) {
+                askSpecificChat();
+            } else {
+                System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
+            }
+    }
+    private void askGlobalChat(){
+        try {
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),"everyone")));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
+        }
+    }
+
+    private void askSpecificChat(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write the name of the player that you want to see the chat with:");
+        string = scanner.nextLine();
+        try {
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),getString())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while asking for the Specific chat" + e.getMessage());
+        }
+    }
+
+    private void joinGame() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert your nickname: ");
         nickname = scanner.nextLine();
         try {
-            setChangedAndNotifyObservers(new InitializePlayer(new InputController(this.getNickname())));
+            setChangedAndNotifyObservers(new InitializePlayer(new SerializableInput(this.getNickname())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: "+e.getCause());
         }
@@ -491,7 +505,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
         try {
-            setChangedAndNotifyObservers(new NumberOfPlayers(new InputController(getClientUID(),this.getNumber())));
+            setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(getClientUID(),getNumber())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error"+e.getMessage());
         }
@@ -514,9 +528,15 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
-    public void kill(){
-        System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
-        printImageKill();
+    public void setIsNotCorrect(boolean resp){
+        this.isNotCorrect=resp;
+    }
+
+    public void kill(int option){
+        if(option==0) {
+            System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
+            printImageKill();
+        }
         System.exit(0);
     }
 
@@ -530,7 +550,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println(ConsoleColors.PURPLE_BOLD + "          __/ |                               " );
         System.out.println("         |___/                                " + ConsoleColors.RESET);
     }
-
     private void printImageKill(){
         System.out.println(ConsoleColors.YELLOW + "\n                      "+ConsoleColors.GREY+"/^--^\\     /^--^\\     /^--^\\\n" +
                 "                      \\____/     \\____/     \\____/\n" +
@@ -572,37 +591,32 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 "                                                                           " +  ConsoleColors.RESET);
     }
     public void printNoMedal() {
-        System.out.println("⠀⠀⠀⠀⢀⠀⠀⠀⠀⢀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠠⣤⣤⣤⠤⠤⠤⠤⠤⣤⣤⣤⡴⠶⠶⠶⠤⠤⠤⠤⢤⣤⣤⣶⣦⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⡤⠶⠶⠶⠤⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⠀⣻⣿⣿⣿⣿⣿⣿⣿⣭⣁⠀⢀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⢸⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⠀⣿⣿⡿⣿⣿⣿⣇⡈⠉⠉⠉⠉⠉⣻⠛⠛⠒⠲⢶⣾⣿⡿⠦⢤⣤⣤⣴⣿⣿⣦⣀⣀⣀⣀⣀⡀⠀⠀⠀⡀⠘⣷⣄⠀⠀⡴⠃⠀⠀⠀⠀⠀⠀⢰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⠀⣿⣿⣿⡀⠈⠛⢯⣉⠉⠛⠚⠲⠶⠯⣄⣀⣀⣠⣿⣿⠃⠀⠀⠀⠀⣠⣿⠋⠁⠀⠀⠀⠀⠀⠀⠉⠉⠉⣛⠿⢿⣿⣿⣿⡶⠦⠤⣄⣀⡀⠀⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⠸⣿⣿⡨⢷⡀⠀⠠⠉⠳⢦⣀⠀⠀⠀⠈⢻⣿⣿⡿⠿⢧⣄⣀⡀⠸⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣶⠟⠉⠀⠀⠀⠀⠀⠀⠈⠉⠛⠲⢶⣿⣿⣦⣄⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⠀⡿⠙⡇⠀⢳⡤⠋⠀⠀⠀⢹⣷⢦⣤⣴⣿⠿⠿⠃⠀⠈⠀⠿⢿⣿⠿⠷⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠿⠛⠋⠉⠉⠉⠉⠉⠙⠒⠂⠀⠠⠄\n" +
-                "⠀⠀⠀⠀⡏⠀⣿⠉⠠⠿⣄⠀⠀⠀⢀⣿⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⣰⠟⠁⠀⠀⠀⠀⠉⠛⠲⠤⢤⣀⣀⠀⠠⢿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡾⠁⠀⠀⠀⠀⠀⠀     You placed 4th...⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⢸⡟⠛⠻⡆⠀⠀⣿⣿⣶⣾⣿⣿⣿⣿⡿⠀⠉⠳⢤⡀⠀⣴⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣟⢳⣾⣷⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⢸⣇⡀⢀⣿⣶⣾⣿⣿⣿⣿⣿⠟⠉⢻⣆⠀⣰⣧⣀⣹⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠛⠋⠉⠉⠉⢻⡟⠛⠓⠒⠲⠤⢤⣄⡀⢺⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⠀⠀⠉⠻⣟⠀⠀⠀⠉⣿⢿⡟⠋⠉⠉⠉⠙⠻⢦⣄⡀⠀⠀⠀⠀⠀⠀⡼⠋⠀⠀⠀⠀⠀⣰⠟⠀⠀⠀⠀⠀⠀⠀⠘⢹⠻⣷⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⣾⠟⠉⠙⢿⣿⣷⠀⠀⠀⠀⠹⣆⠀⢀⡾⠁⢸⡇⠀⠀⠀⠀⠀⠀⠀⠈⢹⠗⢦⣄⡀⠀⣸⠁⠀⠀⠀⠀⢀⡞⠁⠀⠀⠀⠀⠀⠀⠀⣀⡴⠟⠋⠉⠉⠉⠉⠓⠲⠤⣤⣀⡀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⡏⠀⠀⠀⠈⣿⡟⣷⣤⣤⣀⣠⣾⣶⣾⣃⣤⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⣧⣼⣈⣹⣶⣿⣆⠀⠀⠀⣠⡟⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠒⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⣿⡷⣄⢀⣠⣿⣥⣾⣿⣿⠟⠀⠉⠛⢿⡟⣿⠂⠀⠀⠀⠀⠀⠀⢀⣤⣶⡛⠉⠉⠉⠉⠉⠙⣿⣷⣦⣅⡀⠀⠀⠀⠀⠀⠀⢀⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⣿⡿⠛⠛⢿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⢻⣇⠀⠀⠀⠀⠀⠀⣰⠟⠉⠉⠻⣆⡀⠀⠀⠀⠀⠿⠛⠀⠈⠙⠓⢦⣄⡀⠀⠀⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⢸⡏⠀⠀⠀⠀⠙⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠹⣆⠀⠀⠀⠀⣼⠃⠀⠀⠀⠀⠈⠙⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⣴⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⢸⡇⠀⠀⠀⠀⠀⢹⣿⡷⠶⠂⢀⣤⡄⠀⠀⠀⠘⣆⠀⠀⢰⠇⠀⠀⠀⠀⠀⠀⠀⠸⡆⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣠⣾⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⢸⡇⠀⠀⠀⠀⠀⠸⡟⠀⠀⠀⠈⢧⠀⠀⠀⠀⠀⠘⣦⣀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⡤⠶⠒⠛⠉⠉⠉⠉⠉⠉⠉⠛⠻⠷⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⣸⣷⣄⠀⠀⢀⣠⣼⣿⣄⢠⣤⠶⠛⠛⠛⡛⠓⠶⢶⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⠴⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⢠⣿⡿⠛⠉⠉⠻⢧⣿⣿⣿⠏⠀⠀⠀⠀⢿⠃⠀⠀⠀⠈⠻⣿⡀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠻⡿⠀⠀⠀⠀⠀⠀⠈⠻⣿⠀⠀⠀⠀⢠⡟⠀⠀⠀⠀⠀⠀⠹⣧⠀⠀⠀⣰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⢠⣿⡂⠀⠀⠀⠀⠀⠀⠀⠹⣷⣤⣤⡴⠟⠓⠒⠒⠒⠒⠶⠤⢤⣭⣷⣤⣼⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⢠⣿⠟⠋⠙⠓⠒⠲⠤⣤⣤⢰⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
-    }
-
-
-
-    public void setIsNotCorrect(boolean resp){
-        this.isNotCorrect=resp;
+        System.out.println("""
+                ⠀⠀⠀⠀⢀⠀⠀⠀⠀⢀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠠⣤⣤⣤⠤⠤⠤⠤⠤⣤⣤⣤⡴⠶⠶⠶⠤⠤⠤⠤⢤⣤⣤⣶⣦⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⡤⠶⠶⠶⠤⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⣻⣿⣿⣿⣿⣿⣿⣿⣭⣁⠀⢀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⢸⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⣿⣿⡿⣿⣿⣿⣇⡈⠉⠉⠉⠉⠉⣻⠛⠛⠒⠲⢶⣾⣿⡿⠦⢤⣤⣤⣴⣿⣿⣦⣀⣀⣀⣀⣀⡀⠀⠀⠀⡀⠘⣷⣄⠀⠀⡴⠃⠀⠀⠀⠀⠀⠀⢰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⣿⣿⣿⡀⠈⠛⢯⣉⠉⠛⠚⠲⠶⠯⣄⣀⣀⣠⣿⣿⠃⠀⠀⠀⠀⣠⣿⠋⠁⠀⠀⠀⠀⠀⠀⠉⠉⠉⣛⠿⢿⣿⣿⣿⡶⠦⠤⣄⣀⡀⠀⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠸⣿⣿⡨⢷⡀⠀⠠⠉⠳⢦⣀⠀⠀⠀⠈⢻⣿⣿⡿⠿⢧⣄⣀⡀⠸⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣶⠟⠉⠀⠀⠀⠀⠀⠀⠈⠉⠛⠲⢶⣿⣿⣦⣄⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⡿⠙⡇⠀⢳⡤⠋⠀⠀⠀⢹⣷⢦⣤⣴⣿⠿⠿⠃⠀⠈⠀⠿⢿⣿⠿⠷⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠿⠛⠋⠉⠉⠉⠉⠉⠙⠒⠂⠀⠠⠄
+                ⠀⠀⠀⠀⡏⠀⣿⠉⠠⠿⣄⠀⠀⠀⢀⣿⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⣰⠟⠁⠀⠀⠀⠀⠉⠛⠲⠤⢤⣀⣀⠀⠠⢿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡾⠁⠀⠀⠀⠀⠀⠀     You placed 4th...⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⢸⡟⠛⠻⡆⠀⠀⣿⣿⣶⣾⣿⣿⣿⣿⡿⠀⠉⠳⢤⡀⠀⣴⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣟⢳⣾⣷⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⢸⣇⡀⢀⣿⣶⣾⣿⣿⣿⣿⣿⠟⠉⢻⣆⠀⣰⣧⣀⣹⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠛⠋⠉⠉⠉⢻⡟⠛⠓⠒⠲⠤⢤⣄⡀⢺⣷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⠀⠀⠉⠻⣟⠀⠀⠀⠉⣿⢿⡟⠋⠉⠉⠉⠙⠻⢦⣄⡀⠀⠀⠀⠀⠀⠀⡼⠋⠀⠀⠀⠀⠀⣰⠟⠀⠀⠀⠀⠀⠀⠀⠘⢹⠻⣷⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⣾⠟⠉⠙⢿⣿⣷⠀⠀⠀⠀⠹⣆⠀⢀⡾⠁⢸⡇⠀⠀⠀⠀⠀⠀⠀⠈⢹⠗⢦⣄⡀⠀⣸⠁⠀⠀⠀⠀⢀⡞⠁⠀⠀⠀⠀⠀⠀⠀⣀⡴⠟⠋⠉⠉⠉⠉⠓⠲⠤⣤⣀⡀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⡏⠀⠀⠀⠈⣿⡟⣷⣤⣤⣀⣠⣾⣶⣾⣃⣤⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⣧⣼⣈⣹⣶⣿⣆⠀⠀⠀⣠⡟⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠒⠀⠀⠀⠀
+                ⠀⠀⠀⣿⡷⣄⢀⣠⣿⣥⣾⣿⣿⠟⠀⠉⠛⢿⡟⣿⠂⠀⠀⠀⠀⠀⠀⢀⣤⣶⡛⠉⠉⠉⠉⠉⠙⣿⣷⣦⣅⡀⠀⠀⠀⠀⠀⠀⢀⡾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⣿⡿⠛⠛⢿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⢻⣇⠀⠀⠀⠀⠀⠀⣰⠟⠉⠉⠻⣆⡀⠀⠀⠀⠀⠿⠛⠀⠈⠙⠓⢦⣄⡀⠀⠀⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⢸⡏⠀⠀⠀⠀⠙⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠹⣆⠀⠀⠀⠀⣼⠃⠀⠀⠀⠀⠈⠙⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⣴⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⢸⡇⠀⠀⠀⠀⠀⢹⣿⡷⠶⠂⢀⣤⡄⠀⠀⠀⠘⣆⠀⠀⢰⠇⠀⠀⠀⠀⠀⠀⠀⠸⡆⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣠⣾⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⢸⡇⠀⠀⠀⠀⠀⠸⡟⠀⠀⠀⠈⢧⠀⠀⠀⠀⠀⠘⣦⣀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⡤⠶⠒⠛⠉⠉⠉⠉⠉⠉⠉⠛⠻⠷⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⣸⣷⣄⠀⠀⢀⣠⣼⣿⣄⢠⣤⠶⠛⠛⠛⡛⠓⠶⢶⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⣠⠴⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⢠⣿⡿⠛⠉⠉⠻⢧⣿⣿⣿⠏⠀⠀⠀⠀⢿⠃⠀⠀⠀⠈⠻⣿⡀⠀⠀⠀⠀⣠⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠻⡿⠀⠀⠀⠀⠀⠀⠈⠻⣿⠀⠀⠀⠀⢠⡟⠀⠀⠀⠀⠀⠀⠹⣧⠀⠀⠀⣰⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⢠⣿⡂⠀⠀⠀⠀⠀⠀⠀⠹⣷⣤⣤⡴⠟⠓⠒⠒⠒⠒⠶⠤⢤⣭⣷⣤⣼⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⢠⣿⠟⠋⠙⠓⠒⠲⠤⣤⣤⢰⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀""");
     }
 }
 
