@@ -60,7 +60,7 @@ public class Engine{
     private boolean saveFileFoundAndSet() {
         if (saveFileFound()) {
             try {
-                game.setChangedAndNotifyObservers(new AskLoadGame(new GameView(counter)));
+                game.setChangedAndNotifyObservers(new AskLoadGame(new SerializableGame(counter)));
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -582,6 +582,14 @@ public class Engine{
         }
     }
 
+    public void removeObserver(Client client){
+        try {
+            server.removeObserver(client);
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while removing the observer: "+e.getMessage());
+        }
+    }
+
     /**
      * Checks if the nickname is a valid nickname
      * @param nickname is the receiver nickname
@@ -670,27 +678,28 @@ public class Engine{
 //bug se apro 2 client insieme prima di dare input chiede al secondo il numero di player dopo l'askLoad al primo
     public synchronized void setUID(Client client) throws RemoteException {
         counter++;
-        client.setID(new GameView(counter));
+        client.setID(new SerializableGame(counter));
         if(counter == 1 && saveFileFound()){
-            game.setChangedAndNotifyObservers(new AskLoadGame(new GameView(counter)));
+            game.setChangedAndNotifyObservers(new AskLoadGame(new SerializableGame(counter)));
         }
         if (counter == 1 && !loadFromFile) {
-            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new GameView(client.getID())));
+            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(client.getID())));
             this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
         }
         if (counter > game.getNumberOfPlayers()) {
-            server.removeObserver(client);
-            client.kill();
+            removeObserver(client);
+            client.kill(new SerializableGame(getGame().getClientID(),0));
+            counter--;
         }
     }
 //bug -> se nella reconnect non metto in ordine giusto crasha. capire perchè il client.kill fatto subito non funziona
-    public synchronized void initializePlayer(Client client, InputController input) throws RemoteException {
+    public synchronized void initializePlayer(Client client, SerializableInput input) throws RemoteException {
         if (this.getClients().getAllKey().size() == 0 && !loadFromFile && false) {
             /*counter++;
             client.setID(new GameView(counter));*/
-            game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(client.getID(), input.getNickname())));
+            game.setChangedAndNotifyObservers(new SetClientNickname(new SerializableGame(client.getID(), input.getNickname())));
             this.getClients().put(client, input.getNickname());
-            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new GameView(client.getID())));
+            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(client.getID())));
             this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
             this.playerJoin(input.getNickname());
             client.setCorrectResponse(true);
@@ -701,29 +710,30 @@ public class Engine{
             }
             /*counter++;
             client.setID(new GameView(counter));*/
-            if (loadFromFile && freeNamesUsedInLastGame.contains(input.getNickname())) {
-                game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(client.getID(), input.getNickname())));
-                freeNamesUsedInLastGame.remove(input.getNickname());
-            } else if (!loadFromFile) {
-                game.setChangedAndNotifyObservers(new SetClientNickname(new GameView(client.getID(), input.getNickname())));
-            } else {
-            return;
+            if(loadFromFile){
+                if (freeNamesUsedInLastGame.contains(input.getNickname())) {
+                    freeNamesUsedInLastGame.remove(input.getNickname());
+                } else {
+                    return;
+                }
             }
             this.getClients().put(client, input.getNickname());
             if(!loadFromFile) this.playerJoin(input.getNickname());
             if(freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
-                game.setChangedAndNotifyObservers(new CurrentPlayer(new GameView(getGame())));
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new GameView(getGame())));
+                try {
+                    game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
+                    game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+                    game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("n error occurred while setting the name colors: " + e);
+                }
             }
             client.setCorrectResponse(true);
         } /*else {
             server.removeObserver(client);
             client.kill();
         }*/
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while removing the observer: "+e.getMessage());
         }
-    }
     public void setNumberOfPlayers(int numberOfPlayers){
         getGame().setNumberOfPlayers(numberOfPlayers);
     }

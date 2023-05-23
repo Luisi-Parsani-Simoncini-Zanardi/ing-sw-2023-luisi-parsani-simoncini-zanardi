@@ -83,9 +83,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void run() {
         Scanner scanner = new Scanner(System.in);
         int choice;
-        Scanner scanner;
         try {
-            setChangedAndNotifyObservers(new SetUID(new InputController(this.getClientUID())));
+            setChangedAndNotifyObservers(new SetUID(new SerializableInput(this.getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -521,7 +520,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         } while (number != 1 && number != 2);
         if (number == 1) {
             try {
-                setChangedAndNotifyObservers(new LoadGameSelection(new InputController(getNumber())));
+                setChangedAndNotifyObservers(new LoadGameSelection(new SerializableInput(getNumber())));
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error" + e.getMessage());
             }
