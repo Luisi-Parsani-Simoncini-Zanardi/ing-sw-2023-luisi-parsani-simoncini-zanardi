@@ -655,7 +655,7 @@ public class Engine{
             this.loadFromFile = false;
         }
     }
-
+//bug se apro 2 client insieme prima di dare input chiede al secondo il numero di player dopo l'askLoad al primo
     public synchronized void setUID(Client client) throws RemoteException {
         counter++;
         client.setID(new GameView(counter));

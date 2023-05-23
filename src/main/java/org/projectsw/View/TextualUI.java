@@ -203,7 +203,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void update(ResponseMessage response){
-        if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID)
+        if(response.getModel().getClientID()==this.clientUID||response.getModel().getClientID()==Config.broadcastID
+        ||response.getModel().getCurrentPlayerName().equals(this.nickname))
         response.execute(this);
         /*switch(arg){
             case UPDATED_BOARD -> {
