@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.InputMessages;
 
 import org.projectsw.Controller.Engine;
+import org.projectsw.Util.Config;
 import org.projectsw.View.SerializableInput;
 
 import java.io.Serial;
@@ -21,15 +22,15 @@ public class ChatMessage extends InputMessage implements Serializable {
         if(parts.length == 1){
             sender = input.getNickname();
             payload = input.getString();
-            scope = "everyone";
+            scope = Config.everyone;
         }else if(parts.length == 2){
             sender = input.getNickname();
             payload = parts[1];
             scope = parts[0];
         }else{
             sender = input.getNickname();
-            payload = "error";
-            scope = "error";
+            payload = Config.error;
+            scope = Config.error;
         }
         engine.sayInChat(sender,payload,scope);
     }

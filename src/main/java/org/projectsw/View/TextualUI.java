@@ -31,6 +31,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private HashMap<String, String> nameColors;
 
+    private ArrayList<Message> chatBuffer = new ArrayList<>();
+
     public TextualUI()
     {
         displayLogo();
@@ -172,6 +174,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                     default -> System.out.println(ConsoleColors.RED +"Invalid command. Try again..."+ConsoleColors.RESET);
                 }
+                writeBufferMessage();
             } else
                 System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
             if (choice != 2 && getEndState() != UIEndState.RESULTS)
@@ -447,7 +450,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     private void askGlobalChat(){
         try {
-            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),"everyone")));
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),Config.everyone)));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
         }
@@ -577,6 +580,25 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 ⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                 ⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀""");
+    }
+
+    public void addBufferMessage(Message message)
+    {
+        chatBuffer.add(message);
+    }
+
+    public void writeBufferMessage()
+    {
+        if (chatBuffer.size()!=0)
+            System.out.println("---INCOMING MESSAGES---");
+        for (Message message : chatBuffer) {
+            if (message.getScope().equals(Config.everyone)) {
+                System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + " in global chat: " + message.getPayload());
+            } else System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + " in private chat: " + message.getPayload());
+
+        }
+        chatBuffer.clear();
+        System.out.print("\n");
     }
 }
 

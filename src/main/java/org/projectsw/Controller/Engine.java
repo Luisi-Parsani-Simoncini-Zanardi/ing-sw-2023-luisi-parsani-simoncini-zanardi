@@ -184,11 +184,7 @@ public class Engine{
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
-            try {
-                game.getCurrentPlayer().addTemporaryTile(tile);
-            } catch (MaxTemporaryTilesExceededException e) {
-                //TODO: gestire exception
-            }
+            game.getCurrentPlayer().addTemporaryTile(tile);
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
@@ -503,7 +499,7 @@ public class Engine{
             }
         }else{
             try {
-                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message("error", "error", ConsoleColors.RED + "The entered nickname is not in game..." + ConsoleColors.RESET))));
+                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(Config.error, Config.error, ConsoleColors.RED + "The entered nickname is not in game..." + ConsoleColors.RESET))));
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while sending the chat" + e.getMessage());
             }
@@ -517,20 +513,20 @@ public class Engine{
      * @param scope message scope
      */
     public void sayInChat(String sender, String content, String scope) {
-        if (scope.equals("error")) {
+        if (scope.equals(Config.error)) {
             try {
-                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, "error", ConsoleColors.RED_BOLD + "Incorrectly formatted message!!!" + ConsoleColors.RESET))));
+                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, Config.error, ConsoleColors.RED + "Incorrectly formatted message..." + ConsoleColors.RESET))));
                 return;
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chatError: " + e.getMessage());
+                throw new RuntimeException("Network error while sending the chat Error: " + e.getMessage());
             }
         }
         if (!validNickname(scope)) {
             try {
-                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, "error", ConsoleColors.RED_BOLD + "The nickname entered of the recipient player is wrong!!!" + ConsoleColors.RESET))));
+                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, Config.error, ConsoleColors.RED + "The entered nickname doesn't exist..." + ConsoleColors.RESET))));
                 return;
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chatError: " + e.getMessage());
+                throw new RuntimeException("Network error while sending the chat Error: " + e.getMessage());
             }
         }
         Message message = new Message(sender, scope, content);
@@ -548,7 +544,7 @@ public class Engine{
      * @return true if nickname is the nickname of a player in game
      */
     private boolean validNickname(String nickname){
-        if(nickname.equals("everyone"))
+        if(nickname.equals(Config.everyone))
             return true;
         for(Player player : this.getGame().getPlayers()){
             if(player.getNickname().equals(nickname))
@@ -614,8 +610,8 @@ public class Engine{
             client.setCorrectResponse(true);
 
         } else if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
-            for (Client chekClient : this.getClients().getAllKey()) {
-                if (chekClient.getNickname().equals(input.getNickname()))
+            for (Client checkClient : this.getClients().getAllKey()) {
+                if (checkClient.getNickname().equals(input.getNickname())||Config.everyone.equals(input.getNickname())||Config.error.equals(input.getNickname()))
                     return;
             }
             counter++;

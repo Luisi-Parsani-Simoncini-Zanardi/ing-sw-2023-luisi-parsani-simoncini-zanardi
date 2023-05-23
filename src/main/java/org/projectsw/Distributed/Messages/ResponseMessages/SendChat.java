@@ -2,6 +2,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.Message;
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.Util.Config;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.TextualUI;
 import java.io.Serial;
@@ -16,10 +17,10 @@ public class SendChat extends ResponseMessage implements Serializable {
     @Override
     public void execute(TextualUI tui) {
         int counter = 0;
-        if (model.getPlayerName().equals("everyone")){
+        if (model.getPlayerName().equals(Config.everyone)){
             System.out.println("---GLOBAL CHAT---");
             for (Message message : model.getChat()) {
-                if (message.getScope().equals("everyone")) {
+                if (message.getScope().equals(Config.everyone)) {
                     System.out.println(tui.getNameColors().get(message.getSender()) + message.getSender() + ": " + ConsoleColors.RESET + message.getPayload());
                     counter++;
                 }
