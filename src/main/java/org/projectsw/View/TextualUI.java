@@ -31,7 +31,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
-    private boolean isNotCorrect;
 
     private HashMap<String, String> nameColors;
     private final Client client;
