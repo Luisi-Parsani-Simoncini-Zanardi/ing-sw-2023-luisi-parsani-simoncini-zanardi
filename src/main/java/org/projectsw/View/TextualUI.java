@@ -18,6 +18,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private final Object lock = new Object();
     private final Object lock2 = new Object();
     private boolean isNotCorrect;
+    private volatile boolean waitResult = true;
     private Integer number;
     private Point point;
     private String nickname;
@@ -27,6 +28,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private Boolean noMoreTemporaryTiles = true;
     private HashMap<String, String> nameColors;
     private final Client client;
+    Scanner masterScanner = new Scanner(System.in);
 
     public TextualUI(Client client)
     {
@@ -56,6 +58,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public HashMap<String, String> getNameColors(){return this.nameColors;}
 
     public int getClientUID(){return clientUID;}
+    public Scanner getMasterScanner(){
+        return this.masterScanner;
+    }
+    public void setWaitResult(boolean response){
+        this.waitResult = response;
+    }
     public void setID(int ID){
         this.clientUID=ID;
     }
@@ -80,15 +88,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     @Override
     public void run() {
-        int choice;
-        Scanner scanner;
+        int choice = 0;
         do {
             joinGame();
             if (!isNotCorrect)
                 System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
         } while (!isNotCorrect);
-
-        while (getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+        do{
             if (getEndState() == UIEndState.LOBBY)
                 System.out.println("Waiting for more people to join...");
             while (getEndState() == UIEndState.LOBBY) {
@@ -100,11 +106,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            scanner = new Scanner(System.in);
-            choice = -1;
             try {
-                choice = scanner.nextInt();
-            } catch (InputMismatchException ignored) {
+                choice = masterScanner.nextInt();
+            } catch (InputMismatchException | IllegalStateException ignored) {
             }
             if (getEndState() != UIEndState.RESULTS) {
                 switch (choice) {
@@ -176,7 +180,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
             if (choice != 2 && getEndState() != UIEndState.RESULTS)
                 System.out.println("---CHOOSE AN ACTION---");
-        }
+        }while (getEndState() == UIEndState.RUNNING || (getEndState() == UIEndState.ENDING && this.clientUID != 1));
+        while (waitResult) Thread.onSpinWait();
+        System.out.println("The game ended.\nExiting...");
     }
 
     private void printCommandMenu(){

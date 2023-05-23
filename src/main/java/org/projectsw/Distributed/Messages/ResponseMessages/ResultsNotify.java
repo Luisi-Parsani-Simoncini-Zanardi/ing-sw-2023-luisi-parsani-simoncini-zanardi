@@ -22,7 +22,7 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
         super(model);
     }
     public void execute(TextualUI tui){
-
+        tui.getMasterScanner().close();
         tui.setEndState(UIEndState.RESULTS);
         LinkedHashMap<String, Integer> results = model.getResults().entrySet()
                 .stream()
@@ -42,6 +42,7 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
             case 3 -> tui.printMedal(ConsoleColors.BRONZE, "3rd");
             case 4 -> tui.printNoMedal();
         }
+        tui.setWaitResult(false);
     }
     public void execute(GraphicalUI gui){}
 }

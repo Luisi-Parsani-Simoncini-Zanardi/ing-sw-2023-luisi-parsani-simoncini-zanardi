@@ -23,6 +23,6 @@ public class AppClientRMI {
         }catch(NotBoundException e){
             throw new NotBoundException("Server not found");
         }
-
+        System.exit(0);
     }
 }
