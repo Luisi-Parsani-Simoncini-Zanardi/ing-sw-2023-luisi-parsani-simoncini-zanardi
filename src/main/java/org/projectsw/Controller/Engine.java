@@ -184,11 +184,7 @@ public class Engine{
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
-            try {
-                game.getCurrentPlayer().addTemporaryTile(tile);
-            } catch (MaxTemporaryTilesExceededException e) {
-                //TODO: gestire exception
-            }
+            game.getCurrentPlayer().addTemporaryTile(tile);
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
