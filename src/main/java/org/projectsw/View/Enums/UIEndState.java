@@ -1,5 +1,5 @@
 package org.projectsw.View.Enums;
 
 public enum UIEndState {
-    LOBBY, RUNNING, ENDING, RESULTS
+    LOBBY, RUNNING, ENDING
 }

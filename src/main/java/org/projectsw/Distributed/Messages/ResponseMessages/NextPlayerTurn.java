@@ -27,9 +27,5 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
             tui.setNoMoreTemporaryTiles(true);
             System.out.println("   ---YOUR TURN---");
         }
-        if(!(tui.getEndState() == UIEndState.RESULTS || (tui.getEndState() == UIEndState.ENDING && tui.getClientUID() == 1))) {
-            System.out.println("---CHOOSE AN ACTION---");
-            System.out.println("Press 0 to see all possible actions...");
-        } else System.out.println("Please wait for the results...");
     }
 }

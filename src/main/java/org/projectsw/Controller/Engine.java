@@ -299,6 +299,17 @@ public class Engine{
     }
 
     /**
+     * Sends results to the clients
+     */
+
+    public void sendResults(){
+        try {
+            getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while sending the results: "+e.getMessage());
+        }
+    }
+    /**
      * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
      */
     public void checkPersonalGoal(){
@@ -407,7 +418,7 @@ public class Engine{
     public void endTurn(){
         this.checkCommonGoals();
         this.checkEndGame();
-        game.getCurrentPlayer().clearTemporaryTiles();
+        getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
         do {
@@ -418,8 +429,8 @@ public class Engine{
         }
         else {
             try {
-                game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
+                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
@@ -450,7 +461,7 @@ public class Engine{
                 this.getGame().getBoard().setEndGame(true);
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
                 try {
-                    game.setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(getGame())));
+                    game.setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastID, getGame())));
 
                 } catch (RemoteException e) {
                     throw new RuntimeException("An error occurred while updating the status: " + e);
@@ -486,12 +497,6 @@ public class Engine{
     public void endGame() {
         this.checkPersonalGoal();
         this.checkEndgameGoal();
-        try {
-            game.setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while updating the status: " + e);
-        }
-            //this.resetGame();
     }
     /**
      * reset game
@@ -617,10 +622,11 @@ public class Engine{
         if (this.getClients().getAllKey().size() == 0) {
             counter++;
             client.setID(new SerializableGame(counter));
-            game.setChangedAndNotifyObservers(new SetClientNickname(new SerializableGame(counter, input.getNickname())));
+            getGame().setChangedAndNotifyObservers(new SetClientNickname(new SerializableGame(counter, input.getNickname())));
             this.getClients().put(client, input.getNickname());
-            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(counter)));
+            getGame().setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(counter)));
             this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
+            getGame().setChangedAndNotifyObservers(new ClientSendNumberOfPlayers(new SerializableGame(counter, getGame().getNumberOfPlayers())));
             this.playerJoin(input.getNickname());
             client.setCorrectResponse(true);
 
@@ -631,7 +637,8 @@ public class Engine{
             }
             counter++;
             client.setID(new SerializableGame(counter));
-            game.setChangedAndNotifyObservers(new SetClientNickname(new SerializableGame(counter, input.getNickname())));
+            getGame().setChangedAndNotifyObservers(new SetClientNickname(new SerializableGame(counter, input.getNickname())));
+            getGame().setChangedAndNotifyObservers(new ClientSendNumberOfPlayers(new SerializableGame(counter, getGame().getNumberOfPlayers())));
             this.getClients().put(client, input.getNickname());
             this.playerJoin(input.getNickname());
             client.setCorrectResponse(true);
