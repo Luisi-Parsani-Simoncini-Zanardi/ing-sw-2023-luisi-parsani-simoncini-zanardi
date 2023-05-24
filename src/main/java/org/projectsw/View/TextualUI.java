@@ -117,7 +117,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            System.out.println("---CHOOSE AN ACTION111111111111111111111111111111111111111---");
+            System.out.println("---CHOOSE AN ACTION---");
             System.out.println("Press 0 to see all possible actions...");
             try {
                 choice = masterScanner.nextInt();
