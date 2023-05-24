@@ -2,7 +2,6 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.ConsoleColors;
-import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
@@ -22,8 +21,6 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
         super(model);
     }
     public void execute(TextualUI tui){
-        tui.getMasterScanner().close();
-        tui.setEndState(UIEndState.RESULTS);
         LinkedHashMap<String, Integer> results = model.getResults().entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
