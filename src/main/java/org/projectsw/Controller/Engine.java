@@ -675,7 +675,6 @@ public class Engine{
             this.loadFromFile = false;
         }
     }
-//bug se apro 2 client insieme prima di dare input chiede al secondo il numero di player dopo l'askLoad al primo
     public synchronized void setUID(Client client) throws RemoteException {
         counter++;
         client.setID(new SerializableGame(counter));
@@ -692,24 +691,12 @@ public class Engine{
             counter--;
         }
     }
-//bug -> se nella reconnect non metto in ordine giusto crasha. capire perchè il client.kill fatto subito non funziona
     public synchronized void initializePlayer(Client client, SerializableInput input) throws RemoteException {
-        if (this.getClients().getAllKey().size() == 0 && !loadFromFile && false) {
-            /*counter++;
-            client.setID(new GameView(counter));*/
-            game.setChangedAndNotifyObservers(new SetClientNickname(new SerializableGame(client.getID(), input.getNickname())));
-            this.getClients().put(client, input.getNickname());
-            game.setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(client.getID())));
-            this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
-            this.playerJoin(input.getNickname());
-            client.setCorrectResponse(true);
-        } else if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
+         if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
             for (Client chekClient : this.getClients().getAllKey()) {
                 if (chekClient.getNickname().equals(input.getNickname()))
                     return;
             }
-            /*counter++;
-            client.setID(new GameView(counter));*/
             if(loadFromFile){
                 if (freeNamesUsedInLastGame.contains(input.getNickname())) {
                     freeNamesUsedInLastGame.remove(input.getNickname());
@@ -729,10 +716,7 @@ public class Engine{
                 }
             }
             client.setCorrectResponse(true);
-        } /*else {
-            server.removeObserver(client);
-            client.kill();
-        }*/
+        }
         }
     public void setNumberOfPlayers(int numberOfPlayers){
         getGame().setNumberOfPlayers(numberOfPlayers);
