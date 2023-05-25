@@ -209,11 +209,7 @@ public class Engine{
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
-            try {
-                game.getCurrentPlayer().addTemporaryTile(tile);
-            } catch (MaxTemporaryTilesExceededException e) {
-                //TODO: gestire exception
-            }
+            game.getCurrentPlayer().addTemporaryTile(tile);
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
@@ -328,6 +324,17 @@ public class Engine{
     }
 
     /**
+     * Sends results to the clients
+     */
+
+    public void sendResults(){
+        try {
+            getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while sending the results: "+e.getMessage());
+        }
+    }
+    /**
      * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
      */
     public void checkPersonalGoal(){
@@ -436,7 +443,7 @@ public class Engine{
     public void endTurn(){
         this.checkCommonGoals();
         this.checkEndGame();
-        game.getCurrentPlayer().clearTemporaryTiles();
+        getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
         do {
@@ -447,8 +454,8 @@ public class Engine{
         }
         else {
             try {
-                game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
+                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
@@ -457,13 +464,13 @@ public class Engine{
     }
 
     public void endTurnForced(){
-        game.getCurrentPlayer().clearTemporaryTiles();
+        getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
         getGame().setCurrentPlayer(getGame().getNextPlayer());
         try {
-            game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
-            game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
+            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
         } catch (RemoteException e){
             throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
         }
@@ -479,8 +486,10 @@ public class Engine{
                 this.getGame().getBoard().setEndGame(true);
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
                 try {
-                    game.setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(getGame())));
-
+                    getGame().setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastID, getGame())));
+                    if(getGame().getClientID()>1)
+                        for(int i=1; i<getGame().getClientID();i++)
+                            getGame().setChangedAndNotifyObservers(new ForceEnding(new SerializableGame(i)));
                 } catch (RemoteException e) {
                     throw new RuntimeException("An error occurred while updating the status: " + e);
                 }
@@ -515,12 +524,6 @@ public class Engine{
     public void endGame() {
         this.checkPersonalGoal();
         this.checkEndgameGoal();
-        try {
-            game.setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while updating the status: " + e);
-        }
-            //this.resetGame();
     }
     /**
      * reset game
@@ -543,7 +546,7 @@ public class Engine{
             }
         }else{
             try {
-                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message("error", "error", ConsoleColors.RED + "The entered nickname is not in game..." + ConsoleColors.RESET))));
+                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(Config.error, Config.error, ConsoleColors.RED + "The entered nickname is not in game..." + ConsoleColors.RESET))));
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while sending the chat" + e.getMessage());
             }
@@ -557,20 +560,20 @@ public class Engine{
      * @param scope message scope
      */
     public void sayInChat(String sender, String content, String scope) {
-        if (scope.equals("error")) {
+        if (scope.equals(Config.error)) {
             try {
-                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, "error", ConsoleColors.RED_BOLD + "Incorrectly formatted message!!!" + ConsoleColors.RESET))));
+                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, Config.error, ConsoleColors.RED + "Incorrectly formatted message..." + ConsoleColors.RESET))));
                 return;
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chatError: " + e.getMessage());
+                throw new RuntimeException("Network error while sending the chat Error: " + e.getMessage());
             }
         }
         if (!validNickname(scope)) {
             try {
-                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, "error", ConsoleColors.RED_BOLD + "The nickname entered of the recipient player is wrong!!!" + ConsoleColors.RESET))));
+                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getClientID(), new Message(sender, Config.error, ConsoleColors.RED + "The entered nickname doesn't exist..." + ConsoleColors.RESET))));
                 return;
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chatError: " + e.getMessage());
+                throw new RuntimeException("Network error while sending the chat Error: " + e.getMessage());
             }
         }
         Message message = new Message(sender, scope, content);
@@ -596,7 +599,7 @@ public class Engine{
      * @return true if nickname is the nickname of a player in game
      */
     private boolean validNickname(String nickname){
-        if(nickname.equals("everyone"))
+        if(nickname.equals(Config.everyone))
             return true;
         for(Player player : this.getGame().getPlayers()){
             if(player.getNickname().equals(nickname))
@@ -649,7 +652,7 @@ public class Engine{
         return (game.getBoard().getBoard()[y][x].getTile() == EMPTY) ||
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
-
+  
     private ArrayList<String> getNicks() throws RemoteException {
         ArrayList<String> nicks = new ArrayList<>();
         for(Client client : this.getClients().getAllKey())

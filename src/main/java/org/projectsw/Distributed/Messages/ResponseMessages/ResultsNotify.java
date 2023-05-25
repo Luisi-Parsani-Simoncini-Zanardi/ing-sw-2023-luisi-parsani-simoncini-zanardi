@@ -2,7 +2,6 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.ConsoleColors;
-import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
@@ -22,8 +21,6 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
         super(model);
     }
     public void execute(TextualUI tui){
-
-        tui.setEndState(UIEndState.RESULTS);
         LinkedHashMap<String, Integer> results = model.getResults().entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
@@ -31,7 +28,7 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        System.out.println("-----RESULTS-----");
+        System.out.println("\n\n-----RESULTS-----");
         for (String i : results.keySet()) {
             System.out.println(i + ": " + results.get(i) + " points");
         }
@@ -42,6 +39,7 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
             case 3 -> tui.printMedal(ConsoleColors.BRONZE, "3rd");
             case 4 -> tui.printNoMedal();
         }
+        tui.setWaitResult(false);
     }
     public void execute(GraphicalUI gui){}
 }
