@@ -101,7 +101,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
     @Override
     public void setCorrectResponse(boolean response){
-        tui.setIsNotCorrect(response);
+        tui.setFlag(response);
     }
 
 }

@@ -439,13 +439,13 @@ public class Engine{
     }
 
     public void endTurnForced(){
-        game.getCurrentPlayer().clearTemporaryTiles();
+        getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
         getGame().setCurrentPlayer(getGame().getNextPlayer());
         try {
-            game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
-            game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
+            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
         } catch (RemoteException e){
             throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
         }
@@ -461,8 +461,10 @@ public class Engine{
                 this.getGame().getBoard().setEndGame(true);
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
                 try {
-                    game.setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastID, getGame())));
-
+                    getGame().setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastID, getGame())));
+                    if(getGame().getClientID()>1)
+                        for(int i=1; i<getGame().getClientID();i++)
+                            getGame().setChangedAndNotifyObservers(new ForceEnding(new SerializableGame(i)));
                 } catch (RemoteException e) {
                     throw new RuntimeException("An error occurred while updating the status: " + e);
                 }
