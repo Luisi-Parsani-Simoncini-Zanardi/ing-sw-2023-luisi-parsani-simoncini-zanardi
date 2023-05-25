@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -16,6 +17,6 @@ public class ForceEnding extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui){
         tui.setFlag(false);
         tui.setWaitResult(false);
-        System.out.println("The game is ended press any key to wait for results...");
+        System.out.println(ConsoleColors.RED_BOLD +"The game is ending finish your actions or press a key to go to results..."+ConsoleColors.RESET);
     }
 }

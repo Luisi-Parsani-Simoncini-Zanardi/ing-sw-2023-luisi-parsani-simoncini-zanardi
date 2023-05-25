@@ -119,12 +119,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-
-            System.out.println("---CHOOSE AN ACTION---");
-            System.out.println("Press 0 to see all possible actions...");
-            try {
-                choice = masterScanner.nextInt();
-            } catch (InputMismatchException | IllegalStateException ignored) {
+            if(flag) {
+                System.out.println("---CHOOSE AN ACTION---");
+                System.out.println("Press 0 to see all possible actions...");
+                try {
+                    choice = masterScanner.nextInt();
+                } catch (InputMismatchException | IllegalStateException ignored) {
+                }
             }
             if (flag) {
                 switch (choice) {
