@@ -1,6 +1,7 @@
 package org.projectsw.View;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.*;
+import org.projectsw.Distributed.Messages.ResponseMessages.AskLoadGame;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.*;
 import org.projectsw.Util.Config;
@@ -106,12 +107,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     @Override
     public void run() {
+        try {
+            setChangedAndNotifyObservers(new SetUID(new SerializableInput(this.getClientUID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
         int choice = 0;
         do {
             joinGame();
-            if (!flag)
+            if (flag)
                 System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
-        } while (!flag);
+        } while (flag);
+        flag = true
         do {
             endedTurn = false;
             if (getEndState() == UIEndState.LOBBY)
@@ -559,6 +566,23 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(getClientUID(),getNumber())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error"+e.getMessage());
+        }
+    }
+
+    public void askLoadGame(){
+        Scanner scanner = new Scanner(System.in);
+        do {
+            System.out.println("Save file found. Would you like to load the game from it?\n1: yes\n2:no\n ");
+            number = scanner.nextInt();
+            if(number != 1 && number != 2)
+                System.out.println(ConsoleColors.RED +"Invalid Input, try again..."+ ConsoleColors.RESET);
+        } while (number != 1 && number != 2);
+        if (number == 1) {
+            try {
+                setChangedAndNotifyObservers(new LoadGameSelection(new SerializableInput(getNumber())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error" + e.getMessage());
+            }
         }
     }
 
