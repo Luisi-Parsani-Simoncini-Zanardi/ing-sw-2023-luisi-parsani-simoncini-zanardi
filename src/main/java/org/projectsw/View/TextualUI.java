@@ -118,7 +118,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             if (flag)
                 System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
         } while (flag);
-        flag = true
+        flag = true;
         do {
             endedTurn = false;
             if (getEndState() == UIEndState.LOBBY)
