@@ -28,7 +28,7 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        System.out.println("-----RESULTS-----");
+        System.out.println("\n\n-----RESULTS-----");
         for (String i : results.keySet()) {
             System.out.println(i + ": " + results.get(i) + " points");
         }

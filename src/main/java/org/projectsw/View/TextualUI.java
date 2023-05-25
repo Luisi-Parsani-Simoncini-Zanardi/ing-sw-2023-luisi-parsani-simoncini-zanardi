@@ -19,8 +19,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private final Object lock = new Object();
     private final Object lock2 = new Object();
 
-    private boolean flag;
+    private boolean flag = true;
     private volatile boolean waitResult = true;
+    private boolean endedTurn = false;
 
     private Integer number;
     private Point point;
@@ -43,6 +44,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     {
         this.client = client;
         displayLogo();
+    }
+
+    public boolean getFlag() {
+        return flag;
     }
 
     public UITurnState getTurnState(){
@@ -108,6 +113,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
         } while (!flag);
         do {
+            endedTurn = false;
             if (getEndState() == UIEndState.LOBBY)
                 System.out.println("Waiting for more people to join...");
             while (getEndState() == UIEndState.LOBBY) {
@@ -120,8 +126,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 }
             }
             if(flag) {
-                System.out.println("---CHOOSE AN ACTION---");
-                System.out.println("Press 0 to see all possible actions...");
                 try {
                     choice = masterScanner.nextInt();
                 } catch (InputMismatchException | IllegalStateException ignored) {
@@ -150,7 +154,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         } else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
-                                System.out.println("---CHOOSE AN ACTION---");
                             } else {
                                 askShelf();
                                 askTemporaryTiles();
@@ -160,6 +163,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                                 }
                                 if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                     selectTemporaryTiles();
+                                    writeBufferMessage();
                                     System.out.println("You ended your turn.");
                                     try {
                                         setChangedAndNotifyObservers(new EndTurn(new SerializableInput(clientUID)));
@@ -169,6 +173,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                                     if (getEndState().equals(UIEndState.ENDING))
                                         setWaitResult(false);
                                     setTurnState(UITurnState.OPPONENT_TURN);
+                                    endedTurn=true;
                                 }
                             }
                         }
@@ -195,7 +200,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 12 -> exit();
                     default -> System.out.println(ConsoleColors.RED + "Invalid command. Try again..." + ConsoleColors.RESET);
                 }
-                writeBufferMessage();
+                if (!endedTurn&&flag)
+                    System.out.println("\n---CHOOSE AN ACTION---");
             }
         } while (getEndState() == UIEndState.RUNNING || waitResult);
         ending();
@@ -203,7 +209,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void ending(){
         getMasterScanner().close();
-        System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions." + ConsoleColors.RESET);
+        setFlag(false);
         System.out.println("Wait for results please...");
         if(clientUID==numberOfPlayers) {
             try {
@@ -302,7 +309,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public Integer selectColumnInput(){
-        System.out.println("In which column do you want to insert your tiles?");
+        System.out.println("\nIn which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
             System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
@@ -478,7 +485,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void showCurrentPlayer(SerializableGame model){
-        if (getEndState() != UIEndState.ENDING || clientUID !=1)
+        if (getFlag())
             System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
@@ -536,7 +543,15 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         Scanner scanner = new Scanner(System.in);
         do{
             System.out.println("Insert number of players: ");
-            number = scanner.nextInt();
+            try {
+                number = scanner.nextInt();
+            } catch (InputMismatchException e)
+            {
+                System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
+                System.out.println("Insert number of players: ");
+                scanner.next();
+                number = scanner.nextInt();
+            }
             if(number<Config.minPlayers || number>Config.maxPlayers)
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
@@ -642,7 +657,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void writeBufferMessage()
     {
         if (chatBuffer.size()!=0)
-            System.out.println("---INCOMING MESSAGES---");
+            System.out.println("\n---INCOMING MESSAGES---");
         for (Message message : chatBuffer) {
             if (message.getScope().equals(Config.everyone)) {
                 System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + " in global chat: " + message.getPayload());
