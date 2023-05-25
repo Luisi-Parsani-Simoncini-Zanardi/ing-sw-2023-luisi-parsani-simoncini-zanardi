@@ -16,23 +16,39 @@ import java.util.*;
 public class TextualUI extends Observable<InputMessage> implements Runnable{
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
+
     private final Object lock = new Object();
     private final Object lock2 = new Object();
-    private boolean isNotCorrect;
+
+    private boolean flag = true;
+    private volatile boolean waitResult = true;
+    private boolean endedTurn = false;
+
     private Integer number;
     private Point point;
     private String nickname;
     private String string;
+
     private int clientUID;
+    private int numberOfPlayers;
+
     private Boolean noMoreSelectableTiles = true;
     private Boolean noMoreTemporaryTiles = true;
+
     private HashMap<String, String> nameColors;
     private final Client client;
-
+    Scanner masterScanner = new Scanner(System.in);
+  
+    private ArrayList<Message> chatBuffer = new ArrayList<>();
+  
     public TextualUI(Client client)
     {
         this.client = client;
         displayLogo();
+    }
+
+    public boolean getFlag() {
+        return flag;
     }
 
     public UITurnState getTurnState(){
@@ -55,8 +71,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     public String getNickname(){return this.nickname;}
     public HashMap<String, String> getNameColors(){return this.nameColors;}
-
     public int getClientUID(){return clientUID;}
+    public Scanner getMasterScanner(){
+        return this.masterScanner;
+    }
+    public void setWaitResult(boolean response){
+        this.waitResult = response;
+    }
     public void setID(int ID){
         this.clientUID=ID;
     }
@@ -66,7 +87,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void setNameColors(HashMap<String, String> nameColors){
         this.nameColors = nameColors;
     }
-
+    public void setFlag(boolean resp){
+        this.flag=resp;
+    }
     public void setTurnState(UITurnState state){
         synchronized (lock){
             this.turnState = state;
@@ -77,24 +100,27 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             this.endState = state;
         }
     }
+    public void setNumberOfPlayers(int numberOfPlayers){
+        this.numberOfPlayers=numberOfPlayers;
+    }
 
 
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
-        int choice;
         try {
             setChangedAndNotifyObservers(new SetUID(new SerializableInput(this.getClientUID())));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+        int choice = 0;
         do {
             joinGame();
-            if (!isNotCorrect)
+            if (flag)
                 System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
-        } while (!isNotCorrect);
-
-        while (getEndState() != UIEndState.ENDING || (getEndState() == UIEndState.ENDING && this.clientUID != 1)) {
+        } while (flag);
+        flag = true
+        do {
+            endedTurn = false;
             if (getEndState() == UIEndState.LOBBY)
                 System.out.println("Waiting for more people to join...");
             while (getEndState() == UIEndState.LOBBY) {
@@ -106,13 +132,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     }
                 }
             }
-            scanner = new Scanner(System.in);
-            choice = -1;
-            try {
-                choice = scanner.nextInt();
-            } catch (InputMismatchException ignored) {
+            if(flag) {
+                try {
+                    choice = masterScanner.nextInt();
+                } catch (InputMismatchException | IllegalStateException ignored) {
+                }
             }
-            if (getEndState() != UIEndState.RESULTS) {
+            if (flag) {
                 switch (choice) {
                     case 0 -> printCommandMenu();
                     case 1 -> {
@@ -135,7 +161,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         } else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
-                                System.out.println("---CHOOSE AN ACTION---");
                             } else {
                                 askShelf();
                                 askTemporaryTiles();
@@ -145,13 +170,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                                 }
                                 if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                     selectTemporaryTiles();
+                                    writeBufferMessage();
                                     System.out.println("You ended your turn.");
                                     try {
                                         setChangedAndNotifyObservers(new EndTurn(new SerializableInput(clientUID)));
                                     } catch (RemoteException e) {
                                         throw new RuntimeException("An error occurred while ending the turn: " + e);
                                     }
+                                    if (getEndState().equals(UIEndState.ENDING))
+                                        setWaitResult(false);
                                     setTurnState(UITurnState.OPPONENT_TURN);
+                                    endedTurn=true;
                                 }
                             }
                         }
@@ -176,12 +205,34 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         }
                     }
                     case 12 -> exit();
-                    default -> System.out.println(ConsoleColors.RED +"Invalid command. Try again..."+ConsoleColors.RESET);
+                    default -> System.out.println(ConsoleColors.RED + "Invalid command. Try again..." + ConsoleColors.RESET);
                 }
-            } else
-                System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions" + ConsoleColors.RESET);
-            if (choice != 2 && getEndState() != UIEndState.RESULTS)
-                System.out.println("---CHOOSE AN ACTION---");
+                if (!endedTurn&&flag)
+                    System.out.println("\n---CHOOSE AN ACTION---");
+            }
+        } while (getEndState() == UIEndState.RUNNING || waitResult);
+        ending();
+    }
+
+    public void ending(){
+        getMasterScanner().close();
+        System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions." + ConsoleColors.RESET);
+        setFlag(false);
+        System.out.println("Wait for results please...");
+        if(clientUID==numberOfPlayers) {
+            try {
+                setChangedAndNotifyObservers(new AskForResults(new SerializableInput(getClientUID())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while asking for results: "+e.getMessage());
+            }
+        }else {
+            setWaitResult(true);
+        }
+        while (waitResult) Thread.onSpinWait();
+        try {
+            client.kill(new SerializableGame(getClientUID(),1));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Error while killing the client: "+e.getMessage());
         }
     }
 
@@ -265,7 +316,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public Integer selectColumnInput(){
-        System.out.println("In which column do you want to insert your tiles?");
+        System.out.println("\nIn which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
             System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
@@ -441,7 +492,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
 
     public void showCurrentPlayer(SerializableGame model){
-        if (getEndState() != UIEndState.ENDING || clientUID !=1)
+        if (getFlag())
             System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
     }
 
@@ -467,7 +518,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     private void askGlobalChat(){
         try {
-            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),"everyone")));
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getClientUID(),Config.everyone)));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
         }
@@ -499,7 +550,15 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         Scanner scanner = new Scanner(System.in);
         do{
             System.out.println("Insert number of players: ");
-            number = scanner.nextInt();
+            try {
+                number = scanner.nextInt();
+            } catch (InputMismatchException e)
+            {
+                System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
+                System.out.println("Insert number of players: ");
+                scanner.next();
+                number = scanner.nextInt();
+            }
             if(number<Config.minPlayers || number>Config.maxPlayers)
                 System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
         }while(number<Config.minPlayers || number>Config.maxPlayers);
@@ -525,10 +584,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 throw new RuntimeException("Network error" + e.getMessage());
             }
         }
-    }
-
-    public void setIsNotCorrect(boolean resp){
-        this.isNotCorrect=resp;
     }
 
     public void kill(int option){
@@ -616,6 +671,25 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 ⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                 ⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀""");
+    }
+
+    public void addBufferMessage(Message message)
+    {
+        chatBuffer.add(message);
+    }
+
+    public void writeBufferMessage()
+    {
+        if (chatBuffer.size()!=0)
+            System.out.println("\n---INCOMING MESSAGES---");
+        for (Message message : chatBuffer) {
+            if (message.getScope().equals(Config.everyone)) {
+                System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + " in global chat: " + message.getPayload());
+            } else System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + " in private chat: " + message.getPayload());
+
+        }
+        chatBuffer.clear();
+        System.out.print("\n");
     }
 }
 

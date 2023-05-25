@@ -31,7 +31,6 @@ public class SendTemporaryTiles extends ResponseMessage implements Serializable 
                     case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
                 }
             }
-            System.out.print("\n");
         }
     }
 }

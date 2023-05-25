@@ -8,8 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
 
-//TODO: decommentare le parti commentate per non dare errori
-
 /**
  * The class contains information about the game state,
  * including the board, players (with info on the currently playing one and the first one), chat, and common goals.

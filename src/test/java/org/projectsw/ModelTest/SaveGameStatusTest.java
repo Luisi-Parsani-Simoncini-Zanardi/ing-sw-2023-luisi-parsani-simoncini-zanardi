@@ -1,10 +1,6 @@
 package org.projectsw.ModelTest;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
 import org.projectsw.Controller.Engine;
-import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
 import org.projectsw.Model.*;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.TestUtils;

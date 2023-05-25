@@ -2,8 +2,6 @@ package org.projectsw.Model;
 
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
-import org.projectsw.Exceptions.MaxTemporaryTilesExceededException;
-import org.projectsw.View.ConsoleColors;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -137,15 +135,6 @@ public class Player {
     }
 
     /**
-     * Sets the temporaryTiles of the player to the given temporaryTiles list.
-     * @param temporaryTiles the temporaryTiles list to set for the player
-     */
-    public void setTemporaryTiles(ArrayList<Tile> temporaryTiles) throws MaxTemporaryTilesExceededException {
-        if(temporaryTiles.size() > Config.maximumTilesPickable) throw new MaxTemporaryTilesExceededException();
-        this.temporaryTiles = temporaryTiles;
-    }
-
-    /**
      * Sets the commonGoalRedeemed at the desired index to the desired status.
      * @param index the index of the position to be set
      * @param status the status to be set
@@ -159,11 +148,9 @@ public class Player {
     /**
      * Adds the given tile to the player's temporary tiles.
      * @param tile the tile to be added to the player's temporary tiles
-     * @throws MaxTemporaryTilesExceededException if the player already has the maximum number of tiles (i.e., 3)
      */
-    public void addTemporaryTile(Tile tile) throws MaxTemporaryTilesExceededException {
-        if(Config.maximumTilesPickable <= temporaryTiles.size()) throw new MaxTemporaryTilesExceededException("Maximum number of tiles reached");
-        else if(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED) throw new IllegalArgumentException("You can't add an EMPTY tile");
+    public void addTemporaryTile(Tile tile) {
+        if(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED) throw new IllegalArgumentException("You can't add an EMPTY tile");
         else temporaryTiles.add(tile);
     }
 
