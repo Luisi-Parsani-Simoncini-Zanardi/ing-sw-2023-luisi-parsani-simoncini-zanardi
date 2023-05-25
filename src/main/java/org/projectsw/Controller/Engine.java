@@ -652,7 +652,6 @@ public class Engine{
         return (game.getBoard().getBoard()[y][x].getTile() == EMPTY) ||
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
-  
     private ArrayList<String> getNicks() throws RemoteException {
         ArrayList<String> nicks = new ArrayList<>();
         for(Client client : this.getClients().getAllKey())
@@ -707,6 +706,7 @@ public class Engine{
                     return;
                 }
             }
+            getGame().setChangedAndNotifyObservers(new ClientSendNumberOfPlayers(new SerializableGame(counter, getGame().getNumberOfPlayers())));
             this.getClients().put(client, input.getNickname());
             if(!loadFromFile) this.playerJoin(input.getNickname());
             if(freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
@@ -718,7 +718,7 @@ public class Engine{
                     throw new RuntimeException("n error occurred while setting the name colors: " + e);
                 }
             }
-            client.setCorrectResponse(true);
+            client.setCorrectResponse(false);
         }
         }
     public void setNumberOfPlayers(int numberOfPlayers){

@@ -107,7 +107,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
         try {
             setChangedAndNotifyObservers(new SetUID(new SerializableInput(this.getClientUID())));
         } catch (RemoteException e) {
@@ -116,9 +115,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         int choice = 0;
         do {
             joinGame();
-            if (!flag)
+            if (flag)
                 System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
-        } while (!flag);
+        } while (flag);
+        flag = true;
         do {
             endedTurn = false;
             if (getEndState() == UIEndState.LOBBY)
@@ -586,9 +586,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
-    public void setIsNotCorrect(boolean resp){
-        this.isNotCorrect=resp;
-    }
     public void kill(int option){
         if(option==0) {
             System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
