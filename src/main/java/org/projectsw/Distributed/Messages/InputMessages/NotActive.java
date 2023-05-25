@@ -16,7 +16,7 @@ public class NotActive extends InputMessage implements Serializable {
     @Override
     public void execute(Engine engine){
         for(Player player : engine.getGame().getPlayers()){
-            if(input.getNickname().equals(player.getNickname()))
+            if(input.getClientNickname().equals(player.getNickname()))
                 player.setIsActive(false);
         }
     }

@@ -82,13 +82,6 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
         else
             gui.update(response);
     }
-    @Override
-    public void setID(SerializableGame model){
-        tui.setID(model.getClientID());
-    }
-
-    @Override
-    public int getID(){return tui.getClientUID();}
 
     @Override
     public String  getNickname() throws RemoteException{

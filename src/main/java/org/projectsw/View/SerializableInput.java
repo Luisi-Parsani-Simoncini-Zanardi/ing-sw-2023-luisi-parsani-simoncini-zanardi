@@ -8,71 +8,71 @@ public class SerializableInput implements Serializable{
 
     @Serial
     private static final long serialVersionUID = 1L;
-    private final Integer clientID;
+    private final String clientNickname;
     private final Point coordinate;
     private final Integer integer;
     private final String nickname;
     private final String string;
 
-    public SerializableInput(int clientID, Point coordinate){
-        this.clientID = clientID;
+    public SerializableInput(String clientNickname, Point coordinate){
+        this.clientNickname = clientNickname;
         this.coordinate = coordinate;
         this.integer = null;
         this.string = null;
         this.nickname = null;
     }
 
-    public SerializableInput(String string){
-        this.clientID = null;
-        this.coordinate = null;
-        this.integer = null;
-        this.string = null;
-        this.nickname = string;
-    }
-
-    public SerializableInput(int clientID, String string){
-        this.clientID = clientID;
+    public SerializableInput(String clientNickname, String string){
+        this.clientNickname = clientNickname;
         this.coordinate = null;
         this.integer = null;
         this.string = string;
         this.nickname = null;
     }
 
-    public SerializableInput(int clientID, int num, String string){
-        this.clientID = clientID;
+    public SerializableInput(int number){
+        this.clientNickname = null;
+        this.coordinate = null;
+        this.integer = number;
+        this.string = null;
+        this.nickname = null;
+    }
+
+    public SerializableInput(String clientNickname, int num, String string){
+        this.clientNickname = clientNickname;
         this.coordinate = null;
         this.integer = num;
         this.string = string;
         this.nickname = null;
     }
 
-    public SerializableInput(int clientID){
-        this.clientID = clientID;
+    public SerializableInput(String clientNickname){
+        this.clientNickname = clientNickname;
         this.coordinate = null;
         this.integer = null;
         this.string = null;
         this.nickname = null;
     }
 
-    public SerializableInput(int clientID, int integer){
-        this.clientID = clientID;
+    public SerializableInput(String clientNickname, int integer){
+        this.clientNickname = clientNickname;
         this.coordinate = null;
         this.integer = integer;
         this.string = null;
         this.nickname = null;
     }
 
-    public SerializableInput(int clientID, String nickname, String string){
-        this.clientID = clientID;
+    public SerializableInput(String clientNickname, String nickname, String string){
+        this.clientNickname = clientNickname;
         this.coordinate = null;
         this.integer = null;
         this.string = string;
         this.nickname = nickname;
     }
 
-    public Integer getClientID(){return this.clientID;}
+    public String getClientNickname(){return this.clientNickname;}
     public Point getCoordinate(){return this.coordinate;}
-    public Integer getIndex(){return this.integer;}
+    public Integer getInteger(){return this.integer;}
     public String getString(){return this.string;}
     public String getNickname(){return this.nickname;}
 
