@@ -652,8 +652,6 @@ public class Engine{
         return (game.getBoard().getBoard()[y][x].getTile() == EMPTY) ||
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
-
-
     private ArrayList<String> getNicks() throws RemoteException {
         ArrayList<String> nicks = new ArrayList<>();
         for(Client client : this.getClients().getAllKey())
