@@ -117,8 +117,8 @@ public class SerializableGame implements Serializable {
         this.integer = null;
     }
 
-    public SerializableGame(Game model){
-        this.gameBoard =  model.getBoard().getBoard();
+    public SerializableGame(Game model) {
+        this.gameBoard = model.getBoard().getBoard();
         this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.playerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getMessages();
@@ -126,10 +126,9 @@ public class SerializableGame implements Serializable {
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-        this.playerPersonalGoal = personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
+        this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getCurrentClientNick())).getPersonalGoal().getPersonalGoal());
         this.results = new HashMap<>();
-        for (Player p : model.getPlayers())
-        {
+        for (Player p : model.getPlayers()) {
             this.results.put(p.getNickname(), p.getPoints());
         }
         this.nameColors = null;
@@ -141,27 +140,26 @@ public class SerializableGame implements Serializable {
         this.integer = null;
     }
 
-   public SerializableGame(String broadcastNickname, Game model){
-        this.gameBoard =  model.getBoard().getBoard();
-        this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
-        this.playerName = model.getCurrentPlayer().getNickname();
-        this.chat = model.getChat().getMessages();
-        this.clientNickname = broadcastNickname;
-        this.selectablePoints = model.getBoard().getSelectablePoints();
-        this.temporaryPoints = model.getBoard().getTemporaryPoints();
-        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-        this.playerPersonalGoal = personalGoalToTile(model.getCurrentPlayer().getPersonalGoal().getPersonalGoal());
-        this.results = new HashMap<>();
-        for (Player p : model.getPlayers())
-        {
-            this.results.put(p.getNickname(), p.getPoints());
-        }
-        this.nameColors = null;
-        this.allShelves = null;
-        this.commonGoalDesc = null;
-        this.message = null;
-        this.integer = null;
-    }
+   public SerializableGame(String broadcastNickname, Game model) {
+       this.gameBoard = model.getBoard().getBoard();
+       this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
+       this.playerName = model.getCurrentPlayer().getNickname();
+       this.chat = model.getChat().getMessages();
+       this.clientNickname = broadcastNickname;
+       this.selectablePoints = model.getBoard().getSelectablePoints();
+       this.temporaryPoints = model.getBoard().getTemporaryPoints();
+       this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
+       this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getCurrentClientNick())).getPersonalGoal().getPersonalGoal());
+       this.results = new HashMap<>();
+       for (Player p : model.getPlayers()) {
+           this.results.put(p.getNickname(), p.getPoints());
+       }
+       this.nameColors = null;
+       this.allShelves = null;
+       this.commonGoalDesc = null;
+       this.message = null;
+       this.integer = null;
+   }
 
     public SerializableGame(String clientNickname, String nickname, Shelf shelf){
         this.gameBoard =  null;

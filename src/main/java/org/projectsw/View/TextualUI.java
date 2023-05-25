@@ -104,20 +104,25 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             if (flag)
                 System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
         } while (flag);
-        flag = true;
-        do {
-            endedTurn = false;
-            if (getEndState() == UIEndState.LOBBY)
-                System.out.println("Waiting for more people to join...");
-            while (getEndState() == UIEndState.LOBBY) {
-                synchronized (this) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("Error while waiting for the game to start: " + e);
-                    }
+        endedTurn = false;
+        if (getEndState() == UIEndState.LOBBY)
+            System.out.println("Waiting for more people to join...\n");
+        while (getEndState() == UIEndState.LOBBY) {
+            synchronized (this) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("Error while waiting for the game to start: " + e);
                 }
             }
+        }
+        System.out.println("\nGame started!");
+        System.out.println("---CHOOSE AN ACTION---");
+        System.out.println("Press 0 to see all possible actions...");
+        flag = true;
+        askCurrentPlayer();
+        do {
+            writeBufferMessage();
             if(flag) {
                 try {
                     choice = masterScanner.nextInt();
@@ -156,7 +161,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                                 }
                                 if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                     selectTemporaryTiles();
-                                    writeBufferMessage();
+                                    //writeBufferMessage();
                                     System.out.println("You ended your turn.");
                                     try {
                                         setChangedAndNotifyObservers(new EndTurn(new SerializableInput(getNickname())));
@@ -259,7 +264,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 message -> to send a message to everyone""");
         string = scanner.nextLine();
         try {
-            setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(getNickname(),getNickname(),getString())));
+            setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(getNickname(),getString())));
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while sending the message: "+e.getMessage());
         }
@@ -479,7 +484,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void showCurrentPlayer(SerializableGame model){
         if (getFlag())
-            System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET+"\n");
+            System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET);
     }
 
     private void showChat() {

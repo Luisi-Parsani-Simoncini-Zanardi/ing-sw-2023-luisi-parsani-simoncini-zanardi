@@ -62,14 +62,6 @@ public class SerializableInput implements Serializable{
         this.nickname = null;
     }
 
-    public SerializableInput(String clientNickname, String nickname, String string){
-        this.clientNickname = clientNickname;
-        this.coordinate = null;
-        this.integer = null;
-        this.string = string;
-        this.nickname = nickname;
-    }
-
     public String getClientNickname(){return this.clientNickname;}
     public Point getCoordinate(){return this.coordinate;}
     public Integer getInteger(){return this.integer;}

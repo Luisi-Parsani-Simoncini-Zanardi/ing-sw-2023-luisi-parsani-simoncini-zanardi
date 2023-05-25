@@ -20,15 +20,15 @@ public class ChatMessage extends InputMessage implements Serializable {
         String scope;
         String []parts = input.getString().split("/");
         if(parts.length == 1){
-            sender = input.getNickname();
+            sender = input.getClientNickname();
             payload = input.getString();
             scope = Config.everyone;
         }else if(parts.length == 2){
-            sender = input.getNickname();
+            sender = input.getClientNickname();
             payload = parts[1];
             scope = parts[0];
         }else{
-            sender = input.getNickname();
+            sender = input.getClientNickname();
             payload = Config.error;
             scope = Config.error;
         }

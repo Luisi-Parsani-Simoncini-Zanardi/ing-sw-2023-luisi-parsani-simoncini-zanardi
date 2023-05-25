@@ -104,14 +104,9 @@ public class Engine{
         try {
             game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastNickname, randomColors())));
         } catch (RemoteException e) {
-            throw new RuntimeException("n error occurred while setting the name colors: " + e);
+            throw new RuntimeException("An error occurred while setting the name colors: " + e);
         }
         fillBoard();
-        try {
-            game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while updating the current player: "+e.getCause());
-        }
         try {
             game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname, getGame())));
         } catch (RemoteException e){
@@ -471,8 +466,8 @@ public class Engine{
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
                 try {
                     getGame().setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastNickname, getGame())));
-                    if(getPositionByNick(getGame().getCurrentClientNick())>0)
-                        for(int i=0; i<getPositionByNick(getGame().getCurrentClientNick()); i++)
+                    if(getGame().getPositionByNick(getGame().getCurrentClientNick())>0)
+                        for(int i=0; i<getGame().getPositionByNick(getGame().getCurrentClientNick()); i++)
                             getGame().setChangedAndNotifyObservers(new ForceEnding(new SerializableGame(getGame().getPlayers().get(i).getNickname())));
                 } catch (RemoteException e) {
                     throw new RuntimeException("An error occurred while updating the status: " + e);
@@ -717,7 +712,7 @@ public class Engine{
     }
 
     public void shelfTransfer(String clientNickname){
-        int pos = getPositionByNick(clientNickname);
+        int pos = getGame().getPositionByNick(clientNickname);
         if(pos == -1){
             try {
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getCurrentClientNick(),new Message(Config.error,Config.error,ConsoleColors.RED_BOLD+"Can't find client position"+ConsoleColors.RESET))));
@@ -732,14 +727,6 @@ public class Engine{
         }
     }
 
-    private int getPositionByNick(String nickname){
-        for(Player player : getGame().getPlayers()){
-            if(nickname.equals(player.getNickname()))
-                return player.getPosition();
-        }
-        return -1;
-    }
-
     public void shelfTransferAll(String clientNickname){
         try {
             getGame().setChangedAndNotifyObservers(new SendAllShelves(new SerializableGame(clientNickname, game.getPlayers())));
@@ -750,7 +737,7 @@ public class Engine{
 
     public void personalGoalTransfer(){
         try {
-            game.setChangedAndNotifyObservers(new SendPersonalGoal(new SerializableGame(game)));
+            game.setChangedAndNotifyObservers(new SendPersonalGoal(new SerializableGame(getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
@@ -774,7 +761,7 @@ public class Engine{
 
     public void currentPlayerTransfer(){
         try {
-            game.setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
+            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(getGame().getCurrentClientNick(),getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the current player: "+e.getCause());
         }

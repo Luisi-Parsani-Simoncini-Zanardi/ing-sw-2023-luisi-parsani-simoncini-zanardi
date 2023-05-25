@@ -164,6 +164,19 @@ public class Game extends Observable<ResponseMessage> {
     }
 
     /**
+     * Returns a player's position by passing his nickname as a parameter
+     * @param nickname is the player's nickname
+     * @return the player position
+     */
+    public int getPositionByNick(String nickname){
+        for(Player player : getPlayers()){
+            if(nickname.equals(player.getNickname()))
+                return player.getPosition();
+        }
+        return -1;
+    }
+
+    /**
      * Sets the current player of the game.
      * @param currentPlayer the current player of the game
      */
