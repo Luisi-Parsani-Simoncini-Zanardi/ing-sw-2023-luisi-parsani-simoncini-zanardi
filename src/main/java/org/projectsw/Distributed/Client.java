@@ -21,4 +21,5 @@ public interface Client extends Remote {
     public void setCorrectResponse(boolean response) throws RemoteException;
     public Observer<TextualUI, InputMessage> getTuiObserver() throws  RemoteException;
     public Observer<GraphicalUI, InputMessage> getGuiObserver() throws  RemoteException;
+    public int getID() throws RemoteException;
 }

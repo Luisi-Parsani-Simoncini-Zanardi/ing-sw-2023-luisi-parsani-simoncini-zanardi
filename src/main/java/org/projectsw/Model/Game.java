@@ -111,6 +111,13 @@ public class Game extends Observable<ResponseMessage> {
         return players;
     }
 
+    public ArrayList<String> getPlayersNickname() {
+        ArrayList<String> nicks = new ArrayList<>();
+        for (Player player: players)
+            nicks.add(player.getNickname());
+        return nicks;
+    }
+
     /**
      * Returns the game board.
      * @return the game board

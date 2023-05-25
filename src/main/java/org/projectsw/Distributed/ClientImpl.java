@@ -88,6 +88,9 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     }
 
     @Override
+    public int getID(){return tui.getClientUID();}
+
+    @Override
     public String  getNickname() throws RemoteException{
         return tui.getNickname();
     }
