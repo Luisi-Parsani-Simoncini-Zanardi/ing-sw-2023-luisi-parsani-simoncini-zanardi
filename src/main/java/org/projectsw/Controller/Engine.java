@@ -660,7 +660,7 @@ public class Engine{
             askNumOfPlayers = false;
             this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
         }
-        if (getGame().getPlayers().size() == game.getNumberOfPlayers()) {
+        if (getClients().getAllKey().size() >= game.getNumberOfPlayers()) {
             removeObserver(client);
             client.kill(new SerializableGame(0));
         }
