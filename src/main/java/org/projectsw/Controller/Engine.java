@@ -695,8 +695,8 @@ public class Engine{
     }
     public synchronized void initializePlayer(Client client, SerializableInput input) throws RemoteException {
          if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
-            for (Client chekClient : this.getClients().getAllKey()) {
-                if (chekClient.getNickname().equals(input.getNickname()))
+            for (Client checkClient : this.getClients().getAllKey()) {
+                if (checkClient.getNickname().equals(input.getNickname()))
                     return;
             }
             if(loadFromFile){
