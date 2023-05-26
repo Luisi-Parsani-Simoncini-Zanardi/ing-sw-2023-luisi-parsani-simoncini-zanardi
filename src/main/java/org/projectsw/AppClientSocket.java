@@ -19,5 +19,23 @@ public class AppClientSocket {
             client.setGui(serverStub);
         }
         System.exit(0);
+        new Thread() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        serverStub.receive(client);
+                    } catch (RemoteException e) {
+                        System.err.println("Cannot receive from server. Stopping...");
+                        try {
+                            serverStub.close();
+                        } catch (RemoteException ex) {
+                            System.err.println("Cannot close connection with server. Halting...");
+                        }
+                        System.exit(1);
+                    }
+                }
+            }
+        }.start();
     }
 }

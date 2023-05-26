@@ -32,7 +32,6 @@ public class Engine{
     private final Object lock = new Object();
     private final Server server;
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
-
     public boolean loadFromFile = false;
 
     /**
@@ -668,8 +667,8 @@ public class Engine{
     public synchronized void initializePlayer(Client client, SerializableInput input) throws RemoteException {
         numberOfPlayers(client, input.getClientNickname());
         if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
-            for (Client chekClient : this.getClients().getAllKey()) {
-                if (chekClient.getNickname().equals(input.getClientNickname()))
+            for (Client checkClient : this.getClients().getAllKey()) {
+                if (clients.getValue(checkClient).equals(input.getClientNickname()))
                     return;
             }
             if (loadFromFile) {

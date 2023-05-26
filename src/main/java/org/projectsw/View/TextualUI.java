@@ -533,7 +533,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             System.out.println("Insert your nickname: ");
             nickname = scanner.nextLine();
             if(nickname.equals(Config.broadcastNickname))
-                System.out.println(ConsoleColors.RED_BOLD+"You can't choose broadcast as nickname"+ConsoleColors.RESET);
+                System.out.println(ConsoleColors.RED_BOLD+"You can't choose \"broadcast\" as nickname..."+ConsoleColors.RESET);
         }while(nickname.equals(Config.broadcastNickname));
         try {
             setChangedAndNotifyObservers(new InitializePlayer(new SerializableInput(this.getNickname())));
