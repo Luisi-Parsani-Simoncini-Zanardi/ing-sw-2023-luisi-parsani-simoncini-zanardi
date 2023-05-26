@@ -60,6 +60,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
     }
 
+    public Client getClient(){return this.client;}
     public String getString(){return this.string;}
     public Integer getNumber(){
         return this.number;

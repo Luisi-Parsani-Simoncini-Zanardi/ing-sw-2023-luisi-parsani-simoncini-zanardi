@@ -662,7 +662,7 @@ public class Engine{
         }
         if (getClients().getAllKey().size() >= game.getNumberOfPlayers()) {
             removeObserver(client);
-            client.kill(new SerializableGame(0));
+            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(getGame().getCurrentClientNick(),0)));
         }
     }
     public synchronized void initializePlayer(Client client, SerializableInput input) throws RemoteException {
