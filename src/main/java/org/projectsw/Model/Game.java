@@ -22,9 +22,7 @@ public class Game extends Observable<ResponseMessage> {
     private Board board;
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
-
-    //attributes designed to send messages
-    private int clientID = 0;
+    private String currentClientNick;
 
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
@@ -142,10 +140,12 @@ public class Game extends Observable<ResponseMessage> {
         return chat;
     }
 
-    public int getClientID() {
-        return clientID;
+    public String getCurrentClientNick(){
+        return this.currentClientNick;
     }
-
+    public void setCurrentClientNick(String nick){
+        this.currentClientNick=nick;
+    }
 
     /**
      * Sets the game state as the passed parameter.
@@ -164,19 +164,23 @@ public class Game extends Observable<ResponseMessage> {
     }
 
     /**
+     * Returns a player's position by passing his nickname as a parameter
+     * @param nickname is the player's nickname
+     * @return the player position
+     */
+    public int getPositionByNick(String nickname){
+        for(Player player : getPlayers()){
+            if(nickname.equals(player.getNickname()))
+                return player.getPosition();
+        }
+        return -1;
+    }
+
+    /**
      * Sets the current player of the game.
      * @param currentPlayer the current player of the game
      */
     public void setCurrentPlayer(Player currentPlayer){
-        this.currentPlayer=currentPlayer;
-        /*try {
-            setChangedAndNotifyObservers(GameEvent.UPDATED_CURRENT_PLAYER);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error: "+e.getCause());
-        }*/
-    }
-
-    public void setCurrentPlayerLobby(Player currentPlayer){
         this.currentPlayer=currentPlayer;
     }
 
@@ -225,9 +229,6 @@ public class Game extends Observable<ResponseMessage> {
         this.commonGoals = commonGoals;
     }
 
-    public void setClientID(int clientID) {
-        this.clientID = clientID;
-    }
 
     /**
      * Adds a new player to the game.

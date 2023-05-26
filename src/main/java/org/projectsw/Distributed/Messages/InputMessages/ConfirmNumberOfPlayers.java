@@ -14,6 +14,6 @@ public class ConfirmNumberOfPlayers extends InputMessage implements Serializable
     }
     @Override
     public void execute(Engine engine){
-        engine.setNumberOfPlayers(input.getIndex());
+        engine.setNumberOfPlayers(input.getInteger());
     }
 }

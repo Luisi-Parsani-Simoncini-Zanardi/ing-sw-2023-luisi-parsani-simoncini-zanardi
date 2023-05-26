@@ -12,7 +12,6 @@ public class AskLoadGame extends ResponseMessage implements Serializable {
     public AskLoadGame(SerializableGame model) {
         super(model);
     }
-
     @Override
     public void execute(TextualUI tui){
         tui.askLoadGame();

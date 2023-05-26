@@ -34,11 +34,6 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public void setID(SerializableGame serverResponse) throws RemoteException {
-
-    }
-
-    @Override
     public String getNickname() throws RemoteException {
         return null;
     }
@@ -46,11 +41,6 @@ public class ClientSkeleton implements Client {
     @Override
     public void setCorrectResponse(boolean response) throws RemoteException {
 
-    }
-
-    @Override
-    public int getID() throws RemoteException {
-        return 0;
     }
 
     @Override

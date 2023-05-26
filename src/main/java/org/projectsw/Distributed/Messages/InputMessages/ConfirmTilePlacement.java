@@ -14,6 +14,6 @@ public class ConfirmTilePlacement extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine){
-        engine.placeTiles(input.getIndex());
+        engine.placeTiles(input.getInteger());
     }
 }
