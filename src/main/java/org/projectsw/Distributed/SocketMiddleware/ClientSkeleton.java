@@ -39,11 +39,6 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public void setCorrectResponse(boolean response) throws RemoteException {
-
-    }
-
-    @Override
     public Observer<TextualUI, InputMessage> getTuiObserver() throws RemoteException {
         return null;
     }
@@ -64,7 +59,6 @@ public class ClientSkeleton implements Client {
 
     @Override
     public void kill(SerializableGame game) throws RemoteException {
-
     }
 
     public void receive(Server server) throws RemoteException{

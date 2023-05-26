@@ -18,6 +18,7 @@ public class SerializableGame implements Serializable {
     private final ArrayList<Message> chat;
     private final String clientNickname;
     private final Integer integer;
+    private final Boolean bool;
     private final ArrayList<Point> selectablePoints;
     private final ArrayList<Point> temporaryPoints;
     private final ArrayList<Tile> temporaryTiles;
@@ -43,6 +44,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = number;
+        this.bool = null;
     }
 
     public SerializableGame(String clientNickname, Message message){
@@ -61,6 +63,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = message;
         this.integer = null;
+        this.bool = null;
     }
 
     public SerializableGame(String clientNickname){
@@ -79,6 +82,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = null;
+        this.bool = null;
     }
 
     public SerializableGame(String clientNickname, String nickname){
@@ -97,6 +101,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = null;
+        this.bool = null;
     }
 
     public SerializableGame(Game model, String scope){
@@ -115,6 +120,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = null;
+        this.bool = null;
     }
 
     public SerializableGame(Game model) {
@@ -138,6 +144,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());
         this.message = null;
         this.integer = null;
+        this.bool = null;
     }
 
    public SerializableGame(String broadcastNickname, Game model) {
@@ -159,6 +166,7 @@ public class SerializableGame implements Serializable {
        this.commonGoalDesc = null;
        this.message = null;
        this.integer = null;
+       this.bool = null;
    }
 
     public SerializableGame(String clientNickname, String nickname, Shelf shelf){
@@ -177,6 +185,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = null;
+        this.bool = null;
     }
 
     public SerializableGame(String clientNickname, ArrayList<Player> players){
@@ -199,6 +208,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = null;
+        this.bool = null;
     }
 
     public SerializableGame(String clientNickname, HashMap<String, String> nameColors){
@@ -217,6 +227,7 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = null;
+        this.bool = null;
     }
 
     public SerializableGame(String clientNickname, int num){
@@ -235,6 +246,26 @@ public class SerializableGame implements Serializable {
         this.commonGoalDesc = null;
         this.message = null;
         this.integer = num;
+        this.bool = null;
+    }
+
+    public SerializableGame(String clientNickname, boolean bool){
+        this.gameBoard =  null;
+        this.playerShelf = null;
+        this.playerName = null;
+        this.chat = null;
+        this.clientNickname = clientNickname;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.playerPersonalGoal = null;
+        this.results = null;
+        this.nameColors = null;
+        this.allShelves = null;
+        this.commonGoalDesc = null;
+        this.message = null;
+        this.integer = null;
+        this.bool = bool;
     }
 
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
@@ -247,6 +278,7 @@ public class SerializableGame implements Serializable {
         return goal;
     }
 
+    public Boolean getBool(){return this.bool;}
     public Integer getInteger(){return this.integer;}
     public Tile[][] getGameBoard(){return this.gameBoard;}
     public Tile[][] getPlayerShelf(){return this.playerShelf;}

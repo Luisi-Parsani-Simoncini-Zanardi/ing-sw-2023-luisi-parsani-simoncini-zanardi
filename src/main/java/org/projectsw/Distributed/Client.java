@@ -17,7 +17,6 @@ public interface Client extends Remote {
     void update(ResponseMessage response) throws RemoteException;
     void kill(SerializableGame game)throws RemoteException;
     public String getNickname() throws RemoteException;
-    public void setCorrectResponse(boolean response) throws RemoteException;
     public Observer<TextualUI, InputMessage> getTuiObserver() throws  RemoteException;
     public Observer<GraphicalUI, InputMessage> getGuiObserver() throws  RemoteException;
 }

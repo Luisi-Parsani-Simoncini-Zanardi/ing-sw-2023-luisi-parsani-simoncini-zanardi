@@ -95,9 +95,5 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
     public Observer<GraphicalUI, InputMessage>  getGuiObserver()  throws RemoteException{
         return guiObserver;
     }
-    @Override
-    public void setCorrectResponse(boolean response){
-        tui.setFlag(response);
-    }
 
 }

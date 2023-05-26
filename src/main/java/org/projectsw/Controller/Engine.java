@@ -696,7 +696,8 @@ public class Engine{
                     throw new RuntimeException("n error occurred while setting the name colors: " + e);
                 }
             }
-            client.setCorrectResponse(false);
+            game.setChangedAndNotifyObservers(new SetFlag(new SerializableGame(game.getCurrentClientNick(), false)));
+
         }
     }
     public void setNumberOfPlayers(int numberOfPlayers){
