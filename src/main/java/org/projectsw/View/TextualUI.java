@@ -484,7 +484,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void showCurrentPlayer(SerializableGame model){
         if (getFlag())
-            System.out.println("\nThe current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET);
+            System.out.println("The current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET);
     }
 
     private void showChat() {
