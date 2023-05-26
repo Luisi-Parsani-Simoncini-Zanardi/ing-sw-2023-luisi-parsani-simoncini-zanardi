@@ -55,7 +55,11 @@ public class ClientSkeleton implements Client {
 
     @Override
     public void update(ResponseMessage response) throws RemoteException {
-
+        try {
+            oos.writeObject(response);
+        } catch (IOException e) {
+            throw new RemoteException("Cannot send event", e);
+        }
     }
 
     @Override
@@ -64,6 +68,14 @@ public class ClientSkeleton implements Client {
     }
 
     public void receive(Server server) throws RemoteException{
-
+        InputMessage input;
+        try {
+            input = (InputMessage) ois.readObject();
+        } catch (IOException e) {
+            throw new RemoteException("Cannot receive choice from client", e);
+        } catch (ClassNotFoundException e) {
+            throw new RemoteException("Cannot deserialize choice from client", e);
+        }
+        server.update(this, input);
     }
 }

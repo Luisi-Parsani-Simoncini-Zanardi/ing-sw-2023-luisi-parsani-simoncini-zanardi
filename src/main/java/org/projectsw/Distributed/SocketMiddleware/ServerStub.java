@@ -2,7 +2,9 @@ package org.projectsw.Distributed.SocketMiddleware;
 
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
+import org.projectsw.Model.SerializableGame;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,17 +50,29 @@ public class ServerStub implements Server {
 
     @Override
     public void update(Client client, InputMessage input) throws RemoteException {
-
+        try {
+            oos.writeObject(input);
+        } catch (IOException e) {
+            throw new RemoteException("Cannot send event: ", e);
+        }
     }
 
     public void receive(Client client) throws RemoteException{
-
+        ResponseMessage o;
+        try {
+            o = (ResponseMessage) ois.readObject();
+        } catch (IOException e) {
+            throw new RemoteException("Cannot receive model view from client: ", e);
+        } catch (ClassNotFoundException e) {
+            throw new RemoteException("Cannot deserialize model view from client: ", e);
+        }
+        client.update(o);
     }
     public void close() throws RemoteException {
         try {
             socket.close();
         } catch (IOException e) {
-            throw new RemoteException("Cannot close socket", e);
+            throw new RemoteException("Cannot close socket: ", e);
         }
     }
 }
