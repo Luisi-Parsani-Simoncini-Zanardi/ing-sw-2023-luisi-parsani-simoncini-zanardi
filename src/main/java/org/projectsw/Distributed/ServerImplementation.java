@@ -2,8 +2,10 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.ResponseMessages.Kill;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.Game;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Observer;
 
 import java.rmi.RemoteException;
@@ -52,5 +54,42 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     @Override
     public void update(Client client, InputMessage input) throws RemoteException {
         this.controller.update(client, input);
+    }
+    @Override
+    public void startPingThread() {
+        Thread pingThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(5000); // Verifica lo stato di connessione ogni 5 secondi
+                    checkClientConnections();
+                } catch (InterruptedException e) {
+                    // Gestisci l'eccezione in base alle tue esigenze
+                }
+            }
+        });
+        pingThread.start();
+    }
+    public void checkClientConnections() {
+        List<Client> disconnectedClients = new ArrayList<>();
+        for (Client client : controller.getClients().getAllKey()) {
+            try {
+                client.ping(); // Verifica la connessione del client
+            } catch (RemoteException e) {
+                // Il client non è raggiungibile, consideralo disconnesso
+                disconnectedClients.add(client);
+            }
+        }
+        // Rimuovi i client disconnessi dalla registrazione dei client
+        unregisterClients(disconnectedClients);
+        disconnectedClients.clear();
+    }
+
+    private void unregisterClients(List<Client> clients) {
+        for(Client client : clients) {
+            controller.getPlayerFromNickname(controller.getClients().getValue(client)).setIsActive(false);
+            controller.getClients().removeByKey(client);
+            removeObserver(client);
+        }
+        System.out.println("Disconnected clients: " + clients);
     }
 }

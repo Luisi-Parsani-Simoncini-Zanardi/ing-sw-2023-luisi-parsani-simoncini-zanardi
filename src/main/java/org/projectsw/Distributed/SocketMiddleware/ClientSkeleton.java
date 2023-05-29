@@ -49,6 +49,11 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
+    public void ping() throws RemoteException {
+
+    }
+
+    @Override
     public void update(ResponseMessage response) throws RemoteException {
         try {
             oos.writeObject(response);

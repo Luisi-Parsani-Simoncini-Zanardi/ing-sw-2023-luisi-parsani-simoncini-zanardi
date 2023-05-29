@@ -53,6 +53,15 @@ public class Engine{
      */
     public Game getGame() { return this.game;}
 
+    public Player getPlayerFromNickname(String nickname) {
+        for(Player player : game.getPlayers()){
+            if(player.getNickname().equals(nickname)){
+                return player;
+            }
+        }
+        return null;
+    }
+
     private boolean saveFileFound(){
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         return saveGameStatus.checkExistingSaveFile();
@@ -432,6 +441,10 @@ public class Engine{
         }
         else {
             try {
+                while (!game.getCurrentPlayer().getIsActive())
+                {
+                    game.setCurrentPlayer(game.getNextPlayer());
+                }
                 getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
                 getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname,getGame())));
             } catch (RemoteException e){
@@ -696,7 +709,6 @@ public class Engine{
                 }
             }
             game.setChangedAndNotifyObservers(new SetFlag(new SerializableGame(input.getClientNickname(), false)));
-
         }
     }
     public void setNumberOfPlayers(int numberOfPlayers){
