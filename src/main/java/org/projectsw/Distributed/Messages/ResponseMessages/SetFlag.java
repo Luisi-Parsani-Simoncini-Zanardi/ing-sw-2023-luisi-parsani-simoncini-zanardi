@@ -8,15 +8,14 @@ import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class ErrorUnselectableTile extends ResponseMessage implements Serializable {
+public class SetFlag extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public ErrorUnselectableTile(SerializableGame model) {
+    public SetFlag(SerializableGame model) {
         super(model);
     }
     @Override
-    public void execute(TextualUI tui) {
-        System.err.println("Invalid Tile. Try again...");
-        tui.setTurnState(UITurnState.YOUR_TURN_SELECTION);
+    public void execute(TextualUI tui){
+        tui.setFlag(model.getBool());
     }
 }

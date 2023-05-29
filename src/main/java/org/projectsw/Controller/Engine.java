@@ -32,7 +32,6 @@ public class Engine{
     private final Object lock = new Object();
     private final Server server;
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
-
     public boolean loadFromFile = false;
 
     /**
@@ -310,7 +309,7 @@ public class Engine{
         try {
             getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastNickname, getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while sending the results: "+e.getMessage());
+            throw new RuntimeException("A network error occurred while sending the results: "+e.getMessage());
         }
     }
     /**
@@ -521,13 +520,13 @@ public class Engine{
             try {
                 getGame().setChangedAndNotifyObservers(new SendChat(new SerializableGame(getGame(), scope)));
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chat" + e.getMessage());
+                throw new RuntimeException("A network error occurred while sending the chat" + e.getMessage());
             }
         }else{
             try {
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getCurrentClientNick(), new Message(Config.error, Config.error, ConsoleColors.RED + "The entered nickname is not in game..." + ConsoleColors.RESET))));
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chat" + e.getMessage());
+                throw new RuntimeException("A network error occurred while sending the chat" + e.getMessage());
             }
         }
     }
@@ -544,7 +543,7 @@ public class Engine{
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getCurrentClientNick(), new Message(sender, Config.error, ConsoleColors.RED + "Incorrectly formatted message..." + ConsoleColors.RESET))));
                 return;
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chat Error: " + e.getMessage());
+                throw new RuntimeException("A network error occurred while sending the chat: " + e.getMessage());
             }
         }
         if (!validNickname(scope)) {
@@ -552,7 +551,7 @@ public class Engine{
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getCurrentClientNick(), new Message(sender, Config.error, ConsoleColors.RED + "The entered nickname doesn't exist..." + ConsoleColors.RESET))));
                 return;
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending the chat Error: " + e.getMessage());
+                throw new RuntimeException("A network error occurred while sending the chat: " + e.getMessage());
             }
         }
         Message message = new Message(sender, scope, content);
@@ -560,7 +559,7 @@ public class Engine{
         try {
             getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(Config.broadcastNickname, message)));
         } catch (RemoteException e) {
-            throw new RuntimeException("Error while sending the chat to the clients: " + e.getMessage());
+            throw new RuntimeException("An error occurred while sending the chat to the clients: " + e.getMessage());
         }
     }
 
@@ -568,7 +567,7 @@ public class Engine{
         try {
             server.removeObserver(client);
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while removing the observer: "+e.getMessage());
+            throw new RuntimeException("A network error occurred while removing the observer: "+e.getMessage());
         }
     }
 
@@ -662,14 +661,14 @@ public class Engine{
         }
         if (getClients().getAllKey().size() >= game.getNumberOfPlayers()) {
             removeObserver(client);
-            client.kill(new SerializableGame(0));
+            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(getGame().getCurrentClientNick(),0)));
         }
     }
     public synchronized void initializePlayer(Client client, SerializableInput input) throws RemoteException {
         numberOfPlayers(client, input.getClientNickname());
         if (this.getClients().getAllKey().size() < this.getGame().getNumberOfPlayers()) {
-            for (Client chekClient : this.getClients().getAllKey()) {
-                if (chekClient.getNickname().equals(input.getClientNickname()))
+            for (Client checkClient : this.getClients().getAllKey()) {
+                if (clients.getValue(checkClient).equals(input.getClientNickname()))
                     return;
             }
             if (loadFromFile) {
@@ -693,10 +692,11 @@ public class Engine{
                     getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname, getGame())));
                     getGame().setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastNickname,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));
                 } catch (RemoteException e) {
-                    throw new RuntimeException("n error occurred while setting the name colors: " + e);
+                    throw new RuntimeException("An error occurred while setting the name colors: " + e);
                 }
             }
-            client.setCorrectResponse(false);
+            game.setChangedAndNotifyObservers(new SetFlag(new SerializableGame(input.getClientNickname(), false)));
+
         }
     }
     public void setNumberOfPlayers(int numberOfPlayers){
@@ -717,7 +717,7 @@ public class Engine{
             try {
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getCurrentClientNick(),new Message(Config.error,Config.error,ConsoleColors.RED_BOLD+"Can't find client position"+ConsoleColors.RESET))));
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending position error: "+e.getMessage());
+                throw new RuntimeException("A network error occurred while sending position error: "+e.getMessage());
             }
         }
         try {
@@ -747,7 +747,7 @@ public class Engine{
         try {
             game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error occurred: "+e.getCause());
+            throw new RuntimeException("A network error occurred: "+e.getCause());
         }
     }
 

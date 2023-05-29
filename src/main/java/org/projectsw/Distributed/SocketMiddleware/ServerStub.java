@@ -2,7 +2,9 @@ package org.projectsw.Distributed.SocketMiddleware;
 
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
+import org.projectsw.Model.SerializableGame;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -29,15 +31,15 @@ public class ServerStub implements Server {
             try {
                 this.oos = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                throw new RemoteException("Cannot create output stream", e);
+                throw new RemoteException("An error while creating output stream: ", e);
             }
             try {
                 this.ois = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
-                throw new RemoteException("Cannot create input stream", e);
+                throw new RemoteException("An error while creating input stream: ", e);
             }
         } catch (IOException e) {
-            throw new RemoteException("Unable to connect to the server", e);
+            throw new RemoteException("Unable to connect to the server: ", e);
         }
     }
 
@@ -48,17 +50,30 @@ public class ServerStub implements Server {
 
     @Override
     public void update(Client client, InputMessage input) throws RemoteException {
-
+        try {
+            oos.writeObject(input);
+            oos.flush();
+        } catch (IOException e) {
+            throw new RemoteException("An error while sending an input message: ", e);
+        }
     }
 
     public void receive(Client client) throws RemoteException{
-
+        ResponseMessage responseMessage;
+        try {
+            responseMessage = (ResponseMessage) ois.readObject();
+        } catch (IOException e) {
+            throw new RemoteException("An error while receiving model view from client: ", e);
+        } catch (ClassNotFoundException e) {
+            throw new RemoteException("An error while deserializing model view from client: ", e);
+        }
+        client.update(responseMessage);
     }
     public void close() throws RemoteException {
         try {
             socket.close();
         } catch (IOException e) {
-            throw new RemoteException("Cannot close socket", e);
+            throw new RemoteException("An error while closeing socket: ", e);
         }
     }
 }

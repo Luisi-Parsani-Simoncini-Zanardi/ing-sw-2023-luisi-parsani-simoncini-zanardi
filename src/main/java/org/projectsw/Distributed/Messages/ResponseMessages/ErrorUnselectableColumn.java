@@ -17,7 +17,7 @@ public class ErrorUnselectableColumn extends ResponseMessage implements Serializ
         super(model);
     }
     public void execute(TextualUI tui){
-        System.out.println(ConsoleColors.RED + "Invalid Column. Try again..." + ConsoleColors.RESET);
+        System.err.println("Invalid Column. Try again...");
         tui.setTurnState(UITurnState.YOUR_TURN_COLUMN);
     }
     public void execute(GraphicalUI gui){}
