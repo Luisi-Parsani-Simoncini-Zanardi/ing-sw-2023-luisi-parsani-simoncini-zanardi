@@ -106,6 +106,10 @@ public class SaveGameStatus {
         return retrieveGame(filePath);
     }
 
+    public void deleteSaveFile(String path){
+        File fileDaEliminare = new File(path);
+        fileDaEliminare.delete();
+    }
     public void deleteSaveFile(){
         File fileDaEliminare = new File(filePath);
         if (fileDaEliminare.exists()) {

@@ -515,6 +515,7 @@ public class Engine{
     public void endGame() {
         this.checkPersonalGoal();
         this.checkEndgameGoal();
+        saveGameStatus.deleteSaveFile("src/main/java/org/projectsw/Util/save.txt");
     }
     /**
      * reset game
@@ -673,8 +674,8 @@ public class Engine{
             this.getGame().initializeGame(this.getGame().getNumberOfPlayers());
         }
         if (getClients().getAllKey().size() >= game.getNumberOfPlayers()) {
-            removeObserver(client);
             game.setChangedAndNotifyObservers(new Kill(new SerializableGame(getGame().getCurrentClientNick(),0)));
+            removeObserver(client);
         }
     }
     public synchronized void initializePlayer(Client client, SerializableInput input) throws RemoteException {
