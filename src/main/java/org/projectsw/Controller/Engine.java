@@ -443,13 +443,28 @@ public class Engine{
             try {
                 while (!game.getCurrentPlayer().getIsActive())
                 {
-                    game.setCurrentPlayer(game.getNextPlayer());
+                    dcEndTurn();
                 }
                 getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
                 getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname,getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
+        }
+        getSaveGameStatus().saveGame();
+    }
+
+    private void dcEndTurn() {
+        this.checkCommonGoals();
+        this.checkEndGame();
+        getGame().getCurrentPlayer().clearTemporaryTiles();
+        if (getGame().getBoard().isBoardEmpty())
+            this.fillBoard();
+        do {
+            getGame().setCurrentPlayer(getGame().getNextPlayer());
+        }while(!getGame().getCurrentPlayer().getIsActive());
+        if (getGame().getCurrentPlayer().getPosition() == 0 && getGame().getBoard().isEndGame()) {
+            this.endGame();
         }
         getSaveGameStatus().saveGame();
     }
