@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 //2:06/13
 public class AppServerSocket {
     public static void main( String[] args ) throws RemoteException {
-        try (ServerSocket serverSocket = new ServerSocket(1234)) {
+        try (ServerSocket serverSocket = new ServerSocket(4444)) {
             while (true) {
                 try (Socket socket = serverSocket.accept()) {
                     ClientSkeleton clientSkeleton = new ClientSkeleton(socket);

@@ -52,6 +52,7 @@ public class ClientSkeleton implements Client {
     public void update(ResponseMessage response) throws RemoteException {
         try {
             oos.writeObject(response);
+            oos.flush();
         } catch (IOException e) {
             throw new RemoteException("Cannot send event", e);
         }

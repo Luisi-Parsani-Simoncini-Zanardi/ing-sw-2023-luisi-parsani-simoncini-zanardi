@@ -52,6 +52,7 @@ public class ServerStub implements Server {
     public void update(Client client, InputMessage input) throws RemoteException {
         try {
             oos.writeObject(input);
+            oos.flush();
         } catch (IOException e) {
             throw new RemoteException("Cannot send event: ", e);
         }
