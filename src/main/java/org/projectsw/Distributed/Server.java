@@ -12,11 +12,5 @@ public interface Server extends Remote {
      */
     void register(Client client) throws RemoteException;
     public void removeObserver(Client client)throws RemoteException;
-
-    /**
-     * Notify the server that a client has made a choice
-     * @param client is the client that is sending the data
-     * @param input all data taken from the client
-     */
     void update(Client client, InputMessage input) throws RemoteException;
 }

@@ -1,18 +1,15 @@
 package org.projectsw;
 
-import org.projectsw.Distributed.ClientImpl;
-import org.projectsw.Distributed.Server;
+import org.projectsw.Distributed.ClientImplementation;
 import org.projectsw.Distributed.SocketMiddleware.ServerStub;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 public class AppClientSocket {
     public static void main(String[] args) throws RemoteException, NotBoundException {
-        ServerStub serverStub = new ServerStub("serverStub", 4444);
-        ClientImpl client = new ClientImpl(serverStub);
+        ServerStub serverStub = new ServerStub("localhost", 4444);
+        ClientImplementation client = new ClientImplementation(serverStub);
         new Thread() {
             @Override
             public void run() {

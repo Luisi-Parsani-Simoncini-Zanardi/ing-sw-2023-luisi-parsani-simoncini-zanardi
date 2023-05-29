@@ -12,21 +12,21 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
 
-public class ClientImpl extends UnicastRemoteObject implements Client{
+public class ClientImplementation extends UnicastRemoteObject implements Client{
     private TextualUI tui;
     private GraphicalUI gui;
     private Observer<TextualUI, InputMessage> tuiObserver;
     private Observer<GraphicalUI, InputMessage> guiObserver;
 
-    public ClientImpl(Server server) throws RemoteException{
+    public ClientImplementation(Server server) throws RemoteException{
         super();
         initialize(server);
     }
-    public ClientImpl(int port, Server server) throws RemoteException {
+    public ClientImplementation(int port, Server server) throws RemoteException {
         super(port);
         initialize(server);
     }
-    public ClientImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf, Server server) throws RemoteException {
+    public ClientImplementation(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf, Server server) throws RemoteException {
         super(port, csf, ssf);
         initialize(server);
     }
@@ -45,7 +45,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client{
             try {
                 server.update(this, input);
             }catch(RemoteException e){
-                throw new RuntimeException("Network error occurred: "+e.getMessage());
+                throw new RuntimeException("A network error occurred: "+e.getMessage());
             }
         };
         tui.addObserver(tuiObserver);

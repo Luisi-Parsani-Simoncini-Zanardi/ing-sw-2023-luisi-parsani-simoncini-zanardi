@@ -113,7 +113,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 try {
                     this.wait();
                 } catch (InterruptedException e) {
-                    throw new RuntimeException("Error while waiting for the game to start: " + e);
+                    throw new RuntimeException("An error occurred while waiting for the game to start: " + e);
                 }
             }
         }
@@ -215,7 +215,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             try {
                 setChangedAndNotifyObservers(new AskForResults(new SerializableInput(getNickname())));
             } catch (RemoteException e) {
-                throw new RuntimeException("Network error while asking for results: "+e.getMessage());
+                throw new RuntimeException("A network error occurred while asking for results: "+e.getMessage());
             }
         }else {
             setWaitResult(true);
@@ -224,7 +224,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         try {
             client.kill(new SerializableGame(getNickname(),1));
         } catch (RemoteException e) {
-            throw new RuntimeException("Error while killing the client: "+e.getMessage());
+            throw new RuntimeException("An error occurred while killing the client: "+e.getMessage());
         }
     }
 
@@ -254,7 +254,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(getNickname())));
             client.kill(new SerializableGame(getNickname(),1));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while removing the tui observer: "+e.getMessage());
+            throw new RuntimeException("A network error occurred while removing the tui observer: "+e.getMessage());
         }
     }
     private void writeInChat(){
@@ -267,7 +267,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         try {
             setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(getNickname(),getString())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while sending the message: "+e.getMessage());
+            throw new RuntimeException("A network error occurred while sending the message: "+e.getMessage());
         }
     }
 
@@ -512,7 +512,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         try {
             setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getNickname(),Config.everyone)));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while asking for the Global chat" + e.getMessage());
+            throw new RuntimeException("A network error occurred while asking for the Global chat" + e.getMessage());
         }
     }
 
@@ -523,7 +523,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         try {
             setChangedAndNotifyObservers(new AskForChat(new SerializableInput(getNickname(),getString())));
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while asking for the Specific chat" + e.getMessage());
+            throw new RuntimeException("A network error occurred while asking for the Specific chat: " + e.getMessage());
         }
     }
 

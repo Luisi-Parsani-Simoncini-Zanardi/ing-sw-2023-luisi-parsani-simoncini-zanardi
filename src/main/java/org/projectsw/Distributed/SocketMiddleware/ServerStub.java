@@ -59,15 +59,15 @@ public class ServerStub implements Server {
     }
 
     public void receive(Client client) throws RemoteException{
-        ResponseMessage o;
+        ResponseMessage responseMessage;
         try {
-            o = (ResponseMessage) ois.readObject();
+            responseMessage = (ResponseMessage) ois.readObject();
         } catch (IOException e) {
             throw new RemoteException("Cannot receive model view from client: ", e);
         } catch (ClassNotFoundException e) {
             throw new RemoteException("Cannot deserialize model view from client: ", e);
         }
-        client.update(o);
+        client.update(responseMessage);
     }
     public void close() throws RemoteException {
         try {

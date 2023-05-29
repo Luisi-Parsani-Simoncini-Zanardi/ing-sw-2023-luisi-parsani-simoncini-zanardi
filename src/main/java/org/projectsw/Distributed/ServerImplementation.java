@@ -12,23 +12,23 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class ServerImpl extends UnicastRemoteObject implements Server{
+public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine(this);
     private final Game model = new Game();
 
     private final Map<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
 
-    public ServerImpl() throws RemoteException {
+    public ServerImplementation() throws RemoteException {
         super();
         controller.setGame(model);
 
     }
-    public ServerImpl(int port) throws RemoteException {
+    public ServerImplementation(int port) throws RemoteException {
         super(port);
         controller.setGame(model);
     }
-    public ServerImpl(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
+    public ServerImplementation(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
         controller.setGame(model);
     }
