@@ -17,7 +17,7 @@ public class ErrorInvalidTemporaryTile extends ResponseMessage implements Serial
         super(model);
     }
     public void execute(TextualUI tui){
-        System.out.println(ConsoleColors.RED + "You don't have this tile. Try again..." + ConsoleColors.RESET);
+        System.err.println("You don't have this tile. Try again...");
         tui.setTurnState(UITurnState.YOUR_TURN_INSERTION);
     }
     public void execute(GraphicalUI gui){}

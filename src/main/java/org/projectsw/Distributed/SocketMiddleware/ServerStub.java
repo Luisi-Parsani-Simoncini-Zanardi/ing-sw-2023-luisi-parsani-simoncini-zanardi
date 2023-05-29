@@ -31,15 +31,15 @@ public class ServerStub implements Server {
             try {
                 this.oos = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                throw new RemoteException("Cannot create output stream", e);
+                throw new RemoteException("An error while creating output stream: ", e);
             }
             try {
                 this.ois = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
-                throw new RemoteException("Cannot create input stream", e);
+                throw new RemoteException("An error while creating input stream: ", e);
             }
         } catch (IOException e) {
-            throw new RemoteException("Unable to connect to the server", e);
+            throw new RemoteException("Unable to connect to the server: ", e);
         }
     }
 
@@ -54,7 +54,7 @@ public class ServerStub implements Server {
             oos.writeObject(input);
             oos.flush();
         } catch (IOException e) {
-            throw new RemoteException("Cannot send event: ", e);
+            throw new RemoteException("An error while sending an input message: ", e);
         }
     }
 
@@ -63,9 +63,9 @@ public class ServerStub implements Server {
         try {
             responseMessage = (ResponseMessage) ois.readObject();
         } catch (IOException e) {
-            throw new RemoteException("Cannot receive model view from client: ", e);
+            throw new RemoteException("An error while receiving model view from client: ", e);
         } catch (ClassNotFoundException e) {
-            throw new RemoteException("Cannot deserialize model view from client: ", e);
+            throw new RemoteException("An error while deserializing model view from client: ", e);
         }
         client.update(responseMessage);
     }
@@ -73,7 +73,7 @@ public class ServerStub implements Server {
         try {
             socket.close();
         } catch (IOException e) {
-            throw new RemoteException("Cannot close socket: ", e);
+            throw new RemoteException("An error while closeing socket: ", e);
         }
     }
 }

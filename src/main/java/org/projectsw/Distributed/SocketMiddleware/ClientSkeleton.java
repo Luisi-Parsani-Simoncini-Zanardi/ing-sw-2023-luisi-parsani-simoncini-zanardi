@@ -24,12 +24,12 @@ public class ClientSkeleton implements Client {
         try {
             this.oos = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            throw new RemoteException("Cannot create output stream: "+e.getMessage());
+            throw new RemoteException("An error while creating output stream: "+e.getMessage());
         }
         try {
             this.ois = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            throw new RemoteException("Cannot create input stream: "+e.getMessage());
+            throw new RemoteException("An error while creating input stream: "+e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class ClientSkeleton implements Client {
             oos.writeObject(response);
             oos.flush();
         } catch (IOException e) {
-            throw new RemoteException("Cannot send event", e);
+            throw new RemoteException("An error while sending a response message: ", e);
         }
     }
 
@@ -67,9 +67,9 @@ public class ClientSkeleton implements Client {
         try {
             input = (InputMessage) ois.readObject();
         } catch (IOException e) {
-            throw new RemoteException("Cannot receive choice from client", e);
+            throw new RemoteException("An error while receiving choice from client: ", e);
         } catch (ClassNotFoundException e) {
-            throw new RemoteException("Cannot deserialize choice from client", e);
+            throw new RemoteException("An error while deserializing choice from client: ", e);
         }
         server.update(this, input);
     }

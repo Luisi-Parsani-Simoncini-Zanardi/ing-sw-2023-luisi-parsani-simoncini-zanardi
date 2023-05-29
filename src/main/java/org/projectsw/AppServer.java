@@ -3,6 +3,7 @@ package org.projectsw;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Distributed.ServerImplementation;
 import org.projectsw.Distributed.SocketMiddleware.ClientSkeleton;
+import org.projectsw.View.ConsoleColors;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -91,18 +92,18 @@ public class AppServer extends UnicastRemoteObject
                             clientSkeleton.receive(server);
                         }
                     } catch (RemoteException e) {
-                        System.err.println("Cannot receive from client. Closing this connection...");
+                        System.err.println("An error while receive from client. Closing this connection...");
                     } finally {
                         try {
                             socket.close();
                         } catch (IOException e) {
-                            System.err.println("Cannot close socket");
+                            System.err.println("An error while closing socket: ");
                         }
                     }
                 });
             }
         } catch (IOException e) {
-            throw new RemoteException("Cannot start socket server", e);
+            throw new RemoteException("An error while starting socket server: ", e);
         }
     }
 

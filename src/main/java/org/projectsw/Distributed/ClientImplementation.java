@@ -34,7 +34,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client{
         try {
             server.register(this);
         } catch (RemoteException e) {
-            throw new RemoteException("Cannot register client on server" + e.getCause());
+            throw new RemoteException("An error while registering client on server" + e.getCause());
         }
     }
 
@@ -45,7 +45,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client{
             try {
                 server.update(this, input);
             }catch(RemoteException e){
-                throw new RuntimeException("A network error occurred: "+e.getMessage());
+                throw new RuntimeException("A network error occurred: " + e.getMessage());
             }
         };
         tui.addObserver(tuiObserver);

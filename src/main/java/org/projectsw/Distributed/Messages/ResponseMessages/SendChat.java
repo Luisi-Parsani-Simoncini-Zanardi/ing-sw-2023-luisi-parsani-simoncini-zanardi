@@ -37,7 +37,7 @@ public class SendChat extends ResponseMessage implements Serializable {
             }
         }
         if(counter == 0)
-            System.out.println(ConsoleColors.RED+"This chat is empty..."+ConsoleColors.RESET);
+            System.err.println("This chat is empty...");
         System.out.print("\n");
     }
 }

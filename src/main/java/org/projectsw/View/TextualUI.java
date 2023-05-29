@@ -103,7 +103,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do {
             joinGame();
             if (flag)
-                System.out.println(ConsoleColors.RED + "Nickname already taken..." + ConsoleColors.RESET);
+                System.err.println("Nickname already taken...");
         } while (flag);
         endedTurn = false;
         if (getEndState() == UIEndState.LOBBY)
@@ -135,24 +135,24 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 0 -> printCommandMenu();
                     case 1 -> {
                         if (getTurnState() == UITurnState.OPPONENT_TURN)
-                            System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                            System.err.println("It's not your turn. Please wait...");
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
                                 askBoard();
                                 selectTiles();
                             } else {
-                                System.out.println(ConsoleColors.RED + "You can't select a tile now..." + ConsoleColors.RESET);
+                                System.err.println("You can't select a tile now...");
                             }
                         }
                     }
                     case 2 -> {
                         if (getTurnState() == UITurnState.OPPONENT_TURN) {
-                            System.out.println(ConsoleColors.RED + "It's not your turn. Please wait..." + ConsoleColors.RESET);
+                            System.err.println("It's not your turn. Please wait...");
                             System.out.println("---CHOOSE AN ACTION---");
                         } else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
-                                System.out.println(ConsoleColors.RED + "You can't insert a tile now..." + ConsoleColors.RESET);
+                                System.err.println("You can't insert a tile now...");
                             } else {
                                 askShelf();
                                 askTemporaryTiles();
@@ -197,7 +197,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                         }
                     }
                     case 12 -> exit();
-                    default -> System.out.println(ConsoleColors.RED + "Invalid command. Try again..." + ConsoleColors.RESET);
+                    default -> System.err.println("Invalid command. Try again...");
                 }
                 if (!endedTurn&&flag)
                     System.out.println("\n---CHOOSE AN ACTION---");
@@ -208,7 +208,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void ending(){
         getMasterScanner().close();
-        System.out.println(ConsoleColors.RED + "The game ended. You can no longer do actions." + ConsoleColors.RESET);
+        System.err.println("The game ended. You can no longer do actions.");
         setFlag(false);
         System.out.println("Wait for results please...");
         if(nickname.equals(lastPlayerNick)) {
@@ -285,14 +285,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Are you sure?\n1: Yes\n2: No");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Please insert a number..." + ConsoleColors.RESET);
+            System.err.println("Please insert a number...");
             scanner.next();
         }
         int choice = scanner.nextInt();
         if (choice == 1 || choice == 2)
             return choice == 2;
         else {
-            System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
+            System.err.println("Invalid input. Try again...");
             return chooseColumn();
         }
     }
@@ -301,7 +301,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Which tile do you want to insert?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the tile number: ");
+            System.err.println("Invalid input");
+            System.out.println("Insert the tile number: ");
             scanner.next();
         }
         return scanner.nextInt()-1;
@@ -311,7 +312,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("\nIn which column do you want to insert your tiles?");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input \n" + ConsoleColors.RESET + "Insert the column: ");
+            System.err.println("Invalid input");
+            System.out.println("Insert the column: ");
             scanner.next();
         }
         return scanner.nextInt()-1;
@@ -321,7 +323,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Do you want to choose another tile?\n1: Yes\n2: No");
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Please insert a number..." + ConsoleColors.RESET);
+            System.err.println("Please insert a number...");
             scanner.next();
         }
         int choice = scanner.nextInt();
@@ -330,7 +332,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             return choice == 1;
         }
         else {
-            System.out.println(ConsoleColors.RED + "Invalid input. Try again..." + ConsoleColors.RESET);
+            System.err.println("Invalid input. Try again...");
             return chooseTiles();
         }
     }
@@ -377,13 +379,15 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert the row: ");
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input... \n" + ConsoleColors.RESET + "Insert the row: ");
+            System.err.println("Invalid input");
+            System.out.println("Insert the row: ");
             scanner.next();
         }
         int row = scanner.nextInt();
         System.out.println("Insert the column: ");
         while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Invalid input... \n" + ConsoleColors.RESET + "Insert the column: ");
+            System.err.println("Invalid input");
+            System.out.println("Insert the column: ");
             scanner.next();
         }
         int column = scanner.nextInt();
@@ -505,7 +509,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             } else if (number == 2) {
                 askSpecificChat();
             } else {
-                System.out.println(ConsoleColors.RED_BOLD + "Invalid input..." + ConsoleColors.RESET);
+                System.err.println("Invalid input...");
             }
     }
     private void askGlobalChat(){
@@ -533,7 +537,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             System.out.println("Insert your nickname: ");
             nickname = scanner.nextLine();
             if(nickname.equals(Config.broadcastNickname))
-                System.out.println(ConsoleColors.RED_BOLD+"You can't choose \"broadcast\" as nickname..."+ConsoleColors.RESET);
+                System.err.println("You can't choose \"broadcast\" as nickname...");
         }while(nickname.equals(Config.broadcastNickname));
         try {
             setChangedAndNotifyObservers(new InitializePlayer(new SerializableInput(this.getNickname())));
@@ -550,13 +554,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 number = scanner.nextInt();
             } catch (InputMismatchException e)
             {
-                System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
+                System.err.println("Invalid Number of players. Try again...");
                 System.out.println("Insert number of players: ");
                 scanner.next();
                 number = scanner.nextInt();
             }
             if(number<Config.minPlayers || number>Config.maxPlayers)
-                System.out.println(ConsoleColors.RED +"Invalid Number of players. Try again..."+ ConsoleColors.RESET);
+                System.err.println("Invalid Number of players. Try again...");
         }while(number<Config.minPlayers || number>Config.maxPlayers);
         try {
             setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(getNumber())));
@@ -571,7 +575,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             System.out.println("Save file found. Would you like to load the game from it?\n1: yes\n2: no");
             number = scanner.nextInt();
             if(number != 1 && number != 2)
-                System.out.println(ConsoleColors.RED +"Invalid Input, try again..."+ ConsoleColors.RESET);
+                System.err.println("Invalid Input, try again...");
         } while (number != 1 && number != 2);
         if (number == 1) {
             try {
@@ -584,7 +588,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void kill(int option){
         if(option==0) {
-            System.out.println(ConsoleColors.RED + "Unable to join the game; lobby is full.\nClosing the process..." + ConsoleColors.RESET);
+            System.err.println("Unable to join the game; lobby is full.\nClosing the process...");
             printImageKill();
         }
         System.exit(0);
