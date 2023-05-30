@@ -29,8 +29,8 @@ public class SendChat extends ResponseMessage implements Serializable {
         else {
             System.out.println("---CHAT WITH "+model.getClientNickname()+"---");
             for (Message message : model.getChat()) {
-                if ((message.getScope().equals(tui.getNickname()) && message.getSender().equals(model.getPlayerName())) ||
-                        (message.getScope().equals(model.getPlayerName()) && message.getSender().equals(tui.getNickname()))) {
+                if ((message.getScope().equals(tui.getNickname()) && message.getSender().equals(model.getClientNickname())) ||
+                        (message.getScope().equals(model.getClientNickname()) && message.getSender().equals(tui.getNickname()))) {
                     System.out.println(tui.getNameColors().get(message.getSender()) + message.getSender() + ": " + ConsoleColors.RESET + message.getPayload());
                     counter++;
                 }
