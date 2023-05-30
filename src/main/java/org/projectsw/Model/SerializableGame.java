@@ -35,11 +35,11 @@ public SerializableGame(String alphanumericID, Game model) {
     this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
     this.playerName = model.getCurrentPlayer().getNickname();
     this.chat = model.getChat().getMessages();
-    this.clientNickname = model.getCurrentPlayerNickname();
+    this.clientNickname = model.getClientPlayerNickname();
     this.selectablePoints = model.getBoard().getSelectablePoints();
     this.temporaryPoints = model.getBoard().getTemporaryPoints();
     this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-    this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getCurrentPlayerNickname())).getPersonalGoal().getPersonalGoal());
+    this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getClientPlayerNickname())).getPersonalGoal().getPersonalGoal());
     this.results = new HashMap<>();
     for (Player p : model.getPlayers()) {
         this.results.put(p.getNickname(), p.getPoints());
