@@ -258,7 +258,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey, getNickname())));
             if(getTurnState()!=UITurnState.OPPONENT_TURN)
                 setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(alphanumericKey, getNickname())));
-            client.kill(new SerializableGame(getNickname(),1));
+            client.kill(new SerializableGame(alphanumericKey,1));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while removing the tui observer: "+e.getMessage());
         }
@@ -364,7 +364,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             number = selectColumnInput();
         }while(chooseColumn());
         try {
-            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, getNickname(), number)));
+            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, number)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
         }
@@ -402,7 +402,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askBoard() {
         try {
-            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(alphanumericKey)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the board: "+e.getMessage());
         }
@@ -418,7 +418,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askAllShelves() {
         try {
-            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(alphanumericKey)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
@@ -450,7 +450,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askCurrentPlayer() {
         try {
-            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(alphanumericKey)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the current player: "+e.getMessage());
         }
