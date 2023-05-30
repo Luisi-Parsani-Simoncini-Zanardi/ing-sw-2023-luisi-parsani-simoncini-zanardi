@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class SerializableGame implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+    private final String alphanumericID;
     private final Tile[][] gameBoard;
     private final Tile[][] playerShelf;
     private final String playerName;
@@ -28,7 +29,8 @@ public class SerializableGame implements Serializable {
     private final HashMap<String, Tile[][]> allShelves;
     private final ArrayList<String> commonGoalDesc;
 
-    public SerializableGame(int number){
+    public SerializableGame(String alphanumericID, int number){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -47,7 +49,8 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(String clientNickname, Message message){
+    public SerializableGame(String alphanumericID, String clientNickname, Message message){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -66,7 +69,28 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(String clientNickname){
+    public SerializableGame(String alphanumericID){
+        this.alphanumericID = alphanumericID;
+        this.gameBoard = null;
+        this.playerShelf = null;
+        this.playerName = null;
+        this.chat = null;
+        this.clientNickname = null;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.playerPersonalGoal = null;
+        this.results = null;
+        this.nameColors = null;
+        this.allShelves = null;
+        this.commonGoalDesc = null;
+        this.message = null;
+        this.integer = null;
+        this.bool = null;
+    }
+
+    public SerializableGame(String alphanumericID, String clientNickname){
+        this.alphanumericID = alphanumericID;
         this.gameBoard = null;
         this.playerShelf = null;
         this.playerName = null;
@@ -85,7 +109,8 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(String clientNickname, String nickname){
+    public SerializableGame(String alphanumericID, String clientNickname, String nickname){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = nickname;
@@ -104,12 +129,13 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(Game model, String scope){
+    public SerializableGame(String alphanumericID, Game model, String scope){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = scope;
         this.chat = model.getChat().getMessages();
-        this.clientNickname = model.getCurrentClientNick();
+        this.clientNickname = model.getCurrentPlayerNickname();
         this.selectablePoints = null;
         this.temporaryPoints = null;
         this.temporaryTiles = null;
@@ -123,16 +149,17 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(Game model) {
+    public SerializableGame(String alphanumericID, Game model) {
+        this.alphanumericID = alphanumericID;
         this.gameBoard = model.getBoard().getBoard();
         this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
         this.playerName = model.getCurrentPlayer().getNickname();
         this.chat = model.getChat().getMessages();
-        this.clientNickname = model.getCurrentClientNick();
+        this.clientNickname = model.getCurrentPlayerNickname();
         this.selectablePoints = model.getBoard().getSelectablePoints();
         this.temporaryPoints = model.getBoard().getTemporaryPoints();
         this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-        this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getCurrentClientNick())).getPersonalGoal().getPersonalGoal());
+        this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getCurrentPlayerNickname())).getPersonalGoal().getPersonalGoal());
         this.results = new HashMap<>();
         for (Player p : model.getPlayers()) {
             this.results.put(p.getNickname(), p.getPoints());
@@ -147,7 +174,8 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-   public SerializableGame(String broadcastNickname, Game model) {
+   public SerializableGame(String alphanumericID, String broadcastNickname, Game model) {
+       this.alphanumericID = alphanumericID;
        this.gameBoard = model.getBoard().getBoard();
        this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
        this.playerName = model.getCurrentPlayer().getNickname();
@@ -156,7 +184,7 @@ public class SerializableGame implements Serializable {
        this.selectablePoints = model.getBoard().getSelectablePoints();
        this.temporaryPoints = model.getBoard().getTemporaryPoints();
        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-       this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getCurrentClientNick())).getPersonalGoal().getPersonalGoal());
+       this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getCurrentPlayerNickname())).getPersonalGoal().getPersonalGoal());
        this.results = new HashMap<>();
        for (Player p : model.getPlayers()) {
            this.results.put(p.getNickname(), p.getPoints());
@@ -169,7 +197,8 @@ public class SerializableGame implements Serializable {
        this.bool = null;
    }
 
-    public SerializableGame(String clientNickname, String nickname, Shelf shelf){
+    public SerializableGame(String alphanumericID, String clientNickname, String nickname, Shelf shelf){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = shelf.getShelf();
         this.playerName = nickname;
@@ -188,7 +217,8 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(String clientNickname, ArrayList<Player> players){
+    public SerializableGame(String alphanumericID, String clientNickname, ArrayList<Player> players){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -211,7 +241,8 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(String clientNickname, HashMap<String, String> nameColors){
+    public SerializableGame(String alphanumericID, String clientNickname, HashMap<String, String> nameColors){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -230,7 +261,8 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(String clientNickname, int num){
+    public SerializableGame(String alphanumericID, String clientNickname, int num){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -249,7 +281,8 @@ public class SerializableGame implements Serializable {
         this.bool = null;
     }
 
-    public SerializableGame(String clientNickname, boolean bool){
+    public SerializableGame(String alphanumericID, String clientNickname, boolean bool){
+        this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
         this.playerShelf = null;
         this.playerName = null;
@@ -278,6 +311,7 @@ public class SerializableGame implements Serializable {
         return goal;
     }
 
+    public String getAlphanumericID(){return this.alphanumericID;}
     public Boolean getBool(){return this.bool;}
     public Integer getInteger(){return this.integer;}
     public Tile[][] getGameBoard(){return this.gameBoard;}
