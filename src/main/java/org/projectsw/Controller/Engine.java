@@ -821,20 +821,6 @@ public class Engine{
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private HashMap<String, String> randomColors() {
         HashMap<String, String> colors = new HashMap<>();
         ArrayList<Integer> alreadyUsed = new ArrayList<>();
