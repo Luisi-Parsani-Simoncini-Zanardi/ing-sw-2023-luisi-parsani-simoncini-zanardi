@@ -89,6 +89,9 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
             controller.getPlayerFromNickname(controller.getClients().getValue(client)).setIsActive(false);
             controller.getClients().removeByKey(client);
             removeObserver(client);
+            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClients().getValue(client))){
+                controller.endTurn();
+            }
         }
         System.out.println("Disconnected clients: " + clients);
     }
