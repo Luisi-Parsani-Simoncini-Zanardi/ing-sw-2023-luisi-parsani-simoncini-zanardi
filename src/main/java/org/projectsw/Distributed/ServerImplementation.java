@@ -35,7 +35,6 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     @Override
     public void register(Client client) throws RemoteException {
-        //TODO: gestire la possibile reconnect
         Observer<Game, ResponseMessage> observer = (o, response) -> {
             client.update(response);
         };
