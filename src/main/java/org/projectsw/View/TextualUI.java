@@ -40,7 +40,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     Scanner masterScanner = new Scanner(System.in);
   
     private ArrayList<Message> chatBuffer = new ArrayList<>();
-  
+
     public TextualUI(Client client)
     {
         this.client = client;
@@ -103,6 +103,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         int choice = 0;
         RandomAlphanumericGen randomizer = new RandomAlphanumericGen();
         alphanumericKey = randomizer.generateRandomString(100);
+        System.out.println(alphanumericKey);
         connect();
         endedTurn = false;
         if (getEndState() == UIEndState.LOBBY)
@@ -221,7 +222,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         }
         while (waitResult) Thread.onSpinWait();
         try {
-            client.kill(new SerializableGame(getNickname(),1));
+            client.kill();
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while killing the client: "+e.getMessage());
         }
@@ -255,10 +256,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Exiting...");
         try {
             setChangedAndNotifyObservers(new NotActive(new SerializableInput(alphanumericKey, getNickname())));
-            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey)));
             if(getTurnState()!=UITurnState.OPPONENT_TURN)
                 setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(alphanumericKey, getNickname())));
-            client.kill(new SerializableGame(alphanumericKey,1));
+            client.kill();
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while removing the tui observer: "+e.getMessage());
         }
@@ -596,6 +597,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         if(option==0) {
             System.err.println("Unable to join the game; lobby is full.\nClosing the process...");
             printImageKill();
+        }
+        try {
+            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey)));
+            client.kill();
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while deleting model observer: "+e.getMessage());
         }
         System.exit(0);
     }

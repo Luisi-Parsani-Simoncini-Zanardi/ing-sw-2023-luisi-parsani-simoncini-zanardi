@@ -16,11 +16,6 @@ public class Kill extends ResponseMessage implements Serializable {
     }
     @Override
     public void execute(TextualUI tui) {
-        try {
-            tui.deleteObserver(tui.getClient().getTuiObserver());
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while removing the observer: " + e);
-        }
         tui.kill(model.getInteger());
         System.exit(0);
     }

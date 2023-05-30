@@ -15,7 +15,7 @@ public interface Client extends Remote {
      * @param response is the server response to the client
      */
     void update(ResponseMessage response) throws RemoteException;
-    void kill(SerializableGame game)throws RemoteException;
+    void kill()throws RemoteException;
     public String getNickname() throws RemoteException;
     public Observer<TextualUI, InputMessage> getTuiObserver() throws  RemoteException;
     public Observer<GraphicalUI, InputMessage> getGuiObserver() throws  RemoteException;
