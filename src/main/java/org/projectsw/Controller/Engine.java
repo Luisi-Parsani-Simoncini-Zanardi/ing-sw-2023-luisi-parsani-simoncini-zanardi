@@ -795,6 +795,18 @@ public class Engine{
         }
     }
 
+    public void reconnectionCheck(){
+        for(Player player : game.getPlayers()){
+            if(!player.getIsActive()){
+                try {
+                    game.setChangedAndNotifyObservers(new AskReconnectName(new SerializableGame(player.getNickname())));
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
     public void update(Client client, InputMessage input) throws RemoteException {
         if (input instanceof InitializePlayer) {
             getGame().setCurrentClientNick(input.getInput().getClientNickname());
