@@ -6,14 +6,16 @@ import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class OkNickname extends ResponseMessage implements Serializable {
+public class AskNickname extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public OkNickname(SerializableGame model) {
+
+    public AskNickname(SerializableGame model) {
         super(model);
     }
     @Override
-    public void execute(TextualUI tui) {
-        tui.setFlag(false);
+    public void execute(TextualUI tui){
+        tui.askNickname();
     }
+
 }

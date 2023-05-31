@@ -64,7 +64,7 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
-    public void kill(SerializableGame game) throws RemoteException {
+    public void kill() throws RemoteException {
     }
 
     public void receive(Server server) throws RemoteException{
