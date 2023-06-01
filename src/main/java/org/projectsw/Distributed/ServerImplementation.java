@@ -92,6 +92,5 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
                 controller.sendNexTurn();
             }
         }
-        System.out.println("Disconnected clients: " + clients);
     }
 }
