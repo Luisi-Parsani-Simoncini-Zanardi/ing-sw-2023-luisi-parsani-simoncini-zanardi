@@ -457,6 +457,16 @@ public class Engine{
         getSaveGameStatus().saveGame();
     }
 
+    //called when the current player disconnect
+    public void sendNexTurn() {
+        try {
+            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
+            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname,getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void dcEndTurn() {
         this.checkCommonGoals();
         this.checkEndGame();
