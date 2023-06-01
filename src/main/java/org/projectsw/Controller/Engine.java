@@ -24,7 +24,8 @@ import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
  * The class contains the application logic methods of the game.
  */
 public class Engine{
-    private final OneToOneHashmap<Client, String> clients = new OneToOneHashmap<>();
+    private final OneToOneHashmap<Client, String> clientsID = new OneToOneHashmap<>();
+    private final OneToOneHashmap<Client, String> clientsNicks = new OneToOneHashmap<>();
     private Game game;
     private static int counter = 0;
     private SaveGameStatus saveGameStatus;
@@ -32,6 +33,7 @@ public class Engine{
     private final Server server;
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
     public boolean loadFromFile = false;
+    private boolean playerReconnect = false;
 
     /**
      * constructor
@@ -44,7 +46,8 @@ public class Engine{
      * get the Clients
      * @return the clients
      */
-    public OneToOneHashmap<Client, String> getClients() { return this.clients; }
+    public OneToOneHashmap<Client, String> getClientsID() { return this.clientsID; }
+    public OneToOneHashmap<Client, String> getClientsNicks() { return this.clientsNicks; }
 
     /**
      * get the game on which the controller is running
@@ -545,7 +548,7 @@ public class Engine{
      *              or a player's nickname to view the chat with the specific player
      */
     public void sendChat(String scope){
-        if(validNickname(scope)) {
+        if(invalidNickname(scope)) {
             try {
                 getGame().setChangedAndNotifyObservers(new SendChat(new SerializableGame(getGame().getCurrentClientID(), getGame().getChat(), scope)));
             } catch (RemoteException e) {
@@ -575,7 +578,7 @@ public class Engine{
                 throw new RuntimeException("A network error occurred while sending the chat: " + e.getMessage());
             }
         }
-        if (!validNickname(scope)) {
+        if (!invalidNickname(scope)) {
             try {
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(getGame().getCurrentClientID(), new Message(sender, Config.error, ConsoleColors.RED + "The entered nickname doesn't exist..." + ConsoleColors.RESET))));
                 return;
@@ -605,14 +608,34 @@ public class Engine{
      * @param nickname is the nickname to check
      * @return true if nickname is the nickname of a player in game
      */
-    private boolean validNickname(String nickname){
+    private boolean invalidNickname(String nickname){
         if(nickname.equals(Config.everyone))
             return true;
-        for(Player player : this.getGame().getPlayers()){
-            if(player.getNickname().equals(nickname))
-                return true;
-        }
+        if(game.getPlayersNickname(getActivePlayers()).contains(nickname))
+            return true;
+        if(!game.getPlayersNickname(getInactivePlayers()).contains(nickname) && playerReconnect)
+            return true;
         return false;
+    }
+
+    private ArrayList<Player> getInactivePlayers() {
+        ArrayList<Player> dcPlayer = new ArrayList<>();
+        for(Player player : game.getPlayers()){
+            if(!player.getIsActive()){
+                dcPlayer.add(player);
+            }
+        }
+        return dcPlayer;
+    }
+
+    private ArrayList<Player> getActivePlayers() {
+        ArrayList<Player> activePlayer = new ArrayList<>();
+        for(Player player : game.getPlayers()){
+            if(player.getIsActive()){
+                activePlayer.add(player);
+            }
+        }
+        return activePlayer;
     }
     /**
      * Fills the board if the board contains only tiles with no other adjacent tiles.
@@ -702,7 +725,8 @@ public class Engine{
                 }
         } while (!freeNamesUsedInLastGame.contains(getGame().getClientPlayerNickname()));
         freeNamesUsedInLastGame.remove(getGame().getClientPlayerNickname());
-        this.getClients().put(client, alphanumericID);
+        this.getClientsID().put(client, alphanumericID);
+        this.getClientsNicks().put(client, game.getClientPlayerNickname());
     }
 
     private void firstPlayerInitialize(Client client, String alphanumericID){
@@ -714,7 +738,8 @@ public class Engine{
             throw new RuntimeException("Network error while setting the game: " + e.getMessage());
         }
         playerJoin(getGame().getClientPlayerNickname());
-        this.getClients().put(client, alphanumericID);
+        this.getClientsID().put(client, alphanumericID);
+        this.getClientsNicks().put(client, game.getClientPlayerNickname());
     }
     private void initializePlayer(Client client, String alphanumericID){
         do {
@@ -723,21 +748,33 @@ public class Engine{
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error while asking a player nickname: " + e.getMessage());
             }
-            if (validNickname(getGame().getClientPlayerNickname())) {
+            if (invalidNickname(getGame().getClientPlayerNickname())) {
                 try {
                     getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(alphanumericID, "Nickname already taken!!!")));
                 } catch (RemoteException e) {
                     throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
                 }
             }
-        } while (validNickname(getGame().getClientPlayerNickname()));
-        this.getClients().put(client, alphanumericID);
-        playerJoin(getGame().getClientPlayerNickname());
+        } while (invalidNickname(getGame().getClientPlayerNickname()));
+        this.getClientsID().put(client, alphanumericID);
+        this.getClientsNicks().put(client, game.getClientPlayerNickname());
+        if(!playerReconnect)
+            playerJoin(getGame().getClientPlayerNickname());
+        if(playerReconnect){
+            getPlayerFromNickname(game.getClientPlayerNickname()).setIsActive(true);
+            try {
+                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastNickname, randomColors())));
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname, getGame())));
+            } catch (RemoteException e){
+                throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
+            }
+        }
+        this.playerReconnect = false;
     }
     public synchronized void initializeGame(Client client, String alphanumericID) throws RemoteException {
         counter++;
-        if(getClients().getAllKey().size() >= getGame().getNumberOfPlayers() && counter!=1) {
-            this.getClients().put(client, alphanumericID);
+        if(getClientsID().getAllKey().size() >= getGame().getNumberOfPlayers() && counter!=1) {
+            this.getClientsID().put(client, alphanumericID);
             getGame().setChangedAndNotifyObservers(new Kill(new SerializableGame(alphanumericID, 0)));
         }
         if (counter == 1) {
@@ -748,7 +785,7 @@ public class Engine{
             else
                 firstPlayerInitialize(client, alphanumericID);
         }
-        if (getClients().getAllKey().size() < getGame().getNumberOfPlayers()&&counter!=1) {
+        if (getClientsID().getAllKey().size() < getGame().getNumberOfPlayers()&&counter!=1) {
             if (!loadFromFile)
                 initializePlayer(client, alphanumericID);
             else
@@ -841,10 +878,11 @@ public class Engine{
         for(Player player : game.getPlayers()){
             if(!player.getIsActive()){
                 try {
-                    game.setChangedAndNotifyObservers(new AskReconnectName(new SerializableGame(player.getNickname())));
+                    game.setChangedAndNotifyObservers(new AskReconnectName(new SerializableGame(getGame().getCurrentClientID())));
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
+                playerReconnect = true;
             }
         }
     }

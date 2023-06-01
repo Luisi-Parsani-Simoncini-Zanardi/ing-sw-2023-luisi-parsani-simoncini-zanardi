@@ -2,10 +2,8 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
-import org.projectsw.Distributed.Messages.ResponseMessages.Kill;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.Game;
-import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Observer;
 
 import java.rmi.RemoteException;
@@ -59,7 +57,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         Thread pingThread = new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(5000); // Verifica lo stato di connessione ogni 5 secondi
+                    Thread.sleep(1000); // Verifica lo stato di connessione ogni 1 secondi
                     checkClientConnections();
                 } catch (InterruptedException e) {
                     // Gestisci l'eccezione in base alle tue esigenze
@@ -70,7 +68,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     }
     public void checkClientConnections() {
         List<Client> disconnectedClients = new ArrayList<>();
-        for (Client client : controller.getClients().getAllKey()) {
+        for (Client client : controller.getClientsID().getAllKey()) {
             try {
                 client.ping(); // Verifica la connessione del client
             } catch (RemoteException e) {
@@ -85,10 +83,11 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private void unregisterClients(List<Client> clients) {
         for(Client client : clients) {
-            controller.getPlayerFromNickname(controller.getClients().getValue(client)).setIsActive(false);
-            controller.getClients().removeByKey(client);
+            controller.getPlayerFromNickname(controller.getClientsNicks().getValue(client)).setIsActive(false);
+            controller.getClientsID().removeByKey(client);
+            controller.getClientsNicks().removeByKey(client);
             removeObserver(client);
-            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClients().getValue(client))){
+            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClientsNicks().getValue(client))){
                 controller.endTurn();
             }
         }

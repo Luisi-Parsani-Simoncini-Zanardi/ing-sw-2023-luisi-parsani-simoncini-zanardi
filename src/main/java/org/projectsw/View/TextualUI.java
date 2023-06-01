@@ -562,14 +562,22 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void reconnectionJoin() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Looks like this game has a disconnected player, insert your old nickname to play: ");
-        string = scanner.nextLine();
-
+        do {
+            System.out.println("Looks like this game has a disconnected player, insert your old nickname to play: ");
+            nickname = scanner.nextLine();
+            if (nickname.equals(Config.broadcastNickname))
+                System.err.println("You can't choose \"broadcast\" as nickname...");
+        } while (nickname.equals(Config.broadcastNickname));
+        try {
+            setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred: " + e.getCause());
+        }
     }
 
     private void playerReconnection() {
         try {
-            setChangedAndNotifyObservers(new AmIReconnecting(new SerializableInput(getNickname())));
+            setChangedAndNotifyObservers(new AmIReconnecting(new SerializableInput(alphanumericKey, getNickname())));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

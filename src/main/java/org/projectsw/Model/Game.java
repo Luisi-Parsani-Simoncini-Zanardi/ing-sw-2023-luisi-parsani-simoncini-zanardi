@@ -123,6 +123,12 @@ public class Game extends Observable<ResponseMessage> {
             nicks.add(player.getNickname());
         return nicks;
     }
+    public ArrayList<String> getPlayersNickname(ArrayList<Player> players) {
+        ArrayList<String> nicks = new ArrayList<>();
+        for (Player player: players)
+            nicks.add(player.getNickname());
+        return nicks;
+    }
 
     /**
      * Returns the game board.
