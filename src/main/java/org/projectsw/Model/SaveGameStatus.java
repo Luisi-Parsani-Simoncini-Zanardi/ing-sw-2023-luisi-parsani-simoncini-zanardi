@@ -88,9 +88,9 @@ public class SaveGameStatus {
             data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
             data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
             data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
-            for(Player player : data.getPlayers()){
+            /*for(Player player : data.getPlayers()){
                 player.setIsActive(false);
-            }
+            }*/
             data.getCurrentPlayer().setIsActive(false);
             data.getFirstPlayer().setIsActive(false);
 
@@ -106,6 +106,10 @@ public class SaveGameStatus {
         return retrieveGame(filePath);
     }
 
+    public void deleteSaveFile(String path){
+        File fileDaEliminare = new File(path);
+        fileDaEliminare.delete();
+    }
     public void deleteSaveFile(){
         File fileDaEliminare = new File(filePath);
         if (fileDaEliminare.exists()) {

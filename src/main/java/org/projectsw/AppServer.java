@@ -76,6 +76,9 @@ public class AppServer extends UnicastRemoteObject
         LocateRegistry.createRegistry(1099);
         Registry registry = LocateRegistry.getRegistry();//port 1099 standard
         registry.rebind("server", server);
+
+        server.startPingThread();
+
     }
 
     public static void startSocket() throws RemoteException {

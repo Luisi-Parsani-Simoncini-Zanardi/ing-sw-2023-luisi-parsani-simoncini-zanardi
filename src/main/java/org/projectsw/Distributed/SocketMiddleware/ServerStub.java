@@ -58,6 +58,11 @@ public class ServerStub implements Server {
         }
     }
 
+    @Override
+    public void startPingThread() throws RemoteException {
+
+    }
+
     public void receive(Client client) throws RemoteException{
         ResponseMessage responseMessage;
         try {

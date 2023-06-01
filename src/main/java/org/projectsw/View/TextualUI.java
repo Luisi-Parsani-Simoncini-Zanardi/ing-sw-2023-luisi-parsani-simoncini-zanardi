@@ -23,6 +23,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     private boolean flag = true;
     private volatile boolean waitResult = true;
     private boolean endedTurn = false;
+    private boolean reconnection = false;
 
     private Integer number;
     private Point point;
@@ -96,6 +97,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void setLastPlayerName(String nick){
         this.lastPlayerNick=nick;
     }
+    public void setReconnection(Boolean flag) {this.reconnection=flag; }
 
 
     @Override
@@ -540,16 +542,44 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     public void askNickname() {
         Scanner scanner = new Scanner(System.in);
+        playerReconnection();
+        if(!reconnection) {
+            do {
+                System.out.println("Insert your nickname: ");
+                nickname = scanner.nextLine();
+                if (nickname.equals(Config.broadcastNickname))
+                    System.err.println("You can't choose \"broadcast\" as nickname...");
+            } while (nickname.equals(Config.broadcastNickname));
+            try {
+                setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred: " + e.getCause());
+            }
+        } else {
+            reconnectionJoin();
+        }
+    }
+
+    private void reconnectionJoin() {
+        Scanner scanner = new Scanner(System.in);
         do {
-            System.out.println("Insert your nickname: ");
+            System.out.println("Looks like this game has a disconnected player, insert your old nickname to play: ");
             nickname = scanner.nextLine();
-            if(nickname.equals(Config.broadcastNickname))
+            if (nickname.equals(Config.broadcastNickname))
                 System.err.println("You can't choose \"broadcast\" as nickname...");
-        }while(nickname.equals(Config.broadcastNickname));
+        } while (nickname.equals(Config.broadcastNickname));
         try {
             setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname())));
         } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred: "+e.getCause());
+            throw new RuntimeException("An error occurred: " + e.getCause());
+        }
+    }
+
+    private void playerReconnection() {
+        try {
+            setChangedAndNotifyObservers(new AmIReconnecting(new SerializableInput(alphanumericKey, getNickname())));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 

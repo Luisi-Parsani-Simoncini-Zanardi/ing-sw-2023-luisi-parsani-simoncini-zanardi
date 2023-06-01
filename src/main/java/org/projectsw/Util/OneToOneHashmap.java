@@ -20,6 +20,22 @@ public class OneToOneHashmap<K,V> {
         allKey.add(key);
         allValue.add(value);
     }
+
+    public void removeByKey(K key) {
+        V value = forwardMap.remove(key);
+        if (value != null) {
+            reverseMap.remove(value);
+        }
+        allKey.remove(key);
+        allValue.remove(value);
+    }
+
+    public void removeByValue(V value) {
+        K key = reverseMap.remove(value);
+        if (key != null) {
+            forwardMap.remove(key);
+        }
+    }
     public ArrayList<K> getAllKey(){
         return allKey;
     }

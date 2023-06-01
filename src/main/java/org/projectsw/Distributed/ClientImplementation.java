@@ -18,6 +18,8 @@ public class ClientImplementation extends UnicastRemoteObject implements Client{
     private Observer<TextualUI, InputMessage> tuiObserver;
     private Observer<GraphicalUI, InputMessage> guiObserver;
 
+    private long lastPingTimestamp;
+
     public ClientImplementation(Server server) throws RemoteException{
         super();
         initialize(server);
@@ -94,5 +96,10 @@ public class ClientImplementation extends UnicastRemoteObject implements Client{
     public Observer<GraphicalUI, InputMessage>  getGuiObserver()  throws RemoteException{
         return guiObserver;
     }
+
+    @Override
+    public void ping() throws RemoteException {
+    }
+
 
 }

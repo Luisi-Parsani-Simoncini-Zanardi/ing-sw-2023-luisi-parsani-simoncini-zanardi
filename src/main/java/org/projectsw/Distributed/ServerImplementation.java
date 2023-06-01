@@ -52,4 +52,46 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     public void update(Client client, InputMessage input) throws RemoteException {
         this.controller.update(client, input);
     }
+    @Override
+    public void startPingThread() {
+        Thread pingThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000); // Verifica lo stato di connessione ogni 1 secondi
+                    checkClientConnections();
+                } catch (InterruptedException e) {
+                    // Gestisci l'eccezione in base alle tue esigenze
+                }
+            }
+        });
+        pingThread.start();
+    }
+    public void checkClientConnections() {
+        List<Client> disconnectedClients = new ArrayList<>();
+        for (Client client : controller.getClientsID().getAllKey()) {
+            try {
+                client.ping(); // Verifica la connessione del client
+            } catch (RemoteException e) {
+                // Il client non è raggiungibile, consideralo disconnesso
+                disconnectedClients.add(client);
+            }
+        }
+        // Rimuovi i client disconnessi dalla registrazione dei client
+        unregisterClients(disconnectedClients);
+        disconnectedClients.clear();
+    }
+
+    private void unregisterClients(List<Client> clients) {
+        for(Client client : clients) {
+            controller.getPlayerFromNickname(controller.getClientsNicks().getValue(client)).setIsActive(false);
+            controller.getClientsID().removeByKey(client);
+            removeObserver(client);
+            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClientsNicks().getValue(client))){
+                controller.getClientsNicks().removeByKey(client);
+                controller.endTurn();
+                controller.sendNexTurn();
+            }
+        }
+        System.out.println("Disconnected clients: " + clients);
+    }
 }
