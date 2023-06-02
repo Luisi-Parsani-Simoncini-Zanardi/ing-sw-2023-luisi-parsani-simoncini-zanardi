@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 import java.util.PriorityQueue;
 
 public class MessageQueueHandler extends Thread {
-    private final PriorityQueue<InputAndClient> messages = new PriorityQueue<>();
+    private final PriorityQueue<InputMessage> messages = new PriorityQueue<>();
     private final Engine engine;
 
     public MessageQueueHandler(Engine engine) {
@@ -19,17 +19,17 @@ public class MessageQueueHandler extends Thread {
     public void run() {
         while (true) {
             if (messages.size() > 0) {
-                InputAndClient message = messages.poll();
+               InputMessage message = messages.poll();
                 try {
-                    message.getInputMessage().execute(engine);
+                    message.execute(engine);
                 } catch (RemoteException e) {
-                    System.err.println("Unable to process request from client: "+message.getInputMessage().getInput().getAlphanumericID()+"\nError: "+e.getMessage());
+                    System.err.println("Unable to process request from client: "+message.getInput().getAlphanumericID()+"\nError: "+e.getMessage());
                 }
             }
         }
     }
 
-    public PriorityQueue<InputAndClient> getMessages() {
+    public PriorityQueue<InputMessage> getMessages() {
         return messages;
     }
 }

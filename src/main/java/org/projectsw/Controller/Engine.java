@@ -1023,7 +1023,7 @@ public class Engine{
                 input.execute(this);
             }
         }*/
-        queueHandler.getMessages().add(new InputAndClient(client,input));
+        queueHandler.getMessages().add(input);
     }
 
     private HashMap<String, String> randomColors() {
