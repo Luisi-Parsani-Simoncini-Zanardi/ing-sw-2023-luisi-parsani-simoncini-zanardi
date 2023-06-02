@@ -17,6 +17,10 @@ public class AskForTemporaryTiles extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.temporaryTilesTransfer();
+        try {
+            engine.temporaryTilesTransfer(input.getAlphanumericID());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

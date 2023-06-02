@@ -15,11 +15,13 @@ public class Connect extends InputMessage implements Serializable {
         super(input);
     }
     @Override
-    public void execute(Client client, Engine engine){
+    public void execute(Engine engine){
         try {
-            engine.initializeGame(client, input.getAlphanumericID());
+            engine.Connect(input.getAlphanumericID());
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while initializing game: "+e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -15,6 +15,10 @@ public class ConfirmTileSelection extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.selectTiles(input.getCoordinate());
+        try {
+            engine.selectTiles(input.getAlphanumericID(),input.getCoordinate());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

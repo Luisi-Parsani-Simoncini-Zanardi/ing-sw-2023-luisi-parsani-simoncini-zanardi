@@ -29,6 +29,10 @@ public class ChatMessage extends InputMessage implements Serializable {
             payload = Config.error;
             scope = Config.error;
         }
-        engine.sayInChat(sender,payload,scope);
+        try {
+            engine.sayInChat(sender,payload,scope,input.getAlphanumericID());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -6,16 +6,17 @@ import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class AskNickname extends ResponseMessage implements Serializable {
+public class WrongNickname extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public AskNickname(SerializableGame model) {
+    public WrongNickname(SerializableGame model) {
         super(model);
     }
     @Override
     public void execute(TextualUI tui){
-        tui.askNickname();
+        System.err.println("Invalid nickname!!!");
+        tui.setNickFlag(true);
     }
 
 }

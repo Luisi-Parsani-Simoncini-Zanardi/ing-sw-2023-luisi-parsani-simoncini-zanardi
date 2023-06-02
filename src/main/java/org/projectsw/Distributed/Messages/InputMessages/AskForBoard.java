@@ -17,6 +17,10 @@ public class AskForBoard extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.boardTransfer();
+        try {
+            engine.boardTransfer(input.getAlphanumericID());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

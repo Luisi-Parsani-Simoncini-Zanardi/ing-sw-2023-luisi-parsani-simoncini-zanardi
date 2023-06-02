@@ -17,6 +17,6 @@ public class AmIReconnecting extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.reconnectionCheck();
+        engine.reconnectionCheck(input.getAlphanumericID());
     }
 }

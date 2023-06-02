@@ -16,13 +16,11 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine(this);
     private final Game model = new Game();
-
     private final Map<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
 
     public ServerImplementation() throws RemoteException {
         super();
         controller.setGame(model);
-
     }
     public ServerImplementation(int port) throws RemoteException {
         super(port);
@@ -68,7 +66,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     }
     public void checkClientConnections() {
         List<Client> disconnectedClients = new ArrayList<>();
-        for (Client client : controller.getClientsID().getAllKey()) {
+        for (Client client : controller.getClients_ID().getAllKey()) {
             try {
                 client.ping(); // Verifica la connessione del client
             } catch (RemoteException e) {
@@ -83,12 +81,16 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private void unregisterClients(List<Client> clients) {
         for(Client client : clients) {
-            controller.getPlayerFromNickname(controller.getClientsNicks().getValue(client)).setIsActive(false);
-            controller.getClientsID().removeByKey(client);
+            controller.getPlayerFromNickname(controller.getClients_Nicks().getValue(client)).setIsActive(false);
+            controller.getClients_ID().removeByKey(client);
             removeObserver(client);
-            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClientsNicks().getValue(client))){
-                controller.getClientsNicks().removeByKey(client);
-                controller.endTurn();
+            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClients_Nicks().getValue(client))){
+                controller.getClients_Nicks().removeByKey(client);
+                try {
+                    controller.endTurn(controller.getGame().getCurrentPlayer().getNickname());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("Error while managing the current player disconnection: "+e.getMessage());
+                }
                 controller.sendNexTurn();
             }
         }

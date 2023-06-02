@@ -12,9 +12,10 @@ public class AskNumberOfPlayers extends ResponseMessage implements Serializable 
     public AskNumberOfPlayers(SerializableGame model) {
         super(model);
     }
-
     @Override
     public void execute(TextualUI tui){
-        tui.askNumber();
+        tui.setFirstPlayerFlag(true);
+        tui.setPreviousGameExist(false);
+        tui.setNickFlag(false);
     }
 }
