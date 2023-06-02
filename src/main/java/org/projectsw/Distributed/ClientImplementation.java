@@ -45,7 +45,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client{
         tui = new TextualUI(this);
         tuiObserver = (o, input) -> {
             try {
-                server.update(this, input);
+                server.update(input);
             }catch(RemoteException e){
                 throw new RuntimeException("A network error occurred: " + e.getMessage());
             }

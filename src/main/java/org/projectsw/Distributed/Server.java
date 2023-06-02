@@ -12,6 +12,6 @@ public interface Server extends Remote {
      */
     void register(Client client) throws RemoteException;
     public void removeObserver(Client client)throws RemoteException;
-    void update(Client client, InputMessage input) throws RemoteException;
+    void update(InputMessage input) throws RemoteException;
      void startPingThread()throws RemoteException;
 }

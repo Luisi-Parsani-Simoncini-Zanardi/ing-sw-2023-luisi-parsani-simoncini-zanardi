@@ -49,7 +49,7 @@ public class ServerStub implements Server {
     }
 
     @Override
-    public void update(Client client, InputMessage input) throws RemoteException {
+    public void update(InputMessage input) throws RemoteException {
         try {
             oos.writeObject(input);
             oos.flush();

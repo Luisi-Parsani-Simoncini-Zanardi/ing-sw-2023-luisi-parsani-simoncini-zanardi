@@ -47,8 +47,8 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     }
 
     @Override
-    public void update(Client client, InputMessage input) throws RemoteException {
-        this.controller.update(client, input);
+    public void update(InputMessage input) throws RemoteException {
+        this.controller.update(input);
     }
     @Override
     public void startPingThread() {

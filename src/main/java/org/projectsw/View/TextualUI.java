@@ -120,6 +120,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         alphanumericKey = randomizer.generateRandomString(100);
         System.out.println(alphanumericKey);
         connect();
+
         System.out.println("1: Choose your nickname\n" +
                 "2: Choose number of players\n" +
                 "3: Load game from file");
@@ -131,14 +132,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     choice = 0;
                 }
                 switch (choice) {
-                    case 1:
-                        askNickname();
-                    case 2:
-                        askNumber();
-                    case 3:
-                        askLoadGame();
-                    default:
-                        System.err.println("Invalid selection!!!");
+                    case 1 -> askNickname();
+                    case 2 -> askNumber();
+                    case 3 -> askLoadGame();
+                    default -> System.err.println("Invalid selection!!!");
                 }
             }
         }while(lobbyFlag);
