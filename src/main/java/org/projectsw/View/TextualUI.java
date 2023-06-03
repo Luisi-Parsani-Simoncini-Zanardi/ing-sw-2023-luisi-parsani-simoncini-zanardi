@@ -164,6 +164,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         System.out.println("---CHOOSE AN ACTION---");
         System.out.println("Press 0 to see all possible actions...");
         flag = true;
+        askBoard();
         askCurrentPlayer();
         do {
             writeBufferMessage();
@@ -182,10 +183,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
-                                askBoard();
-                                while(!returnedFlag){
-                                }
-                                returnedFlag = false;
+                                /*customWait();
+                                System.out.println("porcus dius");*/
                                 selectTiles();
                             } else {
                                 System.err.println("You can't select a tile now...");
@@ -249,6 +248,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             }
         } while (getEndState() == UIEndState.RUNNING || waitResult);
         ending();
+    }
+
+    private void customWait(){
+    while(!returnedFlag){
+        }
+        returnedFlag=false;
     }
 
     public void ending(){
@@ -507,6 +512,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
         board.printBoard();
+        returnedFlag=true;
     }
 
     public void showShelf(SerializableGame model){
