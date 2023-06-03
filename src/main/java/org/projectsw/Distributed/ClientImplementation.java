@@ -6,17 +6,18 @@ import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
 
-public class ClientImplementation extends UnicastRemoteObject implements Client{
-    private TextualUI tui;
-    private GraphicalUI gui;
-    private Observer<TextualUI, InputMessage> tuiObserver;
-    private Observer<GraphicalUI, InputMessage> guiObserver;
+public class ClientImplementation extends UnicastRemoteObject implements Client, Serializable {
+    private transient TextualUI tui;
+    private transient GraphicalUI gui;
+    private transient Observer<TextualUI, InputMessage> tuiObserver;
+    private transient Observer<GraphicalUI, InputMessage> guiObserver;
 
     private long lastPingTimestamp;
 
