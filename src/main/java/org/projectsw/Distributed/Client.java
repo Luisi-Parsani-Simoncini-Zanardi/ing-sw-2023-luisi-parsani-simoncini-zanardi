@@ -20,4 +20,5 @@ public interface Client extends Remote {
     public Observer<TextualUI, InputMessage> getTuiObserver() throws  RemoteException;
     public Observer<GraphicalUI, InputMessage> getGuiObserver() throws  RemoteException;
     public void ping() throws  RemoteException;
+    public TextualUI getTui()throws  RemoteException;
 }

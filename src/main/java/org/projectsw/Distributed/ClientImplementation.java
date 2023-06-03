@@ -68,6 +68,8 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
         gui.run();
     }
 
+    public TextualUI getTui() {return this.tui;}
+
     /**
      * close the client
      */

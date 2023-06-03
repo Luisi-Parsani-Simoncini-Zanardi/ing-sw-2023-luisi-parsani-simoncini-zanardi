@@ -19,7 +19,6 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     private final Map<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
     private final MessageQueueHandler queueHandler = new MessageQueueHandler(controller);
     private final Thread queueThread;
-
     public ServerImplementation() throws RemoteException {
         super();
         controller.setGame(model);
@@ -75,7 +74,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     }
     public void checkClientConnections() {
         List<Client> disconnectedClients = new ArrayList<>();
-        for (Client client : controller.getClients_ID().getAllKey()) {
+        for (Client client : clientObserverHashMap.keySet()) {
             try {
                 client.ping(); // Verifica la connessione del client
             } catch (RemoteException e) {
@@ -90,13 +89,21 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private void unregisterClients(List<Client> clients) {
         for(Client client : clients) {
-            controller.getPlayerFromNickname(controller.getClients_Nicks().getValue(client)).setIsActive(false);
+            try {
+                controller.getPlayerFromNickname(client.getTui().getNickname()).setIsActive(false);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
             controller.getClients_ID().removeByKey(client);
             removeObserver(client);
-            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClients_Nicks().getValue(client))){
+            try {
+                if(client.getTui().getNickname().equals(controller.getGame().getCurrentPlayer().getNickname())) {
                 controller.getClients_Nicks().removeByKey(client);
                 controller.endTurn(controller.getGame().getCurrentPlayer().getNickname());
                 controller.sendNexTurn();
+            }
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
             }
         }
     }
