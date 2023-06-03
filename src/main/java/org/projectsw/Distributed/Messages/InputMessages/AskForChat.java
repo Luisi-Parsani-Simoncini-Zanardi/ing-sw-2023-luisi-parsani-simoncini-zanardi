@@ -14,10 +14,6 @@ public class AskForChat extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine){
-        try {
-            engine.sendChat(input.getString(),input.getAlphanumericID());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        engine.sendChat(input.getString(),input.getAlphanumericID());
     }
 }

@@ -17,10 +17,6 @@ public class ConfirmSelectedTiles extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        try {
             engine.confirmSelectedTiles(input.getAlphanumericID());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }

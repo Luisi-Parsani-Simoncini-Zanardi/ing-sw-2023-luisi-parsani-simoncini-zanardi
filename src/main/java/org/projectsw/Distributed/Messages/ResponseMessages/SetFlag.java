@@ -14,6 +14,6 @@ public class SetFlag extends ResponseMessage implements Serializable {
     }
     @Override
     public void execute(TextualUI tui){
-        tui.setLobbyFlag(model.getBool());
+        tui.setFlag(model.getBool());
     }
 }

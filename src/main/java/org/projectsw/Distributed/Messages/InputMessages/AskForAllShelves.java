@@ -17,10 +17,6 @@ public class AskForAllShelves extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        try {
-            engine.shelfTransferAll(input.getAlphanumericID());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        engine.shelfTransferAll(input.getAlphanumericID());
     }
 }

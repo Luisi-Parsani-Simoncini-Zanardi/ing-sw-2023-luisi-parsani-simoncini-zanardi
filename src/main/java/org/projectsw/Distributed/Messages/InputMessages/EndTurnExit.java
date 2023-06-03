@@ -15,10 +15,6 @@ public class EndTurnExit extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine) throws RemoteException {
-        try {
-            engine.endTurnForced();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        engine.endTurnForced();
     }
 }

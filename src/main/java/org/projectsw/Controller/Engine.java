@@ -11,7 +11,6 @@ import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
-import org.projectsw.Util.InputAndClient;
 import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.SerializableInput;
@@ -33,12 +32,10 @@ public class Engine{
     private Game game;
     private static int counter = 0;
     private SaveGameStatus saveGameStatus;
-    private boolean methodComplete = true;
     private final Server server;
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
-    private final MessageQueueHandler queueHandler;
     private String firstClient;
 
     /**
@@ -47,8 +44,6 @@ public class Engine{
      */
     public Engine(Server server){
         this.server=server;
-        queueHandler = new MessageQueueHandler(this);
-        queueHandler.start();
     }
     /**
      * get the Clients
@@ -63,12 +58,6 @@ public class Engine{
      */
     public Game getGame() {
         return this.game;
-    }
-    public boolean isMethodComplete() {
-        return methodComplete;
-    }
-    public void setMethodComplete(boolean methodComplete) {
-        this.methodComplete=methodComplete;
     }
     private OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
     public Player getPlayerFromNickname(String nickname) {
@@ -152,8 +141,7 @@ public class Engine{
      * If the selected point is already selected it calls deselect tiles on that point.
      * @param selectedPoint the point that the player wants to select.
      */
-    public void selectTiles(String ID, Point selectedPoint) throws InterruptedException {
-        //waitForPreviousMethod();
+    public void selectTiles(String ID, Point selectedPoint) {
         if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
         else {
             try {
@@ -182,8 +170,6 @@ public class Engine{
                 }
             }
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     /**
@@ -209,16 +195,13 @@ public class Engine{
      * Thanks to other exceptions in selectTiles the TemporaryPoints passed already do not correspond to empty or unused tiles,
      * but if they don't addTemporaryTile throws InvalidArgumentException.
      */
-    public void confirmSelectedTiles(String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void confirmSelectedTiles(String ID) {
         if(game.getBoard().getTemporaryPoints().isEmpty()) {
             try {
                 game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new SerializableGame(ID)));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while sending and Empty Temporary Points Error"+e.getMessage());
             }
-            methodComplete=true;
-            queueHandler.notify();
             return;
         }
         ArrayList<Point> selectedPoints = game.getBoard().getTemporaryPoints();
@@ -229,8 +212,6 @@ public class Engine{
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
         temporaryTilesTransfer(ID);
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     /**
@@ -238,8 +219,7 @@ public class Engine{
      * specified index is selectable, it sets the passed index as selected column of the player.
      * @param index The index of column that player wants to select.
      */
-    public void selectColumn(String ID,Integer index) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void selectColumn(String ID,Integer index) {
         if(game.getCurrentPlayer().getShelf().isSelectionPossible()){
             if(game.getCurrentPlayer().getShelf().getSelectedColumn() == null) {
                 try {
@@ -253,8 +233,6 @@ public class Engine{
                 }
             } else deselectColumn();
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     /**
@@ -265,7 +243,7 @@ public class Engine{
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
     }
 
-    private void sendShelfAndTiles(String ID) throws InterruptedException {
+    private void sendShelfAndTiles(String ID) {
        // waitForPreviousMethod();
         try {
             game.setChangedAndNotifyObservers(new SendShelf(new SerializableGame(ID, game)));
@@ -280,15 +258,12 @@ public class Engine{
                 throw new RuntimeException("Network error while sending temporary tiles: "+e.getMessage());
             }
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
     /**
      * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
      * @param temporaryIndex the selected index of temporaryTiles.
      */
-    public void placeTiles(String ID, Integer temporaryIndex) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void placeTiles(String ID, Integer temporaryIndex) {
         game.getCurrentPlayer().getShelf().setSelectionPossible(false);
         try {
             Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);
@@ -323,8 +298,6 @@ public class Engine{
                 throw new RuntimeException("An error occurred while sending an Invalid Temporary Tile Error"+e2.getMessage());
             }
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     /**
@@ -349,15 +322,12 @@ public class Engine{
     /**
      * Sends results to the clients
      */
-    public synchronized void sendResults() throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void sendResults() {
         try {
             getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastNickname, getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while sending the results: "+e.getMessage());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
     /**
      * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
@@ -465,8 +435,7 @@ public class Engine{
     /**
      * end turn logic
      */
-    public void endTurn(String nickName) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void endTurn(String nickName) {
         this.checkCommonGoals();
         this.checkEndGame(nickName);
         getGame().getCurrentPlayer().clearTemporaryTiles();
@@ -491,8 +460,6 @@ public class Engine{
             }
         }
         getSaveGameStatus().saveGame();
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     //called when the current player disconnect
@@ -505,7 +472,7 @@ public class Engine{
         }
     }
 
-    private void dcEndTurn(String nickName) throws InterruptedException {
+    private void dcEndTurn(String nickName) {
         this.checkCommonGoals();
         this.checkEndGame(nickName);
         getGame().getCurrentPlayer().clearTemporaryTiles();
@@ -520,8 +487,7 @@ public class Engine{
         getSaveGameStatus().saveGame();
     }
 
-    public void endTurnForced() throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void endTurnForced() {
         getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
@@ -533,15 +499,12 @@ public class Engine{
             throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
         }
         getSaveGameStatus().saveGame();
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     /**
      * Checks if a player has completed his shelf and if so sets endGame and adds the point to the player
      */
-    public void checkEndGame(String nickName) throws InterruptedException {
-        //waitForPreviousMethod();
+    public void checkEndGame(String nickName) {
         if(!this.getGame().getBoard().isEndGame()){
             if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
                 this.getGame().getBoard().setEndGame(true);
@@ -556,8 +519,6 @@ public class Engine{
                 }
             }
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     /**
@@ -601,8 +562,7 @@ public class Engine{
      * @param scope it is the chat you want to view: everyone to view the global chat
      *              or a player's nickname to view the chat with the specific player
      */
-    public void sendChat(String scope, String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void sendChat(String scope, String ID) {
         if(invalidNickname(scope)) {
             try {
                 getGame().setChangedAndNotifyObservers(new SendChat(new SerializableGame(ID, getGame().getChat(), scope)));
@@ -616,8 +576,6 @@ public class Engine{
                 throw new RuntimeException("A network error occurred while sending the chat" + e.getMessage());
             }
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     /**
@@ -626,13 +584,10 @@ public class Engine{
      * @param content message content
      * @param scope message scope
      */
-    public void sayInChat(String sender, String content, String scope, String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void sayInChat(String sender, String content, String scope, String ID) {
         if (scope.equals(Config.error)) {
             try {
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(ID, new Message(sender, Config.error, ConsoleColors.RED + "Incorrectly formatted message..." + ConsoleColors.RESET))));
-                methodComplete=true;
-                queueHandler.notify();
                 return;
             } catch (RemoteException e) {
                 throw new RuntimeException("A network error occurred while sending the chat: " + e.getMessage());
@@ -641,8 +596,6 @@ public class Engine{
         if (!invalidNickname(scope)) {
             try {
                 getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(ID, new Message(sender, Config.error, ConsoleColors.RED + "The entered nickname doesn't exist..." + ConsoleColors.RESET))));
-                methodComplete=true;
-                queueHandler.notify();
                 return;
             } catch (RemoteException e) {
                 throw new RuntimeException("A network error occurred while sending the chat: " + e.getMessage());
@@ -655,11 +608,9 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while sending the chat to the clients: " + e.getMessage());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
-    public void removeObserver(Client client){
+    public synchronized void removeObserver(Client client){
         try {
             server.removeObserver(client);
         } catch (RemoteException e) {
@@ -756,7 +707,7 @@ public class Engine{
         this.game.setBoard(gameSave.getBoard());
         this.game.setCommonGoals(gameSave.getCommonGoals());
     }
-    public void initializeFromSave() {
+    public synchronized void initializeFromSave() {
         setGameFromSave(retrieveGame());
         this.loadFromFile = true;
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
@@ -832,8 +783,7 @@ public class Engine{
         }
     }
 
-    public synchronized void takeNick(Client client, SerializableInput input) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void takeNick(Client client, SerializableInput input) {
         if(input.getAlphanumericID().equals(firstClient)){
             if(loadFromFile){
                 loadFromFile(client, input.getAlphanumericID(), input.getClientNickname());
@@ -855,8 +805,6 @@ public class Engine{
                 }
             }
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     private void checkKill(){
@@ -882,7 +830,6 @@ public class Engine{
         }
     }
     public synchronized void Connect(String alphanumericID) throws RemoteException, InterruptedException {
-        //waitForPreviousMethod();
         counter++;
         if (counter == 1) {
             firstClient = alphanumericID;
@@ -891,8 +838,6 @@ public class Engine{
             else
                 askNumOfPlayers(alphanumericID);
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
     private void startGameFromFile(){
@@ -907,90 +852,69 @@ public class Engine{
             }
         }
     }
-    public void setNumberOfPlayers(int numberOfPlayers){
+    public synchronized void setNumberOfPlayers(int numberOfPlayers){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);
     }
 
-    public synchronized void boardTransfer(String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void boardTransfer(String ID) {
         try {
             getGame().setChangedAndNotifyObservers(new SendBoard(new SerializableGame(ID ,getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
-    public synchronized void shelfTransfer(String clientNickname, String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void shelfTransfer(String clientNickname, String ID) {
         int pos = getGame().getPositionByNick(clientNickname);
         try {
             getGame().setChangedAndNotifyObservers(new SendShelf(new SerializableGame(ID, getGame().getPlayers().get(pos).getNickname(), getGame().getPlayers().get(pos).getShelf())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
-    public synchronized void shelfTransferAll(String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void shelfTransferAll(String ID) {
         try {
             getGame().setChangedAndNotifyObservers(new SendAllShelves(new SerializableGame(ID, game.getPlayers())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
-    public synchronized void personalGoalTransfer(String ID, String nickname) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void personalGoalTransfer(String ID, String nickname) {
         try {
             game.setChangedAndNotifyObservers(new SendPersonalGoal(new SerializableGame(ID, getGame(), nickname)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
-    public synchronized void temporaryTilesTransfer(String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void temporaryTilesTransfer(String ID) {
         try {
             game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(ID, getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred: "+e.getCause());
         }
-        methodComplete=true;
-        queueHandler.notify();;
     }
 
-    public synchronized void commonGoalTransfer(String ID) throws InterruptedException {
-        //waitForPreviousMethod();
+    public synchronized void commonGoalTransfer(String ID) {
         try {
             game.setChangedAndNotifyObservers(new SendCommonGoals(new SerializableGame(ID, game)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
-    public synchronized void currentPlayerTransfer(String ID) throws InterruptedException {
-       // waitForPreviousMethod();
+    public synchronized void currentPlayerTransfer(String ID){
         try {
             getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(ID,getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the current player: "+e.getCause());
         }
-        methodComplete=true;
-        queueHandler.notify();
     }
 
-    public void reconnectionCheck(String ID){
+    public synchronized void reconnectionCheck(String ID){
         for(Player player : game.getPlayers()){
             if(!player.getIsActive()){
                 try {
@@ -1003,22 +927,28 @@ public class Engine{
         }
     }
 
-    public synchronized void update(InputMessage input) throws RemoteException {
+    /*public void update(InputMessage input) throws RemoteException {
         queueHandler.getMessages().add(input);
+    }*/
+
+    public synchronized void notActive(SerializableInput input){
+        for(Player player : getGame().getPlayers()){
+            if(input.getClientNickname().equals(player.getNickname()))
+                player.setIsActive(false);
+        }
     }
 
     private HashMap<String, String> randomColors() {
         HashMap<String, String> colors = new HashMap<>();
         ArrayList<Integer> alreadyUsed = new ArrayList<>();
-        for (int i=0; i<game.getPlayers().size(); i++){
+        for (int i = 0; i < game.getPlayers().size(); i++) {
             Random random = new Random();
             int randomNumber = random.nextInt(8);
-            while (alreadyUsed.contains(randomNumber))
-            {
+            while (alreadyUsed.contains(randomNumber)) {
                 randomNumber = random.nextInt(8);
             }
             alreadyUsed.add(randomNumber);
-            switch (randomNumber){
+            switch (randomNumber) {
                 case 0 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.RED);
                 case 1 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.GREEN);
                 case 2 -> colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.YELLOW);
@@ -1030,5 +960,11 @@ public class Engine{
             }
         }
         return colors;
+    }
+    public void TESTCODAPRIMA(){
+        System.out.println("prima");
+    }
+    public void TESTCODADOPO(){
+        System.out.println("dopo");
     }
 }

@@ -20,7 +20,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private final Object lock = new Object();
     private final Object lock2 = new Object();
 
-    private boolean lobbyFlag = true;
+    private volatile boolean connectFlag = true;
+    private boolean flag = true;
     private boolean nickFlag = true;
     private boolean firstPlayerFlag = false;
     private boolean previousGameExist = false;
@@ -51,8 +52,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         displayLogo();
     }
 
-    public boolean getLobbyFlag() {
-        return lobbyFlag;
+    public boolean getFlag() {
+        return flag;
     }
 
     public UITurnState getTurnState(){
@@ -94,8 +95,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     public void setNameColors(HashMap<String, String> nameColors){
         this.nameColors = nameColors;
     }
-    public void setLobbyFlag(boolean resp){
-        this.lobbyFlag =resp;
+    public void setFlag(boolean resp){
+        this.flag =resp;
     }
     public void setTurnState(UITurnState state){
         synchronized (lock){
@@ -107,11 +108,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             this.endState = state;
         }
     }
+    public void setConnectFlag(boolean connectFlag){this.connectFlag=connectFlag;}
     public void setLastPlayerName(String nick){
         this.lastPlayerNick=nick;
     }
     public void setReconnection(Boolean flag) {this.reconnection=flag; }
-
 
     @Override
     public void run() {
@@ -120,11 +121,15 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         alphanumericKey = randomizer.generateRandomString(100);
         System.out.println(alphanumericKey);
         connect();
-
-        System.out.println("1: Choose your nickname\n" +
-                "2: Choose number of players\n" +
-                "3: Load game from file");
+        while (connectFlag) {
+        }
         do{
+            if(nickFlag)
+                System.out.println("1: Choose your nickname");
+            if(firstPlayerFlag)
+                System.out.println("2: Choose number of players");
+            if(firstPlayerFlag&&previousGameExist)
+                System.out.println("3: Load game from file");
             if(firstPlayerFlag || nickFlag) {
                 try {
                     choice = masterScanner.nextInt();
@@ -138,7 +143,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     default -> System.err.println("Invalid selection!!!");
                 }
             }
-        }while(lobbyFlag);
+        }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
         if (getEndState() == UIEndState.LOBBY)
             System.out.println("Waiting for more people to join...\n");
@@ -154,17 +159,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         System.out.println("\nGame started!");
         System.out.println("---CHOOSE AN ACTION---");
         System.out.println("Press 0 to see all possible actions...");
-        lobbyFlag = true;
+        flag = true;
         askCurrentPlayer();
         do {
             writeBufferMessage();
-            if(lobbyFlag) {
+            if(flag) {
                 try {
                     choice = masterScanner.nextInt();
                 } catch (InputMismatchException | IllegalStateException ignored) {
                 }
             }
-            if (lobbyFlag) {
+            if (flag) {
                 switch (choice) {
                     case 0 -> printCommandMenu();
                     case 1 -> {
@@ -232,7 +237,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     case 12 -> exit();
                     default -> System.err.println("Invalid command. Try again...");
                 }
-                if (!endedTurn&& lobbyFlag)
+                if (!endedTurn&& flag)
                     System.out.println("\n---CHOOSE AN ACTION---");
             }
         } while (getEndState() == UIEndState.RUNNING || waitResult);
@@ -242,7 +247,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     public void ending(){
         getMasterScanner().close();
         System.err.println("The game ended. You can no longer do actions.");
-        setLobbyFlag(false);
+        setFlag(false);
         System.out.println("Wait for results please...");
         if(nickname.equals(lastPlayerNick)) {
             try {
@@ -528,7 +533,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     }
 
     public void showCurrentPlayer(SerializableGame model){
-        if (getLobbyFlag())
+        if (getFlag())
             System.out.println("The current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET);
     }
 

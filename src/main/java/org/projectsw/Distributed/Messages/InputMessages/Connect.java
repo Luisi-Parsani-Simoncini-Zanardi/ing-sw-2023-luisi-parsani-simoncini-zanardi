@@ -15,7 +15,7 @@ public class Connect extends InputMessage implements Serializable {
         super(input);
     }
     @Override
-    public void execute(Engine engine){
+    public synchronized void execute(Engine engine){
         try {
             engine.Connect(input.getAlphanumericID());
         } catch (RemoteException e) {

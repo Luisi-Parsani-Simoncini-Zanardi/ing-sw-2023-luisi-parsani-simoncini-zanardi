@@ -15,10 +15,6 @@ public class AskForResults extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine) throws RemoteException {
-        try {
-            engine.sendResults();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        engine.sendResults();
     }
 }

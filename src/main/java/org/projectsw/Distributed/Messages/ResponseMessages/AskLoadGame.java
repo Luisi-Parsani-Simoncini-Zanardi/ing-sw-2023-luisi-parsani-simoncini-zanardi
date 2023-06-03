@@ -17,5 +17,6 @@ public class AskLoadGame extends ResponseMessage implements Serializable {
         tui.setNickFlag(false);
         tui.setFirstPlayerFlag(true);
         tui.setPreviousGameExist(true);
+        tui.setConnectFlag(false);
     }
 }

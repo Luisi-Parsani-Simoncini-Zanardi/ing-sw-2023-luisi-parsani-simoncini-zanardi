@@ -14,10 +14,6 @@ public class ConfirmColumnSelection extends InputMessage implements Serializable
     }
     @Override
     public void execute(Engine engine){
-        try {
-            engine.selectColumn(input.getAlphanumericID(),input.getInteger());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        engine.selectColumn(input.getAlphanumericID(),input.getInteger());
     }
 }

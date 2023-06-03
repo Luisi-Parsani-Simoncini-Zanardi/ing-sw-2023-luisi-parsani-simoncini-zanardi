@@ -2,14 +2,12 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
-import org.projectsw.Util.InputAndClient;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MessageQueueHandler extends Thread {
-    private final ArrayList<InputMessage> messages = new ArrayList<>();
+public class MessageQueueHandler implements Runnable {
+    private final ConcurrentLinkedQueue<InputMessage> messages = new ConcurrentLinkedQueue<>();
     private final Engine engine;
 
     public MessageQueueHandler(Engine engine) {
@@ -20,26 +18,18 @@ public class MessageQueueHandler extends Thread {
     public void run() {
         while (true) {
             if (messages.size() > 0) {
-               InputMessage message = messages.remove(0);
+               InputMessage message = messages.poll();
                 try {
+                    engine.TESTCODAPRIMA();
                     message.execute(engine);
-                    try {
-                        waitForPreviousMethod();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    engine.TESTCODADOPO();
                 } catch (RemoteException e) {
                     System.err.println("Unable to process request from client: "+message.getInput().getAlphanumericID()+"\nError: "+e.getMessage());
                 }
             }
         }
     }
-    private void waitForPreviousMethod() throws InterruptedException {
-        while(!engine.isMethodComplete())
-            wait();
-        engine.setMethodComplete(false);
-    }
-    public ArrayList<InputMessage> getMessages() {
-        return messages;
+    public void add(InputMessage input){
+        messages.offer(input);
     }
 }

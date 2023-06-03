@@ -17,10 +17,6 @@ public class AskForPersonalGoal extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        try {
-            engine.personalGoalTransfer(input.getAlphanumericID(),input.getClientNickname());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        engine.personalGoalTransfer(input.getAlphanumericID(),input.getClientNickname());
     }
 }

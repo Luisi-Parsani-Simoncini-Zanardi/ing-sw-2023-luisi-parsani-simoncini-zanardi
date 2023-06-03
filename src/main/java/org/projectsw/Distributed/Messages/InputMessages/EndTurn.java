@@ -15,10 +15,6 @@ public class EndTurn extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine) throws RemoteException{
-        try {
-            engine.endTurn(input.getClientNickname());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        engine.endTurn(input.getClientNickname());
     }
 }

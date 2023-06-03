@@ -14,7 +14,7 @@ public class ForceEnding extends ResponseMessage implements Serializable {
     }
     @Override
     public void execute(TextualUI tui){
-        tui.setLobbyFlag(false);
+        tui.setFlag(false);
         tui.setWaitResult(false);
         System.err.println("The game is ending, press a key to go to results...");
     }
