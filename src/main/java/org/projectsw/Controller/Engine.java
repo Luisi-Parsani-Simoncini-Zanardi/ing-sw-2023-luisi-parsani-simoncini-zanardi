@@ -1,7 +1,5 @@
 package org.projectsw.Controller;
 
-import org.projectsw.Distributed.MessageQueueHandler;
-import org.projectsw.Distributed.Messages.InputMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.ChatMessage;
 import org.projectsw.Distributed.Server;
@@ -628,9 +626,7 @@ public class Engine{
             return true;
         if(game.getPlayersNickname(getActivePlayers()).contains(nickname))
             return true;
-        if(!game.getPlayersNickname(getInactivePlayers()).contains(nickname) && playerReconnect)
-            return true;
-        return false;
+        return !game.getPlayersNickname(getInactivePlayers()).contains(nickname) && playerReconnect;
     }
 
     private ArrayList<Player> getInactivePlayers() {
@@ -928,10 +924,6 @@ public class Engine{
         }
     }
 
-    /*public void update(InputMessage input) throws RemoteException {
-        queueHandler.getMessages().add(input);
-    }*/
-
     public synchronized void notActive(SerializableInput input){
         for(Player player : getGame().getPlayers()){
             if(input.getClientNickname().equals(player.getNickname()))
@@ -961,11 +953,5 @@ public class Engine{
             }
         }
         return colors;
-    }
-    public void TESTCODAPRIMA(){
-        System.out.println("prima");
-    }
-    public void TESTCODADOPO(){
-        System.out.println("dopo");
     }
 }

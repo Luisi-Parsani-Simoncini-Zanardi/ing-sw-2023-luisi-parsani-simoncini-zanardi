@@ -20,9 +20,7 @@ public class MessageQueueHandler implements Runnable {
             if (messages.size() > 0) {
                InputMessage message = messages.poll();
                 try {
-                    engine.TESTCODAPRIMA();
                     message.execute(engine);
-                    engine.TESTCODADOPO();
                 } catch (RemoteException e) {
                     System.err.println("Unable to process request from client: "+message.getInput().getAlphanumericID()+"\nError: "+e.getMessage());
                 }

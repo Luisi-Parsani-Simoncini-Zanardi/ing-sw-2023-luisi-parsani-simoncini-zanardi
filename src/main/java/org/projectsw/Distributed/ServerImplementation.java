@@ -17,8 +17,8 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     private final Engine controller = new Engine(this);
     private final Game model = new Game();
     private final Map<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
-    private MessageQueueHandler queueHandler = new MessageQueueHandler(controller);
-    private Thread queueThread;
+    private final MessageQueueHandler queueHandler = new MessageQueueHandler(controller);
+    private final Thread queueThread;
 
     public ServerImplementation() throws RemoteException {
         super();
