@@ -54,6 +54,11 @@ public class ClientSkeleton implements Client {
     }
 
     @Override
+    public TextualUI getTui() throws RemoteException {
+        return null;
+    }
+
+    @Override
     public void update(ResponseMessage response) throws RemoteException {
         try {
             oos.writeObject(response);
