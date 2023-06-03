@@ -28,6 +28,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private volatile boolean waitResult = true;
     private boolean endedTurn = false;
     private boolean reconnection = false;
+    private boolean returnedFlag = false;
 
     private Integer number;
     private Point point;
@@ -67,6 +68,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         }
     }
 
+    public void setReturnedFlag(boolean returnedFlag) {this.returnedFlag = returnedFlag;}
     public void setFirstPlayerFlag(boolean firstPlayerFlag) {
         this.firstPlayerFlag = firstPlayerFlag;
     }
@@ -135,6 +137,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     choice = masterScanner.nextInt();
                 } catch (InputMismatchException e) {
                     choice = 0;
+                    masterScanner.next();
                 }
                 switch (choice) {
                     case 1 -> askNickname();
@@ -179,6 +182,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
                                 askBoard();
+                                while(!returnedFlag){
+                                }
+                                returnedFlag = false;
                                 selectTiles();
                             } else {
                                 System.err.println("You can't select a tile now...");

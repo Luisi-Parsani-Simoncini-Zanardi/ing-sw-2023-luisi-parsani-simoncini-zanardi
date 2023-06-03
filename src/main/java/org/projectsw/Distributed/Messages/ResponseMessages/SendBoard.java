@@ -16,6 +16,7 @@ public class SendBoard extends ResponseMessage implements Serializable {
     }
     public void execute(TextualUI tui){
         tui.showBoard(model);
+        tui.setReturnedFlag(true);
     }
     public void execute(GraphicalUI gui){}
 }
