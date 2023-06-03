@@ -838,6 +838,7 @@ public class Engine{
             else
                 askNumOfPlayers(alphanumericID);
         }
+        getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID)));
     }
 
     private void startGameFromFile(){

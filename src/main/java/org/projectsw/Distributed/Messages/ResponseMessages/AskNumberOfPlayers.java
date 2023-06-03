@@ -17,6 +17,5 @@ public class AskNumberOfPlayers extends ResponseMessage implements Serializable 
         tui.setFirstPlayerFlag(true);
         tui.setPreviousGameExist(false);
         tui.setNickFlag(false);
-        tui.setConnectFlag(false);
     }
 }
