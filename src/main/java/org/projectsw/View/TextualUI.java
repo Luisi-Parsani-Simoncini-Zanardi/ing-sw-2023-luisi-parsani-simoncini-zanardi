@@ -68,7 +68,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         }
     }
 
-    public void setReturnedFlag(boolean returnedFlag) {this.returnedFlag = returnedFlag;}
+    public void setReturnedFlag(boolean returnedFlag) {
+        this.returnedFlag = returnedFlag;}
     public void setFirstPlayerFlag(boolean firstPlayerFlag) {
         this.firstPlayerFlag = firstPlayerFlag;
     }

@@ -834,6 +834,10 @@ public class Engine{
             else
                 askNumOfPlayers(alphanumericID);
         }
+        if(game.getNumberOfPlayers() != 0 && counter> game.getNumberOfPlayers()){
+            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(alphanumericID,0)));
+            counter--;
+        }
         getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID)));
     }
 
