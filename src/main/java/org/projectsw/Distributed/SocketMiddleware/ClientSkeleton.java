@@ -81,6 +81,6 @@ public class ClientSkeleton implements Client {
         } catch (ClassNotFoundException e) {
             throw new RemoteException("An error while deserializing choice from client: ", e);
         }
-        server.update(input);
+        server.update(this,input);
     }
 }

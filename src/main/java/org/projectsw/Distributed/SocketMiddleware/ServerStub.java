@@ -44,12 +44,7 @@ public class ServerStub implements Server {
     }
 
     @Override
-    public void removeObserver(Client client) throws RemoteException {
-
-    }
-
-    @Override
-    public void update(InputMessage input) throws RemoteException {
+    public synchronized void update(Client client, InputMessage input) throws RemoteException {
         try {
             oos.writeObject(input);
             oos.flush();

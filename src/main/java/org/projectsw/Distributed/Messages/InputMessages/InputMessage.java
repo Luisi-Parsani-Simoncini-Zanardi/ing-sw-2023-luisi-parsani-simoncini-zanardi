@@ -18,10 +18,6 @@ public abstract class InputMessage implements Serializable {
         this.input=input;
         this.client=null;
     }
-    public InputMessage(Client client, SerializableInput input){
-        this.input=input;
-        this.client=client;
-    }
     public void execute(Engine engine) throws RemoteException {}
     public void execute(Client client, Engine engine) throws RemoteException {}
     public SerializableInput getInput(){return this.input;}

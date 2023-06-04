@@ -14,10 +14,10 @@ import java.rmi.server.UnicastRemoteObject;
 
 
 public class ClientImplementation extends UnicastRemoteObject implements Client, Serializable {
-    private transient TextualUI tui;
-    private transient GraphicalUI gui;
-    private transient Observer<TextualUI, InputMessage> tuiObserver;
-    private transient Observer<GraphicalUI, InputMessage> guiObserver;
+    private TextualUI tui;
+    private GraphicalUI gui;
+    private Observer<TextualUI, InputMessage> tuiObserver;
+    private Observer<GraphicalUI, InputMessage> guiObserver;
 
     private long lastPingTimestamp;
 
@@ -46,7 +46,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
         tui = new TextualUI(this);
         tuiObserver = (o, input) -> {
             try {
-                server.update(input);
+                server.update(this,input);
             }catch(RemoteException e){
                 throw new RuntimeException("A network error occurred: " + e.getMessage());
             }

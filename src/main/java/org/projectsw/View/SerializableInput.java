@@ -16,7 +16,6 @@ public class SerializableInput implements Serializable{
     private final Integer integer;
     private final String string;
     private final String alphanumericID;
-    private final Client client;
 
     public SerializableInput(String alphanumericID, String clientNickname, Point coordinate, Client client){
         this.alphanumericID = alphanumericID;
@@ -24,7 +23,6 @@ public class SerializableInput implements Serializable{
         this.coordinate = coordinate;
         this.integer = null;
         this.string = null;
-        this.client = client;
     }
 
     public SerializableInput(String alphanumericID, String clientNickname, String string, Client client){
@@ -33,7 +31,6 @@ public class SerializableInput implements Serializable{
         this.coordinate = null;
         this.integer = null;
         this.string = string;
-        this.client = client;
     }
 
     public SerializableInput(String alphanumericID, int number, Client client){
@@ -42,7 +39,6 @@ public class SerializableInput implements Serializable{
         this.coordinate = null;
         this.integer = number;
         this.string = null;
-        this.client = client;
     }
 
     public SerializableInput(String alphanumericID, String clientNickname, int num, String string, Client client){
@@ -51,7 +47,6 @@ public class SerializableInput implements Serializable{
         this.coordinate = null;
         this.integer = num;
         this.string = string;
-        this.client = client;
     }
 
     public SerializableInput(String alphanumericID, String clientNickname, Client client){
@@ -60,7 +55,6 @@ public class SerializableInput implements Serializable{
         this.coordinate = null;
         this.integer = null;
         this.string = null;
-        this.client = client;
     }
 
     public SerializableInput(String alphanumericID, String clientNickname, int integer, Client client){
@@ -69,7 +63,6 @@ public class SerializableInput implements Serializable{
         this.coordinate = null;
         this.integer = integer;
         this.string = null;
-        this.client = client;
     }
     public SerializableInput(String alphanumericID, Client client){
         this.alphanumericID = alphanumericID;
@@ -77,10 +70,8 @@ public class SerializableInput implements Serializable{
         this.coordinate = null;
         this.integer = null;
         this.string = null;
-        this.client = client;
     }
 
-    public Client getClient() {return client;}
     public String getAlphanumericID(){return this.alphanumericID;}
     public String getClientNickname(){return this.clientNickname;}
     public Point getCoordinate(){return this.coordinate;}

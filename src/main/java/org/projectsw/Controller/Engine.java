@@ -9,6 +9,7 @@ import org.projectsw.Util.Config;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
+import org.projectsw.Util.Observer;
 import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.SerializableInput;
@@ -24,8 +25,8 @@ import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
  * The class contains the application logic methods of the game.
  */
 public class Engine{
+    private final OneToOneHashmap<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new OneToOneHashmap<>();
     private final OneToOneHashmap<Client, String> clients_ID = new OneToOneHashmap<>();
-    private final OneToOneHashmap<Client, String> clients_Nicks = new OneToOneHashmap<>();
     private final OneToOneHashmap<String, String> ID_Nicks = new OneToOneHashmap<>();
     private Game game;
     private static int counter = 0;
@@ -48,8 +49,8 @@ public class Engine{
      * @return the clients
      */
     public OneToOneHashmap<Client, String> getClients_ID() { return this.clients_ID; }
-    public OneToOneHashmap<Client, String> getClients_Nicks() { return this.clients_Nicks; }
-
+    public OneToOneHashmap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
+    private OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
     /**
      * get the game on which the controller is running
      * @return current game
@@ -57,7 +58,7 @@ public class Engine{
     public Game getGame() {
         return this.game;
     }
-    private OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
+
     public Player getPlayerFromNickname(String nickname) {
         for(Player player : game.getPlayers()){
             if(player.getNickname().equals(nickname)){
@@ -608,12 +609,10 @@ public class Engine{
         }
     }
 
-    public synchronized void removeObserver(Client client){
-        try {
-            server.removeObserver(client);
-        } catch (RemoteException e) {
-            throw new RuntimeException("A network error occurred while removing the observer: "+e.getMessage());
-        }
+    public synchronized void removeObserver(String id) {
+        game.deleteObserver(getClientObserverHashMap().getValue(getClients_ID().getKey(id)));
+        getClientObserverHashMap().removeByKey(getClients_ID().getKey(id));
+        getClients_ID().removeByValue(id);
     }
 
     /**
@@ -717,11 +716,10 @@ public class Engine{
         }
     }
 
-    private void loadFromFile(Client client,String ID, String nickname) {
+    private void loadFromFile(String ID, String nickname) {
         if (freeNamesUsedInLastGame.contains(nickname)) {
             freeNamesUsedInLastGame.remove(nickname);
-            this.getClients_ID().put(client, ID);
-            this.getClients_Nicks().put(client, nickname);
+            this.getID_Nicks().put(ID, nickname);
         } else {
             try {
                 getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(ID, "Nickname not in the last game!!!")));
@@ -782,7 +780,7 @@ public class Engine{
     public synchronized void takeNick(Client client, SerializableInput input) {
         if(input.getAlphanumericID().equals(firstClient)){
             if(loadFromFile){
-                loadFromFile(client, input.getAlphanumericID(), input.getClientNickname());
+                loadFromFile(input.getAlphanumericID(), input.getClientNickname());
             }else{
                 initializePlayer(client, input);
             }
