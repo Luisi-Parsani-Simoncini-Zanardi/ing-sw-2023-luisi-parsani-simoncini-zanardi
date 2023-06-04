@@ -103,6 +103,9 @@ public class Engine{
                 if(this.game.getPlayers().size()==1){
                     this.game.setFirstPlayer(newPlayer);
                     this.game.setCurrentPlayer(newPlayer);
+                    if(ID_Nicks.getKey(nickname).equals(firstClient)){
+                        //TODO fixare in modo che ID_nicks e Client_ID siano i player effettivi
+                    }
                     for(String nick : getID_Nicks().getAllValue())
                         if(game.getPlayers().size()<game.getNumberOfPlayers()) {
                             playerJoin(nick);
@@ -614,6 +617,7 @@ public class Engine{
         game.deleteObserver(getClientObserverHashMap().getValue(getClients_ID().getKey(id)));
         getClientObserverHashMap().removeByKey(getClients_ID().getKey(id));
         getClients_ID().removeByValue(id);
+        ID_Nicks.removeByKey(id);
     }
 
     /**
@@ -729,9 +733,9 @@ public class Engine{
             }
         }
         if(ID.equals(firstClient))
-            for(String nick : getID_Nicks().getAllValue()){
-                loadFromFile(getClients_Nicks().getKey(nick),getID_Nicks().getKey(nick),nick);
-                getID_Nicks().removeByValue(nick);
+            for(String nick : tmpNick.getAllValue()){
+                loadFromFile(getID_Nicks().getKey(nick), nick);
+                tmpNick.removeByValue(nick);
             }
         startGameFromFile();
     }
@@ -746,9 +750,8 @@ public class Engine{
             return;
         }
         ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
-        this.getClients_ID().put(client, input.getAlphanumericID());
-        this.getClients_Nicks().put(client, input.getClientNickname());
-        if(getClients_ID().getAllKey().size()> getGame().getNumberOfPlayers()) {
+        clients_ID.put(client, input.getAlphanumericID());
+        if(getClients_ID().getAllKey().size()> getGame().getNumberOfPlayers() && game.getNumberOfPlayers()!=0) {
             checkKill();
             return;
         }
@@ -765,18 +768,8 @@ public class Engine{
         }
         this.playerReconnect = false;
     }
-    private void addToID_Nicks(Client client, SerializableInput input){
-        if (!getID_Nicks().getAllValue().contains(input.getClientNickname())) {
-            getID_Nicks().put(input.getAlphanumericID(), input.getClientNickname());
-            getClients_Nicks().put(client, input.getClientNickname());
-            getClients_ID().put(client, input.getAlphanumericID());
-        } else {
-            try {
-                getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
-            }
-        }
+    public void setIsActiveFromClient(Client client, Boolean choice){
+        getPlayerFromNickname(ID_Nicks.getValue(clients_ID.getValue(client))).setIsActive(choice);
     }
 
     public synchronized void takeNick(Client client, SerializableInput input) {
@@ -797,23 +790,22 @@ public class Engine{
                 if (game.getFirstPlayer() == null) {
                     tmpNick.put(client, input.getAlphanumericID());
                 }else{
-                    loadFromFile(client, input.getAlphanumericID(), input.getClientNickname());
+                    loadFromFile(input.getAlphanumericID(), input.getClientNickname());
                 }
             }
         }
     }
 
     private void checkKill(){
-        for(String nick : getClients_Nicks().getAllValue())
+        for(String nick : ID_Nicks.getAllValue())
             if(!game.getPlayersNickname().contains(nick)) {
                 try {
                     game.setChangedAndNotifyObservers(new Kill(new SerializableGame(getID_Nicks().getKey(nick),0)));
                 } catch (RemoteException e) {
                     throw new RuntimeException("Network error while killing clients: " + e.getMessage());
                 }
-                removeObserver(getClients_Nicks().getKey(nick));
+                removeObserver(ID_Nicks.getKey(nick));
                 getClients_ID().removeByValue(getID_Nicks().getKey(nick));
-                getClients_Nicks().removeByValue(nick);
                 getID_Nicks().removeByValue(nick);
             }
 

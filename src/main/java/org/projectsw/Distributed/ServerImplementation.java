@@ -86,17 +86,10 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private void unregisterClients(List<Client> clients) {
         for(Client client : clients) {
-            try {
-                controller.getPlayerFromNickname(client.getTui().getNickname()).setIsActive(false);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-            controller.getClients_ID().removeByKey(client);
-            model.deleteObserver(controller.getClientObserverHashMap().getValue(client));
-            //TODO: rimuovere riferimenti dalle hashmap una volta rimosso l'observer
+            controller.setIsActiveFromClient(client, false);
+            controller.removeObserver(controller.getClients_ID().getValue(client));
             try {
                 if(client.getTui().getNickname().equals(controller.getGame().getCurrentPlayer().getNickname())) {
-                controller.getClients_Nicks().removeByKey(client);
                 controller.endTurn(controller.getGame().getCurrentPlayer().getNickname());
                 controller.sendNexTurn();
             }
