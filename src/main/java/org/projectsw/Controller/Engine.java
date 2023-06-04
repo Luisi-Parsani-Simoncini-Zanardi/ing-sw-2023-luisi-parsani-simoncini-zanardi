@@ -28,6 +28,7 @@ public class Engine{
     private final OneToOneHashmap<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new OneToOneHashmap<>();
     private final OneToOneHashmap<Client, String> clients_ID = new OneToOneHashmap<>();
     private final OneToOneHashmap<String, String> ID_Nicks = new OneToOneHashmap<>();
+    private OneToOneHashmap<Client, String> tmpNick = new OneToOneHashmap<>();
     private Game game;
     private static int counter = 0;
     private SaveGameStatus saveGameStatus;
@@ -744,6 +745,7 @@ public class Engine{
             }
             return;
         }
+        ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
         this.getClients_ID().put(client, input.getAlphanumericID());
         this.getClients_Nicks().put(client, input.getClientNickname());
         if(getClients_ID().getAllKey().size()> getGame().getNumberOfPlayers()) {
@@ -787,13 +789,13 @@ public class Engine{
         }else{
             if(!loadFromFile) {
                 if (game.getFirstPlayer() == null) {
-                    addToID_Nicks(client, input);
+                    tmpNick.put(client, input.getAlphanumericID());
                 } else {
                     initializePlayer(client, input);
                 }
             }else{
                 if (game.getFirstPlayer() == null) {
-                    addToID_Nicks(client, input);
+                    tmpNick.put(client, input.getAlphanumericID());
                 }else{
                     loadFromFile(client, input.getAlphanumericID(), input.getClientNickname());
                 }
