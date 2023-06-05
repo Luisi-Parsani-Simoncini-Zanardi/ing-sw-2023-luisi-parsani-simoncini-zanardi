@@ -125,6 +125,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         this.lastPlayerNick=nick;
     }
     public void setReconnection(Boolean flag) {this.reconnection=flag; }
+    private void waitReturn() {
+        while (!returnedFlag) {
+            synchronized (this) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("An error occurred while waiting for the returned flag: " + e);
+                }
+            }
+        }
+        returnedFlag=false;
+    }
 
     @Override
     public void run() {
@@ -157,16 +169,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     default -> System.err.println("Invalid selection!!!");
                 }
             }
-            while (!returnedFlag) {
-                synchronized (this) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("An error occurred while waiting for the returned flag: " + e);
-                    }
-                }
-            }
-            returnedFlag=false;
+            waitReturn();
         }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
         System.out.println("sto fuori");
@@ -185,7 +188,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         System.out.println("---CHOOSE AN ACTION---");
         System.out.println("Press 0 to see all possible actions...");
         flag = true;
-        askBoard();
         askCurrentPlayer();
         do {
             writeBufferMessage();
@@ -204,6 +206,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
+                                askBoard();
+                                waitReturn();
                                 selectTiles();
                             } else {
                                 System.err.println("You can't select a tile now...");

@@ -921,6 +921,12 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public synchronized void shelfTransfer(String clientNickname, String ID) {
