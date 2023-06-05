@@ -14,5 +14,5 @@ public class LoadGameSelection extends InputMessage implements Serializable {
         super(input);
     }
     @Override
-    public void execute(Engine engine) throws RemoteException {engine.initializeFromSave();}
+    public void execute(Engine engine) throws RemoteException {engine.initializeFromSave(input.getAlphanumericID());}
 }

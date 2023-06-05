@@ -36,6 +36,7 @@ public class Engine{
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
     private String firstClient;
+    private ArrayList<String> IDToKill = new ArrayList<>();
 
     /**
      * constructor
@@ -96,7 +97,7 @@ public class Engine{
      * if it isn't the game state remains LOBBY, waiting for new join requests.
      * @param nickname the nickname of the player to be created.
      */
-    public void playerJoin (String nickname){
+    public void playerJoin (String nickname, String ID){
             if (game.getGameState().equals(GameState.LOBBY)) {
                 int newPlayerPosition = game.getPlayers().size();
                 Player newPlayer = new Player(nickname, newPlayerPosition);
@@ -104,19 +105,32 @@ public class Engine{
                 if(this.game.getPlayers().size()==1){
                     this.game.setFirstPlayer(newPlayer);
                     this.game.setCurrentPlayer(newPlayer);
-                    if(ID_Nicks.getKey(nickname).equals(firstClient)){
-                        //TODO fixare in modo che ID_nicks e Client_ID siano i player effettivi
-                    }
-                    for(String nick : getID_Nicks().getAllValue())
-                        if(game.getPlayers().size()<game.getNumberOfPlayers() && !invalidNickname(nick)) {
-                            playerJoin(nick);
+                    for(String nick : getID_Nicks().getAllValue()) {
+                        if(game.getPlayers().size() < game.getNumberOfPlayers() ){
+                        playerJoin(nick, "");
+                        } else {
+                            IDToKill.add(ID_Nicks.getKey(nick));
                         }
+                    }
+                    ID_Nicks.put(ID, nickname);
+                    killingSpree(IDToKill);
                 }
-                checkKill();
-                if (game.getPlayers().size() == game.getNumberOfPlayers()) {
+                if (game.getPlayers().size() == game.getNumberOfPlayers() && game.getGameState().equals(GameState.LOBBY)) {
                     startGame();
                 }
             }
+    }
+
+    private void killingSpree(ArrayList<String> idToKill){
+        for(String id : idToKill){
+            try {
+                game.setChangedAndNotifyObservers(new Kill(new SerializableGame(id,0)));
+            } catch (RemoteException e) {
+                throw new RuntimeException("Network error while killing clients: " + e.getMessage());
+            }
+            removeObserver(id);
+            ID_Nicks.removeByKey(id);
+        }
     }
 
     /**
@@ -708,10 +722,15 @@ public class Engine{
         this.game.setBoard(gameSave.getBoard());
         this.game.setCommonGoals(gameSave.getCommonGoals());
     }
-    public synchronized void initializeFromSave() {
+    public synchronized void initializeFromSave(String ID) {
         setGameFromSave(retrieveGame());
         this.loadFromFile = true;
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void askLoadGame(String alphanumericID){
@@ -755,10 +774,11 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
         }
-        if(!ID_Nicks.getAllKey().contains(input.getAlphanumericID()))
+        if(!ID_Nicks.getAllValue().contains(input.getClientNickname()) && !input.getAlphanumericID().equals(firstClient)){
             ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
+        }
         if(!playerReconnect)
-            playerJoin(input.getClientNickname());
+            playerJoin(input.getClientNickname(), input.getAlphanumericID());
         if(playerReconnect){
             getPlayerFromNickname(input.getClientNickname()).setIsActive(true);
             try {
@@ -774,12 +794,20 @@ public class Engine{
         getPlayerFromNickname(ID_Nicks.getValue(clients_ID.getValue(client))).setIsActive(choice);
     }
 
-    public synchronized void takeNick(Client client, SerializableInput input) {
+    public synchronized void takeNick(SerializableInput input) {
         if(input.getAlphanumericID().equals(firstClient)){
             if(loadFromFile){
                 loadFromFile(input.getAlphanumericID(), input.getClientNickname());
             }else{
-                initializePlayer(input);
+                if(ID_Nicks.getAllValue().contains(input.getClientNickname())){
+                    try {
+                        getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));
+                    } catch (RemoteException e) {
+                        throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                    }
+                } else {
+                    initializePlayer(input);
+                }
             }
         }else{
             if(!loadFromFile) {

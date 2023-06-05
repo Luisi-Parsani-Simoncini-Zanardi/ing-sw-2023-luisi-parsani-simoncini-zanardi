@@ -17,6 +17,6 @@ public class SendNickname extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException{
-        engine.takeNick(getClient(), getInput());
+        engine.takeNick(getInput());
     }
 }
