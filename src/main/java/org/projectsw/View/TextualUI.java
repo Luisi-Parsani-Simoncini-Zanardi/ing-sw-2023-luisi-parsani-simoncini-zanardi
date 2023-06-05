@@ -28,6 +28,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private volatile boolean waitResult = true;
     private boolean endedTurn = false;
     private boolean reconnection = false;
+    private boolean returnedFlag = false;
 
     private Integer number;
     private Point point;
@@ -51,6 +52,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         this.client = client;
         displayLogo();
     }
+    public boolean getNickFlag() {
+        return nickFlag;
+    }
+    public boolean getFirstPlayerFlag() {
+        return firstPlayerFlag;
+    }
+    public boolean getPreviousGameExist() {
+        return previousGameExist;
+    }
+    public void setReturnedFlag(boolean returnedFlag){this.returnedFlag=returnedFlag;}
+
 
     public boolean getFlag() {
         return flag;
@@ -123,15 +135,15 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         connect();
         while (connectFlag) {
         }
-        do{
+        do {
             System.out.println("\nCHOOSE AN OPTION:");
-            if(nickFlag)
+            if (nickFlag)
                 System.out.println("1: Insert your nickname");
-            if(firstPlayerFlag)
+            if (firstPlayerFlag)
                 System.out.println("2: Insert the number of players");
-            if(firstPlayerFlag&&previousGameExist)
+            if (firstPlayerFlag && previousGameExist)
                 System.out.println("3: Load the game from file");
-            if(firstPlayerFlag || nickFlag) {
+            if (firstPlayerFlag || nickFlag) {
                 try {
                     choice = masterScanner.nextInt();
                 } catch (InputMismatchException e) {
@@ -145,8 +157,19 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     default -> System.err.println("Invalid selection!!!");
                 }
             }
+            while (!returnedFlag) {
+                synchronized (this) {
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("An error occurred while waiting for the returned flag: " + e);
+                    }
+                }
+            }
+            returnedFlag=false;
         }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
+        System.out.println("sto fuori");
         if (getEndState() == UIEndState.LOBBY)
             System.out.println("Waiting response from the server...\n");
         while (getEndState() == UIEndState.LOBBY) {
@@ -600,7 +623,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         }else{
             System.err.println("You can't choose your nickname now!!!");
         }
-        nickFlag=false;
     }
 
     private void reconnectionJoin() {

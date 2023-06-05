@@ -750,6 +750,11 @@ public class Engine{
             }
             return;
         }
+        try {
+            getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(input.getAlphanumericID())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+        }
         if(!ID_Nicks.getAllKey().contains(input.getAlphanumericID()))
             ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
         if(!playerReconnect)
@@ -779,13 +784,40 @@ public class Engine{
         }else{
             if(!loadFromFile) {
                 if (game.getFirstPlayer() == null) {
-                    ID_Nicks.put(input.getAlphanumericID(), input.getAlphanumericID());
+                    if(!ID_Nicks.getAllValue().contains(input.getClientNickname())) {
+                        ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
+                        try {
+                            getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(input.getAlphanumericID())));
+                        } catch (RemoteException e) {
+                            throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                        }
+                    } else {
+                        try {
+                            getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));
+                        } catch (RemoteException e) {
+                            throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                        }
+                    }
                 } else {
                     initializePlayer(input);
                 }
             }else{
                 if (game.getFirstPlayer() == null) {
-                    ID_Nicks.put(input.getAlphanumericID(), input.getAlphanumericID());
+                    if(!ID_Nicks.getAllValue().contains(input.getClientNickname())) {
+                        ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
+                        try {
+                            getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(input.getAlphanumericID())));
+                        } catch (RemoteException e) {
+                            throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                        }
+                    }
+                    else{
+                        try {
+                            getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));
+                        } catch (RemoteException e) {
+                            throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                        }
+                    }
                 }else{
                     loadFromFile(input.getAlphanumericID(), input.getClientNickname());
                 }
@@ -844,6 +876,15 @@ public class Engine{
     public synchronized void setNumberOfPlayers(int numberOfPlayers){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);
+    }
+    public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
+        loadFromFile=false;
+        getGame().initializeGame(numberOfPlayers);
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public synchronized void boardTransfer(String ID) {
