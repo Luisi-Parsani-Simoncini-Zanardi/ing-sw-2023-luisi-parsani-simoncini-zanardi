@@ -77,7 +77,7 @@ public class AppServer extends UnicastRemoteObject
         Registry registry = LocateRegistry.getRegistry();//port 1099 standard
         registry.rebind("server", server);
 
-        server.startPingThread();
+        //server.startPingThread();
 
     }
 

@@ -118,6 +118,14 @@ public class Engine{
                 if (game.getPlayers().size() == game.getNumberOfPlayers() && game.getGameState().equals(GameState.LOBBY)) {
                     startGame();
                 }
+            } else {
+                try {
+                    game.setChangedAndNotifyObservers(new Kill(new SerializableGame(ID,0)));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while killing clients: " + e.getMessage());
+                }
+                removeObserver(ID);
+                ID_Nicks.removeByKey(ID);
             }
     }
 
@@ -130,6 +138,7 @@ public class Engine{
             }
             removeObserver(id);
             ID_Nicks.removeByKey(id);
+            IDToKill.remove(id);
         }
     }
 
@@ -139,16 +148,18 @@ public class Engine{
     private void startGame() {
         game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
-        try {
-            game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastNickname, randomColors())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while setting the name colors: " + e);
-        }
         fillBoard();
-        try {
-            game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname, getGame())));
-        } catch (RemoteException e){
-            throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
+        for(String ID : ID_Nicks.getAllKey()) {
+            try {
+                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(ID, randomColors())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while setting the name colors: " + e);
+            }
+            try {
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(ID, getGame())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
+            }
         }
         saveGameStatus.saveGame();
     }
@@ -881,11 +892,12 @@ public class Engine{
             else
                 askNumOfPlayers(alphanumericID);
         }
-        if(game.getNumberOfPlayers() != 0 && counter> game.getNumberOfPlayers()){
+        if((game.getNumberOfPlayers() != 0 && counter> game.getNumberOfPlayers()) || counter == 5){
             game.setChangedAndNotifyObservers(new Kill(new SerializableGame(alphanumericID,0)));
             counter--;
+        } else {
+            getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID)));
         }
-        getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID)));
     }
 
     private void startGameFromFile(){
