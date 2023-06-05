@@ -4,7 +4,6 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
-import org.projectsw.Model.*;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
@@ -13,10 +12,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.RemoteException;
 
-public class ClientSkeleton implements Client {
+public class ClientSkeleton implements Client, Serializable {
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;
 

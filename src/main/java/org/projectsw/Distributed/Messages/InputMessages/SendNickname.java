@@ -11,8 +11,8 @@ import java.rmi.RemoteException;
 public class SendNickname extends InputMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    public SendNickname(Client client, SerializableInput input) {
-        super(client,input);
+    public SendNickname(SerializableInput input) {
+        super(input);
     }
 
     @Override

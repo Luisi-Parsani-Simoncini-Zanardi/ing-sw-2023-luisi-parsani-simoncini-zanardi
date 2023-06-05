@@ -25,10 +25,9 @@ import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
  * The class contains the application logic methods of the game.
  */
 public class Engine{
-    private final OneToOneHashmap<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new OneToOneHashmap<>();
+    private HashMap<Client, Observer<Game, ResponseMessage>> clientObserverHashMap;
     private final OneToOneHashmap<Client, String> clients_ID = new OneToOneHashmap<>();
     private final OneToOneHashmap<String, String> ID_Nicks = new OneToOneHashmap<>();
-    private OneToOneHashmap<Client, String> tmpNick = new OneToOneHashmap<>();
     private Game game;
     private static int counter = 0;
     private SaveGameStatus saveGameStatus;
@@ -43,6 +42,7 @@ public class Engine{
      * @param server is the server bound to this controller
      */
     public Engine(Server server){
+        this.clientObserverHashMap=new HashMap<>();
         this.server=server;
     }
     /**
@@ -50,8 +50,9 @@ public class Engine{
      * @return the clients
      */
     public OneToOneHashmap<Client, String> getClients_ID() { return this.clients_ID; }
-    public OneToOneHashmap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
-    private OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
+    //public HashMap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
+    public OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
+    public HashMap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
     /**
      * get the game on which the controller is running
      * @return current game
@@ -107,11 +108,11 @@ public class Engine{
                         //TODO fixare in modo che ID_nicks e Client_ID siano i player effettivi
                     }
                     for(String nick : getID_Nicks().getAllValue())
-                        if(game.getPlayers().size()<game.getNumberOfPlayers()) {
+                        if(game.getPlayers().size()<game.getNumberOfPlayers() && !invalidNickname(nick)) {
                             playerJoin(nick);
-                            getID_Nicks().removeByValue(nick);
                         }
                 }
+                checkKill();
                 if (game.getPlayers().size() == game.getNumberOfPlayers()) {
                     startGame();
                 }
@@ -614,16 +615,16 @@ public class Engine{
     }
 
     public synchronized void removeObserver(String id) {
-        game.deleteObserver(getClientObserverHashMap().getValue(getClients_ID().getKey(id)));
-        getClientObserverHashMap().removeByKey(getClients_ID().getKey(id));
+        game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(id)));
+        clientObserverHashMap.remove(getClients_ID().getKey(id));
         getClients_ID().removeByValue(id);
-        ID_Nicks.removeByKey(id);
+        getID_Nicks().removeByKey(id);
     }
 
     /**
      * Checks if the nickname is a nickname of the players in game of equals everyone
      * @param nickname is the nickname to check
-     * @return true if nickname is the nickname of a player in game
+     * @return true if nickname is the nickname of a player in game or the broadcast string
      */
     private boolean invalidNickname(String nickname){
         if(nickname.equals(Config.everyone))
@@ -724,7 +725,8 @@ public class Engine{
     private void loadFromFile(String ID, String nickname) {
         if (freeNamesUsedInLastGame.contains(nickname)) {
             freeNamesUsedInLastGame.remove(nickname);
-            this.getID_Nicks().put(ID, nickname);
+            if(!ID_Nicks.getAllKey().contains(ID))
+                ID_Nicks.put(ID, nickname);
         } else {
             try {
                 getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(ID, "Nickname not in the last game!!!")));
@@ -733,14 +735,13 @@ public class Engine{
             }
         }
         if(ID.equals(firstClient))
-            for(String nick : tmpNick.getAllValue()){
+            for(String nick : ID_Nicks.getAllValue()){
                 loadFromFile(getID_Nicks().getKey(nick), nick);
-                tmpNick.removeByValue(nick);
             }
         startGameFromFile();
     }
 
-    private void initializePlayer(Client client, SerializableInput input)  {
+    private void initializePlayer(SerializableInput input)  {
         if (invalidNickname(input.getClientNickname())) {
             try {
                 getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));
@@ -749,12 +750,8 @@ public class Engine{
             }
             return;
         }
-        ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
-        clients_ID.put(client, input.getAlphanumericID());
-        if(getClients_ID().getAllKey().size()> getGame().getNumberOfPlayers() && game.getNumberOfPlayers()!=0) {
-            checkKill();
-            return;
-        }
+        if(!ID_Nicks.getAllKey().contains(input.getAlphanumericID()))
+            ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
         if(!playerReconnect)
             playerJoin(input.getClientNickname());
         if(playerReconnect){
@@ -777,18 +774,18 @@ public class Engine{
             if(loadFromFile){
                 loadFromFile(input.getAlphanumericID(), input.getClientNickname());
             }else{
-                initializePlayer(client, input);
+                initializePlayer(input);
             }
         }else{
             if(!loadFromFile) {
                 if (game.getFirstPlayer() == null) {
-                    tmpNick.put(client, input.getAlphanumericID());
+                    ID_Nicks.put(input.getAlphanumericID(), input.getAlphanumericID());
                 } else {
-                    initializePlayer(client, input);
+                    initializePlayer(input);
                 }
             }else{
                 if (game.getFirstPlayer() == null) {
-                    tmpNick.put(client, input.getAlphanumericID());
+                    ID_Nicks.put(input.getAlphanumericID(), input.getAlphanumericID());
                 }else{
                     loadFromFile(input.getAlphanumericID(), input.getClientNickname());
                 }
@@ -805,8 +802,6 @@ public class Engine{
                     throw new RuntimeException("Network error while killing clients: " + e.getMessage());
                 }
                 removeObserver(ID_Nicks.getKey(nick));
-                getClients_ID().removeByValue(getID_Nicks().getKey(nick));
-                getID_Nicks().removeByValue(nick);
             }
 
     }
@@ -835,6 +830,7 @@ public class Engine{
 
     private void startGameFromFile(){
         if (freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
+            checkKill();
             try {
                 getGame().setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastNickname, randomColors())));
                 getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname, getGame())));

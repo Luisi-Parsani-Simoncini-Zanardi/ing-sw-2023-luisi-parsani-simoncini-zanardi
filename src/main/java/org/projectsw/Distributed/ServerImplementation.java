@@ -2,10 +2,10 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.InputMessages.SendNickname;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.Game;
 import org.projectsw.Util.Observer;
-import org.projectsw.Util.OneToOneHashmap;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -47,8 +47,6 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         this.model.addObserver(observer);
     }
 
-
-
     @Override
     public synchronized void update(Client client,InputMessage input) throws RemoteException {
         if(!controller.getClients_ID().getAllKey().contains(client))
@@ -71,7 +69,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     }
     public void checkClientConnections() {
         List<Client> disconnectedClients = new ArrayList<>();
-        for (Client client : controller.getClientObserverHashMap().getAllKey()) {
+        for (Client client : controller.getClients_ID().getAllKey()) {
             try {
                 client.ping(); // Verifica la connessione del client
             } catch (RemoteException e) {

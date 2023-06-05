@@ -28,7 +28,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private volatile boolean waitResult = true;
     private boolean endedTurn = false;
     private boolean reconnection = false;
-    private boolean returnedFlag = false;
 
     private Integer number;
     private Point point;
@@ -68,8 +67,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         }
     }
 
-    public void setReturnedFlag(boolean returnedFlag) {
-        this.returnedFlag = returnedFlag;}
     public void setFirstPlayerFlag(boolean firstPlayerFlag) {
         this.firstPlayerFlag = firstPlayerFlag;
     }
@@ -127,12 +124,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         while (connectFlag) {
         }
         do{
+            System.out.println("\nCHOOSE AN OPTION:");
             if(nickFlag)
-                System.out.println("1: Choose your nickname");
+                System.out.println("1: Insert your nickname");
             if(firstPlayerFlag)
-                System.out.println("2: Choose number of players");
+                System.out.println("2: Insert the number of players");
             if(firstPlayerFlag&&previousGameExist)
-                System.out.println("3: Load game from file");
+                System.out.println("3: Load the game from file");
             if(firstPlayerFlag || nickFlag) {
                 try {
                     choice = masterScanner.nextInt();
@@ -150,7 +148,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
         if (getEndState() == UIEndState.LOBBY)
-            System.out.println("Waiting for more people to join...\n");
+            System.out.println("Waiting response from the server...\n");
         while (getEndState() == UIEndState.LOBBY) {
             synchronized (this) {
                 try {
@@ -183,8 +181,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
-                                /*customWait();
-                                System.out.println("porcus dius");*/
                                 selectTiles();
                             } else {
                                 System.err.println("You can't select a tile now...");
@@ -248,12 +244,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             }
         } while (getEndState() == UIEndState.RUNNING || waitResult);
         ending();
-    }
-
-    private void customWait(){
-    while(!returnedFlag){
-        }
-        returnedFlag=false;
     }
 
     public void ending(){
@@ -512,7 +502,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         board.setBoard(model.getGameBoard());
         System.out.println("-----GAME BOARD-----");
         board.printBoard();
-        returnedFlag=true;
     }
 
     public void showShelf(SerializableGame model){
@@ -601,7 +590,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                         System.err.println("You can't choose \"broadcast\" as nickname...");
                 } while (nickname.equals(Config.broadcastNickname));
                 try {
-                    setChangedAndNotifyObservers(new SendNickname(getClient(), new SerializableInput(alphanumericKey, this.getNickname(), client)));
+                    setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));
                 } catch (RemoteException e) {
                     throw new RuntimeException("An error occurred: " + e.getCause());
                 }
@@ -623,7 +612,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 System.err.println("You can't choose \"broadcast\" as nickname...");
         } while (nickname.equals(Config.broadcastNickname));
         try {
-            setChangedAndNotifyObservers(new SendNickname(getClient(), new SerializableInput(alphanumericKey, this.getNickname(), client)));
+            setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: " + e.getCause());
         }
@@ -663,7 +652,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         }
         firstPlayerFlag=false;
         nickFlag = true;
-        askNickname();
     }
 
     public void askLoadGame(){
@@ -681,7 +669,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         }
         firstPlayerFlag=false;
         nickFlag = true;
-        askNickname();
     }
 
     public void kill(int option){
