@@ -119,11 +119,6 @@ public class Engine{
                     startGame();
                 }
             } else {
-                try {
-                    game.setChangedAndNotifyObservers(new Kill(new SerializableGame(ID,0)));
-                } catch (RemoteException e) {
-                    throw new RuntimeException("Network error while killing clients: " + e.getMessage());
-                }
                 removeObserver(ID);
                 ID_Nicks.removeByKey(ID);
             }
@@ -131,11 +126,6 @@ public class Engine{
 
     private void killingSpree(ArrayList<String> idToKill){
         for(String id : idToKill){
-            try {
-                game.setChangedAndNotifyObservers(new Kill(new SerializableGame(id,0)));
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while killing clients: " + e.getMessage());
-            }
             removeObserver(id);
             ID_Nicks.removeByKey(id);
             IDToKill.remove(id);
@@ -640,6 +630,11 @@ public class Engine{
     }
 
     public synchronized void removeObserver(String id) {
+        try {
+            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(id,0)));
+        } catch (RemoteException e) {
+            game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(id)));
+        }
         game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(id)));
         clientObserverHashMap.remove(getClients_ID().getKey(id));
         getClients_ID().removeByValue(id);
@@ -867,11 +862,6 @@ public class Engine{
     private void checkKill(){
         for(String nick : ID_Nicks.getAllValue())
             if(!game.getPlayersNickname().contains(nick)) {
-                try {
-                    game.setChangedAndNotifyObservers(new Kill(new SerializableGame(getID_Nicks().getKey(nick),0)));
-                } catch (RemoteException e) {
-                    throw new RuntimeException("Network error while killing clients: " + e.getMessage());
-                }
                 removeObserver(ID_Nicks.getKey(nick));
             }
 
