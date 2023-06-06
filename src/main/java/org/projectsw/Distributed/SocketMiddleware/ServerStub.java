@@ -10,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
-import java.util.HashMap;
 
 public class ServerStub implements Server {
     private final String ip;

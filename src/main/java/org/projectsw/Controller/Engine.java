@@ -358,7 +358,7 @@ public class Engine{
      */
     public synchronized void sendResults() {
         try {
-            getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastNickname, getGame())));
+            getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while sending the results: "+e.getMessage());
         }
@@ -487,8 +487,8 @@ public class Engine{
                 {
                     dcEndTurn(nickName);
                 }
-                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
-                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname,getGame())));
+                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
@@ -499,8 +499,8 @@ public class Engine{
     //called when the current player disconnect
     public void sendNexTurn() {
         try {
-            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
-            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname,getGame())));
+            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -527,8 +527,8 @@ public class Engine{
             this.fillBoard();
         getGame().setCurrentPlayer(getGame().getNextPlayer());
         try {
-            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname,getGame())));
-            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname,getGame())));
+            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
+            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
         } catch (RemoteException e){
             throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
         }
@@ -544,7 +544,7 @@ public class Engine{
                 this.getGame().getBoard().setEndGame(true);
                 this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);
                 try {
-                    getGame().setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastNickname, getGame())));
+                    getGame().setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastID, getGame())));
                     if(getGame().getPositionByNick(nickName)>0)
                         for(int i = 0; i<getGame().getPositionByNick(nickName); i++)
                             getGame().setChangedAndNotifyObservers(new ForceEnding(new SerializableGame(getGame().getPlayers().get(i).getNickname())));
@@ -643,7 +643,7 @@ public class Engine{
         Message message = new Message(sender, scope, content);
         getGame().getChat().addChatLog(message);
         try {
-            getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(Config.broadcastNickname, message)));
+            getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(Config.broadcastID, message)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while sending the chat to the clients: " + e.getMessage());
         }
@@ -808,8 +808,8 @@ public class Engine{
         if(playerReconnect){
             getPlayerFromNickname(input.getClientNickname()).setIsActive(true);
             try {
-                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastNickname, randomColors())));
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname, getGame())));
+                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
             } catch (RemoteException e){
                 throw new RuntimeException("An error occurred while notifying the next player: "+e.getCause());
             }
@@ -915,10 +915,10 @@ public class Engine{
         if (freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
             checkKill();
             try {
-                getGame().setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastNickname, randomColors())));
-                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastNickname, getGame())));
-                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastNickname, getGame())));
-                getGame().setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastNickname,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));
+                getGame().setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
+                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID, getGame())));
+                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
+                getGame().setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while setting the name colors: " + e);
             }

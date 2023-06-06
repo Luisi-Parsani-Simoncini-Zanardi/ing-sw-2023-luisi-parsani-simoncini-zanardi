@@ -349,7 +349,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     }
 
     public void update(ResponseMessage response){
-        if(response.getModel().getAlphanumericID().equals(this.alphanumericKey)||response.getModel().getAlphanumericID().equals(Config.broadcastNickname))
+        if(response.getModel().getAlphanumericID().equals(this.alphanumericKey)||response.getModel().getAlphanumericID().equals(Config.broadcastID))
             response.execute(this);
     }
     public void setNoMoreTemporaryTiles(boolean bool){
@@ -625,9 +625,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 do {
                     System.out.println("Insert your nickname: ");
                     nickname = scanner.nextLine();
-                    if (nickname.equals(Config.broadcastNickname))
+                    if (nickname.equals(Config.broadcastID))
                         System.err.println("You can't choose \"broadcast\" as nickname...");
-                } while (nickname.equals(Config.broadcastNickname));
+                } while (nickname.equals(Config.broadcastID));
                 try {
                     setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));
                 } catch (RemoteException e) {
@@ -646,9 +646,9 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         do {
             System.out.println("Looks like this game has a disconnected player, insert your old nickname to play: ");
             nickname = scanner.nextLine();
-            if (nickname.equals(Config.broadcastNickname))
+            if (nickname.equals(Config.broadcastID))
                 System.err.println("You can't choose \"broadcast\" as nickname...");
-        } while (nickname.equals(Config.broadcastNickname));
+        } while (nickname.equals(Config.broadcastID));
         try {
             setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));
         } catch (RemoteException e) {
