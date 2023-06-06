@@ -173,7 +173,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             waitReturn();
         }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
-        System.out.println("sto fuori");
         if (getEndState() == UIEndState.LOBBY)
             System.out.println("Waiting response from the server...\n");
         while (getEndState() == UIEndState.LOBBY) {
