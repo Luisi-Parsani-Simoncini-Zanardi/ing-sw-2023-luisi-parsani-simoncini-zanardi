@@ -202,8 +202,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 switch (choice) {
                     case 0 -> printCommandMenu();
                     case 1 -> {
-                        if (getTurnState() == UITurnState.OPPONENT_TURN)
+                        if (getTurnState() == UITurnState.OPPONENT_TURN) {
                             System.err.println("It's not your turn. Please wait...");
+                            System.out.println("---CHOOSE AN ACTION---");
+                        }
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
@@ -232,7 +234,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                                 }
                                 if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                     selectTemporaryTiles();
-                                    waitReturn();
                                     System.out.println("You ended your turn.");
                                     try {
                                         setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname(), client)));
@@ -450,6 +451,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
+            waitReturn();
         }while(noMoreTemporaryTiles);
     }
 
