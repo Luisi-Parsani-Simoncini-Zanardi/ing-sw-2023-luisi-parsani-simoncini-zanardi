@@ -189,6 +189,11 @@ public class Engine{
                 }
             }
         }
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -938,6 +943,11 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public synchronized void shelfTransferAll(String ID) {
@@ -961,6 +971,11 @@ public class Engine{
             game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(ID, getGame())));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred: "+e.getCause());
+        }
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 

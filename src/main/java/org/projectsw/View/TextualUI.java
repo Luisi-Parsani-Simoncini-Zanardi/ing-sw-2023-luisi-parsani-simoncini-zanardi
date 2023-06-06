@@ -223,6 +223,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                                 System.err.println("You can't insert a tile now...");
                             } else {
                                 askShelf();
+                                waitReturn();
                                 askTemporaryTiles();
                                 if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
                                     setTurnState(UITurnState.YOUR_TURN_INSERTION);
@@ -419,6 +420,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
+            waitReturn();
         }while(noMoreSelectableTiles && chooseTiles());
         try {
             setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
