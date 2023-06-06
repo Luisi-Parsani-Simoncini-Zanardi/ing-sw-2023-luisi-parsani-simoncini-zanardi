@@ -139,18 +139,18 @@ public class Engine{
         game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         fillBoard();
-        for(String ID : ID_Nicks.getAllKey()) {
+        //for(String ID : ID_Nicks.getAllKey()) {
             try {
-                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(ID, randomColors())));
+                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while setting the name colors: " + e);
             }
             try {
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(ID, getGame())));
+                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
             }
-        }
+        //}
         saveGameStatus.saveGame();
     }
 
