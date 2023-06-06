@@ -126,6 +126,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     }
     public void setReconnection(Boolean flag) {this.reconnection=flag; }
     private void waitReturn() {
+        returnedFlag=false;
         while (!returnedFlag) {
             synchronized (this) {
                 try {
@@ -225,6 +226,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                                 askShelf();
                                 waitReturn();
                                 askTemporaryTiles();
+                                waitReturn();
                                 if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
                                     setTurnState(UITurnState.YOUR_TURN_INSERTION);
                                     selectColumn();

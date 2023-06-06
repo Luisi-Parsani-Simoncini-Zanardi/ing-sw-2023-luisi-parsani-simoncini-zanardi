@@ -943,7 +943,7 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
         }
-        try {
+       try {
             game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
