@@ -107,7 +107,7 @@ public class Engine{
                     this.game.setCurrentPlayer(newPlayer);
                     for(String nick : getID_Nicks().getAllValue()) {
                         if(game.getPlayers().size() < game.getNumberOfPlayers() ){
-                        playerJoin(nick, "");
+                        smallJoin(nick);
                         } else {
                             IDToKill.add(ID_Nicks.getKey(nick));
                         }
@@ -124,12 +124,17 @@ public class Engine{
             }
     }
 
+    private void smallJoin(String nickname) {
+        int newPlayerPosition = game.getPlayers().size();
+        Player newPlayer = new Player(nickname, newPlayerPosition);
+        game.addPlayer(newPlayer);
+    }
+
     private void killingSpree(ArrayList<String> idToKill){
         for(String id : idToKill){
             removeObserver(id);
-            ID_Nicks.removeByKey(id);
-            IDToKill.remove(id);
         }
+        IDToKill.clear();
     }
 
     /**
