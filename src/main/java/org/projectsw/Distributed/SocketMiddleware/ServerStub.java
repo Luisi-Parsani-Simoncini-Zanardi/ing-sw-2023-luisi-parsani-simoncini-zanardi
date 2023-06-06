@@ -4,7 +4,6 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
-import org.projectsw.Model.SerializableGame;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,12 +43,7 @@ public class ServerStub implements Server {
     }
 
     @Override
-    public void removeObserver(Client client) throws RemoteException {
-
-    }
-
-    @Override
-    public void update(Client client, InputMessage input) throws RemoteException {
+    public synchronized void update(Client client, InputMessage input) throws RemoteException {
         try {
             oos.writeObject(input);
             oos.flush();

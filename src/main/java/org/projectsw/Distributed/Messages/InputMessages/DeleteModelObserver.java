@@ -14,6 +14,6 @@ public class DeleteModelObserver extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine){
-        engine.removeObserver(engine.getClientsID().getKey(input.getAlphanumericID()));
+        engine.removeObserver(input.getAlphanumericID());
     }
 }

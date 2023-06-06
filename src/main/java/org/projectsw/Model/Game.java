@@ -22,8 +22,6 @@ public class Game extends Observable<ResponseMessage> {
     private Board board;
     private Chat chat;
     private ArrayList<CommonGoal> commonGoals;
-    private String currentClientID;
-    private String clientPlayerNickname;
 
     /**
      * Creates a new instance of a SILLY Game, with a new chat, an empty player list,
@@ -54,13 +52,6 @@ public class Game extends Observable<ResponseMessage> {
         board = new Board(number);
     }
 
-    public String getClientPlayerNickname(){
-        return this.clientPlayerNickname;
-    }
-
-    public void setClientPlayerNickname(String nickname){
-        this.clientPlayerNickname = nickname;
-    }
     /**
      * Sets the number of players
      * @param numPlayers is the number of player
@@ -154,12 +145,6 @@ public class Game extends Observable<ResponseMessage> {
         return chat;
     }
 
-    public String getCurrentClientID(){
-        return this.currentClientID;
-    }
-    public void setCurrentClientID(String nick){
-        this.currentClientID=nick;
-    }
 
     /**
      * Sets the game state as the passed parameter.

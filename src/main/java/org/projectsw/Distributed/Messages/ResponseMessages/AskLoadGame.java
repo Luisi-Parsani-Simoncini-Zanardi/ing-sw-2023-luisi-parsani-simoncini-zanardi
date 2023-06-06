@@ -14,6 +14,8 @@ public class AskLoadGame extends ResponseMessage implements Serializable {
     }
     @Override
     public void execute(TextualUI tui){
-        tui.askLoadGame();
+        tui.setNickFlag(false);
+        tui.setFirstPlayerFlag(true);
+        tui.setPreviousGameExist(true);
     }
 }

@@ -17,6 +17,6 @@ public class AskForCommonGoals extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.commonGoalTransfer();
+        engine.commonGoalTransfer(input.getAlphanumericID());
     }
 }

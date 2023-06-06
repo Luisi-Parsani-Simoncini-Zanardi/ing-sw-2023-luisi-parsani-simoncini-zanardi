@@ -17,6 +17,6 @@ public class AskForTemporaryTiles extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.temporaryTilesTransfer();
+        engine.temporaryTilesTransfer(input.getAlphanumericID());
     }
 }

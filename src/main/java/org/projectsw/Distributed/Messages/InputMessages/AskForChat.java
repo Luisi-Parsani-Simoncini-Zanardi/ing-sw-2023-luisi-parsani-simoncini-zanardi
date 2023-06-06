@@ -14,6 +14,6 @@ public class AskForChat extends InputMessage implements Serializable {
     }
     @Override
     public void execute(Engine engine){
-        engine.sendChat(input.getString());
+        engine.sendChat(input.getString(),input.getAlphanumericID());
     }
 }

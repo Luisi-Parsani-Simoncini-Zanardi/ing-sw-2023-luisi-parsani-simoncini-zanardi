@@ -1,7 +1,6 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
-import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;

@@ -2,7 +2,6 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
@@ -20,4 +19,5 @@ public interface Client extends Remote {
     public Observer<TextualUI, InputMessage> getTuiObserver() throws  RemoteException;
     public Observer<GraphicalUI, InputMessage> getGuiObserver() throws  RemoteException;
     public void ping() throws  RemoteException;
+    public TextualUI getTui()throws  RemoteException;
 }

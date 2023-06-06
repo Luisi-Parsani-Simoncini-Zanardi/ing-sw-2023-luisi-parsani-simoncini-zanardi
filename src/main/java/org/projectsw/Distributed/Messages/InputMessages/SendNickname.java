@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.InputMessages;
 
 import org.projectsw.Controller.Engine;
+import org.projectsw.Distributed.Client;
 import org.projectsw.View.SerializableInput;
 
 import java.io.Serial;
@@ -16,6 +17,6 @@ public class SendNickname extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException{
-        engine.setCurrentNickname(input.getClientNickname());
+        engine.takeNick(getInput());
     }
 }

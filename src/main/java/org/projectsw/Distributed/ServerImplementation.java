@@ -2,6 +2,7 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+import org.projectsw.Distributed.Messages.InputMessages.SendNickname;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Model.Game;
 import org.projectsw.Util.Observer;
@@ -16,21 +17,25 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine(this);
     private final Game model = new Game();
-
-    private final Map<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
-
+    private final MessageQueueHandler queueHandler = new MessageQueueHandler(controller);
+    private final Thread queueThread;
     public ServerImplementation() throws RemoteException {
         super();
         controller.setGame(model);
-
+        queueThread = new Thread(queueHandler);
+        queueThread.start();
     }
     public ServerImplementation(int port) throws RemoteException {
         super(port);
         controller.setGame(model);
+        queueThread = new Thread(queueHandler);
+        queueThread.start();
     }
     public ServerImplementation(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
         controller.setGame(model);
+        queueThread = new Thread(queueHandler);
+        queueThread.start();
     }
 
     @Override
@@ -38,19 +43,15 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         Observer<Game, ResponseMessage> observer = (o, response) -> {
             client.update(response);
         };
-        clientObserverHashMap.put(client, observer);
+        controller.getClientObserverHashMap().put(client, observer);
         this.model.addObserver(observer);
     }
 
     @Override
-    public void removeObserver(Client client){
-        model.deleteObserver(clientObserverHashMap.get(client));
-        clientObserverHashMap.remove(client);
-    }
-
-    @Override
-    public void update(Client client, InputMessage input) throws RemoteException {
-        this.controller.update(client, input);
+    public synchronized void update(Client client,InputMessage input) throws RemoteException {
+        if(!controller.getClients_ID().getAllKey().contains(client))
+            controller.getClients_ID().put(client,input.getInput().getAlphanumericID());
+        queueHandler.add(input);
     }
     @Override
     public void startPingThread() {
@@ -68,7 +69,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     }
     public void checkClientConnections() {
         List<Client> disconnectedClients = new ArrayList<>();
-        for (Client client : controller.getClientsID().getAllKey()) {
+        for (Client client : controller.getClients_ID().getAllKey()) {
             try {
                 client.ping(); // Verifica la connessione del client
             } catch (RemoteException e) {
@@ -83,13 +84,15 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private void unregisterClients(List<Client> clients) {
         for(Client client : clients) {
-            controller.getPlayerFromNickname(controller.getClientsNicks().getValue(client)).setIsActive(false);
-            controller.getClientsID().removeByKey(client);
-            removeObserver(client);
-            if(controller.getGame().getCurrentPlayer().getNickname().equals(controller.getClientsNicks().getValue(client))){
-                controller.getClientsNicks().removeByKey(client);
-                controller.endTurn();
+            controller.setIsActiveFromClient(client, false);
+            controller.removeObserver(controller.getClients_ID().getValue(client));
+            try {
+                if(client.getTui().getNickname().equals(controller.getGame().getCurrentPlayer().getNickname())) {
+                controller.endTurn(controller.getGame().getCurrentPlayer().getNickname());
                 controller.sendNexTurn();
+            }
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
             }
         }
     }

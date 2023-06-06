@@ -17,6 +17,6 @@ public class AskForCurrentPlayer extends InputMessage implements Serializable {
 
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.currentPlayerTransfer();
+        engine.currentPlayerTransfer(input.getAlphanumericID());
     }
 }

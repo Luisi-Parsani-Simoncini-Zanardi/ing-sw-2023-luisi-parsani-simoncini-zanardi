@@ -24,6 +24,8 @@ public class AppServer extends UnicastRemoteObject
 
     private static AppServer instance;
 
+    private final Server server = new ServerImplementation();
+
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     protected AppServer() throws RemoteException {
@@ -41,7 +43,7 @@ public class AppServer extends UnicastRemoteObject
             @Override
             public void run() {
                 try {
-                    startRMI();
+                    startRMI(getInstance().getServer());
                 } catch (RemoteException e) {
                     System.err.println("Cannot start RMI. This protocol will be disabled.");
                 }
@@ -54,7 +56,7 @@ public class AppServer extends UnicastRemoteObject
             @Override
             public void run() {
                 try {
-                    startSocket();
+                    startSocket(getInstance().getServer());
                 } catch (RemoteException e) {
                     System.err.println("Cannot start socket. This protocol will be disabled.");
                 }
@@ -71,17 +73,16 @@ public class AppServer extends UnicastRemoteObject
         }
     }
 
-    private static void startRMI() throws RemoteException {
-        Server server = new ServerImplementation();
+    private static void startRMI(Server server) throws RemoteException {
         LocateRegistry.createRegistry(1099);
         Registry registry = LocateRegistry.getRegistry();//port 1099 standard
         registry.rebind("server", server);
 
-        server.startPingThread();
+        //server.startPingThread();
 
     }
 
-    public static void startSocket() throws RemoteException {
+    public static void startSocket(Server server) throws RemoteException {
         AppServer instance = getInstance();
         try (ServerSocket serverSocket = new ServerSocket(4444)) {
             while (true) {
@@ -89,7 +90,6 @@ public class AppServer extends UnicastRemoteObject
                 instance.executorService.submit(() -> {
                     try {
                         ClientSkeleton clientSkeleton = new ClientSkeleton(socket);
-                        Server server = new ServerImplementation();
                         server.register(clientSkeleton);
                         while (true) {
                             clientSkeleton.receive(server);
@@ -110,7 +110,7 @@ public class AppServer extends UnicastRemoteObject
         }
     }
 
-    public Server connect() throws RemoteException {
-        return new ServerImplementation();
+    public Server getServer() throws RemoteException {
+        return this.server;
     }
 }

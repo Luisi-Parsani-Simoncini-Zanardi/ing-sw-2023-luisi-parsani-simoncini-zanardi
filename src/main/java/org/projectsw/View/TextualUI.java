@@ -13,17 +13,22 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class TextualUI extends Observable<InputMessage> implements Runnable{
+public class TextualUI extends Observable<InputMessage> implements Runnable {
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
 
     private final Object lock = new Object();
     private final Object lock2 = new Object();
 
+    private volatile boolean connectFlag = true;
     private boolean flag = true;
+    private boolean nickFlag = true;
+    private boolean firstPlayerFlag = false;
+    private boolean previousGameExist = false;
     private volatile boolean waitResult = true;
     private boolean endedTurn = false;
     private boolean reconnection = false;
+    private boolean returnedFlag = false;
 
     private Integer number;
     private Point point;
@@ -47,6 +52,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         this.client = client;
         displayLogo();
     }
+    public boolean getNickFlag() {
+        return nickFlag;
+    }
+    public boolean getFirstPlayerFlag() {
+        return firstPlayerFlag;
+    }
+    public boolean getPreviousGameExist() {
+        return previousGameExist;
+    }
+    public void setReturnedFlag(boolean returnedFlag){this.returnedFlag=returnedFlag;}
+
 
     public boolean getFlag() {
         return flag;
@@ -61,6 +77,16 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         synchronized(lock2){
             return endState;
         }
+    }
+
+    public void setFirstPlayerFlag(boolean firstPlayerFlag) {
+        this.firstPlayerFlag = firstPlayerFlag;
+    }
+    public void setNickFlag(boolean nickFlag){
+        this.nickFlag=nickFlag;
+    }
+    public void setPreviousGameExist(boolean previousGameExist){
+        this.previousGameExist=previousGameExist;
     }
     public Client getClient(){return this.client;}
     public String getString(){return this.string;}
@@ -82,7 +108,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         this.nameColors = nameColors;
     }
     public void setFlag(boolean resp){
-        this.flag=resp;
+        this.flag =resp;
     }
     public void setTurnState(UITurnState state){
         synchronized (lock){
@@ -94,22 +120,61 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             this.endState = state;
         }
     }
+    public void setConnectFlag(boolean connectFlag){this.connectFlag=connectFlag;}
     public void setLastPlayerName(String nick){
         this.lastPlayerNick=nick;
     }
     public void setReconnection(Boolean flag) {this.reconnection=flag; }
-
+    private void waitReturn() {
+        returnedFlag=false;
+        while (!returnedFlag) {
+            synchronized (this) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("An error occurred while waiting for the returned flag: " + e);
+                }
+            }
+        }
+        returnedFlag=false;
+    }
 
     @Override
     public void run() {
-        int choice = 0;
+        int choice=0;
         RandomAlphanumericGen randomizer = new RandomAlphanumericGen();
         alphanumericKey = randomizer.generateRandomString(100);
         System.out.println(alphanumericKey);
         connect();
+        while (connectFlag) {
+        }
+        do {
+            System.out.println("\nCHOOSE AN OPTION:");
+            if (nickFlag)
+                System.out.println("1: Insert your nickname");
+            if (firstPlayerFlag)
+                System.out.println("2: Insert the number of players");
+            if (firstPlayerFlag && previousGameExist)
+                System.out.println("3: Load the game from file");
+            if (firstPlayerFlag || nickFlag) {
+                try {
+                    choice = masterScanner.nextInt();
+                } catch (InputMismatchException e) {
+                    choice = 0;
+                    masterScanner.next();
+                }
+                switch (choice) {
+                    case 1 -> askNickname();
+                    case 2 -> askNumber();
+                    case 3 -> askLoadGame();
+                    default -> System.err.println("Invalid selection!!!");
+                }
+            }
+            waitReturn();
+        }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
         if (getEndState() == UIEndState.LOBBY)
-            System.out.println("Waiting for more people to join...\n");
+            System.out.println("Waiting response from the server...\n");
         while (getEndState() == UIEndState.LOBBY) {
             synchronized (this) {
                 try {
@@ -136,8 +201,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 switch (choice) {
                     case 0 -> printCommandMenu();
                     case 1 -> {
-                        if (getTurnState() == UITurnState.OPPONENT_TURN)
+                        if (getTurnState() == UITurnState.OPPONENT_TURN) {
                             System.err.println("It's not your turn. Please wait...");
+                            System.out.println("---CHOOSE AN ACTION---");
+                        }
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
@@ -158,16 +225,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                             } else {
                                 askShelf();
                                 askTemporaryTiles();
+                                waitReturn();
                                 if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
                                     setTurnState(UITurnState.YOUR_TURN_INSERTION);
                                     selectColumn();
+                                    waitReturn();
                                 }
                                 if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                     selectTemporaryTiles();
-                                    //writeBufferMessage();
                                     System.out.println("You ended your turn.");
                                     try {
-                                        setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname())));
+                                        setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname(), client)));
                                     } catch (RemoteException e) {
                                         throw new RuntimeException("An error occurred while ending the turn: " + e);
                                     }
@@ -201,7 +269,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                     case 12 -> exit();
                     default -> System.err.println("Invalid command. Try again...");
                 }
-                if (!endedTurn&&flag)
+                if (!endedTurn&& flag)
                     System.out.println("\n---CHOOSE AN ACTION---");
             }
         } while (getEndState() == UIEndState.RUNNING || waitResult);
@@ -215,7 +283,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Wait for results please...");
         if(nickname.equals(lastPlayerNick)) {
             try {
-                setChangedAndNotifyObservers(new AskForResults(new SerializableInput(alphanumericKey, getNickname())));
+                setChangedAndNotifyObservers(new AskForResults(new SerializableInput(alphanumericKey, getNickname(), client)));
             } catch (RemoteException e) {
                 throw new RuntimeException("A network error occurred while asking for results: "+e.getMessage());
             }
@@ -248,7 +316,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     private void connect(){
         try {
-            setChangedAndNotifyObservers(new Connect(new SerializableInput(alphanumericKey)));
+            setChangedAndNotifyObservers(new Connect(new SerializableInput(alphanumericKey, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred connecting to the server: "+e.getMessage());
         }
@@ -257,10 +325,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     public void exit(){
         System.out.println("Exiting...");
         try {
-            setChangedAndNotifyObservers(new NotActive(new SerializableInput(alphanumericKey, getNickname())));
-            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey)));
+            setChangedAndNotifyObservers(new NotActive(new SerializableInput(alphanumericKey, getNickname(), client)));
+            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey, client)));
             if(getTurnState()!=UITurnState.OPPONENT_TURN)
-                setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(alphanumericKey, getNickname())));
+                setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(alphanumericKey, getNickname(), client)));
             client.kill();
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while removing the tui observer: "+e.getMessage());
@@ -274,14 +342,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
                 message -> to send a message to everyone""");
         string = scanner.nextLine();
         try {
-            setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(alphanumericKey, getNickname(),getString())));
+            setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(alphanumericKey, getNickname(),getString(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while sending the message: "+e.getMessage());
         }
     }
 
     public void update(ResponseMessage response){
-        if(response.getModel().getAlphanumericID().equals(this.alphanumericKey)||response.getModel().getAlphanumericID().equals(Config.broadcastNickname))
+        if(response.getModel().getAlphanumericID().equals(this.alphanumericKey)||response.getModel().getAlphanumericID().equals(Config.broadcastID))
             response.execute(this);
     }
     public void setNoMoreTemporaryTiles(boolean bool){
@@ -350,13 +418,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do{
             point = selectTilesInput();
             try {
-                setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(alphanumericKey, getNickname(), getPoint())));
+                setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(alphanumericKey, getNickname(), getPoint(), client)));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
+            waitReturn();
         }while(noMoreSelectableTiles && chooseTiles());
         try {
-            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
         }
@@ -367,7 +436,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             number = selectColumnInput();
         }while(chooseColumn());
         try {
-            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, number)));
+            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, number, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
         }
@@ -377,10 +446,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do {
             number = selectTemporaryTileInput();
             try {
-                setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(alphanumericKey, getNickname(), number)));
+                setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(alphanumericKey, getNickname(), number, client)));
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
+            waitReturn();
         }while(noMoreTemporaryTiles);
     }
 
@@ -405,39 +475,43 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askBoard() {
         try {
-            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(alphanumericKey)));
+            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(alphanumericKey, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the board: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askShelf() {
         try {
-            setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askAllShelves() {
         try {
-            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(alphanumericKey)));
+            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(alphanumericKey, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askPersonalGoal() {
         try {
-            setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askTemporaryTiles() {
         try {
-            setChangedAndNotifyObservers(new AskForTemporaryTiles(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AskForTemporaryTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
@@ -445,18 +519,20 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void askCommonGoals() {
         try {
-            setChangedAndNotifyObservers(new AskForCommonGoals(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AskForCommonGoals(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askCurrentPlayer() {
         try {
-            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(alphanumericKey)));
+            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(alphanumericKey, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the current player: "+e.getMessage());
         }
+        waitReturn();
     }
 
     public void showBoard(SerializableGame model){
@@ -523,10 +599,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
     }
     private void askGlobalChat(){
         try {
-            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(alphanumericKey, getNickname(),Config.everyone)));
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(alphanumericKey, getNickname(),Config.everyone, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while asking for the Global chat" + e.getMessage());
         }
+        waitReturn();
     }
 
     private void askSpecificChat(){
@@ -534,29 +611,34 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         System.out.println("Write the name of the player that you want to see the chat with:");
         string = scanner.nextLine();
         try {
-            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(alphanumericKey, getNickname(),getString())));
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(alphanumericKey, getNickname(),getString(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while asking for the Specific chat: " + e.getMessage());
         }
+        waitReturn();
     }
 
     public void askNickname() {
-        Scanner scanner = new Scanner(System.in);
-        playerReconnection();
-        if(!reconnection) {
-            do {
-                System.out.println("Insert your nickname: ");
-                nickname = scanner.nextLine();
-                if (nickname.equals(Config.broadcastNickname))
-                    System.err.println("You can't choose \"broadcast\" as nickname...");
-            } while (nickname.equals(Config.broadcastNickname));
-            try {
-                setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred: " + e.getCause());
+        if(nickFlag) {
+            Scanner scanner = new Scanner(System.in);
+            //playerReconnection();
+            if (!reconnection) {
+                do {
+                    System.out.println("Insert your nickname: ");
+                    nickname = scanner.nextLine();
+                    if (nickname.equals(Config.broadcastID))
+                        System.err.println("You can't choose \"broadcast\" as nickname...");
+                } while (nickname.equals(Config.broadcastID));
+                try {
+                    setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("An error occurred: " + e.getCause());
+                }
+            } else {
+                reconnectionJoin();
             }
-        } else {
-            reconnectionJoin();
+        }else{
+            System.err.println("You can't choose your nickname now!!!");
         }
     }
 
@@ -565,11 +647,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
         do {
             System.out.println("Looks like this game has a disconnected player, insert your old nickname to play: ");
             nickname = scanner.nextLine();
-            if (nickname.equals(Config.broadcastNickname))
+            if (nickname.equals(Config.broadcastID))
                 System.err.println("You can't choose \"broadcast\" as nickname...");
-        } while (nickname.equals(Config.broadcastNickname));
+        } while (nickname.equals(Config.broadcastID));
         try {
-            setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname())));
+            setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: " + e.getCause());
         }
@@ -577,50 +659,55 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
 
     private void playerReconnection() {
         try {
-            setChangedAndNotifyObservers(new AmIReconnecting(new SerializableInput(alphanumericKey, getNickname())));
+            setChangedAndNotifyObservers(new AmIReconnecting(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void askNumber(){
-        Scanner scanner = new Scanner(System.in);
-        do{
-            System.out.println("Insert number of players: ");
-            try {
-                number = scanner.nextInt();
-            } catch (InputMismatchException e)
-            {
-                System.err.println("Invalid Number of players. Try again...");
+        if(firstPlayerFlag) {
+            Scanner scanner = new Scanner(System.in);
+            do {
                 System.out.println("Insert number of players: ");
-                scanner.next();
-                number = scanner.nextInt();
-            }
-            if(number<Config.minPlayers || number>Config.maxPlayers)
-                System.err.println("Invalid Number of players. Try again...");
-        }while(number<Config.minPlayers || number>Config.maxPlayers);
-        try {
-            setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(alphanumericKey, getNumber())));
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error"+e.getMessage());
-        }
-    }
-
-    public void askLoadGame(){
-        Scanner scanner = new Scanner(System.in);
-        do {
-            System.out.println("Save file found. Would you like to load the game from it?\n1: yes\n2: no");
-            number = scanner.nextInt();
-            if(number != 1 && number != 2)
-                System.err.println("Invalid Input, try again...");
-        } while (number != 1 && number != 2);
-        if (number == 1) {
+                try {
+                    number = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.err.println("Invalid Number of players. Try again...");
+                    System.out.println("Insert number of players: ");
+                    scanner.next();
+                    number = scanner.nextInt();
+                }
+                if (number < Config.minPlayers || number > Config.maxPlayers)
+                    System.err.println("Invalid Number of players. Try again...");
+            } while (number < Config.minPlayers || number > Config.maxPlayers);
             try {
-                setChangedAndNotifyObservers(new LoadGameSelection(new SerializableInput(alphanumericKey, getNumber())));
+                setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(alphanumericKey, getNumber(), client)));
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error" + e.getMessage());
             }
+        }else{
+            System.err.println("You can't choose the number of players now!!!");
         }
+        firstPlayerFlag=false;
+        nickFlag = true;
+    }
+
+    public void askLoadGame(){
+        if(firstPlayerFlag&& previousGameExist) {
+            try {
+                    setChangedAndNotifyObservers(new LoadGameSelection(new SerializableInput(alphanumericKey, client)));
+                } catch (RemoteException e) {
+                throw new RuntimeException("Network error" + e.getMessage());
+            }
+        }else if(!previousGameExist){
+            System.err.println("There isn't a file to load!!!");
+            return;
+        }else{
+            System.err.println("You can't do this selection now!!!");
+        }
+        firstPlayerFlag=false;
+        nickFlag = true;
     }
 
     public void kill(int option){
@@ -629,10 +716,10 @@ public class TextualUI extends Observable<InputMessage> implements Runnable{
             printImageKill();
         }
         try {
-            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey)));
             client.kill();
         } catch (RemoteException e) {
-            throw new RuntimeException("Network error while deleting model observer: "+e.getMessage());
+            System.err.println("Error while closing the process, please manually close the client");
+            System.exit(0);
         }
         System.exit(0);
     }

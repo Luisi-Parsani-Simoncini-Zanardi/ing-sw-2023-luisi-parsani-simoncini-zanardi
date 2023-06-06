@@ -6,13 +6,14 @@ import org.projectsw.Util.Observer;
 import org.projectsw.View.GraphicalUI;
 import org.projectsw.View.TextualUI;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 
 
-public class ClientImplementation extends UnicastRemoteObject implements Client{
+public class ClientImplementation extends UnicastRemoteObject implements Client, Serializable {
     private TextualUI tui;
     private GraphicalUI gui;
     private Observer<TextualUI, InputMessage> tuiObserver;
@@ -45,7 +46,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client{
         tui = new TextualUI(this);
         tuiObserver = (o, input) -> {
             try {
-                server.update(this, input);
+                server.update(this,input);
             }catch(RemoteException e){
                 throw new RuntimeException("A network error occurred: " + e.getMessage());
             }
@@ -66,6 +67,8 @@ public class ClientImplementation extends UnicastRemoteObject implements Client{
         });
         gui.run();
     }
+
+    public TextualUI getTui() {return this.tui;}
 
     /**
      * close the client

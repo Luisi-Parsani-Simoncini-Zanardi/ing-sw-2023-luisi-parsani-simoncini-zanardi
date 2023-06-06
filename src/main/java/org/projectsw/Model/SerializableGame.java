@@ -35,11 +35,11 @@ public SerializableGame(String alphanumericID, Game model) {
     this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
     this.playerName = model.getCurrentPlayer().getNickname();
     this.chat = model.getChat().getMessages();
-    this.clientNickname = model.getClientPlayerNickname();
+    this.clientNickname = null;
     this.selectablePoints = model.getBoard().getSelectablePoints();
     this.temporaryPoints = model.getBoard().getTemporaryPoints();
     this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
-    this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(model.getClientPlayerNickname())).getPersonalGoal().getPersonalGoal());
+    this.playerPersonalGoal = null;
     this.results = new HashMap<>();
     for (Player p : model.getPlayers()) {
         this.results.put(p.getNickname(), p.getPoints());
@@ -53,6 +53,30 @@ public SerializableGame(String alphanumericID, Game model) {
     this.integer = null;
     this.bool = null;
 }
+    public SerializableGame(String alphanumericID, Game model, String clientNickname) {
+        this.alphanumericID = alphanumericID;
+        this.gameBoard = model.getBoard().getBoard();
+        this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
+        this.playerName = model.getCurrentPlayer().getNickname();
+        this.chat = model.getChat().getMessages();
+        this.clientNickname = null;
+        this.selectablePoints = model.getBoard().getSelectablePoints();
+        this.temporaryPoints = model.getBoard().getTemporaryPoints();
+        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
+        this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(clientNickname)).getPersonalGoal().getPersonalGoal());
+        this.results = new HashMap<>();
+        for (Player p : model.getPlayers()) {
+            this.results.put(p.getNickname(), p.getPoints());
+        }
+        this.nameColors = null;
+        this.allShelves = null;
+        this.commonGoalDesc = new ArrayList<>();
+        this.commonGoalDesc.add(model.getCommonGoals().get(0).getStrategy().getDescription());
+        this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());
+        this.message = null;
+        this.integer = null;
+        this.bool = null;
+    }
     public SerializableGame(String alphanumericID) {
         this.alphanumericID = alphanumericID;
         this.gameBoard = null;

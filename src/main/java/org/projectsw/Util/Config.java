@@ -14,7 +14,7 @@ public class Config {
     public static final int minPlayers = 2;
     public static final int maxPlayers = 4;
     public static final int numberOfCommonGoals = 2;
-    public static final String broadcastNickname = "broadcast";
+    public static final String broadcastID = "broadcast";
     public static final String everyone = "MIGfMA0GCSqGSIb3";
 
     public static final String error = "DQEBAQUAA4GNADCB";
