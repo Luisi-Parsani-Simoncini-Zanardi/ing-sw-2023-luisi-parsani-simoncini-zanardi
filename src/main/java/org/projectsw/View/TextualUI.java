@@ -208,7 +208,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 setTurnState(UITurnState.YOUR_TURN_COLUMN);
                                 askBoard();
-                                waitReturn();
                                 selectTiles();
                             } else {
                                 System.err.println("You can't select a tile now...");
@@ -224,15 +223,16 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                                 System.err.println("You can't insert a tile now...");
                             } else {
                                 askShelf();
-                                waitReturn();
                                 askTemporaryTiles();
                                 waitReturn();
                                 if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {
                                     setTurnState(UITurnState.YOUR_TURN_INSERTION);
                                     selectColumn();
+                                    waitReturn();
                                 }
                                 if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {
                                     selectTemporaryTiles();
+                                    waitReturn();
                                     System.out.println("You ended your turn.");
                                     try {
                                         setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname(), client)));
@@ -478,6 +478,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the board: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askShelf() {
@@ -486,6 +487,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askAllShelves() {
@@ -494,6 +496,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askPersonalGoal() {
@@ -502,6 +505,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askTemporaryTiles() {
@@ -518,6 +522,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
         }
+        waitReturn();
     }
 
     private void askCurrentPlayer() {
@@ -526,6 +531,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the current player: "+e.getMessage());
         }
+        waitReturn();
     }
 
     public void showBoard(SerializableGame model){
@@ -596,6 +602,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while asking for the Global chat" + e.getMessage());
         }
+        waitReturn();
     }
 
     private void askSpecificChat(){
@@ -607,6 +614,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while asking for the Specific chat: " + e.getMessage());
         }
+        waitReturn();
     }
 
     public void askNickname() {
