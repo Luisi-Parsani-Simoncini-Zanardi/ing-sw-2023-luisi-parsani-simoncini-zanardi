@@ -29,6 +29,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private boolean endedTurn = false;
     private boolean reconnection = false;
     private boolean returnedFlag = false;
+    private boolean tmpWait = true;
 
     private Integer number;
     private Point point;
@@ -170,7 +171,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     default -> System.err.println("Invalid selection!!!");
                 }
             }
-            waitReturn();
         }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
         if (getEndState() == UIEndState.LOBBY)
@@ -239,6 +239,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                                     } catch (RemoteException e) {
                                         throw new RuntimeException("An error occurred while ending the turn: " + e);
                                     }
+                                    waitReturn();
                                     if (getEndState().equals(UIEndState.ENDING))
                                         setWaitResult(false);
                                     setTurnState(UITurnState.OPPONENT_TURN);
@@ -287,10 +288,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } catch (RemoteException e) {
                 throw new RuntimeException("A network error occurred while asking for results: "+e.getMessage());
             }
-        }else {
-            setWaitResult(true);
         }
-        while (waitResult) Thread.onSpinWait();
+        waitReturn();
         try {
             client.kill();
         } catch (RemoteException e) {
@@ -637,6 +636,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } else {
                 reconnectionJoin();
             }
+            waitReturn();
         }else{
             System.err.println("You can't choose your nickname now!!!");
         }
@@ -686,6 +686,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error" + e.getMessage());
             }
+            waitReturn();
         }else{
             System.err.println("You can't choose the number of players now!!!");
         }
