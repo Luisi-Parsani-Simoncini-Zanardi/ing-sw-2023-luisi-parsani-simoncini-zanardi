@@ -16,6 +16,6 @@ public class LastPlayerNick extends ResponseMessage implements Serializable {
     }
     @Override
     public void execute(TextualUI tui){
-        tui.setLastPlayerName(model.getPlayerName());
+        tui.setLastPlayerName(model.getClientNickname());
     }
 }
