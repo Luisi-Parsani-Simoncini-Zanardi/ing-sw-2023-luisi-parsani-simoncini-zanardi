@@ -54,15 +54,14 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
         tui.run();
     }
     public void setGui (Server server) {
-        gui = new GuiManager();
+        gui = new GuiManager(this);
         tui = null;
-        gui.addObserver((o, arg) -> {
-                /*try {
-                    server.update(new InputController(tui.getClientUID(), tui.getPoint(),tui.getNumber(),tui.getNickname()), arg);
-                    cambiare una volta finita GUI
-                } catch (RemoteException e) {
-                    throw new RuntimeException("Cannot send the client input" + e.getMessage());
-                }*/
+        gui.addObserver((o, input) -> {
+            try {
+                server.update(this,input);
+            } catch (RemoteException e) {
+                throw new RuntimeException("A network error occurred: " + e.getMessage());
+            }
         });
         gui.run();
     }
