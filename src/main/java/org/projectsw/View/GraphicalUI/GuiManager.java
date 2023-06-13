@@ -1,11 +1,11 @@
-package org.projectsw.View;
+package org.projectsw.View.GraphicalUI;
 
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Util.Observable;
 import org.projectsw.View.Enums.UITurnState;
 
-public class GraphicalUI extends Observable<InputMessage> implements Runnable{
+public class GuiManager extends Observable<InputMessage> implements Runnable{
 
     private UITurnState state;
 

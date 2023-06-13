@@ -1,9 +1,8 @@
 package org.projectsw.Distributed;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Observer;
-import org.projectsw.View.GraphicalUI;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serializable;
@@ -15,9 +14,9 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class ClientImplementation extends UnicastRemoteObject implements Client, Serializable {
     private TextualUI tui;
-    private GraphicalUI gui;
+    private GuiManager gui;
     private Observer<TextualUI, InputMessage> tuiObserver;
-    private Observer<GraphicalUI, InputMessage> guiObserver;
+    private Observer<GuiManager, InputMessage> guiObserver;
 
     private long lastPingTimestamp;
 
@@ -55,7 +54,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
         tui.run();
     }
     public void setGui (Server server) {
-        gui = new GraphicalUI();
+        gui = new GuiManager();
         tui = null;
         gui.addObserver((o, arg) -> {
                 /*try {
@@ -96,7 +95,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
         return tuiObserver;
     }
     @Override
-    public Observer<GraphicalUI, InputMessage>  getGuiObserver()  throws RemoteException{
+    public Observer<GuiManager, InputMessage>  getGuiObserver()  throws RemoteException{
         return guiObserver;
     }
 
