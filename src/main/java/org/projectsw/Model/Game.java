@@ -280,21 +280,21 @@ public class Game extends Observable<ResponseMessage> {
         randomStrategyClasses = fillCommonGoalsStrategyArray();
 
         Random random = new Random();
-        int index = random.nextInt(randomStrategyClasses.size());
-        Class<?> randomClass = randomStrategyClasses.get(index);
-        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index+1);
+        int index1 = random.nextInt(randomStrategyClasses.size());
+        Class<?> randomClass = randomStrategyClasses.get(index1);
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index1+1);
         commonGoalIst = new CommonGoal(strategyIst);
         commonGoals.add(commonGoalIst);
-        randomStrategyClasses.remove(index);
 
-        index = random.nextInt(randomStrategyClasses.size());
-        randomClass = randomStrategyClasses.get(index);
-        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index+1);
+        int index2 = random.nextInt(randomStrategyClasses.size());
+        while(index2==index1)
+            index2 = random.nextInt(randomStrategyClasses.size());
+        randomClass = randomStrategyClasses.get(index2);
+        strategyIst = (CommonGoalStrategy)randomClass.getDeclaredConstructor(Integer.class).newInstance(index2+1);
         commonGoalIst = new CommonGoal(strategyIst);
         commonGoals.add(commonGoalIst);
 
         return commonGoals;
-
     }
 
     /**
