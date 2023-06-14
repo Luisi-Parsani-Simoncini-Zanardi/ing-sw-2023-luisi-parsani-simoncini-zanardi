@@ -63,7 +63,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
                 throw new RuntimeException("A network error occurred: " + e.getMessage());
             }
         });
-        gui.run();
+        gui.connect();
     }
 
     public TextualUI getTui() {return this.tui;}

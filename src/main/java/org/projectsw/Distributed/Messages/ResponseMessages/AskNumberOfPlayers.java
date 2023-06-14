@@ -1,8 +1,8 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
-
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -13,9 +13,14 @@ public class AskNumberOfPlayers extends ResponseMessage implements Serializable 
         super(model);
     }
     @Override
-    public void execute(TextualUI tui){
+    public void execute(TextualUI tui) {
         tui.setFirstPlayerFlag(true);
         tui.setPreviousGameExist(false);
         tui.setNickFlag(false);
+    }
+
+    @Override
+    public void execute(GuiManager gui) {
+        gui.setFirstPlayer(true);
     }
 }

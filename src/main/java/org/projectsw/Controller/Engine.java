@@ -914,7 +914,7 @@ public class Engine{
         }
     }
     //TODO SE ENTRANO 3 PLAYER, IL PRIMO NON METTE NULLA (GLI ALTRI IL NOME), SE METTE 2 PLAYER UCCIDE IL 3 MA NON STARTA
-    public synchronized void Connect(String alphanumericID) throws RemoteException, InterruptedException {
+    public synchronized void connect(String alphanumericID) throws RemoteException, InterruptedException {
         counter++;
         if (counter == 1) {
             firstClient = alphanumericID;
