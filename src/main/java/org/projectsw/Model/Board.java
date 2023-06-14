@@ -369,7 +369,6 @@ public class Board extends Observable<GameEvent> {
             }
             System.out.println(printedString);
         }
-        System.out.print("\n");
     }
 
     private String stringColorAndMarker(int i, int j){
