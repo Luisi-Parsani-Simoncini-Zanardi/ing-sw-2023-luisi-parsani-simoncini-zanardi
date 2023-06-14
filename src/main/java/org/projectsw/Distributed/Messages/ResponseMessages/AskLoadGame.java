@@ -23,5 +23,6 @@ public class AskLoadGame extends ResponseMessage implements Serializable {
     public void execute(GuiManager guiManager) {
         guiManager.setFirstPlayer(true);
         guiManager.setGameSavedExist(true);
+        guiManager.setAskNickname(false);
     }
 }

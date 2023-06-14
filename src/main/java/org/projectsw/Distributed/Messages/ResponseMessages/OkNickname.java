@@ -2,6 +2,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.Enums.UIEndState;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -20,5 +21,10 @@ public class OkNickname extends ResponseMessage implements Serializable {
         synchronized (tui) {
             tui.notifyAll();
         }
+    }
+
+    public void execute(GuiManager guiManager) {
+        guiManager.setAskNickname(false);
+        guiManager.notifyResponse2();
     }
 }

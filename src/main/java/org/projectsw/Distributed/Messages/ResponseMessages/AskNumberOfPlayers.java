@@ -22,5 +22,6 @@ public class AskNumberOfPlayers extends ResponseMessage implements Serializable 
     @Override
     public void execute(GuiManager gui) {
         gui.setFirstPlayer(true);
+        gui.setAskNickname(false);
     }
 }

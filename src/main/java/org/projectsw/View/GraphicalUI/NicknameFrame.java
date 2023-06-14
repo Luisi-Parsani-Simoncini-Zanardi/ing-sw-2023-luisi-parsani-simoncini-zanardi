@@ -4,26 +4,11 @@ import org.projectsw.Util.Config;
 import javax.swing.*;
 
 public class NicknameFrame extends JFrame {
-    private final GuiManager guiManager;
     private String nickname;
 
     public NicknameFrame(GuiManager guiManager) {
-        this.guiManager = guiManager;
-        setTitle("Nickname");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
         setSize(500, 400);
-        showInputDialog();
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    private void showInputDialog() {
         boolean nicknameInsert = false;
         JPanel panel = new JPanel();
         panel.add(new JLabel("Enter Nickname:"));
@@ -40,14 +25,21 @@ public class NicknameFrame extends JFrame {
                         JOptionPane.showMessageDialog(NicknameFrame.this, "You can't choose the broadcast nickname");
                     } else {
                         nicknameInsert = true;
-                        //guiManager.sendNickname(nickname);
+                        guiManager.sendNickname(nickname);
                     }
                 }
             }
             if (option == JOptionPane.CANCEL_OPTION){
                 nicknameInsert = true;
-                //guiManager.kill(1);
+                guiManager.kill(1);
             }
         } while(!nicknameInsert);
     }
+    public String getNickname() {
+        return nickname;
+    }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
 }

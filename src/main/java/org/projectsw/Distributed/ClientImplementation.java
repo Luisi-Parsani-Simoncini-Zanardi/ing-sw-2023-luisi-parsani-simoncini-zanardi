@@ -73,7 +73,10 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
      */
     @Override
     public void kill() throws RemoteException{
-        tui.deleteObserver(tuiObserver);
+        if(tui != null)
+            tui.deleteObserver(tuiObserver);
+        else
+            gui.deleteObserver(guiObserver);
         System.exit(0);
     }
 

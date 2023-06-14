@@ -19,6 +19,6 @@ public class AckConnection extends ResponseMessage implements Serializable {
 
     @Override
     public void execute(GuiManager guiManager){
-        guiManager.notifyResponse();
+        guiManager.notifyResponse1();
     }
 }
