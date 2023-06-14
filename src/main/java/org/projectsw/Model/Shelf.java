@@ -255,7 +255,6 @@ public class Shelf extends Observable<GameEvent> {
             }
             System.out.println(printedString);
         }
-        System.out.print("\n");
     }
 
     private String stringColor(int i, int j) {
