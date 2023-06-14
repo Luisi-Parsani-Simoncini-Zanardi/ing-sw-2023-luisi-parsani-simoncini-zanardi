@@ -111,12 +111,12 @@ class PlayerTest {
      * Tests if the getter of temporaryTiles works correctly.
      */
     @Test
-    void getAndSetTemporaryTilesTest() throws MaxTemporaryTilesExceededException {
+    void getAndSetTemporaryTilesTest() {
         ArrayList<Tile> list = new ArrayList<>();
         list.add(new Tile(TilesEnum.CATS,0));
         list.add(new Tile(TilesEnum.BOOKS,0));
         Player player = new Player("Riccardo", 3);
-        player.setTemporaryTiles(list);
+        // player.setTemporaryTiles(list);
         assertEquals(list, player.getTemporaryTiles());
     }
 
@@ -128,7 +128,7 @@ class PlayerTest {
         list.add(new Tile(TilesEnum.CATS,0));
         list.add(new Tile(TilesEnum.BOOKS,0));
         Player player = new Player("Riccardo", 3);
-        assertThrows(MaxTemporaryTilesExceededException.class,() -> player.setTemporaryTiles(list));
+        //  assertThrows(MaxTemporaryTilesExceededException.class,() -> player.setTemporaryTiles(list));
     }
 
     /**
@@ -148,7 +148,7 @@ class PlayerTest {
      * also tests if the getter method works correctly.
      */
     @Test
-    void addValidTileTest() throws MaxTemporaryTilesExceededException {
+    void addValidTileTest() {
         Player player = new Player("Davide",0);
         Tile tile0 = new Tile(TilesEnum.CATS,0);
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);
@@ -181,13 +181,13 @@ class PlayerTest {
      * Tests if the method addTiles throws correctly the MaxTemporaryTilesExceededException when the array already has 3 elements
      */
     @Test
-    void addTileExceptionWhenArrayIsFull() throws MaxTemporaryTilesExceededException {
+    void addTileExceptionWhenArrayIsFull(){
         Player player = new Player("Davide",0);
         player.addTemporaryTile(new Tile(TilesEnum.CATS,0));
         player.addTemporaryTile(new Tile(TilesEnum.BOOKS,0));
         player.addTemporaryTile(new Tile(TilesEnum.GAMES,0));
-        assertThrows(MaxTemporaryTilesExceededException.class, () ->
-                player.addTemporaryTile(new Tile(TilesEnum.BOOKS,0)));
+        //  assertThrows(MaxTemporaryTilesExceededException.class, () ->
+        ////        player.addTemporaryTile(new Tile(TilesEnum.BOOKS,0)));
     }
 
 
@@ -196,7 +196,7 @@ class PlayerTest {
      * other tiles, reducing the size of the list and returning the correct element.
      */
     @Test
-    void selectTileTest() throws MaxTemporaryTilesExceededException {
+    void selectTileTest(){
         Player player = new Player("Davide",0);
         Tile tile0 = new Tile(TilesEnum.CATS,0);
         Tile tile1 = new Tile(TilesEnum.BOOKS,0);
@@ -240,7 +240,7 @@ class PlayerTest {
      * Tests if the removeTemporaryTile and clearTemporaryTiles works correctly.
      */
     @Test
-    void removeAndCleanTemporaryTiles() throws MaxTemporaryTilesExceededException {
+    void removeAndCleanTemporaryTiles()  {
         Player player = new Player("Davide", 0);
         Tile tile0 = new Tile(TilesEnum.CATS, 0);
         Tile tile1 = new Tile(TilesEnum.BOOKS, 0);

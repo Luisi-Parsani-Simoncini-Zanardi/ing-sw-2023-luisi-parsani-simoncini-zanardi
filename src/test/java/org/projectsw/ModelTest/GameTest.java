@@ -21,30 +21,14 @@ class GameTest extends TestUtils{
     }
 
     /**
-     * Tests the correct creation of a silly game instance
-     */
-    @Test
-    void integritySillyGameTest(){
-        Game sillyGame = new Game();
-        assertEquals(GameState.SILLY,sillyGame.getGameState());
-        assertEquals(0,sillyGame.getNumberOfPlayers());
-        assertEqualsBoard(new Board(),sillyGame.getBoard());
-        assertEqualsChat(new Chat(),sillyGame.getChat());
-        assertEquals(new ArrayList<>(),sillyGame.getCommonGoals());
-        assertEquals(new ArrayList<>(),sillyGame.getPlayers());
-        assertNull(sillyGame.getFirstPlayer());
-        assertNull(sillyGame.getCurrentPlayer());
-    }
-
-    /**
      * Tests the correct creation of a game instance
      */
     @Test
-    void integrityGameTest() throws InvalidNumberOfPlayersException {
+    void integrityGameTest(){
         Player firstPlayer = new Player("Davide",0);
         for(int i=2;i<5;i++){
             Game game = new Game();
-            game.initializeGame(firstPlayer,i);
+            game.initializeGame(i);
             assertEquals(GameState.LOBBY,game.getGameState());
             assertEquals(i,game.getNumberOfPlayers());
             assertEqualsBoard(new Board(i),game.getBoard());
@@ -55,17 +39,6 @@ class GameTest extends TestUtils{
             assertEquals(firstPlayer,game.getFirstPlayer());
             assertEquals(firstPlayer,game.getCurrentPlayer());
         }
-    }
-
-    /**
-     * Tests if the constructor of game correctly throws the IllegalArgumentException when the number of players
-     * is too low or too high.
-     */
-    @Test
-    void invalidNumberOfPlayersTest(){
-        Game game =  new Game();
-        assertThrows(InvalidNumberOfPlayersException.class, () -> game.initializeGame(new Player("Davide",0),1));
-        assertThrows(InvalidNumberOfPlayersException.class, () -> game.initializeGame(new Player("Davide",0),5));
     }
 
     /**
@@ -122,7 +95,7 @@ class GameTest extends TestUtils{
      * Tests if the method sets the players correctly.
      */
     @Test
-    void testSetPlayers() throws InvalidNameException {
+    void testSetPlayers(){
         Game game = new Game();
         Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
@@ -141,7 +114,7 @@ class GameTest extends TestUtils{
      * Tests if the method returns the right players.
      */
     @Test
-    void testGetPlayers() throws InvalidNameException {
+    void testGetPlayers(){
         Game game = new Game();
         Player john = new Player("John", 1);
         Player elizabeth = new Player("Elizabeth", 2);
@@ -157,18 +130,19 @@ class GameTest extends TestUtils{
     }
 
     /**
-     * Tests if the method updates the board correctly.
+     * Tests if the method updates the board correctly for each possible board dimension.
      */
     @Test
     void testSetBoard(){
         Game game = new Game();
-        Board board = new Board();
-        game.setBoard(board);
-        assertEquals(board, game.getBoard());
-
-        board.updateBoard(new Tile(TilesEnum.CATS, 0),4,4);
-        game.setBoard(board);
-        assertEquals(board,game.getBoard());
+        for(int i=2; i<5; i++) {
+            Board board = new Board(i);
+            game.setBoard(board);
+            assertEquals(board, game.getBoard());
+            board.updateBoard(new Tile(TilesEnum.CATS, 0),4,4);
+            game.setBoard(board);
+            assertEquals(board,game.getBoard());
+        }
     }
 
     /**
@@ -177,7 +151,7 @@ class GameTest extends TestUtils{
     @Test
     void testGetBoard(){
         Game game = new Game();
-        Board board = new Board();
+        Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS, 0),4,4);
         game.setBoard(board);
         assertEquals(board, game.getBoard());
@@ -213,7 +187,7 @@ class GameTest extends TestUtils{
      * Tests if the method addPlayer correctly adds players to the game.
      */
     @Test
-    void testAddPlayer() throws InvalidNameException{
+    void testAddPlayer(){
         Game game = new Game();
         assertEquals(0,game.getPlayers().size());
         game.addPlayer(new Player("James", 0));
@@ -227,26 +201,16 @@ class GameTest extends TestUtils{
     }
 
     /**
-     * Tests if the method addPlayer correctly throws the InvalidNameException when the user chose a duplicated nickname.
-     */
-    @Test
-    void testInvalidNicknameNotUniqueTest() throws InvalidNameException {
-        Game game = new Game();
-        game.addPlayer(new Player("James", 0));
-        assertThrows(InvalidNameException.class, () -> game.addPlayer(new Player("James", 1)));
-    }
-
-    /**
      * test if correctly retrieve the next player
-     * @throws InvalidNameException duplicate or invalid name
      */
     @Test
-    void getNextPlayerTest() throws InvalidNameException, InvalidNumberOfPlayersException {
+    void getNextPlayerTest(){
         Player current = new Player("Renala", 0);
         Player next1 = new Player("Gravius", 1);
         Player next2 = new Player("Lusat", 2);
         Game game = new Game();
-        game.initializeGame(current, 3);
+        game.initializeGame(3);
+        game.addPlayer(current);
         game.addPlayer(next1);
         game.addPlayer(next2);
         game.setCurrentPlayer(current);

@@ -944,10 +944,6 @@ public class Engine{
             }
         }
     }
-    public synchronized void setNumberOfPlayers(int numberOfPlayers){
-        loadFromFile=false;
-        getGame().initializeGame(numberOfPlayers);
-    }
     public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);

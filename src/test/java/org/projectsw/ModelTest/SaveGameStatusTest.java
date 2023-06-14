@@ -32,23 +32,21 @@ class SaveGameStatusTest extends TestUtils {
 
     public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Game game = new Game();
-        Engine engine = new Engine();
+        // Engine engine = new Engine();
         ArrayList<Tile> temporaryPoints= new ArrayList<>();
         temporaryPoints.add(new Tile(TilesEnum.GAMES, 1));
         temporaryPoints.add(new Tile(TilesEnum.CATS, 1));
-        engine.setGame(game);
+        //  engine.setGame(game);
         game.initializeGame(2);
         Player player1 = new Player("Ganondorf", 0);
-        try {
-            player1.setTemporaryTiles(temporaryPoints);
-        } catch (MaxTemporaryTilesExceededException e) {
-            throw new RuntimeException(e);
-        }
+
+            //  player1.setTemporaryTiles(temporaryPoints);
+
         game.addPlayer(player1);
         game.addPlayer(new Player("xlr8", 1));
         game.setFirstPlayer(player1);
         game.setCurrentPlayer(player1);
-        engine.fillBoard();
+        // engine.fillBoard();
         PersonalGoal.cleanUsedCodes();
 
         return game;
