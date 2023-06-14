@@ -155,6 +155,11 @@ public class Engine{
             } catch (RemoteException e) {
                 throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
             }
+            try{
+                game.setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));
+            } catch (RemoteException e) {
+                throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
+            }
         //}
         saveGameStatus.saveGame();
     }
@@ -367,6 +372,11 @@ public class Engine{
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while sending the results: "+e.getMessage());
         }
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(Config.broadcastID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
     /**
      * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
@@ -474,9 +484,9 @@ public class Engine{
     /**
      * end turn logic
      */
-    public synchronized void endTurn(String nickName) {
+    public synchronized void endTurn(String ID, String nickName) {
         this.checkCommonGoals();
-        this.checkEndGame(nickName);
+        this.checkEndGame(ID, nickName);
         getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
@@ -490,7 +500,7 @@ public class Engine{
             try {
                 while (!game.getCurrentPlayer().getIsActive())
                 {
-                    dcEndTurn(nickName);
+                    dcEndTurn(ID, nickName);
                 }
                 getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
                 getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
@@ -511,9 +521,9 @@ public class Engine{
         }
     }
 
-    private void dcEndTurn(String nickName) {
+    private void dcEndTurn(String ID, String nickName) {
         this.checkCommonGoals();
-        this.checkEndGame(nickName);
+        this.checkEndGame(ID, nickName);
         getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
             this.fillBoard();
@@ -543,7 +553,7 @@ public class Engine{
     /**
      * Checks if a player has completed his shelf and if so sets endGame and adds the point to the player
      */
-    public void checkEndGame(String nickName) {
+    public void checkEndGame(String ID, String nickName) {
         if(!this.getGame().getBoard().isEndGame()){
             if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){
                 this.getGame().getBoard().setEndGame(true);
@@ -557,6 +567,11 @@ public class Engine{
                     throw new RuntimeException("An error occurred while updating the status: " + e);
                 }
             }
+        }
+        try {
+            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 

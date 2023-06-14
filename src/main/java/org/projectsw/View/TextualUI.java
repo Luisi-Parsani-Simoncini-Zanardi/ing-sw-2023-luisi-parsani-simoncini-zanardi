@@ -29,7 +29,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private boolean endedTurn = false;
     private boolean reconnection = false;
     private boolean returnedFlag = false;
-    private boolean yourTurn = false;
+    private boolean tmpWait = true;
 
     private Integer number;
     private Point point;
@@ -64,7 +64,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     }
     public void setReturnedFlag(boolean returnedFlag){this.returnedFlag=returnedFlag;}
 
-    public void setYourTurn(boolean yourTurn){this.yourTurn=yourTurn;}
+
     public boolean getFlag() {
         return flag;
     }
@@ -171,7 +171,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     default -> System.err.println("Invalid selection!!!");
                 }
             }
-            waitReturn();
         }while(nickFlag||firstPlayerFlag);
         endedTurn = false;
         if (getEndState() == UIEndState.LOBBY)
@@ -185,22 +184,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 }
             }
         }
-        System.out.println("Game started!");
+        System.out.println("\nGame started!");
+        System.out.println("---CHOOSE AN ACTION---");
+        System.out.println("Press 0 to see all possible actions...");
         flag = true;
         askCurrentPlayer();
         do {
-            if(yourTurn){
-                System.out.println("   ---YOUR TURN---");
-                setYourTurn(false);
-            }
-            System.out.println("---CHOOSE AN ACTION---");
-            System.out.println("Press 0 to see all possible actions...");
             writeBufferMessage();
             if(flag) {
                 try {
                     choice = masterScanner.nextInt();
-                } catch (InputMismatchException | IllegalStateException e) {
-                    choice=-1;
+                } catch (InputMismatchException | IllegalStateException ignored) {
                 }
             }
             if (flag) {
@@ -209,6 +203,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     case 1 -> {
                         if (getTurnState() == UITurnState.OPPONENT_TURN) {
                             System.err.println("It's not your turn. Please wait...");
+                            System.out.println("---CHOOSE AN ACTION---");
                         }
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
@@ -223,6 +218,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     case 2 -> {
                         if (getTurnState() == UITurnState.OPPONENT_TURN) {
                             System.err.println("It's not your turn. Please wait...");
+                            System.out.println("---CHOOSE AN ACTION---");
                         } else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 System.err.println("You can't insert a tile now...");
@@ -243,6 +239,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                                     } catch (RemoteException e) {
                                         throw new RuntimeException("An error occurred while ending the turn: " + e);
                                     }
+                                    waitReturn();
                                     if (getEndState().equals(UIEndState.ENDING))
                                         setWaitResult(false);
                                     setTurnState(UITurnState.OPPONENT_TURN);
@@ -273,6 +270,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     case 12 -> exit();
                     default -> System.err.println("Invalid command. Try again...");
                 }
+                if (!endedTurn&& flag)
+                    System.out.println("\n---CHOOSE AN ACTION---");
             }
         } while (getEndState() == UIEndState.RUNNING || waitResult);
         ending();
@@ -289,10 +288,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } catch (RemoteException e) {
                 throw new RuntimeException("A network error occurred while asking for results: "+e.getMessage());
             }
-        }else {
-            setWaitResult(true);
         }
-        while (waitResult) Thread.onSpinWait();
+        waitReturn();
         try {
             client.kill();
         } catch (RemoteException e) {
@@ -639,6 +636,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } else {
                 reconnectionJoin();
             }
+            waitReturn();
         }else{
             System.err.println("You can't choose your nickname now!!!");
         }
@@ -688,11 +686,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             } catch (RemoteException e) {
                 throw new RuntimeException("Network error" + e.getMessage());
             }
-            firstPlayerFlag=false;
-            nickFlag = true;
+            waitReturn();
         }else{
             System.err.println("You can't choose the number of players now!!!");
         }
+        firstPlayerFlag=false;
+        nickFlag = true;
     }
 
     public void askLoadGame(){
@@ -702,13 +701,14 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 } catch (RemoteException e) {
                 throw new RuntimeException("Network error" + e.getMessage());
             }
-            firstPlayerFlag=false;
-            nickFlag = true;
         }else if(!previousGameExist){
             System.err.println("There isn't a file to load!!!");
+            return;
         }else{
             System.err.println("You can't do this selection now!!!");
         }
+        firstPlayerFlag=false;
+        nickFlag = true;
     }
 
     public void kill(int option){

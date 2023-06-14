@@ -81,18 +81,13 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         unregisterClients(disconnectedClients);
         disconnectedClients.clear();
     }
-
     private void unregisterClients(List<Client> clients) {
-        for(Client client : clients) {
+        for (Client client : clients) {
             controller.setIsActiveFromClient(client, false);
             controller.removeObserver(controller.getClients_ID().getValue(client));
-            try {
-                if(client.getTui().getNickname().equals(controller.getGame().getCurrentPlayer().getNickname())) {
-                controller.endTurn(controller.getGame().getCurrentPlayer().getNickname());
+            if (controller.getID_Nicks().getValue(controller.getClients_ID().getValue(client)).equals(controller.getGame().getCurrentPlayer().getNickname())) {
+                controller.endTurn(controller.getClients_ID().getValue(client), controller.getGame().getCurrentPlayer().getNickname());
                 controller.sendNexTurn();
-            }
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
             }
         }
     }
