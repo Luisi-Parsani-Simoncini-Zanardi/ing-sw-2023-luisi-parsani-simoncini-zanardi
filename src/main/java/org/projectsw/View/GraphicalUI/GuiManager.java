@@ -6,7 +6,6 @@ import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
-import org.projectsw.Util.Observer;
 import org.projectsw.Util.RandomAlphanumericGen;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
@@ -14,7 +13,7 @@ import org.projectsw.View.SerializableInput;
 
 import java.rmi.RemoteException;
 
-public class GuiManager extends Observable<InputMessage> {
+public class GuiManager extends Observable<InputMessage> implements Runnable {
 
     private final Object lock = new Object();
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
@@ -25,10 +24,20 @@ public class GuiManager extends Observable<InputMessage> {
     private boolean gameSavedExist = false;
 
 
+
+
     public GuiManager(Client client) {
         RandomAlphanumericGen gen = new RandomAlphanumericGen();
         alphanumericKey = gen.generateRandomString(100);
         this.client = client;
+    }
+
+    public boolean isFirstPlayer() {
+        return firstPlayer;
+    }
+
+    public boolean isGameSavedExist() {
+        return gameSavedExist;
     }
 
     public void setState(UITurnState turnState) {
@@ -52,16 +61,19 @@ public class GuiManager extends Observable<InputMessage> {
             response.execute(this);
     }
 
-    public void connect() {
+    @Override
+    public void run() {
         try {
             setChangedAndNotifyObservers(new Connect(new SerializableInput(alphanumericKey, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred connecting to the server: "+e.getMessage());
         }
-        waitForConnection();
+        waitForResponse();
+        printConnectionStatus();
+        lobby();
     }
 
-    private void waitForConnection() {
+    private void waitForResponse() {
         synchronized (lock) {
             try {
                 lock.wait();
@@ -71,18 +83,39 @@ public class GuiManager extends Observable<InputMessage> {
         }
     }
 
-    public void notifyConnection() {
+    public void notifyResponse() {
         synchronized (lock) {
             lock.notify();
         }
-        printConnectionStatus();
     }
 
+    /**
+     * Debug function
+     */
     private void printConnectionStatus() {
         System.out.println("Connection successfully established");
         if(firstPlayer) System.out.println("You are the first player");
         else System.out.println("You are NOT the first player");
-        if(gameSavedExist) System.out.println("Gave saved found");
+        if(gameSavedExist) System.out.println("Game saved found");
         else System.out.println("Game saved NOT found");
     }
+
+    private void lobby() {
+        new LobbyFrame(this);
+        waitForResponse();
+        System.out.println("Risposta ricevuta");
+    }
+
+    public void openNicknameFrame() {
+        System.out.println("Sono qui");
+    }
+
+    public void openNumberOfPlayersFrame() {
+
+    }
+
+    public void openLoadGameFrame() {
+
+    }
+
 }

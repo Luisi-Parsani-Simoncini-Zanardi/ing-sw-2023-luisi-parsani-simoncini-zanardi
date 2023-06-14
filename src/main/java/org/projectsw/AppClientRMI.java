@@ -14,7 +14,7 @@ public class AppClientRMI {
         try {
             Server server = (Server) registry.lookup("server");
             ClientImplementation client = new ClientImplementation(server);
-            if ((args.length == 0)||(args[0]!="gui")) { //on a invalid parameter sets tui as default
+            if (false) { //on a invalid parameter sets tui as default
                 client.setTui(server);
             } else {
                 client.setGui(server);
