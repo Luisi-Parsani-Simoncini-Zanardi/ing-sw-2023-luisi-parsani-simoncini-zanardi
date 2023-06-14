@@ -29,7 +29,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private boolean endedTurn = false;
     private boolean reconnection = false;
     private boolean returnedFlag = false;
-    private boolean tmpWait = true;
 
     private Integer number;
     private Point point;
@@ -52,15 +51,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     {
         this.client = client;
         displayLogo();
-    }
-    public boolean getNickFlag() {
-        return nickFlag;
-    }
-    public boolean getFirstPlayerFlag() {
-        return firstPlayerFlag;
-    }
-    public boolean getPreviousGameExist() {
-        return previousGameExist;
     }
     public void setReturnedFlag(boolean returnedFlag){this.returnedFlag=returnedFlag;}
 
@@ -184,13 +174,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 }
             }
         }
-        System.out.println("\nGame started!");
-        System.out.println("---CHOOSE AN ACTION---");
-        System.out.println("Press 0 to see all possible actions...");
+        System.out.println("Game started!");
         flag = true;
         askCurrentPlayer();
         do {
             writeBufferMessage();
+            System.out.println("---CHOOSE AN ACTION---");
+            System.out.println("Press 0 to see all possible actions...");
             if(flag) {
                 try {
                     choice = masterScanner.nextInt();
@@ -203,7 +193,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     case 1 -> {
                         if (getTurnState() == UITurnState.OPPONENT_TURN) {
                             System.err.println("It's not your turn. Please wait...");
-                            System.out.println("---CHOOSE AN ACTION---");
                         }
                         else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
@@ -218,7 +207,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     case 2 -> {
                         if (getTurnState() == UITurnState.OPPONENT_TURN) {
                             System.err.println("It's not your turn. Please wait...");
-                            System.out.println("---CHOOSE AN ACTION---");
                         } else {
                             if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {
                                 System.err.println("You can't insert a tile now...");
@@ -270,8 +258,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                     case 12 -> exit();
                     default -> System.err.println("Invalid command. Try again...");
                 }
-                if (!endedTurn&& flag)
-                    System.out.println("\n---CHOOSE AN ACTION---");
             }
         } while (getEndState() == UIEndState.RUNNING || waitResult);
         ending();
@@ -298,7 +284,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     }
 
     private void printCommandMenu(){
-        System.out.println("""
+        System.out.print("""
                 1-  Select tiles from the board
                 2-  Insert tiles in your shelf
                 3-  Show your personal goal
@@ -568,11 +554,13 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     public void showCommonGoals(SerializableGame model){
         System.out.println("---COMMON GOALS---\n");
         System.out.println(model.getCommonGoalDesc().get(0) + "\n");
-        System.out.println(model.getCommonGoalDesc().get(1) + "\n");
+        System.out.println(model.getCommonGoalDesc().get(1));
     }
 
     public void showCurrentPlayer(SerializableGame model){
-        if (getFlag())
+        if (model.getPlayerName().equals(nickname))
+            System.out.println(ConsoleColors.PURPLE+"   --It's your turn--"+ConsoleColors.RESET);
+        else
             System.out.println("The current player is: "+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET);
     }
 
