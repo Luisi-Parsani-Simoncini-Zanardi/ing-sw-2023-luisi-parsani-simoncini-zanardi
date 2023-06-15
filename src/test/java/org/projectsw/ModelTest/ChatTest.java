@@ -14,18 +14,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ChatTest extends TestUtils {
 
     /**
-     * Tests if the method addChatLog correctly add a String to the ArrayList chat.
+     * Tests if the method addChatLog correctly add a Message to the ArrayList chat.
      */
     @Test
-    void testAddChatLog(){
-        Player sender = new Player("Pippo", 1);
+    void testChat(){
         Chat chat = new Chat();
-        //chat.addChatLog(new Message(sender, "Testing"));
-        //chat.addChatLog(new Message(sender, "class"));
-        //chat.addChatLog(new Message(sender, "chat"));
-        assertEquals("Testing", chat.getMessages().get(0).getPayload());
-        assertEquals("class", chat.getMessages().get(1).getPayload());
-        assertEquals("chat", chat.getMessages().get(2).getPayload());
+        Message message1 = new Message("A","B","Test1");
+        chat.addChatLog(message1);
+        assertEquals(1,chat.getMessages().size());
+        assertEquals("Test1",chat.getMessages().get(0).getPayload());
+        assertEquals("A",chat.getMessages().get(0).getSender());
+        assertEquals("B",chat.getMessages().get(0).getScope());
+        Message message2 = new Message("B","A","Test2");
+        chat.addChatLog(message2);
+        assertEquals(2,chat.getMessages().size());
+        assertEquals("Test2",chat.getMessages().get(1).getPayload());
+        assertEquals("B",chat.getMessages().get(1).getSender());
+        assertEquals("A",chat.getMessages().get(1).getScope());
     }
 
     /**
@@ -33,13 +38,17 @@ class ChatTest extends TestUtils {
      */
     @Test
     void testGetChat() {
-        Player sender = new Player("Pippo", 1);
         Chat chat = new Chat();
-        ArrayList<Message> test = new ArrayList<>();
-        //chat.addChatLog(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
-        // test.add(new Message(sender, "Hi i'm Lorenzo and im testing the chat class"));
-        // for (int i=0; i<chat.getMessages().size(); i++)
-        //    assertEqualsMessage(test.get(i), chat.getMessages().get(i));
-
+        Message message1 = new Message("A","B","Test1");
+        Message message2 = new Message("B","A","Test2");
+        chat.addChatLog(message1);
+        chat.addChatLog(message2);
+        assertEquals(2, chat.getMessages().size());
+        assertEquals("Test1",chat.getMessages().get(0).getPayload());
+        assertEquals("A",chat.getMessages().get(0).getSender());
+        assertEquals("B",chat.getMessages().get(0).getScope());
+        assertEquals("Test2",chat.getMessages().get(1).getPayload());
+        assertEquals("B",chat.getMessages().get(1).getSender());
+        assertEquals("A",chat.getMessages().get(1).getScope());
     }
 }
