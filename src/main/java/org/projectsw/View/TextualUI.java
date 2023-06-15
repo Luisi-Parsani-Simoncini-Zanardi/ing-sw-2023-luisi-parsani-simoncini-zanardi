@@ -685,8 +685,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     public void askLoadGame(){
         if(firstPlayerFlag&& previousGameExist) {
             try {
-                    setChangedAndNotifyObservers(new LoadGameSelection(new SerializableInput(alphanumericKey, client)));
-                } catch (RemoteException e) {
+                setChangedAndNotifyObservers(new LoadGameSelection(new SerializableInput(alphanumericKey, client)));
+            } catch (RemoteException e) {
                 throw new RuntimeException("Network error" + e.getMessage());
             }
         }else if(!previousGameExist){

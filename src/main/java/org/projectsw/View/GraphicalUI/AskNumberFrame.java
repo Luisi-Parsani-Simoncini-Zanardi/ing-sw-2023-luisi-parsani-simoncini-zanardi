@@ -3,13 +3,11 @@ package org.projectsw.View.GraphicalUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class AskNumberFrame extends JFrame {
+public class AskNumberFrame extends StartingMenuFrame {
 
     public AskNumberFrame(GuiManager guiManager) {
-        setTitle("Game Creation");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setSize(1000, 1000);
+        super(guiManager);
+
         JPanel panel = new JPanel();
         panel.add(new JLabel("Enter the number of players:"));
         panel.setLayout(new GridLayout(1, 3));
@@ -35,7 +33,7 @@ public class AskNumberFrame extends JFrame {
         panel.add(button3);
         panel.add(button4);
         getContentPane().add(panel);
-        pack();
+
         setVisible(true);
     }
 }

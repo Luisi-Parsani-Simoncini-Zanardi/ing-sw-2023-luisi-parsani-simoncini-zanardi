@@ -3,12 +3,12 @@ package org.projectsw.View.GraphicalUI;
 import org.projectsw.Util.Config;
 import javax.swing.*;
 
-public class NicknameFrame extends JFrame {
+public class NicknameFrame extends StartingMenuFrame {
     private String nickname;
 
     public NicknameFrame(GuiManager guiManager) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 400);
+        super(guiManager);
+
         boolean nicknameInsert = false;
         JPanel panel = new JPanel();
         panel.add(new JLabel("Enter Nickname:"));

@@ -3,18 +3,18 @@ package org.projectsw.View.GraphicalUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class LobbyFrame extends JFrame {
+public class LobbyFrame extends StartingMenuFrame {
 
-    GuiManager guiManager;
     public LobbyFrame(GuiManager guiManager){
+        super(guiManager);
+
+        //debug
         System.out.println("\nLobby frame recreated:\n AskNickname: " + guiManager.isAskNickname() + "\nFistPlayer: " + guiManager.isFirstPlayer() + "\nLoadGame: " + guiManager.isGameSavedExist());
-        this.guiManager = guiManager;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500,500);
-        setLayout(new BorderLayout());
+
+
         JPanel menuButtonsPanel = new JPanel();
         menuButtonsPanel.setLayout(new GridLayout(3,1));
-        add(menuButtonsPanel);
+        add(menuButtonsPanel,BorderLayout.CENTER);
 
         if(guiManager.isAskNickname()){
             JButton buttonNickname = new JButton("Insert nickname");
