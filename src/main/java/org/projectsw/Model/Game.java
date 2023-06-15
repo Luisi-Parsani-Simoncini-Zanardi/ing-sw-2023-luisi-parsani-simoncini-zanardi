@@ -200,11 +200,6 @@ public class Game extends Observable<ResponseMessage> {
      */
     public void setBoard(Board board) {
         this.board = board;
-        /*try {
-            setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while setting the board: "+e.getCause());
-        }*/
     }
 
     /**
@@ -213,11 +208,6 @@ public class Game extends Observable<ResponseMessage> {
      */
     public void setChat(Chat chat) {
         this.chat = chat;
-        /*try {
-            setChangedAndNotifyObservers(GameEvent.UPDATED_CHAT);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while setting the chat: "+e.getCause());
-        }*/
     }
 
     /**

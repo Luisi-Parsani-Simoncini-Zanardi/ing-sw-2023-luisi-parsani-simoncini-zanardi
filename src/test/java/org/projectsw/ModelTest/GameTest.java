@@ -4,9 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
+import org.projectsw.Model.CommonGoal.EdgesEightEquals;
+import org.projectsw.Model.CommonGoal.Square;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.TestUtils;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,23 +25,37 @@ class GameTest extends TestUtils{
     }
 
     /**
-     * Tests the correct creation of a game instance
+     * Tests the correct creation of a game instance for each possible number of players
      */
     @Test
     void integrityGameTest(){
         Player firstPlayer = new Player("Davide",0);
-        for(int i=2;i<5;i++){
+        Player secondPlayer = new Player("Lorenzo",1);
+        Player thirdPlayer = new Player("Luca",2);
+        Player fourthPlayer = new Player("Silvio",3);
+        ArrayList<Player> fakeList = new ArrayList<>();
+        fakeList.add(0,firstPlayer);
+        fakeList.add(1,secondPlayer);
+        fakeList.add(2,thirdPlayer);
+        fakeList.add(3,fourthPlayer);
+        for(int i=2;i<4;i++){
             Game game = new Game();
             game.initializeGame(i);
             assertEquals(GameState.LOBBY,game.getGameState());
             assertEquals(i,game.getNumberOfPlayers());
             assertEqualsBoard(new Board(i),game.getBoard());
             assertEqualsChat(new Chat(),game.getChat());
-            ArrayList<Player> fakeList = new ArrayList<>();
-            fakeList.add(firstPlayer);
-            assertEquals(fakeList,game.getPlayers());
+            for(int j=0;j<i+1;j++){
+                game.getPlayers().add(fakeList.get(j));
+            }
+            game.setFirstPlayer(game.getPlayers().get(0));
+            game.setCurrentPlayer(game.getPlayers().get(0));
             assertEquals(firstPlayer,game.getFirstPlayer());
-            assertEquals(firstPlayer,game.getCurrentPlayer());
+            for(int j=0; j<i;j++) {
+                assertEquals(fakeList.get(j).getNickname(), game.getCurrentPlayer().getNickname());
+                assertEquals(fakeList.get(j).getPosition(), game.getCurrentPlayer().getPosition());
+                game.setCurrentPlayer(game.getNextPlayer());
+            }
         }
     }
 
@@ -47,8 +65,8 @@ class GameTest extends TestUtils{
     @Test
     void testSetFirstPlayer() {
         Game game = new Game();
-        Player john = new Player("John", 1);
-        Player elizabeth = new Player("Elizabeth", 2);
+        Player john = new Player("John", 0);
+        Player elizabeth = new Player("Elizabeth", 0);
         game.setFirstPlayer(john);
         assertEquals(john, game.getFirstPlayer());
         game.setFirstPlayer(elizabeth);
@@ -61,7 +79,7 @@ class GameTest extends TestUtils{
     @Test
     void testGetFirstPlayer() {
         Game game = new Game();
-        Player john = new Player("John", 1);
+        Player john = new Player("John", 0);
         game.setFirstPlayer(john);
         assertEquals(john, game.getFirstPlayer());
     }
@@ -216,5 +234,79 @@ class GameTest extends TestUtils{
         game.setCurrentPlayer(current);
         assertEqualsPlayer(next1, game.getNextPlayer());
         assertEqualsPlayer(current, game.getCurrentPlayer());
+    }
+
+    /**
+     * Test if the game state is updated correctly
+     */
+    @Test
+    void gameStateTest(){
+        Game game = new Game();
+        assertEquals(GameState.LOBBY,game.getGameState());
+        game.setGameState(GameState.RUNNING);
+        assertEquals(GameState.RUNNING,game.getGameState());
+        game.setGameState(GameState.SILLY);
+        assertEquals(GameState.SILLY,game.getGameState());
+        game.setGameState(GameState.ENDING);
+        assertEquals(GameState.ENDING,game.getGameState());
+        game.setGameState(GameState.LOBBY);
+        assertEquals(GameState.LOBBY,game.getGameState());
+    }
+
+    /**
+     * Test if the game returns the players nicknames correctly
+     */
+    @Test
+    void getPlayersNickname(){
+        Game game = new Game();
+        game.initializeGame(4);
+        Player player1 = new Player("Bonnie",0);
+        Player player2 = new Player("Loretta",1);
+        Player player3 = new Player("Megan",2);
+        Player player4 = new Player("Lois",3);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
+        game.addPlayer(player4);
+        assertTrue(game.getPlayersNickname().contains("Bonnie"));
+        assertTrue(game.getPlayersNickname().contains("Loretta"));
+        assertTrue(game.getPlayersNickname().contains("Megan"));
+        assertTrue(game.getPlayersNickname().contains("Lois"));
+    }
+
+    /**
+     * Test if the game returns the correct position passing a nickname as a parameter
+     */
+    @Test
+    void getPositionByNick(){
+        Game game = new Game();
+        game.initializeGame(4);
+        Player player1 = new Player("Bonnie",0);
+        Player player2 = new Player("Loretta",1);
+        Player player3 = new Player("Megan",2);
+        Player player4 = new Player("Lois",3);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
+        game.addPlayer(player4);
+        assertEquals(0,game.getPositionByNick("Bonnie"));
+        assertEquals(1,game.getPositionByNick("Loretta"));
+        assertEquals(2,game.getPositionByNick("Megan"));
+        assertEquals(3,game.getPositionByNick("Lois"));
+    }
+
+    /**
+     * Test if the game returns the right common goals if it takes an array of indexes as a parameter
+     */
+    @Test
+    void commonGoalByIndex(){
+        Game game = new Game();
+        int []indexes = {1,9};
+        ArrayList<CommonGoal> commonGoals = new ArrayList<>();
+        try {
+            commonGoals = game.commonGoalByIndex(indexes);
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ignore){}
+        assertEquals(commonGoals.get(0).getStrategy().getClass(), Square.class);
+        assertEquals(commonGoals.get(1).getStrategy().getClass(), EdgesEightEquals.class);
     }
 }
