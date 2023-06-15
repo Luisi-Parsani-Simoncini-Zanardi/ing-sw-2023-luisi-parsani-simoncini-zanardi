@@ -34,6 +34,7 @@ public class AskNumberFrame extends StartingMenuFrame {
         panel.add(button4);
         getContentPane().add(panel);
 
+        pack();
         setVisible(true);
     }
 }

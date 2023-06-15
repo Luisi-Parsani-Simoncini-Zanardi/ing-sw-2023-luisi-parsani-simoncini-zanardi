@@ -1,5 +1,7 @@
 package org.projectsw.View.GraphicalUI;
 
+import org.projectsw.Util.Config;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,6 +16,7 @@ public class LobbyFrame extends StartingMenuFrame {
 
         JPanel menuButtonsPanel = new JPanel();
         menuButtonsPanel.setLayout(new GridLayout(3,1));
+        menuButtonsPanel.setBackground(Config.defaultGuiBackgroundColor);
         add(menuButtonsPanel,BorderLayout.CENTER);
 
         if(guiManager.isAskNickname()){
