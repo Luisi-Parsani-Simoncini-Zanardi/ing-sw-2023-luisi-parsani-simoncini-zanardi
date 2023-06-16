@@ -138,15 +138,6 @@ public class Board extends Observable<GameEvent> {
     }
 
     /**
-     * Sets the temporaryPoints arrayList as a given arrayList of Points.
-     * @param temporaryPoints the arrayList of Points to set.
-     */
-    public void setTemporaryPoints(ArrayList<Point> temporaryPoints) {
-        this.temporaryPoints = temporaryPoints;
-        updateSelectablePoints();
-    }
-
-    /**
      * Returns the Tile at the given position on the board and replaces it with an empty Tile.
      * @param point the indexes of the tile to remove.
      * @return the Tile at the given position.
@@ -342,7 +333,7 @@ public class Board extends Observable<GameEvent> {
     public void printBoard(){
         String printedString = "  ";
         for(int i=0;i<Config.boardLength;i++) {
-            Integer integer = i+1;
+            int integer = i+1;
             printedString = printedString + "     " +  integer + "      ";
         }
         System.out.println(printedString);

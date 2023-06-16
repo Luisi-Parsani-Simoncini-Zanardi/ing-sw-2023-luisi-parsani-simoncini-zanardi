@@ -88,9 +88,6 @@ public class SaveGameStatus {
             data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
             data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
             data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
-            /*for(Player player : data.getPlayers()){
-                player.setIsActive(false);
-            }*/
             data.getCurrentPlayer().setIsActive(false);
             data.getFirstPlayer().setIsActive(false);
 
@@ -121,9 +118,7 @@ public class SaveGameStatus {
 
     public boolean checkExistingSaveFile(String path) {
         File file =new File(path);
-        if(file.exists())
-            return true;
-        return false;
+        return file.exists();
     }
 
     public boolean checkExistingSaveFile() {
