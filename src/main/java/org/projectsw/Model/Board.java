@@ -14,8 +14,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-//TODO DAVIDE: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
-
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
  */
@@ -40,7 +38,6 @@ public class Board extends Observable<GameEvent> {
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -67,7 +64,6 @@ public class Board extends Observable<GameEvent> {
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -80,7 +76,6 @@ public class Board extends Observable<GameEvent> {
         this.bag = board.getBag();
         this.temporaryPoints = board.getTemporaryPoints();
         this.updateSelectablePoints();
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -132,7 +127,6 @@ public class Board extends Observable<GameEvent> {
         if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
         updateSelectablePoints();
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -141,7 +135,6 @@ public class Board extends Observable<GameEvent> {
      */
     public void setEndGame(boolean endGame) {
         this.endGame = endGame;
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -167,7 +160,6 @@ public class Board extends Observable<GameEvent> {
             Tile tmp = board[(int) point.getX()][(int) point.getY()];
             board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
-            //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
             return tmp;
         }
     }
@@ -183,13 +175,6 @@ public class Board extends Observable<GameEvent> {
         if(row>Config.boardHeight || column>Config.boardLength) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
         updateSelectablePoints();
-    }
-
-    /**
-     * notify the completion of the fillBoard
-     */
-    public void finishedUpdateBoard() {
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
