@@ -218,6 +218,9 @@ class ShelfTest {
     @Test
     void setGetAndCleanSelectedColumnTest() throws UnselectableColumnException {
         Shelf shelf = new Shelf();
+        ArrayList<Integer> selectableColumns = new ArrayList<>();
+        selectableColumns.add(0);
+        shelf.setSelectableColumns(selectableColumns);
         Integer selectedColumn = 0;
         assertNull(shelf.getSelectedColumn());
         shelf.setSelectedColumn(selectedColumn);

@@ -61,7 +61,7 @@ class SaveGameStatusTest extends TestUtils {
     @Test
     public void gameSerializeDeserializeTest() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Game game = gameInitializer();
-        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt");
+        SaveGameStatus saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         saveGameStatus.saveGame();
         Game data = saveGameStatus.retrieveGame();
 
