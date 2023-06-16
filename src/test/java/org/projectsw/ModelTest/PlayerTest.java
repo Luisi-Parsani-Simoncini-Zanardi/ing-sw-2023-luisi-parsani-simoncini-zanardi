@@ -112,11 +112,14 @@ class PlayerTest {
      */
     @Test
     void getAndSetTemporaryTilesTest() {
-        ArrayList<Tile> list = new ArrayList<>();
-        list.add(new Tile(TilesEnum.CATS,0));
-        list.add(new Tile(TilesEnum.BOOKS,0));
         Player player = new Player("Riccardo", 3);
-        // player.setTemporaryTiles(list);
+        ArrayList<Tile> list = new ArrayList<>();
+        Tile tileCat = new Tile(TilesEnum.CATS,0);
+        player.addTemporaryTile(tileCat);
+        list.add(tileCat);
+        Tile tileBook = new Tile(TilesEnum.BOOKS,0);
+        player.addTemporaryTile(tileBook);
+        list.add(tileBook);
         assertEquals(list, player.getTemporaryTiles());
     }
 
