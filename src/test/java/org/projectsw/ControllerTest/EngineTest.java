@@ -2,6 +2,9 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Distributed.Client;
+import org.projectsw.Distributed.ClientImplementation;
+import org.projectsw.Distributed.Server;
 import org.projectsw.Distributed.ServerImplementation;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
@@ -24,52 +27,250 @@ class EngineTest extends TestUtils {
      * Cleans the list of used codes before each test.
      */
     @BeforeEach
-    void codesCleaner(){
+    void codesCleaner() {
         PersonalGoal.cleanUsedCodes();
     }
 
     /**
-     * Tests the creation of a game in LOBBY state, also checking if the filling of the lobby
-     * works correctly and if the state of the game changes after the last join
+     * Test that the clients_ID hashmap has the right values
      */
     @Test
-    void startingGameSimulation() throws RemoteException {
-        //creates a new engine and checks if it has an empty game
-        Engine engine = new Engine(new ServerImplementation());
-        assertNull(engine.getGame());
-        //initialize game
-        //
-        /*calls firstPlayerJoin and checks if all the parameters of game are correctly initialized
-        engine.firstPlayerJoin("Davide", 4);
-        assertEquals(1, engine.getGame().getPlayers().size());
-        Player player1 = engine.getGame().getPlayers().get(0);
-        assertEquals("Davide", player1.getNickname());
-        assertEquals(0, player1.getPosition());
-        assertEquals(player1, engine.getGame().getCurrentPlayer());
-        assertEquals(player1, engine.getGame().getFirstPlayer());
+    void getClients_ID() {
+        Server server = null;
+        Client client = null;
+        try {
+            server = new ServerImplementation();
+            client = new ClientImplementation(server);
+        } catch (RemoteException e) {
+            System.err.println("Error creating a Server in Engine test");
+        }
+
+
+    }
+
+    @Test
+    void getID_Nicks() {
+    }
+
+    @Test
+    void getClientObserverHashMap() {
+    }
+
+    /**
+     * Test if the method getGame() returns the game correctly
+     */
+    @Test
+    void getGame() {
+        Engine engine = new Engine();
+        assertNotNull(engine.getGame());
         assertEquals(GameState.LOBBY, engine.getGame().getGameState());
-        assertEquals(4, engine.getGame().getNumberOfPlayers());
-        assertEqualsBoard(new Board(4), engine.getGame().getBoard());
-        //calls playerJoin and checks if the player is added correctly
-        //player2
-        engine.playerJoin("Lollo");
-        assertEquals(2, engine.getGame().getPlayers().size());
-        Player player2 = engine.getGame().getPlayers().get(1);
-        assertEquals("Lollo", player2.getNickname());
-        assertEquals(1, player2.getPosition());
-        //player3
-        engine.playerJoin("Luca");
-        assertEquals(3, engine.getGame().getPlayers().size());
-        Player player3 = engine.getGame().getPlayers().get(2);
-        assertEquals("Luca", player3.getNickname());
-        assertEquals(2, player3.getPosition());
-        //player4
-        engine.playerJoin("Lore");
-        assertEquals(4, engine.getGame().getPlayers().size());
-        Player player4 = engine.getGame().getPlayers().get(3);
-        assertEquals("Lore", player4.getNickname());
-        assertEquals(3, player4.getPosition());
-        //checks if now the state of the game is changed
+        assertNotNull(engine.getGame().getChat());
+        assertNotNull(engine.getGame().getPlayers());
+        assertNotNull(engine.getGame().getCommonGoals());
+        assertEquals(0, engine.getGame().getNumberOfPlayers());
+        engine.getGame().setGameState(GameState.RUNNING);
+        engine.getGame().setNumberOfPlayers(4);
         assertEquals(GameState.RUNNING, engine.getGame().getGameState());
-    */}
+        assertEquals(4, engine.getGame().getNumberOfPlayers());
+    }
+
+    /**
+     * Test if the method returns correctly the player associated with the passed nickname, or null otherwise
+     */
+    @Test
+    void getPlayerFromNickname() {
+        Engine engine = new Engine();
+        Game game = new Game();
+        Player player1 = new Player("Lorenzo",0);
+        Player player2 = new Player("Luca",1);
+        Player player3 = new Player("Davide",2);
+        Player player4 = new Player("Piero",4);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
+        game.addPlayer(player4);
+        engine.setGame(game);
+        assertEquals(player1, engine.getPlayerFromNickname("Lorenzo"));
+        assertEquals(player2, engine.getPlayerFromNickname("Luca"));
+        assertEquals(player3, engine.getPlayerFromNickname("Davide"));
+        assertEquals(player4, engine.getPlayerFromNickname("Piero"));
+        assertNull(engine.getPlayerFromNickname("Elisa"));
+    }
+
+    /**
+     * Test that setGame is setting the engine game correctly
+     */
+    @Test
+    void setGame() {
+        Engine engine = new Engine();
+        Game game = new Game();
+        Player player1 = new Player("Lorenzo",0);
+        Player player2 = new Player("Luca",1);
+        Player player3 = new Player("Davide",2);
+        Player player4 = new Player("Piero",4);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
+        game.addPlayer(player4);
+        engine.setGame(game);
+        assertEquals(game, engine.getGame());
+    }
+
+    @Test
+    void getSaveGameStatus() {
+    }
+
+    @Test
+    void playerJoin() {
+    }
+
+    /**
+     * Test that temporaryPoints and selectablePoints are updated correctly after the call of selectTiles()
+     */
+    @Test
+    void selectTiles() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(4);
+        engine.playerJoin("Lorenzo","0");
+        engine.playerJoin("Piero","1");
+        engine.playerJoin("Asia","2");
+        engine.playerJoin("Riccardo","3");
+        Board board = engine.getGame().getBoard();
+        assertEquals(0, engine.getGame().getBoard().getTemporaryPoints().size());
+        assertEquals(20, engine.getGame().getBoard().getSelectablePoints().size());assertEquals(0, engine.getGame().getBoard().getTemporaryPoints().size());
+        engine.selectTiles("0", new Point(0,0));
+        assertEquals(0, engine.getGame().getBoard().getTemporaryPoints().size());
+        assertEquals(20, engine.getGame().getBoard().getSelectablePoints().size());
+        engine.selectTiles("0", new Point(4,1));
+        assertEquals(board.getTemporaryPoints(),engine.getGame().getBoard().getTemporaryPoints());
+        assertEquals(board.getSelectablePoints(),engine.getGame().getBoard().getSelectablePoints());
+    }
+
+    @Test
+    void confirmSelectedTiles() {
+    }
+
+    @Test
+    void selectColumn() {
+    }
+
+    @Test
+    void placeTiles() {
+    }
+
+    @Test
+    void checkCommonGoals() {
+    }
+
+    @Test
+    void sendResults() {
+    }
+
+    @Test
+    void checkPersonalGoal() {
+    }
+
+    @Test
+    void checkEndgameGoal() {
+    }
+
+    @Test
+    void endTurn() {
+    }
+
+    @Test
+    void sendNexTurn() {
+    }
+
+    @Test
+    void endTurnForced() {
+    }
+
+    @Test
+    void checkEndGame() {
+    }
+
+    @Test
+    void getWinner() {
+    }
+
+    @Test
+    void endGame() {
+    }
+
+    @Test
+    void resetGame() {
+    }
+
+    @Test
+    void sendChat() {
+    }
+
+    @Test
+    void sayInChat() {
+    }
+
+    @Test
+    void removeObserver() {
+    }
+
+    @Test
+    void fillBoard() {
+    }
+
+    @Test
+    void initializeFromSave() {
+    }
+
+    @Test
+    void setIsActiveFromClient() {
+    }
+
+    @Test
+    void takeNick() {
+    }
+
+    @Test
+    void connect() {
+    }
+
+    @Test
+    void setNumberOfPlayers() {
+    }
+
+    @Test
+    void boardTransfer() {
+    }
+
+    @Test
+    void shelfTransfer() {
+    }
+
+    @Test
+    void shelfTransferAll() {
+    }
+
+    @Test
+    void personalGoalTransfer() {
+    }
+
+    @Test
+    void temporaryTilesTransfer() {
+    }
+
+    @Test
+    void commonGoalTransfer() {
+    }
+
+    @Test
+    void currentPlayerTransfer() {
+    }
+
+    @Test
+    void reconnectionCheck() {
+    }
+
+    @Test
+    void notActive() {
+    }
 }

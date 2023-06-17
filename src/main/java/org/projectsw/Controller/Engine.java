@@ -39,6 +39,13 @@ public class Engine{
     private ArrayList<String> IDToKill = new ArrayList<>();
 
     /**
+     * Engine default constructor, mainly used for testing purposes
+     */
+    public Engine(){
+        server=null;
+        game = new Game();
+    }
+    /**
      * constructor
      * @param server is the server bound to this controller
      */
@@ -51,7 +58,6 @@ public class Engine{
      * @return the clients
      */
     public OneToOneHashmap<Client, String> getClients_ID() { return this.clients_ID; }
-    //public HashMap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
     public OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
     public HashMap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
     /**
