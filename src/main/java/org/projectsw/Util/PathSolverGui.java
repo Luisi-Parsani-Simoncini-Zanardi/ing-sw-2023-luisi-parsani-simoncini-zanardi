@@ -78,59 +78,59 @@ public class PathSolverGui {
         return standardInitialPath+"ScoringTokens/EndGame"+formatJpg;
     }
 
-    public static String ScoringToken2() {
+    public static String scoringToken2() {
         return standardInitialPath+"ScoringTokens/Scoring2"+formatJpg;
     }
 
-    public static String ScoringToken4() {
+    public static String scoringToken4() {
         return standardInitialPath+"ScoringTokens/Scoring4"+formatJpg;
     }
 
-    public static String ScoringToken6() {
+    public static String scoringToken6() {
         return standardInitialPath+"ScoringTokens/Scoring6"+formatJpg;
     }
 
-    public static String ScoringToken8() {
+    public static String scoringToken8() {
         return standardInitialPath+"ScoringTokens/Scoring8"+formatJpg;
     }
 
-    public static String ScoringTokenEmpty1() {
+    public static String scoringTokenEmpty1() {
         return standardInitialPath+"ScoringTokens/ScoringEmpty1"+formatJpg;
     }
 
-    public static String ScoringTokenEmpty2() {
+    public static String scoringTokenEmpty2() {
         return standardInitialPath+"ScoringTokens/ScoringEmpty2"+formatJpg;
     }
 
-    public static String ScoringTokenBack() {
+    public static String scoringTokenBack() {
         return standardInitialPath+"ScoringTokens/ScoringBack"+formatJpg;
     }
 
-    public static String FirstPlayerToken() {
+    public static String firstPlayerToken() {
         return standardInitialPath+"Various/FirstPlayerToken"+formatPng;
     }
 
-    public static String Books(int code){
+    public static String books(int code){
         return standardInitialPath+"Tiles/Books"+code+formatPng;
     }
 
-    public static String Cats(int code){
+    public static String cats(int code){
         return standardInitialPath+"Tiles/Cats"+code+formatPng;
     }
 
-    public static String Frames(int code){
+    public static String frames(int code){
         return standardInitialPath+"Tiles/Frames"+code+formatPng;
     }
 
-    public static String Games(int code){
+    public static String games(int code){
         return standardInitialPath+"Tiles/Games"+code+formatPng;
     }
 
-    public static String Plants(int code){
+    public static String plants(int code){
         return standardInitialPath+"Tiles/Plants"+code+formatPng;
     }
 
-    public static String Trophies(int code){
+    public static String trophies(int code){
         return standardInitialPath+"Tiles/Trophies"+code+formatPng;
     }
 }

@@ -11,7 +11,7 @@ public class LobbyFrame extends StartingMenuFrame {
         super(guiManager);
 
         //debug
-        System.out.println("\nLobby frame recreated:\n AskNickname: " + guiManager.isAskNickname() + "\nFistPlayer: " + guiManager.isFirstPlayer() + "\nLoadGame: " + guiManager.isGameSavedExist());
+        System.out.println("\n-Lobby frame created-\nAskNickname: " + guiManager.isAskNickname() + "\nFistPlayer: " + guiManager.isFirstPlayer() + "\nLoadGame: " + guiManager.isGameSavedExist());
 
 
         JPanel menuButtonsPanel = new JPanel();
