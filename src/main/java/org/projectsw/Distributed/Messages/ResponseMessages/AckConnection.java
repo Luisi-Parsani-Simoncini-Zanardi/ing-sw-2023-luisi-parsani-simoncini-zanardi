@@ -15,5 +15,6 @@ public class AckConnection extends ResponseMessage implements Serializable {
     @Override
     public void execute(TextualUI tui){
         tui.setConnectFlag(false);
+        tui.setStillChoosing(!model.getBool());
     }
 }

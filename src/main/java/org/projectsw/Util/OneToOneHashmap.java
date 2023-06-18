@@ -36,6 +36,11 @@ public class OneToOneHashmap<K,V> {
             forwardMap.remove(key);
         }
     }
+
+    public void clear(){
+        forwardMap.clear();
+        reverseMap.clear();
+    }
     public ArrayList<K> getAllKey(){
         return allKey;
     }

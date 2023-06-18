@@ -37,6 +37,7 @@ public class Engine{
     private boolean playerReconnect = false;
     private String firstClient;
     private ArrayList<String> IDToKill = new ArrayList<>();
+    private boolean optionChoosed = false;
 
     /**
      * constructor
@@ -772,6 +773,12 @@ public class Engine{
         setGameFromSave(retrieveGame());
         this.loadFromFile = true;
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
+        optionChoosed = true;
+        try {
+            game.setChangedAndNotifyObservers(new optionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
         try {
             game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
         } catch (RemoteException e) {
@@ -788,22 +795,52 @@ public class Engine{
     }
 
     private void loadFromFile(String ID, String nickname) {
-        if (freeNamesUsedInLastGame.contains(nickname)) {
-            freeNamesUsedInLastGame.remove(nickname);
-            if(!ID_Nicks.getAllKey().contains(ID))
+        if(ID.equals(firstClient)){
+            ID_Nicks.clear();
+            if(freeNamesUsedInLastGame.contains(nickname)){
+                freeNamesUsedInLastGame.remove(nickname);
                 ID_Nicks.put(ID, nickname);
+                try {
+                    getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(ID)));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                }
+            } else {
+                try {
+                    getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(ID, "Nickname not in the last game!!!")));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                }
+                try {
+                    game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         } else {
-            try {
-                getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(ID, "Nickname not in the last game!!!")));
-            } catch (RemoteException e) {
-                throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+            if (freeNamesUsedInLastGame.contains(nickname)) {
+                freeNamesUsedInLastGame.remove(nickname);
+                ID_Nicks.put(ID, nickname);
+                try {
+                    getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(ID)));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                }
+            } else {
+                try {
+                    getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(ID, "Nickname not in the last game or already taken!!!")));
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
+                }
+                try {
+                    game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-        if(ID.equals(firstClient))
-            for(String nick : ID_Nicks.getAllValue()){
-                loadFromFile(getID_Nicks().getKey(nick), nick);
-            }
-        startGameFromFile();
+        if(freeNamesUsedInLastGame.isEmpty())
+            startGameFromFile();
     }
 
     private void initializePlayer(SerializableInput input)  {
@@ -838,6 +875,10 @@ public class Engine{
     }
     public void setIsActiveFromClient(Client client, Boolean choice){
         getPlayerFromNickname(ID_Nicks.getValue(clients_ID.getValue(client))).setIsActive(choice);
+    }
+
+    public String getNickFromClient(Client client) {
+        return ID_Nicks.getValue(clients_ID.getValue(client));
     }
 
     public synchronized void takeNick(SerializableInput input) {
@@ -876,25 +917,7 @@ public class Engine{
                     initializePlayer(input);
                 }
             }else{
-                if (game.getFirstPlayer() == null) {
-                    if(!ID_Nicks.getAllValue().contains(input.getClientNickname())) {
-                        ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());
-                        try {
-                            getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(input.getAlphanumericID())));
-                        } catch (RemoteException e) {
-                            throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
-                        }
-                    }
-                    else{
-                        try {
-                            getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));
-                        } catch (RemoteException e) {
-                            throw new RuntimeException("Network error while sending nickname error message: " + e.getMessage());
-                        }
-                    }
-                }else{
-                    loadFromFile(input.getAlphanumericID(), input.getClientNickname());
-                }
+                loadFromFile(input.getAlphanumericID(), input.getClientNickname());
             }
         }
     }
@@ -927,13 +950,20 @@ public class Engine{
             removeObserver(alphanumericID);
             counter--;
         } else {
-            getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID)));
+            if(saveFileFound()){
+                game.setChangedAndNotifyObservers((new gameFound(new SerializableGame(alphanumericID))));
+            }
+            getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID, optionChoosed)));
         }
     }
 
     private void startGameFromFile(){
         if (freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
-            checkKill();
+            for(String id : clients_ID.getAllValue()){
+                if(!ID_Nicks.getAllKey().contains(id)){
+                    removeObserver(id);
+                }
+            }
             try {
                 getGame().setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
                 getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID, getGame())));
@@ -951,6 +981,12 @@ public class Engine{
     public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);
+        optionChoosed = true;
+        try {
+            game.setChangedAndNotifyObservers(new optionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
         try {
             game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
         } catch (RemoteException e) {
