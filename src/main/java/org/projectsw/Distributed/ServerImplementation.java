@@ -4,6 +4,7 @@ import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.InputMessages.SendNickname;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
+import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Game;
 import org.projectsw.Util.Observer;
 
@@ -84,11 +85,15 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
     private void unregisterClients(List<Client> clients) {
         for (Client client : clients) {
             String nick = controller.getNickFromClient(client);
+            String ID = controller.getID_Nicks().getKey(nick);
             controller.setIsActiveFromClient(client, false);
             controller.removeObserver(controller.getClients_ID().getValue(client));
             if (nick.equals(controller.getGame().getCurrentPlayer().getNickname())) {
-                controller.endTurn(controller.getClients_ID().getValue(client), controller.getGame().getCurrentPlayer().getNickname());
-                controller.sendNexTurn();
+                controller.endTurn(ID, controller.getGame().getCurrentPlayer().getNickname());
+            }
+            if(ID.equals(controller.getFirstClient()) && controller.getGame().getGameState().equals(GameState.LOBBY)) {
+                controller.everlastingKill();
+                System.exit(0);
             }
         }
     }

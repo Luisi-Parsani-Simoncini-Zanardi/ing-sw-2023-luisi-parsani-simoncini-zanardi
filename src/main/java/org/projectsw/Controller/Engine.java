@@ -47,6 +47,8 @@ public class Engine{
         this.clientObserverHashMap=new HashMap<>();
         this.server=server;
     }
+
+    public String getFirstClient() {return this.firstClient; }
     /**
      * get the Clients
      * @return the clients
@@ -671,6 +673,7 @@ public class Engine{
     }
 
     public synchronized void removeObserver(String id) {
+        counter--;
         try {
             game.setChangedAndNotifyObservers(new Kill(new SerializableGame(id,0)));
         } catch (RemoteException e) {
@@ -680,6 +683,13 @@ public class Engine{
         clientObserverHashMap.remove(getClients_ID().getKey(id));
         getClients_ID().removeByValue(id);
         getID_Nicks().removeByKey(id);
+    }
+
+    public void everlastingKill() {
+        try {
+            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(Config.broadcastID,0)));
+        } catch (RemoteException e) {
+        }
     }
 
     /**
@@ -938,6 +948,9 @@ public class Engine{
     }
     //TODO SE ENTRANO 3 PLAYER, IL PRIMO NON METTE NULLA (GLI ALTRI IL NOME), SE METTE 2 PLAYER UCCIDE IL 3 MA NON STARTA
     public synchronized void Connect(String alphanumericID) throws RemoteException, InterruptedException {
+        if(getInactivePlayers().size() > 0){
+            playerReconnect = true;
+        }
         counter++;
         if (counter == 1) {
             firstClient = alphanumericID;
@@ -948,7 +961,6 @@ public class Engine{
         }
         if((game.getNumberOfPlayers() != 0 && counter> game.getNumberOfPlayers()) || counter == 5){
             removeObserver(alphanumericID);
-            counter--;
         } else {
             if(saveFileFound()){
                 game.setChangedAndNotifyObservers((new gameFound(new SerializableGame(alphanumericID))));
