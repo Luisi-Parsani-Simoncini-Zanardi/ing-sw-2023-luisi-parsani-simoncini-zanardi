@@ -31,17 +31,17 @@ public class GameMainFrame extends JFrame {
         Panel panelRight = new Panel();
         panelRight.setPreferredSize(new Dimension(200,200));
         panelRight.setBackground(Color.yellow);
-        add(panelLeft,BorderLayout.EAST);
+        add(panelRight,BorderLayout.EAST);
 
         Panel panelUp = new Panel();
         panelUp.setPreferredSize(new Dimension(200,100));
         panelUp.setBackground(Color.green);
-        add(panelLeft,BorderLayout.NORTH);
+        add(panelUp,BorderLayout.NORTH);
 
         Panel panelDown = new Panel();
         panelDown.setPreferredSize(new Dimension(200,200));
-        panelDown.setBackground(Color.green);
-        add(panelLeft,BorderLayout.SOUTH);
+        panelDown.setBackground(Color.red);
+        add(panelDown,BorderLayout.SOUTH);
 
         SelectableBoard selectableBoard = new SelectableBoard();
         add(selectableBoard,BorderLayout.CENTER);

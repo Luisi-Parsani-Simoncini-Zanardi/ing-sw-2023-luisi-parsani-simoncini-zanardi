@@ -132,71 +132,10 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         lobby();
     }
 
-    private void waitForResponse1() {
-        synchronized (lock1) {
-            try {
-                lock1.wait();
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
-            }
-        }
-        System.out.println("Sono uscito");
-    }
-
-    public void notifyResponse1() {
-        synchronized (lock1) {
-            lock1.notify();
-        }
-    }
-
-    private void waitForResponse2() {
-        synchronized (lock2) {
-            try {
-                lock2.wait();
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
-            }
-        }
-    }
-
-    public void notifyResponse2() {
-        synchronized (lock2) {
-            lock2.notify();
-        }
-    }
-
-    public void kill(){
-        try {
-            client.kill();
-        } catch (RemoteException e) {
-            System.err.println("Error while closing the process, please manually close the client");
-            System.exit(0);
-        }
-        System.exit(0);
-    }
-
-    public void kill(int option){
-        if(option == 0) new LobbyFullKillMessageFrame();
-        if(option == 1) new JoinCancelledMessageFrame();
-        kill();
-    }
-
-    /**
-     * Debug function
-     */
-    private void printConnectionStatus() {
-        System.out.println("\nConnection successfully established");
-        if(firstPlayer) System.out.println("You are the first player");
-        else System.out.println("You are NOT the first player");
-        if(gameSavedExist) System.out.println("Game saved found");
-        else System.out.println("Game saved NOT found");
-    }
-
     private void lobby() {
         do {
             new LobbyFrame(this);
             waitForResponse1();
-            System.out.println("Risposta ricevuta, LogInCompleted = " + logInCompleted);
         } while (!logInCompleted);
         while (endState.equals(UIEndState.LOBBY)) {
             new WaitingMessageFrame();
@@ -210,7 +149,6 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
     }
 
     private void launchGame(){
-        System.out.println("Game has fckkking started!!");
         new GameMainFrame(this);
     }
 
@@ -278,5 +216,65 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
 
     private void setAndDisplayBoard(GameMainFrame gameMainFrame){
         gameMainFrame.updateBoard(game);
+    }
+
+    private void waitForResponse1() {
+        synchronized (lock1) {
+            try {
+                lock1.wait();
+            } catch (InterruptedException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        System.out.println("Sono uscito");
+    }
+
+    public void notifyResponse1() {
+        synchronized (lock1) {
+            lock1.notify();
+        }
+    }
+
+    private void waitForResponse2() {
+        synchronized (lock2) {
+            try {
+                lock2.wait();
+            } catch (InterruptedException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
+
+    public void notifyResponse2() {
+        synchronized (lock2) {
+            lock2.notify();
+        }
+    }
+
+    public void kill(){
+        try {
+            client.kill();
+        } catch (RemoteException e) {
+            System.err.println("Error while closing the process, please manually close the client");
+            System.exit(0);
+        }
+        System.exit(0);
+    }
+
+    public void kill(int option){
+        if(option == 0) new LobbyFullKillMessageFrame();
+        if(option == 1) new JoinCancelledMessageFrame();
+        kill();
+    }
+
+    /**
+     * Debug function
+     */
+    private void printConnectionStatus() {
+        System.out.println("\nConnection successfully established");
+        if(firstPlayer) System.out.println("You are the first player");
+        else System.out.println("You are NOT the first player");
+        if(gameSavedExist) System.out.println("Game saved found");
+        else System.out.println("Game saved NOT found");
     }
 }

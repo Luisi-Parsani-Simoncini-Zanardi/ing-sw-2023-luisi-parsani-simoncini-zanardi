@@ -10,10 +10,6 @@ public class LobbyFrame extends StartingMenuFrame {
     public LobbyFrame(GuiManager guiManager){
         super(guiManager);
 
-        //debug
-        System.out.println("\n-Lobby frame created-\nAskNickname: " + guiManager.isAskNickname() + "\nFistPlayer: " + guiManager.isFirstPlayer() + "\nLoadGame: " + guiManager.isGameSavedExist());
-
-
         JPanel menuButtonsPanel = new JPanel();
         menuButtonsPanel.setLayout(new GridLayout(3,1));
         menuButtonsPanel.setBackground(Config.defaultGuiBackgroundColor);
