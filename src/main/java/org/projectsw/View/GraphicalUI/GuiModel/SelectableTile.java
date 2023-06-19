@@ -5,11 +5,11 @@ import org.projectsw.Util.PathSolverGui;
 import javax.swing.*;
 import java.awt.*;
 
-public class SelectableTileGui extends JButton {
+public class SelectableTile extends JButton {
 
     private final Point position;
 
-    public SelectableTileGui (Tile tile, Point point) {
+    public SelectableTile(Tile tile, Point point) {
         super();
         position = point;
         switch (tile.getTile()) {

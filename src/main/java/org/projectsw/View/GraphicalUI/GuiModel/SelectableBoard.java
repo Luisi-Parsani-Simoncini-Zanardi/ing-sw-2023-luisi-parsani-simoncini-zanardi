@@ -6,7 +6,6 @@ import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
 import org.projectsw.View.GraphicalUI.GuiManager;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -22,13 +21,13 @@ public class SelectableBoard extends JPanel {
         Board board = createBoard(model);
         Tile[][] boardGrid = board.getBoard();
 
-        for(int i=0;i<Config.boardLength;i++) {
-            for(int j=0;j<Config.boardHeight;j++) {
+        for(int i=0;i<Config.boardHeight;i++) {
+            for(int j=0;j<Config.boardLength;j++) {
                 Tile tile = boardGrid[i][j];
-                SelectableTileGui selectableTileGui = new SelectableTileGui(tile,new Point(i,j));
-                add(selectableTileGui);
-                selectableTileGui.addActionListener(e -> {
-                    guiManager.sendTileSelectionFromBoard(selectableTileGui.getPosition());
+                SelectableTile selectableTile = new SelectableTile(tile,new Point(i,j));
+                add(selectableTile);
+                selectableTile.addActionListener(e -> {
+                    guiManager.sendTileSelectionFromBoard(selectableTile.getPosition());
                 });
             }
         }
@@ -37,9 +36,9 @@ public class SelectableBoard extends JPanel {
     public SelectableBoard(){
         super();
         setLayout(new GridLayout(9,9));
-        for(int i=0;i<Config.boardLength;i++) {
-            for (int j = 0; j < Config.boardHeight; j++) {
-                add(new SelectableTileGui(new Tile(TilesEnum.UNUSED,0),new Point(i,j)));
+        for(int i=0;i<Config.boardHeight;i++) {
+            for (int j = 0; j < Config.boardLength; j++) {
+                add(new SelectableTile(new Tile(TilesEnum.UNUSED,0),new Point(i,j)));
             }
         }
     }
