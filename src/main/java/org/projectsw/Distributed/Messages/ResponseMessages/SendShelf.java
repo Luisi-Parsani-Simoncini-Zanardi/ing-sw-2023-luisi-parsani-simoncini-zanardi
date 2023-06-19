@@ -17,5 +17,5 @@ public class SendShelf extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui){
         tui.showShelf(model);
     }
-    public void execute(GuiManager gui){}
+    public void execute(GuiManager gui){gui.updateModel(model);}
 }

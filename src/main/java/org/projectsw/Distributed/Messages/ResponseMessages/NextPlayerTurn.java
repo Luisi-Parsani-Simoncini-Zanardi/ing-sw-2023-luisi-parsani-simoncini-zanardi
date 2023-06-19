@@ -24,7 +24,7 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
         }
         if (model.getPlayerName().equals(tui.getNickname())) {
             tui.setTurnState(UITurnState.YOUR_TURN_SELECTION);
-            tui.setNoMoreSelectableTiles(true);
+            tui.setTileSelectionPossible(true);
             tui.setNoMoreTemporaryTiles(true);
         }
     }
@@ -37,7 +37,7 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
         }
         if (model.getPlayerName().equals(guiManager.getNickname())) {
             guiManager.setTurnState(UITurnState.YOUR_TURN_SELECTION);
-            guiManager.setNoMoreSelectableTiles(true);
+            guiManager.setTileSelectionPossible(true);
             guiManager.setNoMoreTemporaryTiles(true);
         }
     }

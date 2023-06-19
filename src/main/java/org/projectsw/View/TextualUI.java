@@ -38,7 +38,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
 
     private String lastPlayerNick;
 
-    private Boolean noMoreSelectableTiles = true;
+    private Boolean tileSelectionPossible = true;
     private Boolean noMoreTemporaryTiles = true;
 
     private HashMap<String, String> nameColors;
@@ -340,8 +340,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     public void setNoMoreTemporaryTiles(boolean bool){
         this.noMoreTemporaryTiles = bool;
     }
-    public void setNoMoreSelectableTiles(boolean bool){
-        this.noMoreSelectableTiles = bool;
+    public void setTileSelectionPossible(boolean bool){
+        this.tileSelectionPossible = bool;
     }
     public boolean chooseColumn(){
         System.out.println("Are you sure?\n1: Yes\n2: No");
@@ -408,7 +408,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
             waitReturn();
-        }while(noMoreSelectableTiles && chooseTiles());
+        }while(tileSelectionPossible && chooseTiles());
         try {
             setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {

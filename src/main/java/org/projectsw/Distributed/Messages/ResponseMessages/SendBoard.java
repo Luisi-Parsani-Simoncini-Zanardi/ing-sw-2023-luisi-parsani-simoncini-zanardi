@@ -17,5 +17,8 @@ public class SendBoard extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui){
         tui.showBoard(model);
     }
-    public void execute(GuiManager gui){gui.updateModel(model);}
+    public void execute(GuiManager gui){
+        gui.updateModel(model);
+        gui.setSelectionAccepted(true);
+    }
 }

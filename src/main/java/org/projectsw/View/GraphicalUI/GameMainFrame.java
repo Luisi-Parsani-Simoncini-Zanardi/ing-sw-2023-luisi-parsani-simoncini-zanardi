@@ -1,16 +1,22 @@
 package org.projectsw.View.GraphicalUI;
 
-import org.projectsw.Model.SerializableGame;
+import org.projectsw.Distributed.Messages.InputMessages.AskForCurrentPlayer;
+import org.projectsw.View.Enums.UIEndState;
+import org.projectsw.View.GraphicalUI.GuiModel.NoSelectableShelf;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableBoard;
+import org.projectsw.View.GraphicalUI.MessagesGUI.UnselectableTileMessage;
+import org.projectsw.View.SerializableInput;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 
 public class GameMainFrame extends JFrame {
 
-    private GuiManager guiManager;
+    private final GuiManager guiManager;
     private final Object lock = new Object();
     private final Object finalLock = new Object();
+    private boolean selectionAccepted = true;
 
     public GameMainFrame(GuiManager guiManager){
 
@@ -24,40 +30,71 @@ public class GameMainFrame extends JFrame {
         setSize(bounds.width, bounds.height);
 
         Panel panelLeft = new Panel();
-        panelLeft.setPreferredSize(new Dimension(200,200));
         panelLeft.setBackground(Color.blue);
+        panelLeft.setPreferredSize(new Dimension(200,200));
         add(panelLeft,BorderLayout.WEST);
 
         Panel panelRight = new Panel();
-        panelRight.setPreferredSize(new Dimension(200,200));
         panelRight.setBackground(Color.yellow);
+        panelRight.setPreferredSize(new Dimension(200,200));
         add(panelRight,BorderLayout.EAST);
 
+        Panel centralPanel = new Panel();
+        centralPanel.setLayout(new BorderLayout());
+        add(centralPanel,BorderLayout.CENTER);
+
         Panel panelUp = new Panel();
-        panelUp.setPreferredSize(new Dimension(200,100));
-        panelUp.setBackground(Color.green);
-        add(panelUp,BorderLayout.NORTH);
+        JLabel currentPlayerLabel = new JLabel(guiManager.askForCurrentPlayerString());
+        currentPlayerLabel.setHorizontalTextPosition(JLabel.CENTER);
+        currentPlayerLabel.setVerticalTextPosition(JLabel.CENTER);
+        panelUp.add(currentPlayerLabel);
+        panelUp.setPreferredSize(new Dimension(200,200));
+        centralPanel.add(panelUp,BorderLayout.NORTH);
 
         Panel panelDown = new Panel();
-        panelDown.setPreferredSize(new Dimension(200,200));
+        panelDown.setLayout(new FlowLayout());
         panelDown.setBackground(Color.red);
-        add(panelDown,BorderLayout.SOUTH);
+        panelDown.setPreferredSize(new Dimension(200,200));
+        centralPanel.add(panelDown,BorderLayout.SOUTH);
 
-        SelectableBoard selectableBoard = new SelectableBoard();
-        add(selectableBoard,BorderLayout.CENTER);
-
-        //askForBoard();
-
+        JTabbedPane boardAndShelfTabbedPane = new JTabbedPane();
+        centralPanel.add(boardAndShelfTabbedPane,BorderLayout.CENTER);
+        SelectableBoard selectableBoard = askForBoard();
+        boardAndShelfTabbedPane.add("Board",selectableBoard);
+        NoSelectableShelf noSelectableShelf = askForNsShelf();
+        boardAndShelfTabbedPane.add("Your Shelf",noSelectableShelf);
         setVisible(true);
+
+        do{
+            waitResponse();
+            if (selectionAccepted) {
+                boardAndShelfTabbedPane.remove(selectableBoard);
+                boardAndShelfTabbedPane.remove(noSelectableShelf);
+                selectableBoard = askForBoard();
+                boardAndShelfTabbedPane.add("Board",selectableBoard);
+                noSelectableShelf = askForNsShelf();
+                boardAndShelfTabbedPane.add("Your Shelf",noSelectableShelf);
+                revalidate();
+                repaint();
+            } else {
+                new UnselectableTileMessage();
+            }
+
+        } while(!guiManager.getEndState().equals(UIEndState.ENDING));
+
         waitFinalLock();
     }
 
-    public SelectableBoard updateBoard(SerializableGame game){
-        return new SelectableBoard(game,guiManager);
+    public void setSelectionAccepted(boolean selectionAccepted) {
+        this.selectionAccepted = selectionAccepted;
     }
 
-    private void askForBoard() {
-        guiManager.askBoard(this);
+    private SelectableBoard askForBoard() {
+        return guiManager.askBoard(this);
+    }
+
+    private  NoSelectableShelf askForNsShelf() {
+        return guiManager.askNsShelf();
     }
 
     private void waitResponse(){

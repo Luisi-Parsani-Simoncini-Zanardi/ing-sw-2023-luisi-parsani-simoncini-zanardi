@@ -9,17 +9,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class NoSelectableShelf extends JPanel {
-    private final GuiManager guiManager;
 
-    public NoSelectableShelf(SerializableGame game, GuiManager guiManager) {
+    public NoSelectableShelf(SerializableGame game) {
         super();
-        setLayout(new GridLayout(6,5));
-        this.guiManager = guiManager;
-
+        setLayout(new GridLayout(6,5,4,4));
         Tile[][] shelf = game.getPlayerShelf();
-
-        for(int i = 0; i< Config.shelfLength; i++) {
-            for(int j=0;j<Config.shelfHeight;j++) {
+        for(int i=0; i<Config.shelfHeight; i++) {
+            for(int j=0; j<Config.shelfLength; j++) {
                 Tile tile = shelf[i][j];
                 NoSelectableTile noSelectableTile = new NoSelectableTile(tile);
                 add(noSelectableTile);

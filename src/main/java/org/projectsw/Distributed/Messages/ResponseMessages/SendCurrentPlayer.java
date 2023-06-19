@@ -2,6 +2,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.Enums.UIEndState;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -17,4 +18,8 @@ public class SendCurrentPlayer extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui){
         tui.showCurrentPlayer(model);
     }
+    public void execute(GuiManager guiManager){
+        guiManager.updateModel(model);
+    }
+
 }

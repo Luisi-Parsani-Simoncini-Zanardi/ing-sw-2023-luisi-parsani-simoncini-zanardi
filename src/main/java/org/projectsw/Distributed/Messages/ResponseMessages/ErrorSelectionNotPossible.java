@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -12,8 +13,15 @@ public class ErrorSelectionNotPossible extends ResponseMessage implements Serial
     public ErrorSelectionNotPossible(SerializableGame model) {
         super(model);
     }
+
     @Override
     public void execute(TextualUI tui){
-        tui.setNoMoreSelectableTiles(false);
+        tui.setTileSelectionPossible(false);
     }
+
+    @Override
+    public void execute(GuiManager gui) {
+        gui.setTileSelectionPossible(false);
+    }
+
 }
