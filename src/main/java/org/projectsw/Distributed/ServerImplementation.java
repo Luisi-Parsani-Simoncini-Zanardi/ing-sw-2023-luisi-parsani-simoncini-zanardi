@@ -83,7 +83,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         }
         // Rimuovi i client disconnessi dalla registrazione dei client
         unregisterClients(disconnectedClients);
-        if(controller.getID_Nicks().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING)){
+        if(controller.getClients_ID().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING) && controller.getOptionChoosed()){
             try {
                 controller.getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(controller.getID_Nicks().getAllKey().get(0), "You are alone in this game. You will win in 10 seconds if no one reconnect")));
             } catch (RemoteException e) {

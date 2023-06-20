@@ -49,6 +49,7 @@ public class Engine{
         this.server=server;
     }
 
+    public Boolean getOptionChoosed() { return this.optionChoosed; }
     public String getFirstClient() {return this.firstClient; }
     /**
      * get the Clients
