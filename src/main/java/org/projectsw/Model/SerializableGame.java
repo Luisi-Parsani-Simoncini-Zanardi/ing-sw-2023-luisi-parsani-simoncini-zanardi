@@ -196,6 +196,25 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = num;
         this.bool = null;
     }
+    public SerializableGame(String alphanumericID, boolean bool){
+        this.alphanumericID = alphanumericID;
+        this.gameBoard =  null;
+        this.playerShelf = null;
+        this.playerName = null;
+        this.chat = null;
+        this.clientNickname = null;
+        this.selectablePoints = null;
+        this.temporaryPoints = null;
+        this.temporaryTiles = null;
+        this.playerPersonalGoal = null;
+        this.results = null;
+        this.nameColors = null;
+        this.allShelves = null;
+        this.commonGoalDesc = null;
+        this.message = null;
+        this.integer = null;
+        this.bool = bool;
+    }
     public SerializableGame(String alphanumericID, HashMap<String, String> nameColors){
         this.alphanumericID = alphanumericID;
         this.gameBoard =  null;

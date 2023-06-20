@@ -3,8 +3,12 @@ package org.projectsw.Distributed;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.InputMessages.SendNickname;
+import org.projectsw.Distributed.Messages.ResponseMessages.ErrorMessage;
+import org.projectsw.Distributed.Messages.ResponseMessages.Kill;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
+import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Game;
+import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Observer;
 
 import java.rmi.RemoteException;
@@ -79,15 +83,43 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         }
         // Rimuovi i client disconnessi dalla registrazione dei client
         unregisterClients(disconnectedClients);
-        disconnectedClients.clear();
+        if(controller.getID_Nicks().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING)){
+            try {
+                controller.getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(controller.getID_Nicks().getAllKey().get(0), "You are alone in this game. You will win in 10 seconds if no one reconnect")));
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            controller.waitFor10Seconds();
+            if(controller.getID_Nicks().getAllKey().size() == 1) {
+                controller.getPlayerFromNickname(controller.getID_Nicks().getAllValue().get(0)).setPoints(10000);
+                controller.sendResults();
+                try {
+                    controller.getGame().setChangedAndNotifyObservers(new Kill(new SerializableGame(controller.getID_Nicks().getAllKey().get(0),1)));
+                } catch (RemoteException e) {
+                    controller.getGame().deleteObserver(controller.getClientObserverHashMap().get(controller.getClients_ID().getKey(controller.getID_Nicks().getAllKey().get(0))));
+                }
+                System.exit(0);
+            } else  {
+                try {
+                    controller.getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(controller.getID_Nicks().getAllKey().get(0), "another player reconnected")));
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
     private void unregisterClients(List<Client> clients) {
         for (Client client : clients) {
+            String nick = controller.getNickFromClient(client);
+            String ID = controller.getClients_ID().getValue(client);
+            if(!controller.getGame().getGameState().equals(GameState.RUNNING) && ID.equals(controller.getFirstClient())) {
+                controller.everlastingKill();
+                System.exit(0);
+            }
             controller.setIsActiveFromClient(client, false);
             controller.removeObserver(controller.getClients_ID().getValue(client));
-            if (controller.getID_Nicks().getValue(controller.getClients_ID().getValue(client)).equals(controller.getGame().getCurrentPlayer().getNickname())) {
-                controller.endTurn(controller.getClients_ID().getValue(client), controller.getGame().getCurrentPlayer().getNickname());
-                controller.sendNexTurn();
+            if (nick.equals(controller.getGame().getCurrentPlayer().getNickname())) {
+                controller.endTurn(ID, controller.getGame().getCurrentPlayer().getNickname());
             }
         }
     }

@@ -2,6 +2,8 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import org.projectsw.Model.Enums.GameState;
+
 import java.io.*;
 import java.util.stream.Collectors;
 
@@ -90,9 +92,9 @@ public class SaveGameStatus {
             data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
             /*for(Player player : data.getPlayers()){
                 player.setIsActive(false);
-            }*/
+            }
             data.getCurrentPlayer().setIsActive(false);
-            data.getFirstPlayer().setIsActive(false);
+            data.getFirstPlayer().setIsActive(false);*/
 
 
             return data;
