@@ -17,6 +17,7 @@ import org.projectsw.View.SerializableInput;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
 import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
@@ -512,6 +513,14 @@ public class Engine{
             }
         }
         getSaveGameStatus().saveGame();
+    }
+
+    public static void waitFor10Seconds() {
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     //called when the current player disconnect
@@ -1010,7 +1019,7 @@ public class Engine{
         try {
             getGame().setChangedAndNotifyObservers(new SendBoard(new SerializableGame(ID ,getGame())));
         } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
+            game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(ID)));
         }
         try {
             game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
@@ -1025,7 +1034,7 @@ public class Engine{
         try {
             getGame().setChangedAndNotifyObservers(new SendShelf(new SerializableGame(ID, getGame().getPlayers().get(pos).getNickname(), getGame().getPlayers().get(pos).getShelf())));
         } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while transferring the board: "+e.getMessage());
+            game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(ID)));
         }
        try {
             game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
