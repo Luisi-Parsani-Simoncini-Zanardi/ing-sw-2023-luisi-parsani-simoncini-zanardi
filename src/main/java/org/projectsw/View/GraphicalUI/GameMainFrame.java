@@ -1,15 +1,17 @@
 package org.projectsw.View.GraphicalUI;
 
-import org.projectsw.Distributed.Messages.InputMessages.AskForCurrentPlayer;
+import org.projectsw.Model.Tile;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.GraphicalUI.GuiModel.NoSelectableShelf;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableBoard;
+import org.projectsw.View.GraphicalUI.GuiModel.SelectableColumnShelf;
+import org.projectsw.View.GraphicalUI.GuiModel.SelectableTile;
+import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
 import org.projectsw.View.GraphicalUI.MessagesGUI.UnselectableTileMessage;
-import org.projectsw.View.SerializableInput;
 
 import javax.swing.*;
 import java.awt.*;
-import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public class GameMainFrame extends JFrame {
 
@@ -17,6 +19,8 @@ public class GameMainFrame extends JFrame {
     private final Object lock = new Object();
     private final Object finalLock = new Object();
     private boolean selectionAccepted = true;
+    private boolean selectionConfirmed = false;
+    private ArrayList<Tile> takenTiles;
 
     public GameMainFrame(GuiManager guiManager){
 
@@ -29,64 +33,118 @@ public class GameMainFrame extends JFrame {
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setSize(bounds.width, bounds.height);
 
-        Panel panelLeft = new Panel();
+        JPanel panelLeft = new JPanel();
         panelLeft.setBackground(Color.blue);
-        panelLeft.setPreferredSize(new Dimension(200,200));
+        panelLeft.setPreferredSize(new Dimension(100,100));
         add(panelLeft,BorderLayout.WEST);
 
-        Panel panelRight = new Panel();
+        JPanel panelRight = new JPanel();
         panelRight.setBackground(Color.yellow);
-        panelRight.setPreferredSize(new Dimension(200,200));
+        panelRight.setPreferredSize(new Dimension(100,100));
         add(panelRight,BorderLayout.EAST);
 
-        Panel centralPanel = new Panel();
-        centralPanel.setLayout(new BorderLayout());
-        add(centralPanel,BorderLayout.CENTER);
+        JPanel playCentralPanel = new JPanel();
+        playCentralPanel.setLayout(new BorderLayout());
+        add(playCentralPanel,BorderLayout.CENTER);
 
-        Panel panelUp = new Panel();
+
+        JPanel turnInformationNorthPanel = new JPanel();
         JLabel currentPlayerLabel = new JLabel(guiManager.askForCurrentPlayerString());
-        currentPlayerLabel.setHorizontalTextPosition(JLabel.CENTER);
-        currentPlayerLabel.setVerticalTextPosition(JLabel.CENTER);
-        panelUp.add(currentPlayerLabel);
-        panelUp.setPreferredSize(new Dimension(200,200));
-        centralPanel.add(panelUp,BorderLayout.NORTH);
-
-        Panel panelDown = new Panel();
-        panelDown.setLayout(new FlowLayout());
-        panelDown.setBackground(Color.red);
-        panelDown.setPreferredSize(new Dimension(200,200));
-        centralPanel.add(panelDown,BorderLayout.SOUTH);
+        turnInformationNorthPanel.add(currentPlayerLabel);
+        turnInformationNorthPanel.setPreferredSize(new Dimension(100,100));
+        playCentralPanel.add(turnInformationNorthPanel,BorderLayout.NORTH);
 
         JTabbedPane boardAndShelfTabbedPane = new JTabbedPane();
-        centralPanel.add(boardAndShelfTabbedPane,BorderLayout.CENTER);
-        SelectableBoard selectableBoard = askForBoard();
-        boardAndShelfTabbedPane.add("Board",selectableBoard);
-        NoSelectableShelf noSelectableShelf = askForNsShelf();
-        boardAndShelfTabbedPane.add("Your Shelf",noSelectableShelf);
+        playCentralPanel.add(boardAndShelfTabbedPane);
+
         setVisible(true);
 
-        do{
-            waitResponse();
-            if (selectionAccepted) {
-                boardAndShelfTabbedPane.remove(selectableBoard);
-                boardAndShelfTabbedPane.remove(noSelectableShelf);
-                selectableBoard = askForBoard();
-                boardAndShelfTabbedPane.add("Board",selectableBoard);
-                noSelectableShelf = askForNsShelf();
-                boardAndShelfTabbedPane.add("Your Shelf",noSelectableShelf);
-                revalidate();
-                repaint();
-            } else {
-                new UnselectableTileMessage();
-            }
+        do {
+
+            do {
+
+                if (selectionAccepted) {
+
+                    SelectableBoard selectableBoard = askForBoard();
+                    boardAndShelfTabbedPane.add("Board", selectableBoard);
+                    if(selectionConfirmed) {
+                        SelectableColumnShelf selectableColumnShelf = askForScShelf();
+                        boardAndShelfTabbedPane.add("Your Shelf", selectableColumnShelf);
+                    } else {
+                        NoSelectableShelf noSelectableShelf = askForNsShelf();
+                        boardAndShelfTabbedPane.add("Your Shelf", noSelectableShelf);
+                    }
+
+                    JPanel selectionSouthPanel = new JPanel();
+                    selectionSouthPanel.setLayout(new FlowLayout());
+                    selectionSouthPanel.setPreferredSize(new Dimension(100, 100));
+                    playCentralPanel.add(selectionSouthPanel, BorderLayout.SOUTH);
+                    if (selectableBoard.getTemporaryPoints().isEmpty() && !selectionConfirmed) {
+                        JLabel noSelectedLabel = new JLabel("You haven't selected any tile yet");
+                        selectionSouthPanel.add(noSelectedLabel);
+                    } else if (!selectionConfirmed){
+                        JLabel selectedLabel = new JLabel("You have selected these tiles:  ");
+                        selectionSouthPanel.add(selectedLabel);
+                        for (Point point : selectableBoard.getTemporaryPoints()) {
+                            JLabel selectedTile = selectableBoard.getLabelFromPoint(point);
+                            selectionSouthPanel.add(selectedTile);
+                        }
+                        JButton confirmButton = new JButton("Confirm selection");
+                        confirmButton.addActionListener(e -> {
+                            guiManager.confirmTilesSelection(this);
+                            new TemporaryTilesConfirmedMessage();
+                        });
+                        selectionSouthPanel.add(confirmButton);
+                    } else {
+                        JLabel selectedLabel = new JLabel("You have confirmed these tiles:  ");
+                        selectionSouthPanel.add(selectedLabel);
+                        for(Tile tile : takenTiles) {
+                            SelectableTile selectableTile = new SelectableTile(tile);
+                            selectableTile.addActionListener(e -> {
+
+                            });
+                            selectionSouthPanel.add(selectableTile);
+                        }
+                    }
+
+                    revalidate();
+                    repaint();
+
+                    waitResponse();
+
+                    boardAndShelfTabbedPane.remove(0);
+                    boardAndShelfTabbedPane.remove(0);
+                    playCentralPanel.remove(selectionSouthPanel);
+
+                } else {
+                    new UnselectableTileMessage();
+                    selectionAccepted = true;
+                }
+            } while (!selectionConfirmed);
 
         } while(!guiManager.getEndState().equals(UIEndState.ENDING));
 
         waitFinalLock();
     }
 
+    public boolean isSelectionConfirmed() {
+        return selectionConfirmed;
+    }
+
+    public ArrayList<Tile> getTakenTiles() {
+        return takenTiles;
+    }
+
     public void setSelectionAccepted(boolean selectionAccepted) {
         this.selectionAccepted = selectionAccepted;
+    }
+
+    public void setSelectionConfirmed(boolean selectionConfirmed) {
+        this.selectionConfirmed = selectionConfirmed;
+    }
+
+    public void setTakenTiles(ArrayList<Tile> takenTiles) {
+        this.takenTiles = takenTiles;
     }
 
     private SelectableBoard askForBoard() {
@@ -95,6 +153,10 @@ public class GameMainFrame extends JFrame {
 
     private  NoSelectableShelf askForNsShelf() {
         return guiManager.askNsShelf();
+    }
+
+    private SelectableColumnShelf askForScShelf() {
+        return guiManager.askScShelf();
     }
 
     private void waitResponse(){

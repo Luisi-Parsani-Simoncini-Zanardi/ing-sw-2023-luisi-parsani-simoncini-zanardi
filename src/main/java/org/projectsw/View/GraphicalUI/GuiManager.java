@@ -11,6 +11,7 @@ import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI.GuiModel.NoSelectableShelf;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableBoard;
+import org.projectsw.View.GraphicalUI.GuiModel.SelectableColumnShelf;
 import org.projectsw.View.GraphicalUI.MessagesGUI.*;
 import org.projectsw.View.SerializableInput;
 
@@ -237,6 +238,16 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         return new NoSelectableShelf(game);
     }
 
+    public SelectableColumnShelf askScShelf(){
+        try {
+            setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(alphanumericKey, getNickname(), client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
+        }
+        waitForResponse2();
+        return new SelectableColumnShelf(game);
+    }
+
     public String askForCurrentPlayerString() {
         try {
             setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(alphanumericKey, client)));
@@ -249,6 +260,18 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         } else {
             return "The current player is: " + game.getPlayerName() + ", please wait your turn.";
         }
+    }
+
+    public void confirmTilesSelection(GameMainFrame gameMainFrame) {
+        try {
+            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while confirming the tile selection: "+e.getCause());
+        }
+        waitForResponse2();
+        gameMainFrame.setTakenTiles(game.getTemporaryTiles());
+        gameMainFrame.setSelectionConfirmed(true);
+        gameMainFrame.notifyResponse();
     }
 
     private void waitForResponse1() {
