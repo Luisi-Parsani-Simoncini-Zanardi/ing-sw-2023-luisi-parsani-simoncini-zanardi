@@ -18,8 +18,10 @@ public class GameMainFrame extends JFrame {
     private final GuiManager guiManager;
     private final Object lock = new Object();
     private final Object finalLock = new Object();
-    private boolean selectionAccepted = true;
-    private boolean selectionConfirmed = false;
+    private boolean tileSelectionAccepted = true;
+    private boolean tileSelectionConfirmed = false;
+    private boolean columnSelectionConfirmed = false;
+    private int selectedColumn;
     private ArrayList<Tile> takenTiles;
 
     public GameMainFrame(GuiManager guiManager){
@@ -49,6 +51,7 @@ public class GameMainFrame extends JFrame {
 
 
         JPanel turnInformationNorthPanel = new JPanel();
+        //TODO davide, ogni tanto la scritta qui sotto è buggata
         JLabel currentPlayerLabel = new JLabel(guiManager.askForCurrentPlayerString());
         turnInformationNorthPanel.add(currentPlayerLabel);
         turnInformationNorthPanel.setPreferredSize(new Dimension(100,100));
@@ -63,11 +66,11 @@ public class GameMainFrame extends JFrame {
 
             do {
 
-                if (selectionAccepted) {
+                if (tileSelectionAccepted) {
 
                     SelectableBoard selectableBoard = askForBoard();
                     boardAndShelfTabbedPane.add("Board", selectableBoard);
-                    if(selectionConfirmed) {
+                    if(tileSelectionConfirmed) {
                         SelectableColumnShelf selectableColumnShelf = askForScShelf();
                         boardAndShelfTabbedPane.add("Your Shelf", selectableColumnShelf);
                     } else {
@@ -79,10 +82,10 @@ public class GameMainFrame extends JFrame {
                     selectionSouthPanel.setLayout(new FlowLayout());
                     selectionSouthPanel.setPreferredSize(new Dimension(100, 100));
                     playCentralPanel.add(selectionSouthPanel, BorderLayout.SOUTH);
-                    if (selectableBoard.getTemporaryPoints().isEmpty() && !selectionConfirmed) {
+                    if (selectableBoard.getTemporaryPoints().isEmpty() && !tileSelectionConfirmed) {
                         JLabel noSelectedLabel = new JLabel("You haven't selected any tile yet");
                         selectionSouthPanel.add(noSelectedLabel);
-                    } else if (!selectionConfirmed){
+                    } else if (!tileSelectionConfirmed){
                         JLabel selectedLabel = new JLabel("You have selected these tiles:  ");
                         selectionSouthPanel.add(selectedLabel);
                         for (Point point : selectableBoard.getTemporaryPoints()) {
@@ -96,14 +99,23 @@ public class GameMainFrame extends JFrame {
                         });
                         selectionSouthPanel.add(confirmButton);
                     } else {
-                        JLabel selectedLabel = new JLabel("You have confirmed these tiles:  ");
-                        selectionSouthPanel.add(selectedLabel);
+                        if(columnSelectionConfirmed) {
+                            JLabel selectedLabel2 = new JLabel("Choose one tile from these:  ");
+                            selectionSouthPanel.add(selectedLabel2);
+                        } else {
+                            JLabel selectedLabel1 = new JLabel("You have confirmed these tiles:  ");
+                            selectionSouthPanel.add(selectedLabel1);
+                        }
                         for(Tile tile : takenTiles) {
                             SelectableTile selectableTile = new SelectableTile(tile);
                             selectableTile.addActionListener(e -> {
 
                             });
                             selectionSouthPanel.add(selectableTile);
+                        }
+                        if(columnSelectionConfirmed){
+                            JLabel columnLabel = new JLabel(", you are putting them in column " + selectedColumn);
+                            selectionSouthPanel.add(columnLabel);
                         }
                     }
 
@@ -118,33 +130,41 @@ public class GameMainFrame extends JFrame {
 
                 } else {
                     new UnselectableTileMessage();
-                    selectionAccepted = true;
+                    tileSelectionAccepted = true;
                 }
-            } while (!selectionConfirmed);
+            } while (!tileSelectionConfirmed);
 
         } while(!guiManager.getEndState().equals(UIEndState.ENDING));
 
         waitFinalLock();
     }
 
-    public boolean isSelectionConfirmed() {
-        return selectionConfirmed;
+    public boolean isTileSelectionConfirmed() {
+        return tileSelectionConfirmed;
     }
 
     public ArrayList<Tile> getTakenTiles() {
         return takenTiles;
     }
 
-    public void setSelectionAccepted(boolean selectionAccepted) {
-        this.selectionAccepted = selectionAccepted;
+    public void setTileSelectionAccepted(boolean tileSelectionAccepted) {
+        this.tileSelectionAccepted = tileSelectionAccepted;
     }
 
-    public void setSelectionConfirmed(boolean selectionConfirmed) {
-        this.selectionConfirmed = selectionConfirmed;
+    public void setTileSelectionConfirmed(boolean tileSelectionConfirmed) {
+        this.tileSelectionConfirmed = tileSelectionConfirmed;
     }
 
     public void setTakenTiles(ArrayList<Tile> takenTiles) {
         this.takenTiles = takenTiles;
+    }
+
+    public void setColumnSelectionConfirmed(boolean columnSelectionConfirmed) {
+        this.columnSelectionConfirmed = columnSelectionConfirmed;
+    }
+
+    public void setSelectedColumn(int selectedColumn) {
+        this.selectedColumn = selectedColumn;
     }
 
     private SelectableBoard askForBoard() {
@@ -156,7 +176,7 @@ public class GameMainFrame extends JFrame {
     }
 
     private SelectableColumnShelf askForScShelf() {
-        return guiManager.askScShelf();
+        return guiManager.askScShelf(this);
     }
 
     private void waitResponse(){

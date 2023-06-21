@@ -19,6 +19,6 @@ public class SendBoard extends ResponseMessage implements Serializable {
     }
     public void execute(GuiManager gui){
         gui.updateModel(model);
-        gui.setSelectionAccepted(true);
+        gui.setTileSelectionAccepted(true);
     }
 }

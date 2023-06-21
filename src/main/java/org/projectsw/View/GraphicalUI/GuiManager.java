@@ -33,7 +33,8 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
     private boolean logInCompleted = false;
     private boolean noMoreTemporaryTiles = true ;
     private boolean tileSelectionPossible = true ;
-    private  boolean selectionAccepted = true;
+    private  boolean tileSelectionAccepted = true;
+    private boolean columnSelectionAccepted = true;
     private SerializableGame game;
 
 
@@ -75,8 +76,8 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         return tileSelectionPossible;
     }
 
-    public boolean isSelectionAccepted() {
-        return selectionAccepted;
+    public boolean isTileSelectionAccepted() {
+        return tileSelectionAccepted;
     }
 
     public void setTurnState(UITurnState turnState) {
@@ -114,8 +115,12 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         this.tileSelectionPossible = tileSelectionPossible;
     }
 
-    public void setSelectionAccepted(boolean selectionAccepted) {
-        this.selectionAccepted = selectionAccepted;
+    public void setTileSelectionAccepted(boolean tileSelectionAccepted) {
+        this.tileSelectionAccepted = tileSelectionAccepted;
+    }
+
+    public void setColumnSelectionAccepted(boolean columnSelectionAccepted) {
+        this.columnSelectionAccepted = columnSelectionAccepted;
     }
 
     public void updateModel(SerializableGame game){
@@ -206,16 +211,15 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
     }
 
     public void sendTileSelectionFromBoard(Point point,GameMainFrame gameMainFrame) {
-        System.out.println("Selection received at " + point);
         try {
             setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(alphanumericKey, getNickname(), point, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
         }
         waitForResponse2();
-        gameMainFrame.setSelectionAccepted(isSelectionAccepted());
+        gameMainFrame.setTileSelectionAccepted(isTileSelectionAccepted());
         gameMainFrame.notifyResponse();
-        setSelectionAccepted(true);
+        setTileSelectionAccepted(true);
     }
 
     public SelectableBoard askBoard(GameMainFrame gameMainFrame){
@@ -238,14 +242,14 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         return new NoSelectableShelf(game);
     }
 
-    public SelectableColumnShelf askScShelf(){
+    public SelectableColumnShelf askScShelf(GameMainFrame gameMainFrame){
         try {
             setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
         }
         waitForResponse2();
-        return new SelectableColumnShelf(game);
+        return new SelectableColumnShelf(game,this,gameMainFrame);
     }
 
     public String askForCurrentPlayerString() {
@@ -270,8 +274,28 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         }
         waitForResponse2();
         gameMainFrame.setTakenTiles(game.getTemporaryTiles());
-        gameMainFrame.setSelectionConfirmed(true);
+        gameMainFrame.setTileSelectionConfirmed(true);
+        setTurnState(UITurnState.YOUR_TURN_COLUMN);
         gameMainFrame.notifyResponse();
+    }
+
+    public void sendColumnSelection(int number,GameMainFrame gameMainFrame) {
+        try {
+            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, number, client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while confirming the column: "+e.getCause());
+        }
+        waitForResponse2();
+        if(columnSelectionAccepted) {
+            gameMainFrame.setSelectedColumn(number);
+            gameMainFrame.setColumnSelectionConfirmed(true);
+        }
+        else {
+            gameMainFrame.setColumnSelectionConfirmed(false);
+            new ColumnSelectionRefusedMessage();
+        }
+        gameMainFrame.notifyResponse();
+        setColumnSelectionAccepted(true);
     }
 
     private void waitForResponse1() {
@@ -332,4 +356,5 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         if(gameSavedExist) System.out.println("Game saved found");
         else System.out.println("Game saved NOT found");
     }
+
 }

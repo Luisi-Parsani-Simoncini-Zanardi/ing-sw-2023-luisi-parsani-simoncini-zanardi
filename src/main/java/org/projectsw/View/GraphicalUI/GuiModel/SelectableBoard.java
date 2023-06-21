@@ -1,7 +1,5 @@
 package org.projectsw.View.GraphicalUI.GuiModel;
 
-import org.projectsw.Model.Board;
-import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
@@ -36,7 +34,7 @@ public class SelectableBoard extends JPanel {
                 SelectableTile selectableTile = new SelectableTile(tile,new Point(i,j),selectablePoints,temporaryPoints);
                 add(selectableTile);
                 selectableTile.addActionListener(e -> {
-                    if(gameMainFrame.isSelectionConfirmed()) new SelectionAlreadyConfirmedMessage();
+                    if(gameMainFrame.isTileSelectionConfirmed()) new SelectionAlreadyConfirmedMessage();
                     else guiManager.sendTileSelectionFromBoard(selectableTile.getPosition(), this.gameMainFrame);
                 });
             }

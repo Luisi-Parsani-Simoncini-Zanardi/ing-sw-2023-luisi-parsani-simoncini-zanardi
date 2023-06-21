@@ -19,5 +19,7 @@ public class ErrorUnselectableColumn extends ResponseMessage implements Serializ
         System.err.println("Invalid Column. Try again...");
         tui.setTurnState(UITurnState.YOUR_TURN_COLUMN);
     }
-    public void execute(GuiManager gui){}
+    public void execute(GuiManager gui){
+        gui.setColumnSelectionAccepted(false);
+    }
 }
