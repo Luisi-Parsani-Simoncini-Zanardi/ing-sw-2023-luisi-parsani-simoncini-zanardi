@@ -124,7 +124,7 @@ public class Engine{
                     startGame();
                 }
             } else {
-                removeObserver(ID);
+                removeObserver(ID, 0);
                 ID_Nicks.removeByKey(ID);
             }
     }
@@ -137,7 +137,7 @@ public class Engine{
 
     private void killingSpree(ArrayList<String> idToKill){
         for(String id : idToKill){
-            removeObserver(id);
+            removeObserver(id, 0);
         }
         IDToKill.clear();
     }
@@ -682,10 +682,10 @@ public class Engine{
         }
     }
 
-    public synchronized void removeObserver(String id) {
+    public synchronized void removeObserver(String id, int num) {
         counter--;
         try {
-            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(id,0)));
+            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(id,num)));
         } catch (RemoteException e) {
             game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(id)));
         }
@@ -945,7 +945,7 @@ public class Engine{
     private void checkKill(){
         for(String nick : ID_Nicks.getAllValue())
             if(!game.getPlayersNickname().contains(nick)) {
-                removeObserver(ID_Nicks.getKey(nick));
+                removeObserver(ID_Nicks.getKey(nick), 0);
             }
 
     }
@@ -970,7 +970,7 @@ public class Engine{
                 askNumOfPlayers(alphanumericID);
         }
         if((game.getNumberOfPlayers() != 0 && counter> game.getNumberOfPlayers()) || counter == 5){
-            removeObserver(alphanumericID);
+            removeObserver(alphanumericID, 0);
         } else {
             if(saveFileFound()){
                 game.setChangedAndNotifyObservers((new gameFound(new SerializableGame(alphanumericID))));
@@ -983,7 +983,7 @@ public class Engine{
         if (freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
             for(String id : clients_ID.getAllValue()){
                 if(!ID_Nicks.getAllKey().contains(id)){
-                    removeObserver(id);
+                    removeObserver(id, 0);
                 }
             }
             try {
