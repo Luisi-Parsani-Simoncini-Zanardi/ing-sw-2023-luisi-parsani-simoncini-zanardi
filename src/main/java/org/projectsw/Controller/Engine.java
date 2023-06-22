@@ -243,6 +243,11 @@ public class Engine{
             Tile tile = game.getBoard().getTileFromBoard(point);
             game.getCurrentPlayer().addTemporaryTile(tile);
         }
+        try {
+            game.setChangedAndNotifyObservers(new GuiUpdateBoards(new SerializableGame(Config.broadcastID,game)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while sending the boards update"+e.getMessage());
+        }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
         temporaryTilesTransfer(ID);

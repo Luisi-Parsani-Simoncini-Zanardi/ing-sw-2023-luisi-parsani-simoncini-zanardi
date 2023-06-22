@@ -14,7 +14,7 @@ public class NoSelectableShelf extends JPanel {
         super();
         setLayout(new GridLayout(6,5,4,4));
         Tile[][] shelf = game.getPlayerShelf();
-        for(int i=0; i<Config.shelfHeight; i++) {
+        for(int i=Config.shelfHeight-1; i>=0; i--) {
             for(int j=0; j<Config.shelfLength; j++) {
                 Tile tile = shelf[i][j];
                 NoSelectableTile noSelectableTile = new NoSelectableTile(tile);

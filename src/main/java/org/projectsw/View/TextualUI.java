@@ -39,7 +39,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private String lastPlayerNick;
 
     private Boolean tileSelectionPossible = true;
-    private Boolean noMoreTemporaryTiles = true;
+    private Boolean temporaryTilesHold = true;
 
     private HashMap<String, String> nameColors;
     private final Client client;
@@ -337,8 +337,8 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         if(response.getModel().getAlphanumericID().equals(this.alphanumericKey)||response.getModel().getAlphanumericID().equals(Config.broadcastID))
             response.execute(this);
     }
-    public void setNoMoreTemporaryTiles(boolean bool){
-        this.noMoreTemporaryTiles = bool;
+    public void setTemporaryTilesHold(boolean bool){
+        this.temporaryTilesHold = bool;
     }
     public void setTileSelectionPossible(boolean bool){
         this.tileSelectionPossible = bool;
@@ -436,7 +436,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             waitReturn();
-        }while(noMoreTemporaryTiles);
+        }while(temporaryTilesHold);
     }
 
     private Point selectTilesInput(){

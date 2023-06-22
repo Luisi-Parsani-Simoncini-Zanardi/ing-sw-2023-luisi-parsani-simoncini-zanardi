@@ -31,7 +31,7 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
     private boolean gameSavedExist = false;
     private boolean askNickname = true;
     private boolean logInCompleted = false;
-    private boolean noMoreTemporaryTiles = true ;
+    private boolean temporaryTilesHold = true ;
     private boolean tileSelectionPossible = true ;
     private  boolean tileSelectionAccepted = true;
     private boolean columnSelectionAccepted = true;
@@ -68,8 +68,8 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         return askNickname;
     }
 
-    public boolean isNoMoreTemporaryTiles() {
-        return noMoreTemporaryTiles;
+    public boolean isTemporaryTilesHold() {
+        return temporaryTilesHold;
     }
 
     public boolean isTileSelectionPossible() {
@@ -107,8 +107,8 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         this.logInCompleted = logInCompleted;
     }
 
-    public void setNoMoreTemporaryTiles(boolean noMoreTemporaryTiles) {
-        this.noMoreTemporaryTiles = noMoreTemporaryTiles;
+    public void setTemporaryTilesHold(boolean temporaryTilesHold) {
+        this.temporaryTilesHold = temporaryTilesHold;
     }
 
     public void setTileSelectionPossible(boolean tileSelectionPossible) {
@@ -279,6 +279,15 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         gameMainFrame.notifyResponse();
     }
 
+    public void sendEndTurn(GameMainFrame gameMainFrame){
+        try {
+            setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname(), client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while ending the turn: " + e);
+        }
+        gameMainFrame.notifyResponse();
+    }
+
     public void sendColumnSelection(int number,GameMainFrame gameMainFrame) {
         try {
             setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, number, client)));
@@ -296,6 +305,20 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         }
         gameMainFrame.notifyResponse();
         setColumnSelectionAccepted(true);
+    }
+
+    public void sendTemporaryTilesSelection(int index,GameMainFrame gameMainFrame){
+        try {
+            setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(alphanumericKey, getNickname(), index, client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
+        }
+        waitForResponse2();
+        if(!temporaryTilesHold) {
+            gameMainFrame.setTemporaryTilesHold(false);
+            new TurnEndedMessage();
+        }
+        gameMainFrame.notifyResponse();
     }
 
     private void waitForResponse1() {
