@@ -12,6 +12,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class TextualUI extends Observable<InputMessage> implements Runnable {
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
@@ -137,6 +138,11 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
 
     @Override
     public void run() {
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         int choice = 0;
         RandomAlphanumericGen randomizer = new RandomAlphanumericGen();
         alphanumericKey = randomizer.generateRandomString(100);

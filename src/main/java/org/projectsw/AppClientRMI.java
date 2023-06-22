@@ -10,7 +10,7 @@ import java.rmi.registry.Registry;
 
 public class AppClientRMI {
     public static void main(String[] args) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry();
+        Registry registry = LocateRegistry.getRegistry("192.168.182.73");
         try {
             Server server = (Server) registry.lookup("server");
             ClientImplementation client = new ClientImplementation(server);
