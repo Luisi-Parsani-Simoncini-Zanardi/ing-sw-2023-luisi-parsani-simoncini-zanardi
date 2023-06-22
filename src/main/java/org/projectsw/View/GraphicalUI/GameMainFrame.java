@@ -6,6 +6,7 @@ import org.projectsw.View.GraphicalUI.GuiModel.NoSelectableShelf;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableBoard;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableColumnShelf;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableTile;
+import org.projectsw.View.GraphicalUI.MessagesGUI.SelectColumnFirstMessage;
 import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
 import org.projectsw.View.GraphicalUI.MessagesGUI.UnselectableTileMessage;
 
@@ -21,6 +22,7 @@ public class GameMainFrame extends JFrame {
     private boolean tileSelectionAccepted = true;
     private boolean tileSelectionConfirmed = false;
     private boolean columnSelectionConfirmed = false;
+    private boolean temporaryTilesHold = true;
     private int selectedColumn;
     private ArrayList<Tile> takenTiles;
 
