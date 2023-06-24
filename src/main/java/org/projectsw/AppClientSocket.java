@@ -28,7 +28,7 @@ public class AppClientSocket {
                 }
             }
         }.start();
-        if (false) { //on a invalid parameter sets tui as default
+        if (true) { //on a invalid parameter sets tui as default
             client.setTui(serverStub);
         } else {
             client.setGui(serverStub);
