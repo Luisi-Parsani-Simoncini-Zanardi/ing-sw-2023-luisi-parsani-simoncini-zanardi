@@ -3,9 +3,11 @@ package org.projectsw.View.GraphicalUI.GuiModel;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
+import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI.GameMainFrame;
 import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.GraphicalUI.MessagesGUI.SelectionAlreadyConfirmedMessage;
+import org.projectsw.View.GraphicalUI.MessagesGUI.SelectionNoCurrentPlayerMessage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,30 +21,34 @@ public class SelectableBoard extends JPanel {
     ArrayList<Point> selectablePoints;
     Tile[][] gameBoard;
 
-    public SelectableBoard(SerializableGame model, GuiManager guiManager, GameMainFrame gameMainFrame){
+    public SelectableBoard(Tile[][] gameBoard, ArrayList<Point> selectablePoints, ArrayList<Point> temporaryPoints, GuiManager guiManager, GameMainFrame gameMainFrame){
         super();
-        setLayout(new GridLayout(9,9));
         this.gameMainFrame = gameMainFrame;
         this.guiManager = guiManager;
-        this.temporaryPoints = model.getTemporaryPoints();
-        this.selectablePoints = model.getSelectablePoints();
-        this.gameBoard = model.getGameBoard();
+        this.temporaryPoints = temporaryPoints;
+        this.selectablePoints = selectablePoints;
+        this.gameBoard = gameBoard;
+        setLayout(new BorderLayout());
 
+        JPanel gridPanel = new JPanel();
+        gridPanel.setLayout(new GridLayout(9,9));
         for(int i=0;i<Config.boardHeight;i++) {
             for(int j=0;j<Config.boardLength;j++) {
                 Tile tile = gameBoard[i][j];
                 SelectableTile selectableTile = new SelectableTile(tile,new Point(i,j),selectablePoints,temporaryPoints);
-                add(selectableTile);
+                gridPanel.add(selectableTile);
                 selectableTile.addActionListener(e -> {
-                    if(gameMainFrame.isTileSelectionConfirmed()) new SelectionAlreadyConfirmedMessage();
-                    else guiManager.sendTileSelectionFromBoard(selectableTile.getPosition(), this.gameMainFrame);
+                    switch (gameMainFrame.getTurnState()) {
+                        case OPPONENT_TURN -> new SelectionNoCurrentPlayerMessage();
+                        case YOUR_TURN_SELECTION -> guiManager.sendTileSelectionFromBoard(selectableTile.getPosition());
+                        default -> new SelectionAlreadyConfirmedMessage();
+                    }
                 });
             }
         }
-    }
+        gridPanel.setPreferredSize(new Dimension(15,15));
+        add(gridPanel,BorderLayout.CENTER);
 
-    public ArrayList<Point> getSelectablePoints() {
-        return selectablePoints;
     }
 
     public ArrayList<Point> getTemporaryPoints() {

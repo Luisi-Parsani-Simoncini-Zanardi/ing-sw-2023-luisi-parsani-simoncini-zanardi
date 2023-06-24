@@ -174,7 +174,7 @@ public class Engine{
         if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
         else {
             try {
-                if (selectionPossible()) {
+                if (selectionPossible()) {  //TODO il controllo fatto a riga 185 avviene anche dentro al metodo selectionPossible, controllare
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     game.getBoard().updateSelectablePoints();
                     try {

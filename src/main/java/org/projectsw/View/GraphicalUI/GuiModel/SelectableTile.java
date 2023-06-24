@@ -16,7 +16,7 @@ public class SelectableTile extends JButton {
         super();
         position = point;
         ImageIcon icon = null;
-        int buttonSize = 50;
+        int buttonSize = 5;
         Border normalBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK);
         Border selectableBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GREEN);
         Border selectedBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.RED);

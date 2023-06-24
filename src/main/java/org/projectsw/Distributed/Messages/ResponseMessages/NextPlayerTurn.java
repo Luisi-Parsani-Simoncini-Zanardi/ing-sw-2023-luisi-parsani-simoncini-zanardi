@@ -36,9 +36,12 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
             guiManager.notifyResponse1();
         }
         if (model.getPlayerName().equals(guiManager.getNickname())) {
-            guiManager.setTurnState(UITurnState.YOUR_TURN_SELECTION);
+            guiManager.setGameMainFrameState(UITurnState.YOUR_TURN_SELECTION);
             guiManager.setTileSelectionPossible(true);
             guiManager.setTemporaryTilesHold(true);
+        } else {
+            guiManager.setGameMainFrameState(UITurnState.OPPONENT_TURN);
         }
+        guiManager.notifyGameMainFrameTurnLock();
     }
 }

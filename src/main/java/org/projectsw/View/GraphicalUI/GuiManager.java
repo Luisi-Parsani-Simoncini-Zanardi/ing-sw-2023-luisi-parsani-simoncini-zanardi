@@ -9,6 +9,7 @@ import org.projectsw.Util.Observable;
 import org.projectsw.Util.RandomAlphanumericGen;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
+import org.projectsw.View.GraphicalUI.GuiModel.CommonGoalImage;
 import org.projectsw.View.GraphicalUI.GuiModel.NoSelectableShelf;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableBoard;
 import org.projectsw.View.GraphicalUI.GuiModel.SelectableColumnShelf;
@@ -18,11 +19,10 @@ import org.projectsw.View.SerializableInput;
 import java.awt.*;
 import java.rmi.RemoteException;
 
-public class GuiManager extends Observable<InputMessage> implements Runnable {
+public class GuiManager extends Observable<InputMessage> {
 
     private final Object lock1 = new Object();
     private final Object lock2 = new Object();
-    private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
     private final Client client;
     private final String alphanumericKey;
@@ -35,6 +35,7 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
     private boolean tileSelectionPossible = true ;
     private  boolean tileSelectionAccepted = true;
     private boolean columnSelectionAccepted = true;
+    private GameMainFrame gameMainFrame = new GameMainFrame(this);
     private SerializableGame game;
 
 
@@ -42,10 +43,6 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         RandomAlphanumericGen gen = new RandomAlphanumericGen();
         alphanumericKey = gen.generateRandomString(100);
         this.client = client;
-    }
-
-    public UITurnState getTurnState() {
-        return turnState;
     }
 
     public UIEndState getEndState() {
@@ -78,10 +75,6 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
 
     public boolean isTileSelectionAccepted() {
         return tileSelectionAccepted;
-    }
-
-    public void setTurnState(UITurnState turnState) {
-        this.turnState = turnState;
     }
 
     public void setEndState(UIEndState endState) {
@@ -136,7 +129,6 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
             response.execute(this);
     }
 
-    @Override
     public void run() {
         try {
             setChangedAndNotifyObservers(new Connect(new SerializableInput(alphanumericKey, client)));
@@ -144,10 +136,6 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
             throw new RuntimeException("A network error occurred connecting to the server: "+e.getMessage());
         }
         waitForResponse1();
-        lobby();
-    }
-
-    private void lobby() {
         do {
             new LobbyFrame(this);
             waitForResponse1();
@@ -158,13 +146,9 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         }
         if (endState.equals(UIEndState.RUNNING)) {
             new GameStartedMessageFrame();
-            launchGame();
+            gameMainFrame.createFrame();
         }
 
-    }
-
-    private void launchGame(){
-        new GameMainFrame(this);
     }
 
     public void sendNickname(String nickname){
@@ -210,18 +194,6 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         notifyResponse1();
     }
 
-    public void sendTileSelectionFromBoard(Point point,GameMainFrame gameMainFrame) {
-        try {
-            setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(alphanumericKey, getNickname(), point, client)));
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
-        }
-        waitForResponse2();
-        gameMainFrame.setTileSelectionAccepted(isTileSelectionAccepted());
-        gameMainFrame.notifyResponse();
-        setTileSelectionAccepted(true);
-    }
-
     public SelectableBoard askBoard(GameMainFrame gameMainFrame){
         try {
             setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(alphanumericKey, getNickname(), client)));
@@ -229,7 +201,7 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
             throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
         }
         waitForResponse2();
-        return new SelectableBoard(game,this,gameMainFrame);
+        return new SelectableBoard(game.getGameBoard(), game.getSelectablePoints(), game.getTemporaryPoints(), this, gameMainFrame);
     }
 
     public NoSelectableShelf askNsShelf(){
@@ -239,17 +211,17 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
             throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
         }
         waitForResponse2();
-        return new NoSelectableShelf(game);
+        return new NoSelectableShelf(game.getPlayerShelf());
     }
 
-    public SelectableColumnShelf askScShelf(GameMainFrame gameMainFrame){
+    public SelectableColumnShelf askScShelf(){
         try {
             setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
         }
         waitForResponse2();
-        return new SelectableColumnShelf(game,this,gameMainFrame);
+        return new SelectableColumnShelf(game.getPlayerShelf(),this);
     }
 
     public String askForCurrentPlayerString() {
@@ -266,7 +238,20 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         }
     }
 
-    public void confirmTilesSelection(GameMainFrame gameMainFrame) {
+    public void sendTileSelectionFromBoard(Point point) {
+        try {
+            setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(alphanumericKey, getNickname(), point, client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
+        }
+        waitForResponse2();
+        if(!tileSelectionAccepted) new UnselectableTileMessage();
+        if(!tileSelectionPossible) new SelectionNotPossibleAnymoreMessage();
+        gameMainFrame.notifyResponse();
+        tileSelectionAccepted = true;
+    }
+
+    public void confirmTilesSelection() {
         try {
             setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
@@ -274,21 +259,11 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         }
         waitForResponse2();
         gameMainFrame.setTakenTiles(game.getTemporaryTiles());
-        gameMainFrame.setTileSelectionConfirmed(true);
-        setTurnState(UITurnState.YOUR_TURN_COLUMN);
+        gameMainFrame.setTurnState(UITurnState.YOUR_TURN_COLUMN);
         gameMainFrame.notifyResponse();
     }
 
-    public void sendEndTurn(GameMainFrame gameMainFrame){
-        try {
-            setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname(), client)));
-        } catch (RemoteException e) {
-            throw new RuntimeException("An error occurred while ending the turn: " + e);
-        }
-        gameMainFrame.notifyResponse();
-    }
-
-    public void sendColumnSelection(int number,GameMainFrame gameMainFrame) {
+    public void sendColumnSelection(int number) {
         try {
             setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, number, client)));
         } catch (RemoteException e) {
@@ -297,28 +272,60 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         waitForResponse2();
         if(columnSelectionAccepted) {
             gameMainFrame.setSelectedColumn(number);
-            gameMainFrame.setColumnSelectionConfirmed(true);
+            gameMainFrame.setTurnState(UITurnState.YOUR_TURN_INSERTION);
         }
         else {
-            gameMainFrame.setColumnSelectionConfirmed(false);
             new ColumnSelectionRefusedMessage();
         }
         gameMainFrame.notifyResponse();
         setColumnSelectionAccepted(true);
     }
 
-    public void sendTemporaryTilesSelection(int index,GameMainFrame gameMainFrame){
+    public void sendTemporaryTilesSelection(int index){
         try {
             setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(alphanumericKey, getNickname(), index, client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
         }
         waitForResponse2();
-        if(!temporaryTilesHold) {
-            gameMainFrame.setTemporaryTilesHold(false);
-            new TurnEndedMessage();
-        }
         gameMainFrame.notifyResponse();
+    }
+
+
+    public void setGameMainFrameState(UITurnState state) {
+        gameMainFrame.setTurnState(state);
+    }
+
+    public void notifyGameMainFrameTurnLock() {
+        gameMainFrame.notifyTurnLock();
+    }
+
+    public NoSelectableShelf askPersonalGoal() {
+        try {
+            setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(alphanumericKey, getNickname(), client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+        waitForResponse2();
+        return new NoSelectableShelf(game.getPlayerPersonalGoal());
+    }
+
+    public CommonGoalImage askCommonGoal() {
+        try {
+            setChangedAndNotifyObservers(new AskForCommonGoals(new SerializableInput(alphanumericKey, getNickname(), client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for all shelves: "+e.getMessage());
+        }
+        waitForResponse2();
+        return new CommonGoalImage(game.getCommonGoalDesc().get(0), game.getCommonGoalDesc().get(1));
+    }
+
+    public void sendEndTurn() {
+        try {
+            setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname(), client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while ending the turn: " + e);
+        }
     }
 
     private void waitForResponse1() {
@@ -379,5 +386,4 @@ public class GuiManager extends Observable<InputMessage> implements Runnable {
         if(gameSavedExist) System.out.println("Game saved found");
         else System.out.println("Game saved NOT found");
     }
-
 }

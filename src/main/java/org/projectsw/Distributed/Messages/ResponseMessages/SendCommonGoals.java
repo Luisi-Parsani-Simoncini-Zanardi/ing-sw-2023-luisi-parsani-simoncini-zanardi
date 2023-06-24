@@ -1,6 +1,8 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.GraphicalUI.GameMainFrame;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -15,5 +17,10 @@ public class SendCommonGoals extends ResponseMessage implements Serializable {
     @Override
     public void execute(TextualUI tui){
         tui.showCommonGoals(model);
+    }
+
+    @Override
+    public void execute(GuiManager gui){
+        gui.updateModel(model);
     }
 }

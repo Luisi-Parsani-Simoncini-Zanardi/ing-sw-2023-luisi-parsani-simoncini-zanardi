@@ -2,13 +2,9 @@ package org.projectsw.View.GraphicalUI;
 
 import org.projectsw.Model.Tile;
 import org.projectsw.View.Enums.UIEndState;
-import org.projectsw.View.GraphicalUI.GuiModel.NoSelectableShelf;
-import org.projectsw.View.GraphicalUI.GuiModel.SelectableBoard;
-import org.projectsw.View.GraphicalUI.GuiModel.SelectableColumnShelf;
-import org.projectsw.View.GraphicalUI.GuiModel.SelectableTile;
-import org.projectsw.View.GraphicalUI.MessagesGUI.SelectColumnFirstMessage;
+import org.projectsw.View.Enums.UITurnState;
+import org.projectsw.View.GraphicalUI.GuiModel.*;
 import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
-import org.projectsw.View.GraphicalUI.MessagesGUI.UnselectableTileMessage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,18 +14,20 @@ public class GameMainFrame extends JFrame {
 
     private final GuiManager guiManager;
     private final Object lock = new Object();
-    private final Object finalLock = new Object();
-    private boolean tileSelectionAccepted = true;
-    private boolean tileSelectionConfirmed = false;
-    private boolean columnSelectionConfirmed = false;
-    private boolean temporaryTilesHold = true;
-    private int selectedColumn;
+    private final Object turnLock = new Object();
+    private UITurnState turnState = UITurnState.OPPONENT_TURN;
+    private JPanel turnInformationsNorthPanel;
+    private JPanel playPanel;
+    private JTabbedPane centralTabbedPane;
+    private JPanel selectedTilesSouthPanel;
     private ArrayList<Tile> takenTiles;
+    private int selectedColumn;
 
     public GameMainFrame(GuiManager guiManager){
-
         this.guiManager = guiManager;
+    }
 
+    public void createFrame(){
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -37,148 +35,147 @@ public class GameMainFrame extends JFrame {
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setSize(bounds.width, bounds.height);
 
-        JPanel panelLeft = new JPanel();
-        panelLeft.setBackground(Color.blue);
-        panelLeft.setPreferredSize(new Dimension(100,100));
-        add(panelLeft,BorderLayout.WEST);
-
-        JPanel panelRight = new JPanel();
-        panelRight.setBackground(Color.yellow);
-        panelRight.setPreferredSize(new Dimension(100,100));
-        add(panelRight,BorderLayout.EAST);
-
-        JPanel playCentralPanel = new JPanel();
-        playCentralPanel.setLayout(new BorderLayout());
-        add(playCentralPanel,BorderLayout.CENTER);
-
-
-        JPanel turnInformationNorthPanel = new JPanel();
-        //TODO davide, ogni tanto la scritta qui sotto è buggata
-        JLabel currentPlayerLabel = new JLabel(guiManager.askForCurrentPlayerString());
-        turnInformationNorthPanel.add(currentPlayerLabel);
-        turnInformationNorthPanel.setPreferredSize(new Dimension(100,100));
-        playCentralPanel.add(turnInformationNorthPanel,BorderLayout.NORTH);
-
-        JTabbedPane boardAndShelfTabbedPane = new JTabbedPane();
-        playCentralPanel.add(boardAndShelfTabbedPane);
+        turnInformationsNorthPanel = new JPanel();
+        playPanel = new JPanel();
+        playPanel.setLayout(new BorderLayout());
+        add(turnInformationsNorthPanel,BorderLayout.NORTH);
+        add(playPanel,BorderLayout.SOUTH);
+        turnInformationsNorthPanel.setPreferredSize(new Dimension(50,50));
 
         setVisible(true);
 
         do {
+            JLabel turnInformationLabel = new JLabel(guiManager.askForCurrentPlayerString());
+            turnInformationsNorthPanel.add(turnInformationLabel);
+            turnInformationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            turnInformationLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-            do {
+            centralTabbedPane = new JTabbedPane();
+            selectedTilesSouthPanel = new JPanel();
+            playPanel.add(centralTabbedPane,BorderLayout.NORTH);
+            playPanel.add(selectedTilesSouthPanel,BorderLayout.SOUTH);
+            selectedTilesSouthPanel.setPreferredSize(new Dimension(50,50));
 
-                if (tileSelectionAccepted) {
+            if(turnState.equals(UITurnState.OPPONENT_TURN)) {
+                refreshNoCurrentPlayer();
+                revalidate();
+                repaint();
+                waitTurnLock();
+            } else {
+                refreshCurrentPlayer();
+                revalidate();
+                repaint();
+                waitResponse();
+            }
+            System.out.println("Recreated, UIEndState: " + turnState);
+        } while (guiManager.getEndState().equals(UIEndState.RUNNING));
 
-                    SelectableBoard selectableBoard = askForBoard();
-                    boardAndShelfTabbedPane.add("Board", selectableBoard);
-                    if(tileSelectionConfirmed) {
-                        SelectableColumnShelf selectableColumnShelf = askForScShelf();
-                        boardAndShelfTabbedPane.add("Your Shelf", selectableColumnShelf);
-                    } else {
-                        NoSelectableShelf noSelectableShelf = askForNsShelf();
-                        boardAndShelfTabbedPane.add("Your Shelf", noSelectableShelf);
+        dispose();
+    }
+
+    private void refreshNoCurrentPlayer() {
+        JLabel noCurrentPlayerLabel = new JLabel("You are not the current player, wait your turn");
+        selectedTilesSouthPanel.add(noCurrentPlayerLabel);
+        noCurrentPlayerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        noCurrentPlayerLabel.setVerticalAlignment(SwingConstants.CENTER);
+        centralTabbedPane.add("Board", askForBoard());
+        centralTabbedPane.add("Your Shelf", askForNsShelf());
+        centralTabbedPane.add("Personal Goal", returnPersonalGoal());
+        centralTabbedPane.add("Common Goals", returnCommonGoalImage());
+        centralTabbedPane.add("Chat", new JPanel());
+    }
+
+    private void refreshCurrentPlayer() {
+        switch (turnState) {
+            case YOUR_TURN_SELECTION -> selectionRefresh();
+            case YOUR_TURN_COLUMN -> columnRefresh();
+            case YOUR_TURN_INSERTION -> insertionRefresh();
+        }
+    }
+
+    private void selectionRefresh() {
+        SelectableBoard selectableBoard = askForBoard();
+        centralTabbedPane.add("Board",selectableBoard);
+        centralTabbedPane.add("Your Shelf", askForNsShelf());
+        centralTabbedPane.add("Personal Goal", returnPersonalGoal());
+        centralTabbedPane.add("Common Goals", returnCommonGoalImage());
+        centralTabbedPane.add("Chat", new JPanel());
+        if (selectableBoard.getTemporaryPoints().isEmpty()) {
+            JLabel chooseTilesLabel = new JLabel("Choose your tiles in the board page!");
+            selectedTilesSouthPanel.add(chooseTilesLabel);
+            chooseTilesLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            chooseTilesLabel.setVerticalAlignment(SwingConstants.CENTER);
+        } else {
+            selectedTilesSouthPanel.setLayout(new FlowLayout());
+            JLabel selectedTilesLabel = new JLabel("You have selected these tiles:  ");
+            selectedTilesSouthPanel.add(selectedTilesLabel);
+            for(Point point : selectableBoard.getTemporaryPoints()) {
+                selectedTilesSouthPanel.add(selectableBoard.getLabelFromPoint(point));
+            }
+            JButton confirmButton = new JButton("Confirm Selection");
+            confirmButton.addActionListener( e -> {
+                new TemporaryTilesConfirmedMessage();
+                guiManager.confirmTilesSelection();
+            });
+            selectedTilesSouthPanel.add(confirmButton);
+        }
+    }
+
+    private void columnRefresh() {
+        centralTabbedPane.add("Your Shelf", askForScShelf());
+        centralTabbedPane.add("Board", askForBoard());
+        centralTabbedPane.add("Personal Goal", returnPersonalGoal());
+        centralTabbedPane.add("Common Goals", returnCommonGoalImage());
+        centralTabbedPane.add("Chat", new JPanel());
+        selectedTilesSouthPanel.setLayout(new FlowLayout());
+        JLabel selectedTilesLabel = new JLabel("You have selected these tiles:  ");
+        selectedTilesSouthPanel.add(selectedTilesLabel);
+        for(Tile tile : takenTiles) {
+            selectedTilesSouthPanel.add(new NoSelectableTile(tile));
+        }
+        //TODO sistema di cambio colonna
+    }
+
+    private void insertionRefresh() {
+        centralTabbedPane.add("Your Shelf", askForNsShelf());
+        centralTabbedPane.add("Board", askForBoard());
+        centralTabbedPane.add("Personal Goal", returnPersonalGoal());
+        centralTabbedPane.add("Common Goals", returnCommonGoalImage());
+        centralTabbedPane.add("Chat", new JPanel());
+        selectedTilesSouthPanel.setLayout(new FlowLayout());
+        JLabel selectedTilesLabel = new JLabel("Which tile do you want to insert?  ");
+        selectedTilesSouthPanel.add(selectedTilesLabel);
+        JPanel takenTilesButtonGrid = new JPanel(new GridLayout(1,3));
+        for(Tile tile : takenTiles) {
+            SelectableTile selectableTile = new SelectableTile(tile);
+            selectableTile.addActionListener(e -> {
+                    guiManager.sendTemporaryTilesSelection(takenTiles.indexOf(tile));
+                    takenTiles.remove(tile);
+                    if(takenTiles.isEmpty()) {
+                        //TODO rimuovi stampa debug
+                        System.out.println("TakenTiles is empty!");
+                        guiManager.sendEndTurn();
                     }
-
-                    JPanel selectionSouthPanel = new JPanel();
-                    selectionSouthPanel.setLayout(new FlowLayout());
-                    selectionSouthPanel.setPreferredSize(new Dimension(200, 200));
-                    playCentralPanel.add(selectionSouthPanel, BorderLayout.SOUTH);
-                    selectionSouthPanel.setLayout(new BorderLayout());
-                    if (selectableBoard.getTemporaryPoints().isEmpty() && !tileSelectionConfirmed) {
-                        JLabel noSelectedLabel = new JLabel("You haven't selected any tile yet");
-                        selectionSouthPanel.add(noSelectedLabel,BorderLayout.CENTER);
-                    } else if (!tileSelectionConfirmed){
-                        JLabel selectedLabel = new JLabel("You have selected these tiles:  ");
-                        selectionSouthPanel.add(selectedLabel,BorderLayout.CENTER);
-                        for (Point point : selectableBoard.getTemporaryPoints()) {
-                            JLabel selectedTile = selectableBoard.getLabelFromPoint(point);
-                            selectionSouthPanel.add(selectedTile,BorderLayout.CENTER);
-                        }
-                        JButton confirmButton = new JButton("Confirm selection");
-                        confirmButton.addActionListener(e -> {
-                            guiManager.confirmTilesSelection(this);
-                            new TemporaryTilesConfirmedMessage();
-                        });
-                        selectionSouthPanel.add(confirmButton,BorderLayout.CENTER);
-                    } else {
-                        if(columnSelectionConfirmed) {
-                            JLabel selectedLabel2 = new JLabel("You have choose " + (selectedColumn+1) + " , select the tile to insert:");
-                            selectionSouthPanel.add(selectedLabel2,BorderLayout.NORTH);
-                        } else {
-                            JLabel selectedLabel1 = new JLabel("You have confirmed these tiles:  ");
-                            selectionSouthPanel.add(selectedLabel1,BorderLayout.NORTH);
-                        }
-                        JPanel selectedTilesPanel = new JPanel(new GridLayout(1,3));
-                        for(Tile tile : takenTiles) {
-                            SelectableTile selectableTile = new SelectableTile(tile);
-                            selectedTilesPanel.add(selectableTile);
-                            selectableTile.addActionListener(e -> {
-                                if(columnSelectionConfirmed){
-                                    sendTemporaryTilesSelection(takenTiles.indexOf(tile));
-                                    takenTiles.remove(tile);
-                                    //if(takenTiles.isEmpty()) sendEndTurn();
-                                }
-                                else new SelectColumnFirstMessage();
-                            });
-                        }
-                        selectionSouthPanel.add(selectedTilesPanel,BorderLayout.SOUTH);
-                    }
-
-                    revalidate();
-                    repaint();
-
-                    waitResponse();
-
-                    boardAndShelfTabbedPane.remove(0);
-                    boardAndShelfTabbedPane.remove(0);
-                    playCentralPanel.remove(selectionSouthPanel);
-
-                } else {
-                    new UnselectableTileMessage();
-                    tileSelectionAccepted = true;
-                }
-            } while (!tileSelectionConfirmed);
-
-        } while(!guiManager.getEndState().equals(UIEndState.ENDING));
-
-        waitFinalLock();
+            });
+            takenTilesButtonGrid.add(selectableTile);
+        }
+        selectedTilesSouthPanel.add(takenTilesButtonGrid);
     }
 
-    private void sendEndTurn() {
-        guiManager.sendEndTurn(this);
+    public UITurnState getTurnState() {
+        return turnState;
     }
 
-    public boolean isTileSelectionConfirmed() {
-        return tileSelectionConfirmed;
-    }
-
-    public ArrayList<Tile> getTakenTiles() {
-        return takenTiles;
-    }
-
-    public void setTileSelectionAccepted(boolean tileSelectionAccepted) {
-        this.tileSelectionAccepted = tileSelectionAccepted;
-    }
-
-    public void setTileSelectionConfirmed(boolean tileSelectionConfirmed) {
-        this.tileSelectionConfirmed = tileSelectionConfirmed;
+    public void setTurnState(UITurnState turnState) {
+        this.turnState = turnState;
     }
 
     public void setTakenTiles(ArrayList<Tile> takenTiles) {
         this.takenTiles = takenTiles;
     }
 
-    public void setColumnSelectionConfirmed(boolean columnSelectionConfirmed) {
-        this.columnSelectionConfirmed = columnSelectionConfirmed;
-    }
-
     public void setSelectedColumn(int selectedColumn) {
         this.selectedColumn = selectedColumn;
-    }
-
-    public void setTemporaryTilesHold(boolean temporaryTilesHold) {
-        this.temporaryTilesHold = temporaryTilesHold;
     }
 
     private SelectableBoard askForBoard() {
@@ -190,11 +187,15 @@ public class GameMainFrame extends JFrame {
     }
 
     private SelectableColumnShelf askForScShelf() {
-        return guiManager.askScShelf(this);
+        return guiManager.askScShelf();
     }
 
-    private void sendTemporaryTilesSelection(int index){
-        guiManager.sendTemporaryTilesSelection(index,this);
+    private NoSelectableShelf returnPersonalGoal() {
+        return guiManager.askPersonalGoal();
+    }
+
+    private CommonGoalImage returnCommonGoalImage(){
+        return guiManager.askCommonGoal();
     }
 
     private void waitResponse(){
@@ -213,19 +214,19 @@ public class GameMainFrame extends JFrame {
         }
     }
 
-    private void waitFinalLock(){
-        synchronized (finalLock){
+    private void waitTurnLock(){
+        synchronized (turnLock){
             try{
-                finalLock.wait();
+                turnLock.wait();
             } catch (InterruptedException e) {
                 System.err.println(e.getMessage());
             }
         }
     }
 
-    public void notifyFinalLock(){
-        synchronized (finalLock){
-            finalLock.notify();
+    public void notifyTurnLock(){
+        synchronized (turnLock){
+            turnLock.notify();
         }
     }
 }

@@ -10,16 +10,20 @@ import java.awt.*;
 
 public class NoSelectableShelf extends JPanel {
 
-    public NoSelectableShelf(SerializableGame game) {
+    public NoSelectableShelf(Tile[][] shelf) {
         super();
-        setLayout(new GridLayout(6,5,4,4));
-        Tile[][] shelf = game.getPlayerShelf();
+        setLayout(new BorderLayout());
+
+        JPanel gridPanel = new JPanel();
+        gridPanel.setLayout(new GridLayout(7,5,4,4));setLayout(new GridLayout(6,5,4,4));
         for(int i=Config.shelfHeight-1; i>=0; i--) {
             for(int j=0; j<Config.shelfLength; j++) {
                 Tile tile = shelf[i][j];
                 NoSelectableTile noSelectableTile = new NoSelectableTile(tile);
-                add(noSelectableTile);
+                gridPanel.add(noSelectableTile);
             }
         }
+        gridPanel.setPreferredSize(new Dimension(15,15));
+        add(gridPanel,BorderLayout.CENTER);
     }
 }

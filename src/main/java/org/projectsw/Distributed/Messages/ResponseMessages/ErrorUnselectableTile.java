@@ -11,9 +11,11 @@ import java.io.Serializable;
 public class ErrorUnselectableTile extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
     public ErrorUnselectableTile(SerializableGame model) {
         super(model);
     }
+
     @Override
     public void execute(TextualUI tui) {
         System.err.println("Invalid Tile. Try again...");
@@ -23,6 +25,5 @@ public class ErrorUnselectableTile extends ResponseMessage implements Serializab
     @Override
     public void execute(GuiManager gui) {
         gui.setTileSelectionAccepted(false);
-        gui.setTurnState(UITurnState.YOUR_TURN_SELECTION);
     }
 }
