@@ -2,6 +2,8 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import org.projectsw.Model.Enums.GameState;
+
 import java.io.*;
 import java.util.stream.Collectors;
 
@@ -88,8 +90,11 @@ public class SaveGameStatus {
             data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));
             data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
             data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
+            /*for(Player player : data.getPlayers()){
+                player.setIsActive(false);
+            }
             data.getCurrentPlayer().setIsActive(false);
-            data.getFirstPlayer().setIsActive(false);
+            data.getFirstPlayer().setIsActive(false);*/
 
 
             return data;
@@ -118,7 +123,9 @@ public class SaveGameStatus {
 
     public boolean checkExistingSaveFile(String path) {
         File file =new File(path);
-        return file.exists();
+        if(file.exists())
+            return true;
+        return false;
     }
 
     public boolean checkExistingSaveFile() {

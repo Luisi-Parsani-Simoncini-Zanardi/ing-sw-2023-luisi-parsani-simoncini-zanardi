@@ -5,10 +5,11 @@ import org.projectsw.Distributed.SocketMiddleware.ServerStub;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.concurrent.TimeUnit;
 
 public class AppClientSocket {
     public static void main(String[] args) throws RemoteException, NotBoundException {
-        ServerStub serverStub = new ServerStub("localhost", 4444);
+        ServerStub serverStub = new ServerStub("192.168.182.73", 4444);
         ClientImplementation client = new ClientImplementation(serverStub);
         new Thread() {
             @Override
