@@ -50,6 +50,7 @@ class EngineTest extends TestUtils {
 
     @Test
     void getID_Nicks() {
+
     }
 
     @Test
@@ -122,6 +123,38 @@ class EngineTest extends TestUtils {
 
     @Test
     void playerJoin() {
+    }
+
+    @Test
+    public void testPlayerJoinInLobby() {
+        Engine engine = new Engine();
+        // Setup
+        String nickname = "John";
+        String ID = "123";
+        engine.getGame().setGameState(GameState.LOBBY);
+
+        // Invoke the method
+        engine.playerJoin(nickname, ID);
+
+        // Check the game state
+        assertEquals(GameState.LOBBY, engine.getGame().getGameState());
+
+        // Check the number of players
+        assertEquals(1, engine.getGame().getPlayers().size());
+
+        // Check the first player
+        Player firstPlayer = engine.getGame().getFirstPlayer();
+        assertEquals(nickname, firstPlayer.getNickname());
+        assertEquals(0, firstPlayer.getPosition());
+
+        // Check the current player
+        Player currentPlayer = engine.getGame().getCurrentPlayer();
+        assertEquals(nickname, currentPlayer.getNickname());
+        assertEquals(0, currentPlayer.getPosition());
+
+        // Check the ID-Nickname mapping
+        assertEquals(nickname, engine.getID_Nicks().getValue(ID));
+
     }
 
     /**

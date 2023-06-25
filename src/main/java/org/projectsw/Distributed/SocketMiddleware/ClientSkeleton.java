@@ -16,10 +16,19 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.RemoteException;
 
+/**
+ * Represents a client skeleton that acts as a remote proxy for a client.
+ * Implements the Client interface and Serializable interface.
+ */
 public class ClientSkeleton implements Client, Serializable {
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;
 
+    /**
+     * Constructs a new ClientSkeleton object with the specified socket.
+     * @param socket the socket for communication with the client
+     * @throws RemoteException if a remote communication error occurs
+     */
     public ClientSkeleton(Socket socket) throws RemoteException{
         try {
             this.oos = new ObjectOutputStream(socket.getOutputStream());
@@ -58,6 +67,11 @@ public class ClientSkeleton implements Client, Serializable {
         return null;
     }
 
+    /**
+     * Sends a response message to the client.
+     * @param response the response message to send
+     * @throws RemoteException if a remote communication error occurs
+     */
     @Override
     public void update(ResponseMessage response) throws RemoteException {
         try {
@@ -72,6 +86,11 @@ public class ClientSkeleton implements Client, Serializable {
     public void kill() throws RemoteException {
     }
 
+    /**
+     * Receives input from the client and updates the server with the input message.
+     * @param server the server object to update with the input message
+     * @throws RemoteException if a remote communication error occurs
+     */
     public void receive(Server server) throws RemoteException{
         InputMessage input;
         try {
