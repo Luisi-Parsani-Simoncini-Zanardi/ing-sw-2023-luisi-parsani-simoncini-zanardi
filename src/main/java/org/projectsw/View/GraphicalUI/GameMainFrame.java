@@ -36,11 +36,8 @@ public class GameMainFrame extends JFrame {
         setSize(bounds.width, bounds.height);
 
         turnInformationsNorthPanel = new JPanel();
-        playPanel = new JPanel();
-        playPanel.setLayout(new BorderLayout());
-        add(turnInformationsNorthPanel,BorderLayout.NORTH);
-        add(playPanel,BorderLayout.SOUTH);
-        turnInformationsNorthPanel.setPreferredSize(new Dimension(50,50));
+        turnInformationsNorthPanel.setPreferredSize(new Dimension(1200,150));
+        add(turnInformationsNorthPanel);
 
         setVisible(true);
 
@@ -52,9 +49,9 @@ public class GameMainFrame extends JFrame {
 
             centralTabbedPane = new JTabbedPane();
             selectedTilesSouthPanel = new JPanel();
-            playPanel.add(centralTabbedPane,BorderLayout.NORTH);
-            playPanel.add(selectedTilesSouthPanel,BorderLayout.SOUTH);
-            selectedTilesSouthPanel.setPreferredSize(new Dimension(50,50));
+            add(centralTabbedPane,BorderLayout.CENTER);
+            add(selectedTilesSouthPanel,BorderLayout.SOUTH);
+            selectedTilesSouthPanel.setPreferredSize(new Dimension(50,100));
 
             if(turnState.equals(UITurnState.OPPONENT_TURN)) {
                 refreshNoCurrentPlayer();
@@ -67,6 +64,10 @@ public class GameMainFrame extends JFrame {
                 repaint();
                 waitResponse();
             }
+
+            turnInformationsNorthPanel.removeAll();
+            centralTabbedPane.removeAll();
+            selectedTilesSouthPanel.removeAll();
             System.out.println("Recreated, UIEndState: " + turnState);
         } while (guiManager.getEndState().equals(UIEndState.RUNNING));
 
