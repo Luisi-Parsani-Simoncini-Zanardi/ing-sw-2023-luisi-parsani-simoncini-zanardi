@@ -1081,6 +1081,22 @@ public class Engine{
         }
     }
 
+    /**
+
+     Loads a game from a file with the specified ID and nickname.
+     This method performs the following actions:
+     If the ID matches the first client, clears the ID_Nicks map.
+     Checks if the nickname is in the list of free names used in the last game.
+     If it is, removes the nickname from the list, adds the ID-nickname mapping to the ID_Nicks map, and notifies observers of a successful nickname choice.
+     If it is not, sends an error message to the client and notifies observers of a returned flag.
+     If the ID does not match the first client:
+     Checks if the nickname is in the list of free names used in the last game.
+     If it is, removes the nickname from the list, adds the ID-nickname mapping to the ID_Nicks map, and notifies observers of a successful nickname choice.
+     If it is not, sends an error message to the client and notifies observers of a returned flag.
+     If the list of free names used in the last game is empty, starts the game from the loaded file.
+     @param ID the ID of the client
+     @param nickname the nickname chosen by the client
+     */
     private void loadFromFile(String ID, String nickname) {
         if(ID.equals(firstClient)){
             ID_Nicks.clear();
@@ -1130,6 +1146,18 @@ public class Engine{
             startGameFromFile();
     }
 
+    /**
+
+     Initializes a player based on the provided input.
+     This method performs the following actions:
+     Checks if the client nickname is invalid. If it is, sends a wrong nickname message to observers and returns.
+     Sends an OK nickname message to observers.
+     If the client nickname is not already in use and the alphanumeric ID is not equal to the first client's ID, adds the ID-nickname mapping to the ID_Nicks map.
+     If it's not a player reconnect, calls the playerJoin() method.
+     If it's a player reconnect, sets the player's active status to true and notifies observers of the name colors and the next player's turn.
+     Resets the playerReconnect flag to false.
+     @param input the serializable input containing the client's nickname and alphanumeric ID
+     */
     private void initializePlayer(SerializableInput input)  {
         if (invalidNickname(input.getClientNickname())) {
             try {
@@ -1160,14 +1188,40 @@ public class Engine{
         }
         this.playerReconnect = false;
     }
+
+    /**
+
+     Sets the active status of a player based on the client's choice.
+     @param client the client for which to set the active status
+     @param choice the choice indicating whether the player is active or not
+     */
     public void setIsActiveFromClient(Client client, Boolean choice){
         getPlayerFromNickname(ID_Nicks.getValue(clients_ID.getValue(client))).setIsActive(choice);
     }
 
+    /**
+
+     Retrieves the nickname associated with a client.
+     @param client the client for which to retrieve the nickname
+     @return the nickname associated with the client
+     */
     public String getNickFromClient(Client client) {
         return ID_Nicks.getValue(clients_ID.getValue(client));
     }
 
+
+    /**
+
+     Handles the process of assigning a nickname to a client.
+     If the client's alphanumeric ID matches the first client's ID:
+     If loading from a saved game, attempts to load the game with the provided nickname.
+     If not loading from a saved game, checks if the nickname is already taken. If not, initializes the player with the nickname.
+     If the client's alphanumeric ID does not match the first client's ID:
+     If not loading from a saved game and the first player is not yet assigned, checks if the nickname is already taken.
+     If not, assigns the nickname to the client.
+     If loading from a saved game, attempts to load the game with the provided nickname.
+     @param input the input containing the client's alphanumeric ID and nickname
+     */
     public synchronized void takeNick(SerializableInput input) {
         if(input.getAlphanumericID().equals(firstClient)){
             if(loadFromFile){
@@ -1216,6 +1270,12 @@ public class Engine{
             }
 
     }
+
+    /**
+
+     Sends a request to the clients to input the number of players in the game.
+     @param alphanumericID the alphanumeric ID of the client initiating the request
+     */
     private void askNumOfPlayers(String alphanumericID){
         try {
             getGame().setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(alphanumericID)));
@@ -1223,7 +1283,14 @@ public class Engine{
             throw new RuntimeException("Network error while sending setting client flags: "+e.getMessage());
         }
     }
-    //TODO SE ENTRANO 3 PLAYER, IL PRIMO NON METTE NULLA (GLI ALTRI IL NOME), SE METTE 2 PLAYER UCCIDE IL 3 MA NON STARTA
+
+    /**
+
+     Connects a client to the game.
+     @param alphanumericID the alphanumeric ID of the client
+     @throws RemoteException if a network error occurs during the connection process
+     @throws InterruptedException if the thread is interrupted while waiting for the connection
+     */
     public synchronized void Connect(String alphanumericID) throws RemoteException, InterruptedException {
         if(getInactivePlayers().size() > 0){
             playerReconnect = true;
@@ -1246,6 +1313,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Starts the game from a saved state.
+     If all players from the previous game have reconnected and chosen their nicknames, the game is started.
+     The game state, including player colors, current player, and next player turn, is sent to the clients.
+     */
     private void startGameFromFile(){
         if (freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
             for(String id : clients_ID.getAllValue()){
@@ -1263,6 +1336,17 @@ public class Engine{
             }
         }
     }
+
+    /**
+
+     Sets the number of players for the game and initializes the game state.
+     This method is called when the number of players is chosen by the first client.
+     The game is initialized with the specified number of players.
+     The option chosen flag is set to true, indicating that the number of players has been selected.
+     The game state is sent to the clients.
+     @param numberOfPlayers The number of players for the game.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);
@@ -1279,6 +1363,13 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game board to the client identified by the specified ID.
+     This method sends the game board to the client and notifies the client that the board has been transferred.
+     If there is a network error during the process, the client observer is removed.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void boardTransfer(String ID) {
         try {
             getGame().setChangedAndNotifyObservers(new SendBoard(new SerializableGame(ID ,getGame())));
@@ -1293,6 +1384,13 @@ public class Engine{
 
     }
 
+    /**
+
+     Transfers the game shelf to the client identified by the specified ID.
+     This method sends the game shelf to the client and notifies the client that the board has been transferred.
+     If there is a network error during the process, the client observer is removed.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void shelfTransfer(String clientNickname, String ID) {
         int pos = getGame().getPositionByNick(clientNickname);
         try {
@@ -1307,6 +1405,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers all the game shelves to the client identified by the specified ID.
+     This method sends the all game shelves to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void shelfTransferAll(String ID) {
         try {
             getGame().setChangedAndNotifyObservers(new SendAllShelves(new SerializableGame(ID, game.getPlayers())));
@@ -1320,6 +1424,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game personal Goal to the client identified by the specified ID.
+     This method sends the game personal Goal to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void personalGoalTransfer(String ID, String nickname) {
         try {
             game.setChangedAndNotifyObservers(new SendPersonalGoal(new SerializableGame(ID, getGame(), nickname)));
@@ -1333,6 +1443,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game temporary Tiles to the client identified by the specified ID.
+     This method sends the game temporary Tiles to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void temporaryTilesTransfer(String ID) {
         try {
             game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(ID, getGame())));
@@ -1346,6 +1462,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game common Goal to the client identified by the specified ID.
+     This method sends the game common Goal to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void commonGoalTransfer(String ID) {
         try {
             game.setChangedAndNotifyObservers(new SendCommonGoals(new SerializableGame(ID, game)));
@@ -1359,6 +1481,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game current Player to the client identified by the specified ID.
+     This method sends the game current Player to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void currentPlayerTransfer(String ID){
         try {
             getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(ID,getGame())));
@@ -1372,6 +1500,13 @@ public class Engine{
         }
     }
 
+    /**
+
+     Checks if any inactive player needs to reconnect.
+     For each player in the game, if the player is inactive, it sends a request to the client identified by the specified ID
+     to provide the nickname for reconnection. It also sets the playerReconnect flag to true.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void reconnectionCheck(String ID){
         for(Player player : game.getPlayers()){
             if(!player.getIsActive()){
@@ -1385,6 +1520,11 @@ public class Engine{
         }
     }
 
+    /**
+
+     Sets the isActive flag of the player with the specified nickname to false.
+     @param input The input containing the client nickname.
+     */
     public synchronized void notActive(SerializableInput input){
         for(Player player : getGame().getPlayers()){
             if(input.getClientNickname().equals(player.getNickname()))
@@ -1392,6 +1532,11 @@ public class Engine{
         }
     }
 
+    /**
+
+     Generates random colors for each player in the game.
+     @return A HashMap containing player nicknames as keys and their corresponding random colors as values.
+     */
     private HashMap<String, String> randomColors() {
         HashMap<String, String> colors = new HashMap<>();
         ArrayList<Integer> alreadyUsed = new ArrayList<>();
