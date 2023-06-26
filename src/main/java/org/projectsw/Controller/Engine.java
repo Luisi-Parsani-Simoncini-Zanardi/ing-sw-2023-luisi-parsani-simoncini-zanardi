@@ -76,6 +76,13 @@ public class Engine{
 
     /**
 
+     Returns the current value of the playerReconnect variable.
+     @return The current value of the playerReconnect variable.
+     */
+    public Boolean getPlayerReconnection() { return this.playerReconnect; }
+
+    /**
+
      Returns the current value of the clients_ID variable.
      @return The current value of the clients_ID variable.
      */
