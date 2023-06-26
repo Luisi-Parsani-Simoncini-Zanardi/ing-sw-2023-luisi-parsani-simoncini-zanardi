@@ -25,7 +25,9 @@ public class Board extends Observable<GameEvent> {
     private ArrayList<Point> selectablePoints;
 
     /**
-     * Constructs a Board full of unused tiles.
+     * Creates a new instance of the Board class with the specified selected points and temporary points.
+     * @param selPoints    the selected points
+     * @param tmpPoints    the temporary points
      */
     public Board(ArrayList<Point> selPoints, ArrayList<Point> tmpPoints){
         board = new Tile[Config.boardHeight][Config.boardLength];
@@ -208,6 +210,9 @@ public class Board extends Observable<GameEvent> {
         updateSelectablePoints();
     }
 
+    /**
+     * Updates the selectable points based on the number of temporary points.
+     */
     public void updateSelectablePoints() {
         ArrayList<Point> newSelectablePoints = new ArrayList<>();
 
@@ -347,6 +352,12 @@ public class Board extends Observable<GameEvent> {
         }
     }
 
+    /**
+     * Returns a string representation of the color and marker for a given position on the board.
+     * @param i the row index
+     * @param j the column index
+     * @return the string representation of the color and marker
+     */
     private String stringColorAndMarker(int i, int j){
         String result = "";
         TilesEnum type = board[i][j].getTile();
@@ -368,6 +379,13 @@ public class Board extends Observable<GameEvent> {
         return result;
     }
 
+    /**
+     * Returns a string of padding spaces for left or right alignment of tile printing.
+     * @param left true for left alignment, false for right alignment
+     * @param i the row index
+     * @param j the column index
+     * @return the string of padding spaces
+     */
     private String printPadding (boolean left, int i, int j){
         float padding = 12;
         String paddingSpaces = "";

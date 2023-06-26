@@ -192,6 +192,11 @@ public class Observable<Event> {
         return obs.size();
     }
 
+    /**
+     * Sets the "changed" flag and notifies the observers with the specified event.
+     * @param arg The event object to be passed to the observers.
+     * @throws RemoteException if there is a communication-related issue during the notification process.
+     */
     public void setChangedAndNotifyObservers(Event arg) throws RemoteException{
         setChanged();
         notifyObservers(arg);

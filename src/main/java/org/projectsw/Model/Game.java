@@ -108,12 +108,22 @@ public class Game extends Observable<ResponseMessage> {
         return players;
     }
 
+    /**
+     * Returns an ArrayList of player nicknames.
+     * @return ArrayList of player nicknames
+     */
     public ArrayList<String> getPlayersNickname() {
         ArrayList<String> nicks = new ArrayList<>();
         for (Player player: players)
             nicks.add(player.getNickname());
         return nicks;
     }
+
+    /**
+     * Returns an ArrayList of player nicknames.
+     * @param players the ArrayList of players
+     * @return ArrayList of player nicknames
+     */
     public ArrayList<String> getPlayersNickname(ArrayList<Player> players) {
         ArrayList<String> nicks = new ArrayList<>();
         for (Player player: players)

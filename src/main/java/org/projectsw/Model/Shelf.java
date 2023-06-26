@@ -35,6 +35,10 @@ public class Shelf extends Observable<GameEvent> {
         selectionPossible = true;
     }
 
+    /**
+     * Constructs a Shelf object with the specified parameters. Used for backdoor only
+     * @param b The parameter used to initialize the Shelf.
+     */
     //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
     public Shelf(int b) {
         shelf = new Tile[Config.shelfHeight][Config.shelfLength];
@@ -254,6 +258,12 @@ public class Shelf extends Observable<GameEvent> {
         }
     }
 
+    /**
+     * Retrieves the color representation of a tile at the specified position.
+     * @param i The row index of the tile.
+     * @param j The column index of the tile.
+     * @return The color representation of the tile.
+     */
     private String stringColor(int i, int j) {
         String result = "";
         TilesEnum type = shelf[i][j].getTile();
@@ -269,6 +279,13 @@ public class Shelf extends Observable<GameEvent> {
         return result;
     }
 
+    /**
+     * Generates padding spaces or dashes for printing alignment.
+     * @param left Indicates whether the padding is for the left side (true) or the right side (false).
+     * @param i    The row index of the tile.
+     * @param j    The column index of the tile.
+     * @return The generated padding spaces or dashes.
+     */
     private String printPadding(boolean left, int i, int j) {
         float padding = 10;
         String paddingSpaces = "";

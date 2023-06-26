@@ -6,6 +6,9 @@ import org.projectsw.Model.Enums.TilesEnum;
 
 import java.util.ArrayList;
 
+/**
+ * The Cross class represents a game strategy where the goal is to have five tiles of the same type forming an X.
+ */
 public class Cross extends CommonGoalStrategy{
 
     /**

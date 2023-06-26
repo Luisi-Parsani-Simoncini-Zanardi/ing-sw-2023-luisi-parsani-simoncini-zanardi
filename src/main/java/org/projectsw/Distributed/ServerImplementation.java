@@ -17,24 +17,48 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+/**
+ * The ServerImplementation class implements the Server interface and represents the server component of the game application.
+ * It extends UnicastRemoteObject to enable remote method invocation.
+ * The class manages the game engine, message queue handling, client registration, client updates, and connection monitoring.
+ */
 public class ServerImplementation extends UnicastRemoteObject implements Server{
 
     private final Engine controller = new Engine(this);
     private final Game model = new Game();
     private final MessageQueueHandler queueHandler = new MessageQueueHandler(controller);
     private final Thread queueThread;
+
+    /**
+     * Constructs a new ServerImplementation with the default RMI port.
+     * @throws RemoteException if a remote communication error occurs
+     */
     public ServerImplementation() throws RemoteException {
         super();
         controller.setGame(model);
         queueThread = new Thread(queueHandler);
         queueThread.start();
     }
+
+    /**
+     * Constructs a new ServerImplementation with the specified RMI port.
+     * @param port the RMI port to bind the server to
+     * @throws RemoteException if a remote communication error occurs
+     */
     public ServerImplementation(int port) throws RemoteException {
         super(port);
         controller.setGame(model);
         queueThread = new Thread(queueHandler);
         queueThread.start();
     }
+
+    /**
+     * Constructs a new ServerImplementation with the specified RMI port, client socket factory, and server socket factory.
+     * @param port the RMI port to bind the server to
+     * @param csf  the client socket factory
+     * @param ssf  the server socket factory
+     * @throws RemoteException if a remote communication error occurs
+     */
     public ServerImplementation(int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
         super(port, csf, ssf);
         controller.setGame(model);
@@ -42,6 +66,11 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         queueThread.start();
     }
 
+    /**
+     * Registers a client to receive updates from the server.
+     * @param client the client to register
+     * @throws RemoteException if a remote communication error occurs
+     */
     @Override
     public void register(Client client) throws RemoteException {
         Observer<Game, ResponseMessage> observer = (o, response) -> {
@@ -51,12 +80,23 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         this.model.addObserver(observer);
     }
 
+    /**
+     * Updates the server with an input message from a client.
+     * Adds the input message to the message queue for processing.
+     * @param client the client sending the input message
+     * @param input  the input message to be processed
+     * @throws RemoteException if a remote communication error occurs
+     */
     @Override
     public synchronized void update(Client client,InputMessage input) throws RemoteException {
         if(!controller.getClients_ID().getAllKey().contains(client))
             controller.getClients_ID().put(client,input.getInput().getAlphanumericID());
         queueHandler.add(input);
     }
+
+    /**
+     * Starts a separate thread for monitoring client connections.
+     */
     @Override
     public void startPingThread() {
         Thread pingThread = new Thread(() -> {
@@ -71,6 +111,11 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         });
         pingThread.start();
     }
+
+    /**
+     * Checks the connections of all registered clients.
+     * Disconnects clients that are unreachable and performs necessary cleanup.
+     */
     public void checkClientConnections() {
         List<Client> disconnectedClients = new ArrayList<>();
         for (Client client : controller.getClients_ID().getAllKey()) {
@@ -108,6 +153,11 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
             }
         }
     }
+
+    /**
+     * Unregisters disconnected clients.
+     * @param clients the disconnected clients to unregister
+     */
     private void unregisterClients(List<Client> clients) {
         for (Client client : clients) {
             String nick = controller.getNickFromClient(client);

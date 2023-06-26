@@ -1,5 +1,8 @@
 package org.projectsw.Util;
 
+/**
+ * Global config class
+ */
 public class Config {
     public static final int boardLength = 9;
     public static final int boardHeight = 9;

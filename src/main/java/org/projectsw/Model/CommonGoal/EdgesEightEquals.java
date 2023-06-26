@@ -6,6 +6,10 @@ import org.projectsw.Model.Enums.TilesEnum;
 
 import java.util.ArrayList;
 
+/**
+ * The EdgesEightEquals class represents a game strategy where the goal is to have either four tiles of the same type in the four corners of the bookshelf (strategyCode = 8)
+ * or at least eight tiles of the same type on the bookshelf (strategyCode = 9).
+ */
 public class EdgesEightEquals extends CommonGoalStrategy{
 
     private final boolean edge;

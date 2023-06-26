@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The class to serialize the game model
+ */
 public class SerializableGame implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,6 +32,11 @@ public class SerializableGame implements Serializable {
     private final HashMap<String, Tile[][]> allShelves;
     private final ArrayList<String> commonGoalDesc;
 
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID and a game model.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param model The game model to be serialized.
+     */
 public SerializableGame(String alphanumericID, Game model) {
     this.alphanumericID = alphanumericID;
     this.gameBoard = model.getBoard().getBoard();
@@ -53,6 +61,13 @@ public SerializableGame(String alphanumericID, Game model) {
     this.integer = null;
     this.bool = null;
 }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID, a game model and clientNickname.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param model The game model to be serialized.
+     * @param clientNickname The clientNickname to be serialized.
+     */
     public SerializableGame(String alphanumericID, Game model, String clientNickname) {
         this.alphanumericID = alphanumericID;
         this.gameBoard = model.getBoard().getBoard();
@@ -77,6 +92,11 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = null;
         this.bool = null;
     }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID.
+     * @param alphanumericID The alphanumeric ID of the game.
+     */
     public SerializableGame(String alphanumericID) {
         this.alphanumericID = alphanumericID;
         this.gameBoard = null;
@@ -96,6 +116,12 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = null;
         this.bool = null;
     }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID and string.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param string The string to be serialized.
+     */
     public SerializableGame(String alphanumericID, String string){
         this.alphanumericID = alphanumericID;
         this.gameBoard = null;
@@ -115,6 +141,12 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = null;
         this.bool = null;
     }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID and message.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param message The message to be serialized.
+     */
     public SerializableGame(String alphanumericID, Message message){
         this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
@@ -134,6 +166,13 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = null;
         this.bool = null;
     }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID, a nickname and shelf.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param nickname The nickname to be serialized.
+     * @param shelf The shelf to be serialized.
+     */
     public SerializableGame(String alphanumericID, String nickname, Shelf shelf){
         this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
@@ -154,6 +193,11 @@ public SerializableGame(String alphanumericID, Game model) {
         this.bool = null;
     }
 
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID and players.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param players The players to be serialized.
+     */
     public SerializableGame(String alphanumericID, ArrayList<Player> players){
         this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
@@ -177,6 +221,12 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = null;
         this.bool = null;
     }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID and num.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param num The num to be serialized.
+     */
     public SerializableGame(String alphanumericID, int num){
         this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
@@ -196,6 +246,12 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = num;
         this.bool = null;
     }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID and bool.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param bool The bool to be serialized.
+     */
     public SerializableGame(String alphanumericID, boolean bool){
         this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
@@ -215,6 +271,12 @@ public SerializableGame(String alphanumericID, Game model) {
         this.integer = null;
         this.bool = bool;
     }
+
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID and nameColors.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param nameColors The nameColors to be serialized.
+     */
     public SerializableGame(String alphanumericID, HashMap<String, String> nameColors){
         this.alphanumericID = alphanumericID;
         this.gameBoard =  null;
@@ -235,6 +297,12 @@ public SerializableGame(String alphanumericID, Game model) {
         this.bool = null;
     }
 
+    /**
+     * Constructs a SerializableGame object with an alphanumeric ID, a nickname and chat.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param nickname The nickname to be serialized.
+     * @param chat The chat to be serialized.
+     */
     public SerializableGame(String alphanumericID,Chat chat, String nickname) {
         this.alphanumericID = alphanumericID;
         this.gameBoard = null;
@@ -255,6 +323,11 @@ public SerializableGame(String alphanumericID, Game model) {
         this.bool = null;
     }
 
+    /**
+     * Converts a 2D array of TilesEnum representing a personal goal to a 2D array of Tile objects.
+     * @param personalGoal The 2D array of TilesEnum representing the personal goal.
+     * @return The converted 2D array of Tile objects.
+     */
     private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
         Tile[][] goal = new Tile[Config.shelfHeight][Config.shelfLength];
         for (int i = 0; i < Config.shelfHeight; i++) {
@@ -265,21 +338,105 @@ public SerializableGame(String alphanumericID, Game model) {
         return goal;
     }
 
+    /**
+     * Retrieves the alphanumeric ID of the SerializableGame.
+     * @return The alphanumeric ID.
+     */
     public String getAlphanumericID(){return this.alphanumericID;}
+
+    /**
+     * Retrieves the bool of the SerializableGame.
+     * @return The bool.
+     */
     public Boolean getBool(){return this.bool;}
+
+    /**
+     * Retrieves the integer of the SerializableGame.
+     * @return The integer.
+     */
     public Integer getInteger(){return this.integer;}
+
+    /**
+     * Retrieves the gameBoard of the SerializableGame.
+     * @return The gameBoard.
+     */
     public Tile[][] getGameBoard(){return this.gameBoard;}
+
+    /**
+     * Retrieves the playerShelf of the SerializableGame.
+     * @return The playerShelf.
+     */
     public Tile[][] getPlayerShelf(){return this.playerShelf;}
+
+    /**
+     * Retrieves the playerName of the SerializableGame.
+     * @return The playerName.
+     */
     public String getPlayerName(){return this.playerName;}
+
+    /**
+     * Retrieves the chat of the SerializableGame.
+     * @return The chat.
+     */
     public ArrayList<Message> getChat(){return this.chat;}
+
+    /**
+     * Retrieves the clientNickname of the SerializableGame.
+     * @return The clientNickname.
+     */
     public String getClientNickname(){return this.clientNickname;}
+
+    /**
+     * Retrieves the selectablePoints of the SerializableGame.
+     * @return The selectablePoints.
+     */
     public ArrayList<Point> getSelectablePoints() {return this.selectablePoints; }
+
+    /**
+     * Retrieves the temporaryPoints of the SerializableGame.
+     * @return The temporaryPoints.
+     */
     public ArrayList<Point> getTemporaryPoints() {return this.temporaryPoints; }
+
+    /**
+     * Retrieves the temporaryTiles of the SerializableGame.
+     * @return The temporaryTiles.
+     */
     public ArrayList<Tile> getTemporaryTiles() {return this.temporaryTiles; }
+
+    /**
+     * Retrieves the playerPersonalGoal of the SerializableGame.
+     * @return The playerPersonalGoal.
+     */
     public Tile[][] getPlayerPersonalGoal() {return this.playerPersonalGoal; }
+
+    /**
+     * Retrieves the results of the SerializableGame.
+     * @return The results.
+     */
     public HashMap<String, Integer> getResults() {return this.results;}
+
+    /**
+     * Retrieves the nameColors of the SerializableGame.
+     * @return The nameColors.
+     */
     public HashMap<String, String> getNameColors() {return this.nameColors; }
+
+    /**
+     * Retrieves the allShelves of the SerializableGame.
+     * @return The allShelves.
+     */
     public HashMap<String, Tile[][]> getAllShelves() {return this.allShelves; }
+
+    /**
+     * Retrieves the commonGoalDesc of the SerializableGame.
+     * @return The commonGoalDesc.
+     */
     public ArrayList<String> getCommonGoalDesc() {return this.commonGoalDesc; }
+
+    /**
+     * Retrieves the message of the SerializableGame.
+     * @return The message.
+     */
     public Message getMessage() {return this.message; }
 }

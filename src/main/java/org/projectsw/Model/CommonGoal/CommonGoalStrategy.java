@@ -5,6 +5,9 @@ import org.projectsw.Model.Enums.TilesEnum;
 
 import java.util.ArrayList;
 
+/**
+ * The common goal strategy class
+ */
 public abstract class CommonGoalStrategy {
     protected int numObjects;
 
@@ -64,6 +67,10 @@ public abstract class CommonGoalStrategy {
         return count;
     }
 
+    /**
+     * Sets the description of the object.
+     * @param description the description to set
+     */
     public void setDescription(String description) { this.description = description; }
 
 }
