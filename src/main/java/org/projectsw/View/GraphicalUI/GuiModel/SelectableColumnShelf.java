@@ -31,7 +31,11 @@ public class SelectableColumnShelf extends JPanel {
         for(int h=0;h<Config.shelfLength;h++) {
             ColumnButton columnButton = new ColumnButton("^ Place in this column ^",h);
             columnButton.addActionListener(e -> {
-                guiManager.sendColumnSelection(columnButton.getColumn());
+                if(e.getSource() instanceof ColumnButton selectedColumnButton) {
+                    SwingUtilities.invokeLater( () -> {
+                        guiManager.sendColumnSelection(selectedColumnButton.getColumn());
+                    });
+                }
             });
             gridPanel.add(columnButton);
         }

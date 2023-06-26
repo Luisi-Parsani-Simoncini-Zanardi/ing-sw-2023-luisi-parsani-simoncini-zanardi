@@ -16,7 +16,6 @@ public class SelectableTile extends JButton {
         super();
         position = point;
         ImageIcon icon = null;
-        int buttonSize = 15;
         Border normalBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK);
         Border selectableBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GREEN);
         Border selectedBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.RED);
@@ -28,11 +27,10 @@ public class SelectableTile extends JButton {
             case TROPHIES -> icon = new ImageIcon(PathSolverGui.trophies(tile.getImageNumber()));
             case BOOKS -> icon = new ImageIcon(PathSolverGui.books(tile.getImageNumber()));
         }
-        setPreferredSize(new Dimension(buttonSize,buttonSize));
         setContentAreaFilled(false);
         if(!tile.getTile().equals(TilesEnum.EMPTY) && !tile.getTile().equals(TilesEnum.UNUSED)){
             assert icon != null;
-            Image image = icon.getImage().getScaledInstance(buttonSize,buttonSize,Image.SCALE_SMOOTH);
+            Image image = icon.getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH);
             setIcon(new ImageIcon(image));
         }
         if(selectablePoints.contains(point)){

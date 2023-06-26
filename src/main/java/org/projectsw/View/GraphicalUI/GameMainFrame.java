@@ -5,7 +5,6 @@ import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI.GuiModel.*;
 import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -30,18 +29,16 @@ public class GameMainFrame extends JFrame {
     public void createFrame(){
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        Rectangle bounds = env.getMaximumWindowBounds();
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        setSize(bounds.width, bounds.height);
+        setSize(1000, 700);
 
         turnInformationsNorthPanel = new JPanel();
-        turnInformationsNorthPanel.setPreferredSize(new Dimension(1200,150));
-        add(turnInformationsNorthPanel);
+        turnInformationsNorthPanel.setPreferredSize(new Dimension(1200,75));
+        add(turnInformationsNorthPanel,BorderLayout.NORTH);
 
-        setVisible(true);
+
 
         do {
+            setVisible(false);
             JLabel turnInformationLabel = new JLabel(guiManager.askForCurrentPlayerString());
             turnInformationsNorthPanel.add(turnInformationLabel);
             turnInformationLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -51,24 +48,26 @@ public class GameMainFrame extends JFrame {
             selectedTilesSouthPanel = new JPanel();
             add(centralTabbedPane,BorderLayout.CENTER);
             add(selectedTilesSouthPanel,BorderLayout.SOUTH);
-            selectedTilesSouthPanel.setPreferredSize(new Dimension(50,100));
+            selectedTilesSouthPanel.setPreferredSize(new Dimension(50,150));
 
             if(turnState.equals(UITurnState.OPPONENT_TURN)) {
                 refreshNoCurrentPlayer();
                 revalidate();
                 repaint();
+                setVisible(true);
                 waitTurnLock();
             } else {
                 refreshCurrentPlayer();
                 revalidate();
                 repaint();
+                setVisible(true);
                 waitResponse();
             }
 
             turnInformationsNorthPanel.removeAll();
             centralTabbedPane.removeAll();
             selectedTilesSouthPanel.removeAll();
-            System.out.println("Recreated, UIEndState: " + turnState);
+
         } while (guiManager.getEndState().equals(UIEndState.RUNNING));
 
         dispose();
@@ -107,7 +106,7 @@ public class GameMainFrame extends JFrame {
             chooseTilesLabel.setHorizontalAlignment(SwingConstants.CENTER);
             chooseTilesLabel.setVerticalAlignment(SwingConstants.CENTER);
         } else {
-            selectedTilesSouthPanel.setLayout(new FlowLayout());
+            selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));
             JLabel selectedTilesLabel = new JLabel("You have selected these tiles:  ");
             selectedTilesSouthPanel.add(selectedTilesLabel);
             for(Point point : selectableBoard.getTemporaryPoints()) {
@@ -128,7 +127,7 @@ public class GameMainFrame extends JFrame {
         centralTabbedPane.add("Personal Goal", returnPersonalGoal());
         centralTabbedPane.add("Common Goals", returnCommonGoalImage());
         centralTabbedPane.add("Chat", new JPanel());
-        selectedTilesSouthPanel.setLayout(new FlowLayout());
+        selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));
         JLabel selectedTilesLabel = new JLabel("You have selected these tiles:  ");
         selectedTilesSouthPanel.add(selectedTilesLabel);
         for(Tile tile : takenTiles) {
@@ -143,7 +142,7 @@ public class GameMainFrame extends JFrame {
         centralTabbedPane.add("Personal Goal", returnPersonalGoal());
         centralTabbedPane.add("Common Goals", returnCommonGoalImage());
         centralTabbedPane.add("Chat", new JPanel());
-        selectedTilesSouthPanel.setLayout(new FlowLayout());
+        selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));
         JLabel selectedTilesLabel = new JLabel("Which tile do you want to insert?  ");
         selectedTilesSouthPanel.add(selectedTilesLabel);
         JPanel takenTilesButtonGrid = new JPanel(new GridLayout(1,3));

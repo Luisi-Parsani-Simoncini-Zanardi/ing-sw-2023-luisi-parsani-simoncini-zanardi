@@ -28,20 +28,23 @@ public class SelectableBoard extends JPanel {
         this.temporaryPoints = temporaryPoints;
         this.selectablePoints = selectablePoints;
         this.gameBoard = gameBoard;
+        setSize(200,200);
         setLayout(new BorderLayout());
 
         JPanel gridPanel = new JPanel();
-        gridPanel.setLayout(new GridLayout(9,9));
+        gridPanel.setLayout(new GridLayout(9,9,3,3));
         for(int i=0;i<Config.boardHeight;i++) {
             for(int j=0;j<Config.boardLength;j++) {
                 Tile tile = gameBoard[i][j];
                 SelectableTile selectableTile = new SelectableTile(tile,new Point(i,j),selectablePoints,temporaryPoints);
                 gridPanel.add(selectableTile);
                 selectableTile.addActionListener(e -> {
-                    switch (gameMainFrame.getTurnState()) {
-                        case OPPONENT_TURN -> new SelectionNoCurrentPlayerMessage();
-                        case YOUR_TURN_SELECTION -> guiManager.sendTileSelectionFromBoard(selectableTile.getPosition());
-                        default -> new SelectionAlreadyConfirmedMessage();
+                    if(e.getSource() instanceof SelectableTile selectedTile){
+                        switch (gameMainFrame.getTurnState()) {
+                            case OPPONENT_TURN -> new SelectionNoCurrentPlayerMessage();
+                            case YOUR_TURN_SELECTION -> guiManager.sendTileSelectionFromBoard(selectedTile.getPosition());
+                            default -> new SelectionAlreadyConfirmedMessage();
+                        }
                     }
                 });
             }
