@@ -7,7 +7,17 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The `AppClientSocket` class is the entry point for the Socket client application.
+ */
 public class AppClientSocket {
+
+    /**
+     * The main method of the `AppClientSocket` class.
+     * @param args the command-line arguments
+     * @throws RemoteException   if a remote exception occurs
+     * @throws NotBoundException if the server is not bound
+     */
     public static void main(String[] args) throws RemoteException, NotBoundException {
         ServerStub serverStub = new ServerStub("192.168.182.73", 4444);
         ClientImplementation client = new ClientImplementation(serverStub);

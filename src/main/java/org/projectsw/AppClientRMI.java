@@ -8,7 +8,17 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/**
+ * The `AppClientRMI` class is the entry point for the RMI client application.
+ */
 public class AppClientRMI {
+
+    /**
+     * The main method of the `AppClientRMI` class.
+     * @param args the command-line arguments
+     * @throws RemoteException   if a remote exception occurs
+     * @throws NotBoundException if the server is not bound
+     */
     public static void main(String[] args) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry("192.168.182.73");
         try {

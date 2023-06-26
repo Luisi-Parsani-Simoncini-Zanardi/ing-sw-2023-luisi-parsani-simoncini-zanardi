@@ -16,8 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Hello world!
- *
+ * The `AppServer` class represents the server application.
  */
 public class AppServer extends UnicastRemoteObject
 {
@@ -28,9 +27,18 @@ public class AppServer extends UnicastRemoteObject
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
+    /**
+     * Constructs an `AppServer` object.
+     * @throws RemoteException if a remote exception occurs
+     */
     protected AppServer() throws RemoteException {
     }
 
+    /**
+     * Returns the singleton instance of the `AppServer`.
+     * @return the `AppServer` instance
+     * @throws RemoteException if a remote exception occurs
+     */
     public static AppServer getInstance() throws RemoteException {
         if (instance == null) {
             instance = new AppServer();
@@ -38,6 +46,10 @@ public class AppServer extends UnicastRemoteObject
         return instance;
     }
 
+    /**
+     * The main method of the `AppServer` class.
+     * @param args the command-line arguments
+     */
     public static void main(String[] args) {
         Thread rmiThread = new Thread() {
             @Override
@@ -73,6 +85,11 @@ public class AppServer extends UnicastRemoteObject
         }
     }
 
+    /**
+     * Starts the RMI server.
+     * @param server the server object
+     * @throws RemoteException if a remote exception occurs
+     */
     private static void startRMI(Server server) throws RemoteException {
         LocateRegistry.createRegistry(1099);
         Registry registry = LocateRegistry.getRegistry("192.168.182.73");//port 1099 standard
@@ -81,6 +98,11 @@ public class AppServer extends UnicastRemoteObject
         server.startPingThread();
     }
 
+    /**
+     * Starts the socket server.
+     * @param server the server object
+     * @throws RemoteException if a remote exception occurs
+     */
     public static void startSocket(Server server) throws RemoteException {
         AppServer instance = getInstance();
         try (ServerSocket serverSocket = new ServerSocket(4444)) {
@@ -109,6 +131,11 @@ public class AppServer extends UnicastRemoteObject
         }
     }
 
+    /**
+     * Returns the server instance associated with this `AppServer`.
+     * @return the server instance
+     * @throws RemoteException if a remote exception occurs
+     */
     public Server getServer() throws RemoteException {
         return this.server;
     }
