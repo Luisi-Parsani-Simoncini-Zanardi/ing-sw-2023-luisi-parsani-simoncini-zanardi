@@ -24,7 +24,7 @@ public class ConfirmNumberOfPlayers extends InputMessage implements Serializable
 
     /**
      * Executes the setNumberOfPlayers method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the player selection
      */
     @Override
     public void execute(Engine engine){

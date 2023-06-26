@@ -13,13 +13,30 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a response message indicating a results notify response.
+ * Extends the ResponseMessage class and implements the Serializable interface.
+ */
 public class ResultsNotify extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Constructs a new ResultsNotify object with the specified SerializableGame.
+     * @param model the SerializableGame object representing the response message
+     */
     public ResultsNotify(SerializableGame model) {
         super(model);
     }
+
+    /**
+     * Executes the ResultsNotify message on the specified TextualUI.
+     * Retrieves the game results from the model, sorts them in descending order,
+     * and displays the results along with the position of the current player.
+     * Updates the TextualUI to indicate that it is no longer waiting for results.
+     *
+     * @param tui the TextualUI on which to execute the action
+     */
     public void execute(TextualUI tui){
         LinkedHashMap<String, Integer> results = model.getResults().entrySet()
                 .stream()

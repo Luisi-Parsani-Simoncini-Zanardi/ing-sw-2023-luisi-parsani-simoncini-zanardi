@@ -25,7 +25,7 @@ public class LoadGameSelection extends InputMessage implements Serializable {
 
     /**
      * Executes the initializeFromSave method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the load game request
      * @throws RemoteException if a remote communication error occurs
      */
     @Override

@@ -25,7 +25,7 @@ public class ConfirmColumnSelection extends InputMessage implements Serializable
 
     /**
      * Executes the selectColumn method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the column selection
      */
     @Override
     public void execute(Engine engine){

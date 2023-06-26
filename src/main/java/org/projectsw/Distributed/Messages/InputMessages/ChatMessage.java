@@ -26,7 +26,7 @@ public class ChatMessage extends InputMessage implements Serializable {
 
     /**
      * Executes the sayInChat method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the chat writing
      */
     @Override
     public void execute(Engine engine){

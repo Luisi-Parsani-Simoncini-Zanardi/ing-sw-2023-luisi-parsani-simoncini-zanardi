@@ -8,12 +8,28 @@ import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Represents a response message indicating a chat response.
+ * Extends the ResponseMessage class and implements the Serializable interface.
+ */
 public class SendChat extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Constructs a new SendChat object with the specified SerializableGame.
+     * @param model the SerializableGame object representing the response message
+     */
     public SendChat(SerializableGame model) {
         super(model);
     }
+
+    /**
+     * Executes the SendChat message on the specified TextualUI.
+     * Displays the chat messages based on the scope and participants of the chat.
+     * Updates the TextualUI to indicate the chat status.
+     * @param tui the TextualUI on which to execute the action
+     */
     @Override
     public void execute(TextualUI tui) {
         int counter = 0;

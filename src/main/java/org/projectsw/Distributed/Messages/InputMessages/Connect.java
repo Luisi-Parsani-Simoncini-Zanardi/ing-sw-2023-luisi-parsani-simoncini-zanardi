@@ -26,7 +26,7 @@ public class Connect extends InputMessage implements Serializable {
 
     /**
      * Executes the Connect method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the connection
      */
     @Override
     public synchronized void execute(Engine engine){

@@ -8,14 +8,26 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Represents a response message indicating an error.
+ * Extends the ResponseMessage class and implements the Serializable interface.
+ */
 public class ErrorMessage extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Constructs a new ErrorMessage object with the specified SerializableGame.
+     * @param model the SerializableGame object representing the response message
+     */
     public ErrorMessage(SerializableGame model) {
         super(model);
     }
 
+    /**
+     * send error message on the provided TextualUI object.
+     * @param tui the TextualUI on which to execute the message
+     */
     @Override
     public void execute(TextualUI tui) {
         System.err.println(model.getClientNickname());

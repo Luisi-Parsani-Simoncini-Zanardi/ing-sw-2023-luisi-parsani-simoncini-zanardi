@@ -25,7 +25,7 @@ public class AskForChat extends InputMessage implements Serializable {
 
     /**
      * Executes the sendChat method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the chat request
      */
     @Override
     public void execute(Engine engine){

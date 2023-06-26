@@ -26,7 +26,7 @@ public class ConfirmTileSelection extends InputMessage implements Serializable {
 
     /**
      * Executes the selectTiles method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the tile selection
      * @throws RemoteException if a remote communication error occurs
      */
     @Override

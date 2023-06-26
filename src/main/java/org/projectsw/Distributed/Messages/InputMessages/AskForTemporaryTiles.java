@@ -25,7 +25,7 @@ public class AskForTemporaryTiles extends InputMessage implements Serializable {
 
     /**
      * Executes the temporaryTilesTransfer method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the temporary tiles request
      * @throws RemoteException if a remote communication error occurs
      */
     @Override

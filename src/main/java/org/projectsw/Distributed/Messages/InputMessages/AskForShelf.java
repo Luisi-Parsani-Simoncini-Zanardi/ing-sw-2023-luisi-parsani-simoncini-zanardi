@@ -25,7 +25,7 @@ public class AskForShelf extends InputMessage implements Serializable {
 
     /**
      * Executes the shelfTransfer method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the shelf request
      * @throws RemoteException if a remote communication error occurs
      */
     @Override

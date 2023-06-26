@@ -25,7 +25,7 @@ public class ConfirmTilePlacement extends InputMessage implements Serializable {
 
     /**
      * Executes the placeTiles method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the tile placement confirmation
      */
     @Override
     public void execute(Engine engine){

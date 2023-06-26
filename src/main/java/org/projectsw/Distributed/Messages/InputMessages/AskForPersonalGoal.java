@@ -25,7 +25,7 @@ public class AskForPersonalGoal extends InputMessage implements Serializable {
 
     /**
      * Executes the personalGoalTransfer method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the personal goal request
      * @throws RemoteException if a remote communication error occurs
      */
     @Override

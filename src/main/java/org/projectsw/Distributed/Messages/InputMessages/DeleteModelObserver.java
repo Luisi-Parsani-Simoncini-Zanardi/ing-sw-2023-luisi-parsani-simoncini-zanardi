@@ -24,7 +24,7 @@ public class DeleteModelObserver extends InputMessage implements Serializable {
 
     /**
      * Executes the removeObserver method on the provided Engine object.
-     * @param engine the Engine object on which to perform the reconnection check
+     * @param engine the Engine object on which to perform the observer deletion
      */
     @Override
     public void execute(Engine engine){
