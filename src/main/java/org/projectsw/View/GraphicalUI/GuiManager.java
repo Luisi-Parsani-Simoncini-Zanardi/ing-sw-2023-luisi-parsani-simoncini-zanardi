@@ -16,6 +16,7 @@ import org.projectsw.View.GraphicalUI.GuiModel.SelectableColumnShelf;
 import org.projectsw.View.GraphicalUI.MessagesGUI.*;
 import org.projectsw.View.SerializableInput;
 
+import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
 
@@ -137,16 +138,17 @@ public class GuiManager extends Observable<InputMessage> {
         }
         waitForResponse1();
         do {
-            new LobbyFrame(this);
+            SwingUtilities.invokeLater( () -> new LobbyFrame(this));
             waitForResponse1();
         } while (!logInCompleted);
         while (endState.equals(UIEndState.LOBBY)) {
-            new WaitingMessageFrame();
+            //new WaitingMessageFrame();
             waitForResponse1();
         }
         if (endState.equals(UIEndState.RUNNING)) {
-            new GameStartedMessageFrame();
-            gameMainFrame.createFrame();
+            //new GameStartedMessageFrame();
+            SwingUtilities.invokeLater( () -> gameMainFrame.createFrame());
+            waitForResponse1();
         }
 
     }
@@ -162,7 +164,7 @@ public class GuiManager extends Observable<InputMessage> {
             new NicknameDeniedFrame();
             new NicknameFrame(this);
         } else {
-            new NicknameAcceptedFrame();
+            //new NicknameAcceptedFrame();
             this.nickname = nickname;
             notifyResponse1();
         }
@@ -247,8 +249,8 @@ public class GuiManager extends Observable<InputMessage> {
         waitForResponse2();
         if(!tileSelectionAccepted) new UnselectableTileMessage();
         if(!tileSelectionPossible) new SelectionNotPossibleAnymoreMessage();
-        gameMainFrame.notifyResponse();
         tileSelectionAccepted = true;
+        gameMainFrame.setAppState(GameMainFrame.AppState.WAITING_PLAYER);
     }
 
     public void confirmTilesSelection() {
@@ -260,7 +262,7 @@ public class GuiManager extends Observable<InputMessage> {
         waitForResponse2();
         gameMainFrame.setTakenTiles(game.getTemporaryTiles());
         gameMainFrame.setTurnState(UITurnState.YOUR_TURN_COLUMN);
-        gameMainFrame.notifyResponse();
+        gameMainFrame.setAppState(GameMainFrame.AppState.WAITING_PLAYER);
     }
 
     public void sendColumnSelection(int number) {
@@ -277,7 +279,7 @@ public class GuiManager extends Observable<InputMessage> {
         else {
             new ColumnSelectionRefusedMessage();
         }
-        gameMainFrame.notifyResponse();
+        //gameMainFrame.notifyResponse();
         setColumnSelectionAccepted(true);
     }
 
@@ -288,7 +290,7 @@ public class GuiManager extends Observable<InputMessage> {
             throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
         }
         waitForResponse2();
-        gameMainFrame.notifyResponse();
+        //gameMainFrame.notifyResponse();
     }
 
 
@@ -296,8 +298,8 @@ public class GuiManager extends Observable<InputMessage> {
         gameMainFrame.setTurnState(state);
     }
 
-    public void notifyGameMainFrameTurnLock() {
-        gameMainFrame.notifyTurnLock();
+   public void notifyGameMainFrameTurnLock() {
+    //gameMainFrame.notifyTurnLock();
     }
 
     public NoSelectableShelf askPersonalGoal() {

@@ -1,7 +1,6 @@
 package org.projectsw.View.GraphicalUI;
 
 import org.projectsw.Model.Tile;
-import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI.GuiModel.*;
 import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
@@ -11,14 +10,19 @@ import java.util.ArrayList;
 
 public class GameMainFrame extends JFrame {
 
+    public enum AppState {
+        WAITING_PLAYER,
+        WAITING_APP
+    }
     private final GuiManager guiManager;
     private final Object lock = new Object();
     private final Object turnLock = new Object();
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
-    private JPanel turnInformationsNorthPanel;
-    private JPanel playPanel;
-    private JTabbedPane centralTabbedPane;
-    private JPanel selectedTilesSouthPanel;
+    private  AppState appState = GameMainFrame.AppState.WAITING_PLAYER;
+    private JPanel turnInformationsNorthPanel = new JPanel();
+    private JTabbedPane centralTabbedPane = new JTabbedPane();
+    private JPanel selectedTilesSouthPanel = new JPanel();
+    private JLabel turnInformationLabel = new JLabel();
     private ArrayList<Tile> takenTiles;
     private int selectedColumn;
 
@@ -27,50 +31,40 @@ public class GameMainFrame extends JFrame {
     }
 
     public void createFrame(){
+
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
 
-        turnInformationsNorthPanel = new JPanel();
         turnInformationsNorthPanel.setPreferredSize(new Dimension(1200,75));
+        selectedTilesSouthPanel.setPreferredSize(new Dimension(50,150));
         add(turnInformationsNorthPanel,BorderLayout.NORTH);
+        add(centralTabbedPane,BorderLayout.CENTER);
+        add(selectedTilesSouthPanel,BorderLayout.SOUTH);
+
+        turnInformationsNorthPanel.add(turnInformationLabel);
+        turnInformationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        turnInformationLabel.setVerticalAlignment(SwingConstants.CENTER);
 
 
+        refresh();
+    }
 
-        do {
-            setVisible(false);
-            JLabel turnInformationLabel = new JLabel(guiManager.askForCurrentPlayerString());
-            turnInformationsNorthPanel.add(turnInformationLabel);
-            turnInformationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            turnInformationLabel.setVerticalAlignment(SwingConstants.CENTER);
+    private void refresh () {
+        centralTabbedPane.removeAll();
+        selectedTilesSouthPanel.removeAll();
+        SwingUtilities.invokeLater( () -> {
+            turnInformationLabel.setText(guiManager.askForCurrentPlayerString());
+        });
 
-            centralTabbedPane = new JTabbedPane();
-            selectedTilesSouthPanel = new JPanel();
-            add(centralTabbedPane,BorderLayout.CENTER);
-            add(selectedTilesSouthPanel,BorderLayout.SOUTH);
-            selectedTilesSouthPanel.setPreferredSize(new Dimension(50,150));
-
-            if(turnState.equals(UITurnState.OPPONENT_TURN)) {
-                refreshNoCurrentPlayer();
-                revalidate();
-                repaint();
-                setVisible(true);
-                waitTurnLock();
-            } else {
-                refreshCurrentPlayer();
-                revalidate();
-                repaint();
-                setVisible(true);
-                waitResponse();
-            }
-
-            turnInformationsNorthPanel.removeAll();
-            centralTabbedPane.removeAll();
-            selectedTilesSouthPanel.removeAll();
-
-        } while (guiManager.getEndState().equals(UIEndState.RUNNING));
-
-        dispose();
+        if(turnState.equals(UITurnState.OPPONENT_TURN)) {
+            SwingUtilities.invokeLater(this::refreshNoCurrentPlayer);
+        } else {
+            SwingUtilities.invokeLater(this::refreshCurrentPlayer);
+        }
+        revalidate();
+        repaint();
+        setVisible(true);
     }
 
     private void refreshNoCurrentPlayer() {
@@ -114,8 +108,11 @@ public class GameMainFrame extends JFrame {
             }
             JButton confirmButton = new JButton("Confirm Selection");
             confirmButton.addActionListener( e -> {
-                new TemporaryTilesConfirmedMessage();
-                guiManager.confirmTilesSelection();
+                if(e.getSource() instanceof JButton) {
+                    new TemporaryTilesConfirmedMessage();
+                    setAppState(AppState.WAITING_APP);
+                    guiManager.confirmTilesSelection();
+                }
             });
             selectedTilesSouthPanel.add(confirmButton);
         }
@@ -167,7 +164,10 @@ public class GameMainFrame extends JFrame {
     }
 
     public void setTurnState(UITurnState turnState) {
-        this.turnState = turnState;
+        synchronized (lock) {
+            refresh();
+            this.turnState = turnState;
+        }
     }
 
     public void setTakenTiles(ArrayList<Tile> takenTiles) {
@@ -198,35 +198,10 @@ public class GameMainFrame extends JFrame {
         return guiManager.askCommonGoal();
     }
 
-    private void waitResponse(){
-        synchronized (lock){
-            try{
-                lock.wait();
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
-            }
-        }
-    }
-
-    public void notifyResponse(){
-        synchronized (lock){
-            lock.notify();
-        }
-    }
-
-    private void waitTurnLock(){
-        synchronized (turnLock){
-            try{
-                turnLock.wait();
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
-            }
-        }
-    }
-
-    public void notifyTurnLock(){
-        synchronized (turnLock){
-            turnLock.notify();
+    public void setAppState(AppState appState) {
+        synchronized (lock) {
+            this.appState = appState;
+            if(appState.equals(AppState.WAITING_PLAYER)) refresh();
         }
     }
 }
