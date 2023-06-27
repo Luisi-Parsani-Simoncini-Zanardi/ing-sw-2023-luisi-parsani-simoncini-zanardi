@@ -69,6 +69,12 @@ public class Engine{
 
     /**
 
+     Returns the current value of the loadFromFile variable.
+     @return The current value of the loadFromFile variable.
+     */
+    public Boolean getLoadFromFile() { return this.loadFromFile; }
+    /**
+
      Returns the current value of the firstClient variable.
      @return The current value of the firstClient variable.
      */

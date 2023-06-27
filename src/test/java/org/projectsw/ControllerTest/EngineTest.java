@@ -15,6 +15,8 @@ import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.RowColumn;
 import org.projectsw.TestUtils;
+import org.projectsw.View.SerializableInput;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.projectsw.Model.Enums.TilesEnum.*;
 import java.awt.*;
@@ -44,7 +46,10 @@ class EngineTest extends TestUtils {
         } catch (RemoteException e) {
             System.err.println("Error creating a Server in Engine test");
         }
+    }
 
+    @Test
+    void getOptionChoosed() {
 
     }
 
@@ -253,10 +258,29 @@ class EngineTest extends TestUtils {
 
     @Test
     void initializeFromSave() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        engine.getGame().getPlayers().add(player);
+        assertFalse(engine.getLoadFromFile());
+
     }
 
     @Test
     void setIsActiveFromClient() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        engine.getGame().getPlayers().add(player);
+        try {
+            Server server = new ServerImplementation();
+            Client client = new ClientImplementation(server);
+            engine.getClients_ID().put(client, "0");
+            engine.getID_Nicks().put("0", "pippo");
+            assertTrue(player.getIsActive());
+            engine.setIsActiveFromClient(client, false);
+            assertFalse(player.getIsActive());
+        } catch (RemoteException e) {
+            System.err.println("Error creating a Server in Engine test");
+        }
     }
 
     @Test
@@ -265,13 +289,27 @@ class EngineTest extends TestUtils {
 
     @Test
     void connect() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        assertFalse(engine.getPlayerReconnection());
+        engine.getGame().getPlayers().add(player);
+        player.setIsActive(false);
+        try {
+            engine.Connect("0");
+        } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue(engine.getPlayerReconnection());
     }
 
     @Test
     void setNumberOfPlayers() {
+        Engine engine = new Engine();
+        engine.setNumberOfPlayers(2,"0");
+        assertEquals(engine.getGame().getNumberOfPlayers(), 2);
     }
 
-    @Test
+   /* @Test
     void boardTransfer() {
     }
 
@@ -293,17 +331,43 @@ class EngineTest extends TestUtils {
 
     @Test
     void commonGoalTransfer() {
-    }
+    }*/
 
     @Test
-    void currentPlayerTransfer() {
+    void transferMethods() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        engine.playerJoin("pippo", "0");
+        engine.currentPlayerTransfer("0");
+        engine.commonGoalTransfer("0");
+        engine.temporaryTilesTransfer("0");
+        engine.personalGoalTransfer("0", "pippo");
+        engine.shelfTransferAll("0");
+        engine.shelfTransfer("pippo", "0");
+        engine.boardTransfer("0");
     }
 
     @Test
     void reconnectionCheck() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        player.setIsActive(false);
+        engine.getGame().getPlayers().add(player);
+        assertFalse(engine.getPlayerReconnection());
+        String id = "000";
+        engine.reconnectionCheck(id);
+        assertTrue(engine.getPlayerReconnection());
     }
 
     @Test
     void notActive() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        engine.getGame().getPlayers().add(player);
+        assertTrue(engine.getGame().getPlayers().get(0).getIsActive());
+        Client client = null;
+        SerializableInput input = new SerializableInput("1", "pippo", client);
+        engine.notActive(input);
+        assertFalse(engine.getGame().getPlayers().get(0).getIsActive());
     }
 }
