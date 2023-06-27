@@ -260,9 +260,21 @@ class EngineTest extends TestUtils {
     void initializeFromSave() {
         Engine engine = new Engine();
         Player player = new Player("pippo", 0);
+        Player player1 = new Player("pluto", 0);
+        engine.getGame().initializeGame(2);
         engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
         assertFalse(engine.getLoadFromFile());
-
+        ArrayList<String> empty = new ArrayList<>();
+        ArrayList<String> pippo = new ArrayList<>();
+        pippo.add("pippo");
+        pippo.add("pluto");
+        assertEquals(empty, engine.getFreeNamesUsedInLastGame());
+        assertFalse(engine.getOptionChoosed());
+        engine.initializeFromSave("0");
+        assertTrue(engine.getLoadFromFile());
+        assertTrue(engine.getOptionChoosed());
+        assertEquals(pippo, engine.getFreeNamesUsedInLastGame());
     }
 
     @Test

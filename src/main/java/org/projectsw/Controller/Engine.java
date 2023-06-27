@@ -67,6 +67,7 @@ public class Engine{
      */
     public Boolean getOptionChoosed() { return this.optionChoosed; }
 
+    public ArrayList<String> getFreeNamesUsedInLastGame() { return this.freeNamesUsedInLastGame; }
     /**
 
      Returns the current value of the loadFromFile variable.
