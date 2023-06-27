@@ -67,6 +67,14 @@ public class Engine{
      */
     public Boolean getOptionChoosed() { return this.optionChoosed; }
 
+    /**
+
+     Sets the optionChoosed to the specified optionChoosed.
+     @param optionChoosed The optionChoosed to be set as the optionChoosed.
+     */
+    public void setOptionChoosed(Boolean optionChoosed) { this.optionChoosed = optionChoosed; }
+
+
     public ArrayList<String> getFreeNamesUsedInLastGame() { return this.freeNamesUsedInLastGame; }
     /**
 
@@ -140,7 +148,7 @@ public class Engine{
      and calls the checkExistingSaveFile() method to determine if a save file exists.
      @return true if a save file exists, false otherwise.
      */
-    private boolean saveFileFound(){
+    public boolean saveFileFound(){
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         return saveGameStatus.checkExistingSaveFile();
     }
@@ -152,7 +160,7 @@ public class Engine{
      and calls the retrieveGame() method to retrieve the game data from the save file.
      @return The retrieved Game object from the save file.
      */
-    private Game retrieveGame(){
+    public Game retrieveGame(){
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         return saveGameStatus.retrieveGame();
     }
@@ -172,6 +180,14 @@ public class Engine{
      @return The current value of the saveGameStatus variable.
      */
     public SaveGameStatus getSaveGameStatus() { return this.saveGameStatus; }
+
+    /**
+
+     Sets the saveGameStatus to the specified saveGameStatus object.
+     @param saveGameStatus The saveGameStatus object to be set as the active game.
+     */
+    public void setSaveGameStatus(SaveGameStatus saveGameStatus) { this.saveGameStatus = saveGameStatus; }
+
 
     /**
 
@@ -220,7 +236,7 @@ public class Engine{
      The new player is then added to the game.
      @param nickname The nickname of the player to be added.
      */
-    private void smallJoin(String nickname) {
+    public void smallJoin(String nickname) {
         int newPlayerPosition = game.getPlayers().size();
         Player newPlayer = new Player(nickname, newPlayerPosition);
         game.addPlayer(newPlayer);
@@ -247,7 +263,7 @@ public class Engine{
      and notifying the nickname of the last player.
      The game status is saved to the specified file path.
      */
-    private void startGame() {
+    public void startGame() {
         game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         fillBoard();
@@ -325,7 +341,7 @@ public class Engine{
      Remove the given point from the temporaryPoints list.
      @param point the point to remove.
      */
-    private void deselectTiles(Point point){
+    public void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
     }
 
@@ -1064,7 +1080,8 @@ public class Engine{
      @param ID the ID of the player
      */
     public synchronized void initializeFromSave(String ID) {
-        setGameFromSave(retrieveGame());
+        if(saveFileFound())
+            setGameFromSave(retrieveGame());
         this.loadFromFile = true;
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
         optionChoosed = true;
