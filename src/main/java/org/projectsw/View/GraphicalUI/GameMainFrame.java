@@ -1,6 +1,8 @@
 package org.projectsw.View.GraphicalUI;
 
 import org.projectsw.Model.Tile;
+import org.projectsw.Util.Config;
+import org.projectsw.Util.PathSolverGui;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI.GuiModel.*;
 import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
@@ -34,7 +36,12 @@ public class GameMainFrame extends JFrame {
 
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 700);
+        setSize(1200, 900);
+        setResizable(false);
+        setTitle("My Shelfie");
+        setBackground(Config.defaultGuiBackgroundColor);
+        ImageIcon imageIcon = new ImageIcon(PathSolverGui.icon());
+        setIconImage(imageIcon.getImage());
 
         turnInformationsNorthPanel.setPreferredSize(new Dimension(1200,75));
         selectedTilesSouthPanel.setPreferredSize(new Dimension(50,150));
@@ -46,8 +53,6 @@ public class GameMainFrame extends JFrame {
         turnInformationLabel.setHorizontalAlignment(SwingConstants.CENTER);
         turnInformationLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-
-        refresh();
     }
 
     private void refresh () {
@@ -130,7 +135,6 @@ public class GameMainFrame extends JFrame {
         for(Tile tile : takenTiles) {
             selectedTilesSouthPanel.add(new NoSelectableTile(tile));
         }
-        //TODO sistema di cambio colonna
     }
 
     private void insertionRefresh() {
@@ -146,13 +150,14 @@ public class GameMainFrame extends JFrame {
         for(Tile tile : takenTiles) {
             SelectableTile selectableTile = new SelectableTile(tile);
             selectableTile.addActionListener(e -> {
+                SwingUtilities.invokeLater(() -> {
                     guiManager.sendTemporaryTilesSelection(takenTiles.indexOf(tile));
+                    appState = AppState.WAITING_APP;
                     takenTiles.remove(tile);
                     if(takenTiles.isEmpty()) {
-                        //TODO rimuovi stampa debug
-                        System.out.println("TakenTiles is empty!");
                         guiManager.sendEndTurn();
                     }
+                });
             });
             takenTilesButtonGrid.add(selectableTile);
         }
@@ -164,10 +169,8 @@ public class GameMainFrame extends JFrame {
     }
 
     public void setTurnState(UITurnState turnState) {
-        synchronized (lock) {
-            refresh();
-            this.turnState = turnState;
-        }
+        this.turnState = turnState;
+        refresh();
     }
 
     public void setTakenTiles(ArrayList<Tile> takenTiles) {

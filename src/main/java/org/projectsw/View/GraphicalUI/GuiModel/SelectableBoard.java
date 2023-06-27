@@ -4,6 +4,7 @@ import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
 import org.projectsw.View.GraphicalUI.GameMainFrame;
 import org.projectsw.View.GraphicalUI.GuiManager;
+import org.projectsw.View.GraphicalUI.MessagesGUI.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,8 +36,13 @@ public class SelectableBoard extends JPanel {
                 gridPanel.add(selectableTile);
                 selectableTile.addActionListener(e -> {
                     if(e.getSource() instanceof SelectableTile selectedTile){
-                        guiManager.sendTileSelectionFromBoard(selectedTile.getPosition());
-                        gameMainFrame.setAppState(GameMainFrame.AppState.WAITING_APP);
+                        switch (gameMainFrame.getTurnState()) {
+                            case YOUR_TURN_SELECTION -> {
+                                guiManager.sendTileSelectionFromBoard(selectedTile.getPosition());
+                                gameMainFrame.setAppState(GameMainFrame.AppState.WAITING_APP);
+                            }
+                            case OPPONENT_TURN -> new SelectionNoCurrentPlayerMessage();
+                        }
                     }
                 });
             }

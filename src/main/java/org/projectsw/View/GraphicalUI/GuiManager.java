@@ -248,7 +248,9 @@ public class GuiManager extends Observable<InputMessage> {
         }
         waitForResponse2();
         if(!tileSelectionAccepted) new UnselectableTileMessage();
-        if(!tileSelectionPossible) new SelectionNotPossibleAnymoreMessage();
+        if(!tileSelectionPossible) {
+            new SelectionNotPossibleAnymoreMessage();
+        }
         tileSelectionAccepted = true;
         gameMainFrame.setAppState(GameMainFrame.AppState.WAITING_PLAYER);
     }
@@ -279,7 +281,6 @@ public class GuiManager extends Observable<InputMessage> {
         else {
             new ColumnSelectionRefusedMessage();
         }
-        //gameMainFrame.notifyResponse();
         setColumnSelectionAccepted(true);
     }
 
@@ -290,16 +291,11 @@ public class GuiManager extends Observable<InputMessage> {
             throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
         }
         waitForResponse2();
-        //gameMainFrame.notifyResponse();
+        gameMainFrame.setAppState(GameMainFrame.AppState.WAITING_PLAYER);
     }
-
 
     public void setGameMainFrameState(UITurnState state) {
         gameMainFrame.setTurnState(state);
-    }
-
-   public void notifyGameMainFrameTurnLock() {
-    //gameMainFrame.notifyTurnLock();
     }
 
     public NoSelectableShelf askPersonalGoal() {

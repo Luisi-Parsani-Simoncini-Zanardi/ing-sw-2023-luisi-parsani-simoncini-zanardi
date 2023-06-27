@@ -42,6 +42,5 @@ public class NextPlayerTurn extends ResponseMessage implements Serializable {
         } else {
             guiManager.setGameMainFrameState(UITurnState.OPPONENT_TURN);
         }
-        guiManager.notifyGameMainFrameTurnLock();
     }
 }

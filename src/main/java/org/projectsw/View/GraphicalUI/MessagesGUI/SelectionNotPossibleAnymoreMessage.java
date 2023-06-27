@@ -5,6 +5,6 @@ import javax.swing.*;
 public class SelectionNotPossibleAnymoreMessage extends MessageFrame{
     public SelectionNotPossibleAnymoreMessage(){
         super();
-        JOptionPane.showMessageDialog(SelectionNotPossibleAnymoreMessage.this,"You can't select more tiles!");
+        JOptionPane.showMessageDialog(SelectionNotPossibleAnymoreMessage.this,"This is the last tile you can choose");
     }
 }

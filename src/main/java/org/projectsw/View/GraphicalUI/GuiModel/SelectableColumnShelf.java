@@ -16,12 +16,11 @@ public class SelectableColumnShelf extends JPanel {
     public SelectableColumnShelf(Tile[][] shelf, GuiManager  guiManager) {
         super();
         this.guiManager = guiManager;
-
         setLayout(new BorderLayout());
 
         JPanel gridPanel = new JPanel();
         gridPanel.setLayout(new GridLayout(7,5,4,4));
-        for(int i = 0; i< Config.shelfHeight; i++) {
+        for(int i=Config.shelfHeight-1; i>=0; i--) {
             for(int j=0; j<Config.shelfLength; j++) {
                 Tile tile = shelf[i][j];
                 NoSelectableTile noSelectableTile = new NoSelectableTile(tile);
