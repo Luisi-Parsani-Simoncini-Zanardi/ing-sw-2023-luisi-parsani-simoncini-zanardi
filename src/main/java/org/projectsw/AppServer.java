@@ -3,11 +3,12 @@ package org.projectsw;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Distributed.ServerImplementation;
 import org.projectsw.Distributed.SocketMiddleware.ClientSkeleton;
-import org.projectsw.View.ConsoleColors;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -21,7 +22,6 @@ import java.util.concurrent.Executors;
  */
 public class AppServer extends UnicastRemoteObject
 {
-
     private static AppServer instance;
 
     private final Server server = new ServerImplementation();
@@ -44,7 +44,7 @@ public class AppServer extends UnicastRemoteObject
             public void run() {
                 try {
                     startRMI(getInstance().getServer());
-                } catch (RemoteException e) {
+                } catch (RemoteException | UnknownHostException e) {
                     System.err.println("Cannot start RMI. This protocol will be disabled.");
                 }
             }
@@ -73,9 +73,9 @@ public class AppServer extends UnicastRemoteObject
         }
     }
 
-    private static void startRMI(Server server) throws RemoteException {
+    private static void startRMI(Server server) throws RemoteException, UnknownHostException {
         LocateRegistry.createRegistry(1099);
-        Registry registry = LocateRegistry.getRegistry("192.168.182.73");//port 1099 standard
+        Registry registry = LocateRegistry.getRegistry(InetAddress.getLocalHost().getHostAddress());//port 1099 standard
         registry.rebind("server", server);
 
         server.startPingThread();
