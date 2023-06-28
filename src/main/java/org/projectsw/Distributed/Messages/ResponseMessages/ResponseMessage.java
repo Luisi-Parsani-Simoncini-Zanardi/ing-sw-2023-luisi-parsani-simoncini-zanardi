@@ -46,5 +46,5 @@ public abstract class ResponseMessage implements Serializable {
      * This method should be overridden in subclasses to define the specific behavior.
      * @param gui the GraphicalUI on which to execute the action
      */
-    public void execute(GraphicalUI gui){}
+    public void execute(GuiManager gui){}
 }

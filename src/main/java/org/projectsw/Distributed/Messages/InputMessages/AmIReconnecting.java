@@ -2,7 +2,6 @@ package org.projectsw.Distributed.Messages.InputMessages;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.View.SerializableInput;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.rmi.RemoteException;

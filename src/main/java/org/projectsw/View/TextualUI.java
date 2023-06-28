@@ -45,7 +45,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private String lastPlayerNick;
     private Boolean tileSelectionPossible = true;
     private Boolean temporaryTilesHold = true;
-    private Boolean noMoreTemporaryTiles = true;
     private HashMap<String, String> nameColors;
     private final Client client;
     Scanner masterScanner = new Scanner(System.in);
@@ -249,16 +248,16 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
      * Sets the value of the noMoreTemporaryTiles flag.
      * @param bool The value to set for the noMoreTemporaryTiles flag.
      */
-    public void setNoMoreTemporaryTiles(boolean bool){
-        this.noMoreTemporaryTiles = bool;
+    public void setTemporaryTilesHold(boolean bool){
+        this.temporaryTilesHold = bool;
     }
 
     /**
      * Sets the value of the noMoreSelectableTiles flag.
      * @param bool The value to set for the noMoreSelectableTiles flag.
      */
-    public void setNoMoreSelectableTiles(boolean bool){
-        this.noMoreSelectableTiles = bool;
+    public void setTileSelectionPossible(boolean bool){
+        this.tileSelectionPossible = bool;
     }
 
     /**

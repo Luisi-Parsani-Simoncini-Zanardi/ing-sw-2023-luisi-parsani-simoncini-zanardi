@@ -29,7 +29,7 @@ public class Connect extends InputMessage implements Serializable {
     @Override
     public synchronized void execute(Engine engine){
         try {
-            engine.connect(input.getAlphanumericID());
+            engine.Connect(input.getAlphanumericID());
         } catch (RemoteException e) {
             throw new RuntimeException("Network error while initializing game: "+e.getMessage());
         } catch (InterruptedException e) {

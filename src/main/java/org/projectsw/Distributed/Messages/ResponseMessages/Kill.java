@@ -37,6 +37,6 @@ public class Kill extends ResponseMessage implements Serializable {
 
     @Override
     public void execute(GuiManager guiManager) {
-        guiManager.kill(0);
+        guiManager.kill(model.getInteger());
     }
 }
