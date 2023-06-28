@@ -1298,7 +1298,7 @@ public class Engine{
             removeObserver(alphanumericID, 0);
         } else {
             if(saveFileFound()){
-                game.setChangedAndNotifyObservers((new gameFound(new SerializableGame(alphanumericID))));
+                game.setChangedAndNotifyObservers((new GameFound(new SerializableGame(alphanumericID))));
             }
             getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID, optionChoosed)));
         }

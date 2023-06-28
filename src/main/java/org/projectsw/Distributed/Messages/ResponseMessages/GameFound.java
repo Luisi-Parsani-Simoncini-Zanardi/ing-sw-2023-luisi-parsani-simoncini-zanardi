@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Represents a response message indicating a game found response.
  * Extends the ResponseMessage class and implements the Serializable interface.
  */
-public class gameFound extends ResponseMessage implements Serializable {
+public class GameFound extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -18,7 +18,7 @@ public class gameFound extends ResponseMessage implements Serializable {
      * Constructs a new gameFound object with the specified SerializableGame.
      * @param model the SerializableGame object representing the response message
      */
-    public gameFound(SerializableGame model) {
+    public GameFound(SerializableGame model) {
         super(model);
     }
 
