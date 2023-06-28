@@ -710,19 +710,7 @@ public class Engine{
         }
     }
 
-    //called when the current player disconnect
-    public void sendNexTurn() {
-        try {
-            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
-            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
     /**
-
      Ends the turn for the current player in the game.
      This method performs the following actions:
      Checks for common goals.
@@ -824,16 +812,6 @@ public class Engine{
     }
 
     /**
-     * Get the player with the most amount of points
-     * @return winner of the game
-     */
-    public Player getWinner() {
-        return Collections.max(getGame().getPlayers(), Comparator.comparing(Player::getPoints));
-    }
-
-
-    /**
-
      Ends the game.
      This method performs the following actions:
      Checks the personal goal.
@@ -845,15 +823,8 @@ public class Engine{
         this.checkEndgameGoal();
         saveGameStatus.deleteSaveFile("src/main/java/org/projectsw/Util/save.txt");
     }
-    /**
-     * reset game
-     */
-    public void resetGame(){
-        this.game = null;
-    }
 
     /**
-
      Sends a chat message within the specified scope.
      This method performs the following actions:
      Checks if the specified scope contains an invalid nickname.
@@ -1289,14 +1260,6 @@ public class Engine{
                 loadFromFile(input.getAlphanumericID(), input.getClientNickname());
             }
         }
-    }
-
-    private void checkKill(){
-        for(String nick : ID_Nicks.getAllValue())
-            if(!game.getPlayersNickname().contains(nick)) {
-                removeObserver(ID_Nicks.getKey(nick), 0);
-            }
-
     }
 
     /**
