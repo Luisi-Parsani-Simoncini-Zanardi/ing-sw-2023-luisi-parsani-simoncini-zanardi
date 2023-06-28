@@ -433,7 +433,6 @@ public class Engine{
      @param ID the ID of the player
      */
     private void sendShelfAndTiles(String ID) {
-       // waitForPreviousMethod();
         try {
             game.setChangedAndNotifyObservers(new SendShelf(new SerializableGame(ID, game)));
         } catch (RemoteException e) {
