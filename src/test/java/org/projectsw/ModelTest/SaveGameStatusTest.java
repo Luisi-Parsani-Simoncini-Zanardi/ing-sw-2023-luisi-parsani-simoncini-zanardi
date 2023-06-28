@@ -24,13 +24,9 @@ class SaveGameStatusTest extends TestUtils {
     /**
      * Initializes a game given its properties.
      * @return the initialized game
-     * @throws NoSuchMethodException when there's no method defined as such
-     * @throws InvocationTargetException when a called method generates an exception
-     * @throws InstantiationException when the class cannot be instantiated
-     * @throws IllegalAccessException when the caller cannot access the method or parameter
      */
 
-    public Game gameInitializer() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Game gameInitializer() {
         Game game = new Game();
         // Engine engine = new Engine();
         ArrayList<Tile> temporaryPoints= new ArrayList<>();
@@ -87,6 +83,15 @@ class SaveGameStatusTest extends TestUtils {
         saveGameStatus.saveGame();
         saveGameStatus.deleteSaveFile();
         assertFalse(saveGameStatus.checkExistingSaveFile("C:\\Users\\Cristina\\Desktop\\saveGameFile\\save.txt"));
+    }
+
+    @Test
+    void deleteSaveFile() {
+        Engine engine = new Engine();
+        engine.saveFileFound();
+        engine.getSaveGameStatus().saveGame();
+        engine.getSaveGameStatus().deleteSaveFile();
+        assertFalse(engine.saveFileFound());
     }
 }
 

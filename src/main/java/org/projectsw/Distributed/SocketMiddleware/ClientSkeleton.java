@@ -4,14 +4,11 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
-import org.projectsw.Util.Observer;
-import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.RemoteException;
@@ -44,16 +41,6 @@ public class ClientSkeleton implements Client, Serializable {
 
     @Override
     public String getNickname() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public Observer<TextualUI, InputMessage> getTuiObserver() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public Observer<GuiManager, InputMessage> getGuiObserver() throws RemoteException {
         return null;
     }
 

@@ -30,10 +30,11 @@ public class Engine{
     private Game game;
     private static int counter = 0;
     private SaveGameStatus saveGameStatus;
-    private final Server server;
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
+
+    private Server server;
     private String firstClient;
     private ArrayList<String> IDToKill = new ArrayList<>();
     private boolean optionChoosed = false;
@@ -716,16 +717,6 @@ public class Engine{
         }
     }
 
-    //called when the current player disconnect
-    public void sendNexTurn() {
-        try {
-            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));
-            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     /**
 
@@ -829,14 +820,6 @@ public class Engine{
         return true;
     }
 
-    /**
-     * Get the player with the most amount of points
-     * @return winner of the game
-     */
-    public Player getWinner() {
-        return Collections.max(getGame().getPlayers(), Comparator.comparing(Player::getPoints));
-    }
-
 
     /**
 
@@ -850,12 +833,6 @@ public class Engine{
         this.checkPersonalGoal();
         this.checkEndgameGoal();
         saveGameStatus.deleteSaveFile("src/main/java/org/projectsw/Util/save.txt");
-    }
-    /**
-     * reset game
-     */
-    public void resetGame(){
-        this.game = null;
     }
 
     /**
@@ -964,7 +941,7 @@ public class Engine{
     public void everlastingKill() {
         try {
             game.setChangedAndNotifyObservers(new Kill(new SerializableGame(Config.broadcastID,0)));
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
     }
 
@@ -1285,14 +1262,6 @@ public class Engine{
                 loadFromFile(input.getAlphanumericID(), input.getClientNickname());
             }
         }
-    }
-
-    private void checkKill(){
-        for(String nick : ID_Nicks.getAllValue())
-            if(!game.getPlayersNickname().contains(nick)) {
-                removeObserver(ID_Nicks.getKey(nick), 0);
-            }
-
     }
 
     /**

@@ -2,30 +2,29 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.ClientImplementation;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Distributed.ServerImplementation;
+import org.projectsw.Exceptions.UnselectableColumnException;
+import org.projectsw.Exceptions.UnselectableTileException;
+import org.projectsw.Model.*;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
-import org.projectsw.Util.Config;
-import org.projectsw.Controller.Engine;
-import org.projectsw.Exceptions.*;
-import org.projectsw.Model.*;
-import org.projectsw.Model.CommonGoal.CommonGoal;
-import org.projectsw.Model.CommonGoal.RowColumn;
-import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.TestUtils;
+import org.projectsw.Util.Config;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.SerializableInput;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.projectsw.Model.Enums.TilesEnum.*;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
 
 class EngineTest extends TestUtils {
 
@@ -82,7 +81,7 @@ class EngineTest extends TestUtils {
      */
     @Test
     void getClientObserverHashMap() {
-        Server server = null;
+        Server server;
         try {
             server = new ServerImplementation();
             Client client = new ClientImplementation(server);
@@ -520,6 +519,7 @@ class EngineTest extends TestUtils {
         Engine engine = new Engine();
         engine.getGame().initializeGame(2);
         engine.saveFileFound();
+        engine.endGame();
         engine.getSaveGameStatus().saveGame();
         assertTrue(engine.saveFileFound());
         engine.getSaveGameStatus().deleteSaveFile();
@@ -536,9 +536,11 @@ class EngineTest extends TestUtils {
         Chat chat = new Chat();
         assertEquals(chat.getMessages(), engine.getGame().getChat().getMessages());
         engine.sayInChat("pippo", "ciao", Config.everyone, "0");
+        engine.sayInChat("pippo", "ciao", Config.error, "0");
         Message mess = new Message("pippo", Config.everyone, "ciao");
         chat.addChatLog(mess);
         assertEquals(chat.getMessages().get(0).getPayload(), engine.getGame().getChat().getMessages().get(0).getPayload());
+
     }
 
     /**
@@ -554,7 +556,6 @@ class EngineTest extends TestUtils {
             engine.setGame(game);
             Player player = new Player("pippo", 0);
             engine.getGame().getPlayers().add(player);
-            HashMap<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
             Observer<Game, ResponseMessage> observer = (o, response) -> {
             };
             engine.getClientObserverHashMap().put(client, observer);
@@ -596,18 +597,21 @@ class EngineTest extends TestUtils {
         Engine engine = new Engine();
         Player player = new Player("pippo", 0);
         Player player1 = new Player("pluto", 0);
-        if (engine.saveFileFound())
-            engine.getSaveGameStatus().deleteSaveFile();
         engine.getGame().initializeGame(2);
         engine.getGame().getPlayers().add(player);
         engine.getGame().getPlayers().add(player1);
+        engine.getGame().setFirstPlayer(player);
         assertFalse(engine.getLoadFromFile());
         ArrayList<String> empty = new ArrayList<>();
         ArrayList<String> pippo = new ArrayList<>();
+        engine.saveFileFound();
+        pippo.add("pippo");
+        pippo.add("pluto");
         pippo.add("pippo");
         pippo.add("pluto");
         assertEquals(empty, engine.getFreeNamesUsedInLastGame());
         assertFalse(engine.getOptionChoosed());
+        engine.getSaveGameStatus().saveGame();
         engine.initializeFromSave("0");
         assertTrue(engine.getLoadFromFile());
         assertTrue(engine.getOptionChoosed());
@@ -619,7 +623,7 @@ class EngineTest extends TestUtils {
      */
     @Test
     void getNickFromClient() {
-        Server server = null;
+        Server server;
         try {
             server = new ServerImplementation();
             Client client = new ClientImplementation(server);
@@ -665,8 +669,8 @@ class EngineTest extends TestUtils {
      */
     @Test
     void takeNick() {
-        Server server = null;
-        Client client = null;
+        Server server;
+        Client client;
         try {
             server = new ServerImplementation();
         } catch (RemoteException e) {
@@ -685,6 +689,8 @@ class EngineTest extends TestUtils {
         engine.getGame().setFirstPlayer(player);
         engine.takeNick(new SerializableInput("0", "lupus", new Point(1,1), client));
         assertEquals(engine.getGame().getPlayers().size(), 2);
+        engine.initializeFromSave("0");
+        engine.takeNick(new SerializableInput("0", "zzz", new Point(1,1), client));
     }
 
     /**
@@ -703,6 +709,34 @@ class EngineTest extends TestUtils {
             throw new RuntimeException(e);
         }
         assertTrue(engine.getPlayerReconnection());
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
+        try {
+            engine.Connect("1");
+        } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue(engine.getPlayerReconnection());
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
+    }
+
+    @Test
+    void connect2() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        assertFalse(engine.getPlayerReconnection());
+        engine.getGame().getPlayers().add(player);
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
+        try {
+            engine.Connect("1");
+        } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertFalse(engine.getPlayerReconnection());
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
     }
 
     /**
@@ -732,6 +766,7 @@ class EngineTest extends TestUtils {
         engine.boardTransfer("0");
         engine.sendChat(" ", "0");
         engine.sendResults();
+        engine.everlastingKill();
     }
 
     /**

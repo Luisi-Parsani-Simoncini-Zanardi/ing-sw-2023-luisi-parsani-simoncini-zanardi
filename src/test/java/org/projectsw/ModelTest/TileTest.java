@@ -38,4 +38,13 @@ public class TileTest {
             assertEquals(tile, tile);
         });
     }
+
+    /**
+     * Test toString method from Tile class
+     */
+    @Test
+    void toStringTest() {
+        Tile tile = new Tile(TilesEnum.GAMES, 0);
+        assertEquals(tile.toString(), "GAMES");
+    }
 }

@@ -66,13 +66,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
      */
     public void setReturnedFlag(boolean returnedFlag){this.returnedFlag=returnedFlag;}
 
-    /**
-     * Gets the value of the flag.
-     * @return The value of the flag.
-     */
-    public boolean getFlag() {
-        return flag;
-    }
 
     /**
      * Gets the value of the turnState.
@@ -129,14 +122,12 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     public void setPreviousGameExist(boolean previousGameExist){
         this.previousGameExist=previousGameExist;
     }
-    public String getAlphanumericKey() {return this.alphanumericKey; }
 
     /**
      * Gets the value of the client.
      * @return The value of the client.
      */
     public Client getClient(){return this.client;}
-    public boolean getNickFlag() { return this.nickFlag; }
 
     /**
      * Gets the value of the string.
@@ -1056,14 +1047,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
             setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred: " + e.getCause());
-        }
-    }
-
-    private void playerReconnection() {
-        try {
-            setChangedAndNotifyObservers(new AmIReconnecting(new SerializableInput(alphanumericKey, getNickname(), client)));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
         }
     }
 
