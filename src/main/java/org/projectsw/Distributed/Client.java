@@ -1,7 +1,6 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.View.TextualUI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

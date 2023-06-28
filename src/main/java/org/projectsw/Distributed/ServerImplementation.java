@@ -119,13 +119,11 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         List<Client> disconnectedClients = new ArrayList<>();
         for (Client client : controller.getClients_ID().getAllKey()) {
             try {
-                client.ping(); // Verifica la connessione del client
+                client.ping();
             } catch (RemoteException e) {
-                // Il client non è raggiungibile, consideralo disconnesso
                 disconnectedClients.add(client);
             }
         }
-        // Rimuovi i client disconnessi dalla registrazione dei client
         unregisterClients(disconnectedClients);
         if(controller.getClients_ID().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING) && controller.getOptionChosen() && controller.getFreeNamesUsedInLastGame().isEmpty()){
             try {

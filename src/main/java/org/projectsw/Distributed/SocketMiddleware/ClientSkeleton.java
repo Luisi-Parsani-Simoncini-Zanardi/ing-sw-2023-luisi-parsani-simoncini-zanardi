@@ -4,7 +4,6 @@ import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
-import org.projectsw.View.TextualUI;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
