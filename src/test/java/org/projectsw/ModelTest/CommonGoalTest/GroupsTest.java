@@ -1,6 +1,7 @@
 package org.projectsw.ModelTest.CommonGoalTest;
 
 import org.junit.jupiter.api.Test;
+import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.CommonGoalStrategy;
 import org.projectsw.Model.CommonGoal.Groups;
@@ -222,5 +223,20 @@ class GroupsTest {
         catch(Exception ignore){}
 
         assertFalse(common.checkRequirements(shelf));
+    }
+
+    /**
+     * test decreaseRedeemedNumber() on commonGoal class
+     */
+    @Test
+    void decreaseRedeemedNumber() {
+        CommonGoalStrategy strategy = new Groups(4);
+        CommonGoal common = new CommonGoal(strategy);
+        try {
+            common.decreaseRedeemedNumber();
+        } catch (MinimumRedeemedPointsException e) {
+            throw new RuntimeException(e);
+        }
+        assertEquals(common.getRedeemedNumber(), 3);
     }
 }

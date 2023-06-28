@@ -33,6 +33,8 @@ public class Engine{
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
+
+    private Server server;
     private String firstClient;
     private ArrayList<String> IDToKill = new ArrayList<>();
     private boolean optionChoosed = false;
@@ -929,7 +931,7 @@ public class Engine{
     public void everlastingKill() {
         try {
             game.setChangedAndNotifyObservers(new Kill(new SerializableGame(Config.broadcastID,0)));
-        } catch (RemoteException e) {
+        } catch (RemoteException ignored) {
         }
     }
 
@@ -1052,17 +1054,7 @@ public class Engine{
             setGameFromSave(retrieveGame());
         this.loadFromFile = true;
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
-        optionChoosed = true;
-        try {
-            game.setChangedAndNotifyObservers(new OptionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        optionChooseSet(ID);
     }
 
     /**
@@ -1342,6 +1334,10 @@ public class Engine{
     public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);
+        optionChooseSet(ID);
+    }
+
+    private void optionChooseSet(String ID) {
         optionChoosed = true;
         try {
             game.setChangedAndNotifyObservers(new OptionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));

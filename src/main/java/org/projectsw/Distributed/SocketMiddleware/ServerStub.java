@@ -62,6 +62,7 @@ public class ServerStub implements Server {
         try {
             oos.writeObject(input);
             oos.flush();
+            oos.reset();
         } catch (IOException e) {
             throw new RemoteException("An error while sending an input message: ", e);
         }

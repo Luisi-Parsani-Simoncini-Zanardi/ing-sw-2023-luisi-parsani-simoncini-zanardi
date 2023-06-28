@@ -300,4 +300,35 @@ class ShelfTest {
             player.clearTemporaryTiles();
         }
     }
+
+    /**
+     * test maxFreeColumnSpace() method on the shelf class
+     */
+    @Test
+    void maxFreeColumnSpace() {
+        Shelf shelf = new Shelf();
+        shelf.insertTiles(new Tile(TilesEnum.GAMES, 0),0,0 );
+        assertEquals(shelf.maxFreeColumnSpace(), 3);
+    }
+
+    /**
+     * test shelf(int b) method on the shelf class
+     */
+    @Test
+    void shelfB() {
+        Shelf shelf = new Shelf(1);
+        assertNull(shelf.getSelectableColumns());
+        assertNull(shelf.getSelectedColumn());
+        assertTrue(shelf.isSelectionPossible());
+
+    }
+
+    /**
+     * visual test for print methods
+     */
+    @Test
+    void printShelf() {
+        Shelf shelf = new Shelf();
+        shelf.printShelf();
+    }
 }
