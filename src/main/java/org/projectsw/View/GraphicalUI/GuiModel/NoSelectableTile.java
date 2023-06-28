@@ -20,7 +20,6 @@ public class NoSelectableTile extends JLabel {
             case PLANTS -> icon = new ImageIcon(PathSolverGui.plants(tile.getImageNumber()));
             case TROPHIES -> icon = new ImageIcon(PathSolverGui.trophies(tile.getImageNumber()));
             case BOOKS -> icon = new ImageIcon(PathSolverGui.books(tile.getImageNumber()));
-            case EMPTY -> setText("E");
         }
         Border separatorBorder = BorderFactory.createMatteBorder(1, 1, 0, 0, Color.BLACK);
         setPreferredSize(new Dimension(size,size));
@@ -28,7 +27,10 @@ public class NoSelectableTile extends JLabel {
         if(!tile.getTile().equals(TilesEnum.EMPTY) && !tile.getTile().equals(TilesEnum.UNUSED)){
             assert icon != null;
             Image image = icon.getImage().getScaledInstance(size,size,Image.SCALE_SMOOTH);
-            setIcon(new ImageIcon(image));
+            ImageIcon imageIcon = new ImageIcon(image);
+            setIcon(imageIcon);
         }
+        setHorizontalAlignment(CENTER);
+        setVerticalAlignment(CENTER);
     }
 }

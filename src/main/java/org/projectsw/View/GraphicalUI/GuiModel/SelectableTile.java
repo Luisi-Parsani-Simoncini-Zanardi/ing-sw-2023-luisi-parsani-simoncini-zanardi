@@ -27,10 +27,11 @@ public class SelectableTile extends JButton {
             case TROPHIES -> icon = new ImageIcon(PathSolverGui.trophies(tile.getImageNumber()));
             case BOOKS -> icon = new ImageIcon(PathSolverGui.books(tile.getImageNumber()));
         }
+
         setContentAreaFilled(false);
         if(!tile.getTile().equals(TilesEnum.EMPTY) && !tile.getTile().equals(TilesEnum.UNUSED)){
             assert icon != null;
-            Image image = icon.getImage().getScaledInstance(20,20,Image.SCALE_SMOOTH);
+            Image image = icon.getImage().getScaledInstance(50,50,Image.SCALE_SMOOTH);
             setIcon(new ImageIcon(image));
         }
         if(selectablePoints.contains(point)){

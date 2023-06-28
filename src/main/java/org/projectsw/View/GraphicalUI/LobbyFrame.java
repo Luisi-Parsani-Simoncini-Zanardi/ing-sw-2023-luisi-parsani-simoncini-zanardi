@@ -9,7 +9,7 @@ public class LobbyFrame extends StartingMenuFrame {
 
     public LobbyFrame(GuiManager guiManager){
         super(guiManager);
-
+        setTitle("My Shelfie Launcher");
         JPanel menuButtonsPanel = new JPanel();
         menuButtonsPanel.setLayout(new GridLayout(3,1));
         menuButtonsPanel.setBackground(Config.defaultGuiBackgroundColor);

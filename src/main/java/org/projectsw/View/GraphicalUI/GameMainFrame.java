@@ -105,7 +105,7 @@ public class GameMainFrame extends JFrame {
             chooseTilesLabel.setHorizontalAlignment(SwingConstants.CENTER);
             chooseTilesLabel.setVerticalAlignment(SwingConstants.CENTER);
         } else {
-            selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));
+            selectedTilesSouthPanel.setLayout(new FlowLayout());
             JLabel selectedTilesLabel = new JLabel("You have selected these tiles:  ");
             selectedTilesSouthPanel.add(selectedTilesLabel);
             for(Point point : selectableBoard.getTemporaryPoints()) {
@@ -119,6 +119,7 @@ public class GameMainFrame extends JFrame {
                     guiManager.confirmTilesSelection();
                 }
             });
+            confirmButton.setContentAreaFilled(false);
             selectedTilesSouthPanel.add(confirmButton);
         }
     }
@@ -159,6 +160,7 @@ public class GameMainFrame extends JFrame {
                     }
                 });
             });
+            selectableTile.setContentAreaFilled(false);
             takenTilesButtonGrid.add(selectableTile);
         }
         selectedTilesSouthPanel.add(takenTilesButtonGrid);

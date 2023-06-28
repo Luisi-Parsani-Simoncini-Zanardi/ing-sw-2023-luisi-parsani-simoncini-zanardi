@@ -7,6 +7,7 @@ public class ColumnButton extends JButton {
     public ColumnButton(String label,int column) {
         super(label);
         this.column = column;
+        setContentAreaFilled(false);
     }
     public int getColumn() {
         return column;
