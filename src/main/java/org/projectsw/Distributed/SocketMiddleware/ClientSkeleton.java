@@ -77,6 +77,7 @@ public class ClientSkeleton implements Client, Serializable {
         try {
             oos.writeObject(response);
             oos.flush();
+            oos.reset();
         } catch (IOException e) {
             throw new RemoteException("An error while sending a response message: ", e);
         }
