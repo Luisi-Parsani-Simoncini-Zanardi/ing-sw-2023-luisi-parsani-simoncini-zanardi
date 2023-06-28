@@ -15,9 +15,6 @@ public interface Client extends Remote {
      */
     void update(ResponseMessage response) throws RemoteException;
     void kill()throws RemoteException;
-    String getNickname() throws RemoteException;
-    Observer<TextualUI, InputMessage> getTuiObserver() throws  RemoteException;
-    Observer<GuiManager, InputMessage> getGuiObserver() throws  RemoteException;
     void ping() throws  RemoteException;
     TextualUI getTui()throws  RemoteException;
 }

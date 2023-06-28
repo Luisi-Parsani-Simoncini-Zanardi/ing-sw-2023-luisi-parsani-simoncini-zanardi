@@ -43,21 +43,6 @@ public class ClientSkeleton implements Client, Serializable {
     }
 
     @Override
-    public String getNickname() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public Observer<TextualUI, InputMessage> getTuiObserver() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public Observer<GuiManager, InputMessage> getGuiObserver() throws RemoteException {
-        return null;
-    }
-
-    @Override
     public void ping() throws RemoteException {
 
     }
@@ -77,6 +62,7 @@ public class ClientSkeleton implements Client, Serializable {
         try {
             oos.writeObject(response);
             oos.flush();
+            oos.reset();
         } catch (IOException e) {
             throw new RemoteException("An error while sending a response message: ", e);
         }

@@ -136,39 +136,6 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
     }
 
     /**
-     * Retrieves the nickname from the TextualUI.
-     * Returns the nickname associated with the user interface.
-     * @return the nickname of the user
-     * @throws RemoteException if a remote communication error occurs
-     */
-    @Override
-    public String  getNickname() throws RemoteException{
-        return tui.getNickname();
-    }
-
-    /**
-     * Retrieves the tuiObserver from the TextualUI.
-     * Returns the tuiObserver associated with the user interface.
-     * @return the tuiObserver of the user
-     * @throws RemoteException if a remote communication error occurs
-     */
-    @Override
-    public Observer<TextualUI, InputMessage>  getTuiObserver() throws RemoteException{
-        return tuiObserver;
-    }
-
-    /**
-     * Retrieves the guiObserver from the TextualUI.
-     * Returns the guiObserver associated with the user interface.
-     * @return the guiObserver of the user
-     * @throws RemoteException if a remote communication error occurs
-     */
-    @Override
-    public Observer<GuiManager, InputMessage>  getGuiObserver()  throws RemoteException{
-        return guiObserver;
-    }
-
-    /**
      * empty method used for checking the client connection status
      * @throws RemoteException
      */
