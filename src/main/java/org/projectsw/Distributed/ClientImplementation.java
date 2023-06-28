@@ -131,7 +131,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
 
     /**
      * empty method used for checking the client connection status
-     * @throws RemoteException
+     * @throws RemoteException if a remote communication error occurs
      */
     @Override
     public void ping() throws RemoteException {

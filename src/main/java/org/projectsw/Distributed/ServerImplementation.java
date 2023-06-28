@@ -72,9 +72,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
      */
     @Override
     public void register(Client client) throws RemoteException {
-        Observer<Game, ResponseMessage> observer = (o, response) -> {
-            client.update(response);
-        };
+        Observer<Game, ResponseMessage> observer = (o, response) -> client.update(response);
         controller.getClientObserverHashMap().put(client, observer);
         this.model.addObserver(observer);
     }
