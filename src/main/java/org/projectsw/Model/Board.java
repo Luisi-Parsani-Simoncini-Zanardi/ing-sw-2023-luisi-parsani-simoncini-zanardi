@@ -14,8 +14,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-//TODO DAVIDE: aggiungere nei commenti il self-updating e sistemare tutti i test (e aggiungerne di nuovi)
-
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
  */
@@ -27,7 +25,9 @@ public class Board extends Observable<GameEvent> {
     private ArrayList<Point> selectablePoints;
 
     /**
-     * Constructs a Board full of unused tiles.
+     * Creates a new instance of the Board class with the specified selected points and temporary points.
+     * @param selPoints    the selected points
+     * @param tmpPoints    the temporary points
      */
     public Board(ArrayList<Point> selPoints, ArrayList<Point> tmpPoints){
         board = new Tile[Config.boardHeight][Config.boardLength];
@@ -40,7 +40,6 @@ public class Board extends Observable<GameEvent> {
                 board[i][j] = new Tile(TilesEnum.UNUSED,0);
             }
         }
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -67,7 +66,6 @@ public class Board extends Observable<GameEvent> {
         }catch (IOException e){
             System.out.println("Error opening the json"+e.getMessage());
         }
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -80,7 +78,6 @@ public class Board extends Observable<GameEvent> {
         this.bag = board.getBag();
         this.temporaryPoints = board.getTemporaryPoints();
         this.updateSelectablePoints();
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -132,7 +129,6 @@ public class Board extends Observable<GameEvent> {
         if(board[0].length != Config.boardLength) throw new IllegalArgumentException();
         this.board = board;
         updateSelectablePoints();
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -141,16 +137,6 @@ public class Board extends Observable<GameEvent> {
      */
     public void setEndGame(boolean endGame) {
         this.endGame = endGame;
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
-    }
-
-    /**
-     * Sets the temporaryPoints arrayList as a given arrayList of Points.
-     * @param temporaryPoints the arrayList of Points to set.
-     */
-    public void setTemporaryPoints(ArrayList<Point> temporaryPoints) {
-        this.temporaryPoints = temporaryPoints;
-        updateSelectablePoints();
     }
 
     /**
@@ -167,7 +153,6 @@ public class Board extends Observable<GameEvent> {
             Tile tmp = board[(int) point.getX()][(int) point.getY()];
             board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);
             updateSelectablePoints();
-            //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
             return tmp;
         }
     }
@@ -183,13 +168,6 @@ public class Board extends Observable<GameEvent> {
         if(row>Config.boardHeight || column>Config.boardLength) throw new IndexOutOfBoundsException("Index out of bounds");
         else board[row][column]=tile;
         updateSelectablePoints();
-    }
-
-    /**
-     * notify the completion of the fillBoard
-     */
-    public void finishedUpdateBoard() {
-        //setChangedAndNotifyObservers(Game.Event.UPDATED_BOARD);
     }
 
     /**
@@ -232,6 +210,9 @@ public class Board extends Observable<GameEvent> {
         updateSelectablePoints();
     }
 
+    /**
+     * Updates the selectable points based on the number of temporary points.
+     */
     public void updateSelectablePoints() {
         ArrayList<Point> newSelectablePoints = new ArrayList<>();
 
@@ -357,7 +338,7 @@ public class Board extends Observable<GameEvent> {
     public void printBoard(){
         String printedString = "  ";
         for(int i=0;i<Config.boardLength;i++) {
-            Integer integer = i+1;
+            int integer = i+1;
             printedString = printedString + "     " +  integer + "      ";
         }
         System.out.println(printedString);
@@ -371,6 +352,12 @@ public class Board extends Observable<GameEvent> {
         }
     }
 
+    /**
+     * Returns a string representation of the color and marker for a given position on the board.
+     * @param i the row index
+     * @param j the column index
+     * @return the string representation of the color and marker
+     */
     private String stringColorAndMarker(int i, int j){
         String result = "";
         TilesEnum type = board[i][j].getTile();
@@ -392,6 +379,13 @@ public class Board extends Observable<GameEvent> {
         return result;
     }
 
+    /**
+     * Returns a string of padding spaces for left or right alignment of tile printing.
+     * @param left true for left alignment, false for right alignment
+     * @param i the row index
+     * @param j the column index
+     * @return the string of padding spaces
+     */
     private String printPadding (boolean left, int i, int j){
         float padding = 12;
         String paddingSpaces = "";

@@ -108,12 +108,22 @@ public class Game extends Observable<ResponseMessage> {
         return players;
     }
 
+    /**
+     * Returns an ArrayList of player nicknames.
+     * @return ArrayList of player nicknames
+     */
     public ArrayList<String> getPlayersNickname() {
         ArrayList<String> nicks = new ArrayList<>();
         for (Player player: players)
             nicks.add(player.getNickname());
         return nicks;
     }
+
+    /**
+     * Returns an ArrayList of player nicknames.
+     * @param players the ArrayList of players
+     * @return ArrayList of player nicknames
+     */
     public ArrayList<String> getPlayersNickname(ArrayList<Player> players) {
         ArrayList<String> nicks = new ArrayList<>();
         for (Player player: players)
@@ -200,11 +210,6 @@ public class Game extends Observable<ResponseMessage> {
      */
     public void setBoard(Board board) {
         this.board = board;
-        /*try {
-            setChangedAndNotifyObservers(GameEvent.UPDATED_BOARD);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while setting the board: "+e.getCause());
-        }*/
     }
 
     /**
@@ -213,11 +218,6 @@ public class Game extends Observable<ResponseMessage> {
      */
     public void setChat(Chat chat) {
         this.chat = chat;
-        /*try {
-            setChangedAndNotifyObservers(GameEvent.UPDATED_CHAT);
-        } catch (RemoteException e) {
-            throw new RuntimeException("Network error while setting the chat: "+e.getCause());
-        }*/
     }
 
     /**

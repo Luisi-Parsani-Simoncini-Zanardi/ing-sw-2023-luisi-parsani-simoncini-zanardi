@@ -19,7 +19,8 @@ public class PersonalGoal {
     private static List<Integer> usedCodes = new ArrayList<>(); //called codes
 
     /**
-     * Constructs a new EMPTY PersonalGoal
+     * Constructs a new instance of the PersonalGoal class.
+     * Initializes the personal goal array with empty tiles.
      */
     public PersonalGoal(){
         personalGoal = new TilesEnum[Config.shelfHeight][Config.shelfLength];

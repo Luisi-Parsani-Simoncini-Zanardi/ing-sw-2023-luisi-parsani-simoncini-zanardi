@@ -7,6 +7,11 @@ import org.projectsw.Model.Enums.TilesEnum;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * The Groups class represents a game strategy where the goal is to have a certain number of groups of tiles on the bookshelf.
+ * If strategyCode = 3, the player's shelf must have at least four groups, each containing at least four tiles of the same type.
+ * If strategyCode = 4, the player's shelf must have at least six groups, each containing at least two tiles of the same type.
+ */
 public class Groups extends CommonGoalStrategy{
 
     private final int groupDim;

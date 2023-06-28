@@ -16,8 +16,8 @@ class BoardTest {
      */
     @Test
     void testUpdateBoard(){
-        Board board = new Board();
-        assertEquals(TilesEnum.UNUSED, board.getBoard()[5][5].getTile());
+        Board board = new Board(4);
+        assertEquals(TilesEnum.UNUSED, board.getBoard()[0][0].getTile());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 5,5);
         assertEquals(TilesEnum.CATS, board.getBoard()[5][5].getTile());
     }
@@ -27,7 +27,7 @@ class BoardTest {
      */
     @Test
     void testGetBoard(){
-        Board board = new Board();
+        Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         board.updateBoard(new Tile(TilesEnum.FRAMES, 0), 4,1);
         board.updateBoard(new Tile(TilesEnum.PLANTS, 0), 4,2);
@@ -45,7 +45,7 @@ class BoardTest {
      */
     @Test
     void testGetTileFromBoard(){
-        Board board = new Board();
+        Board board = new Board(4);
         TilesEnum temp;
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 4,0);
         assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
@@ -59,7 +59,7 @@ class BoardTest {
      */
     @Test
     void testEndGame(){
-        Board board = new Board();
+        Board board = new Board(4);
         board.setEndGame(false);
         assertFalse(board.isEndGame());
         board.setEndGame(true);
@@ -71,13 +71,13 @@ class BoardTest {
      */
     @Test
     void integrityTestUnusedBoard(){
-        Board board = new Board();
+        Board board = new Board(4);
         assertEquals(9,board.getBoard().length);
         assertEquals(9,board.getBoard()[0].length);
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
                 Tile tile = board.getBoard()[i][j];
-                assertEquals(tile.getTile(),TilesEnum.UNUSED);
+                assertTrue(tile.getTile().equals(TilesEnum.UNUSED)||tile.getTile().equals(TilesEnum.EMPTY));
             }
         }
     }
@@ -87,7 +87,7 @@ class BoardTest {
      * from 2 to 4 players, it also checks if the number of empty and unused tiles is correct.
      */
     @Test
-    void integrityTestBoards() throws InvalidNumberOfPlayersException {
+    void integrityTestBoards() {
         for(int p=2;p<5;p++) {
             int emptyNumber = 0;
             int unusedNumber = 0;
@@ -119,22 +119,11 @@ class BoardTest {
     }
 
     /**
-     * Tests if the constructor of the board throws correctly the IllegalArgumentException for a number
-     * of players higher or lower than expected.
-     */
-    @Test
-    void testInvalidPlayersNumberWrong() {
-        assertThrows(InvalidNumberOfPlayersException.class, () -> new Board(5));
-        assertThrows(InvalidNumberOfPlayersException.class, () -> new Board(1));
-
-    }
-
-    /**
      * Tests if the constructor that copies a board in another does it correctly.
      */
     @Test
     void integrityTestCopiedBoard(){
-        Board board = new Board();
+        Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
@@ -159,7 +148,7 @@ class BoardTest {
      */
     @Test
     void getTileFromBoard(){
-        Board board1 = new Board();
+        Board board1 = new Board(4);
         board1.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
         board1.updateBoard(new Tile(TilesEnum.CATS, 0), 1,1);
         board1.updateBoard(new Tile(TilesEnum.CATS, 0), 2,2);
@@ -179,7 +168,7 @@ class BoardTest {
      */
     @Test
     public void testGetTileFromBoardInvalidRow() {
-        Board board = new Board();
+        Board board = new Board(4);
         assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(new Point(9,0)));
     }
 
@@ -188,7 +177,7 @@ class BoardTest {
      */
     @Test
     public void testGetTileFromBoardInvalidColumn() {
-        Board board = new Board();
+        Board board = new Board(4);
         assertThrows(IndexOutOfBoundsException.class, () -> board.getTileFromBoard(new Point(0,9)));
     }
 
@@ -197,7 +186,7 @@ class BoardTest {
      */
     @Test
     void inAndSetEndGame(){
-        Board board = new Board();
+        Board board = new Board(4);
         board.setEndGame(false);
         assertFalse(board.isEndGame());
         board.setEndGame(true);
@@ -209,12 +198,12 @@ class BoardTest {
      */
     @Test
     void updateBoardTest(){
-        Board board = new Board();
+        Board board = new Board(3);
         assertEquals(TilesEnum.UNUSED, board.getBoard()[0][0].getTile());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
         for(int i=0;i<9;i++){
             for(int j=0;j<9;j++){
-                if(i != 0 && j != 0) assertEquals(TilesEnum.UNUSED,board.getBoard()[i][j].getTile());
+                if(i != 0 && j != 0) assertTrue(board.getBoard()[i][j].getTile().equals(TilesEnum.UNUSED)||board.getBoard()[i][j].getTile().equals(TilesEnum.EMPTY));
             }
         }
         assertEquals(TilesEnum.CATS, board.getBoard()[0][0].getTile());
@@ -225,7 +214,7 @@ class BoardTest {
      */
     @Test
     public void testUpdateBoardInvalidRow() {
-        Board board = new Board();
+        Board board = new Board(4);
         assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 9, 0));
     }
 
@@ -234,7 +223,7 @@ class BoardTest {
      */
     @Test
     public void testUpdateBoardInvalidColumn() {
-        Board board = new Board();
+        Board board = new Board(4);
         assertThrows(IndexOutOfBoundsException.class, () -> board.updateBoard(new Tile(TilesEnum.CATS, 1), 0, 9));
     }
 
@@ -243,7 +232,7 @@ class BoardTest {
      */
     @Test
     public void integrationWithBagTest(){
-        Board board = new Board();
+        Board board = new Board(4);
         assertEquals(132,board.getBag().getBagSize());
         for(int i=131;i>=0;i--){
             assertNotEquals(TilesEnum.EMPTY,board.getBag().pop().getTile());
@@ -257,7 +246,7 @@ class BoardTest {
      * Tests if the isBoardEmpty method correctly retrieve the board status
      */
     @Test
-    public void isBoardEmptyTest() throws InvalidNumberOfPlayersException {
+    public void isBoardEmptyTest(){
         Board board = new Board(3);
         assertTrue(board.isBoardEmpty());
         board.updateBoard(new Tile(TilesEnum.CATS, 0), 0,0);
@@ -271,7 +260,7 @@ class BoardTest {
      * Tests if getSelectablePoints and updateSelectablePoints works correctly by printing some tests cases.
      */
     @Test
-    public void getFirstSelectablePointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
+    public void getFirstSelectablePointsTest() throws UnselectableTileException {
         Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
@@ -314,7 +303,7 @@ class BoardTest {
      * Tests if addTemporaryPoints throws correctly the UnselectableTileException when required.
      */
     @Test
-    void unselectableTilesInAddTemporaryPointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
+    void unselectableTilesInAddTemporaryPointsTest() throws UnselectableTileException {
         Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
@@ -340,7 +329,7 @@ class BoardTest {
      * the end (Test 4) also tests if cleanTemporaryPoints works correctly.
      */
     @Test
-    void removeTemporaryPointsTest() throws InvalidNumberOfPlayersException, UnselectableTileException {
+    void removeTemporaryPointsTest() throws UnselectableTileException {
         Board board = new Board(4);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
         board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);

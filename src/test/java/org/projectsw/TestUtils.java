@@ -90,24 +90,6 @@ public class TestUtils {
             }
         }
         assertEquals(boardTest.isEndGame(), boardAssert.isEndGame());
-        /* assertEqualsBag(boardTest.getBag(), boardAssert.getBag());
-        for(int i=0; i<boardTest.getSelectablePoints().size(); i++)
-            assertEqualsPoint(boardTest.getSelectablePoints().get(i), boardAssert.getSelectablePoints().get(i));
-        for(int i=0; i<boardTest.getTemporaryPoints().size(); i++)
-            assertEqualsPoint(boardTest.getTemporaryPoints().get(i), boardAssert.getTemporaryPoints().get(i)); */
-    }
-
-    /**
-     * check if two Message objects are identical
-     * @param messageTest a test Message object
-     * @param messageAssert another test Message object
-     */
-    public void assertEqualsMessage (Message messageTest, Message messageAssert) {
-        assertEquals(messageTest.getPayload(), messageAssert.getPayload());
-        assertEqualsPlayer(messageTest.getSender(), messageAssert.getSender());
-        for (int i = 0; i<messageTest.getRecipients().size(); i++) {
-            assertEqualsPlayer(messageTest.getRecipients().get(i), messageAssert.getRecipients().get(i));
-        }
     }
 
     /**

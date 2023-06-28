@@ -4,6 +4,10 @@ import org.projectsw.Util.Config;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Enums.TilesEnum;
 
+/**
+ * The Triangle class represents a game strategy where the goal is to have columns on the bookshelf
+ * that either ascend or descend in height from left to right.
+ */
 public class Triangle extends CommonGoalStrategy{
 
 

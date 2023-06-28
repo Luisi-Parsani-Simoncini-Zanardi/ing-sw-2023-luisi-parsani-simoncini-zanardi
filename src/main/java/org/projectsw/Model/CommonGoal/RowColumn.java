@@ -6,6 +6,14 @@ import org.projectsw.Model.Enums.TilesEnum;
 
 import java.util.ArrayList;
 
+/**
+ * The RowColumn class represents a game strategy where the goal is to have a certain number of rows or columns on the bookshelf
+ * that meet specific requirements.
+ * If strategyCode is equal to 2, the player's shelf must contain at least 2 columns made up of all different types of Tiles.
+ * If strategyCode is equal to 5, the player's shelf must contain at least 3 columns made up of at most 3 types of tiles.
+ * If strategyCode is equal to 6, the player's shelf must contain at least 2 rows made up of all different types of Tiles.
+ * If strategyCode is equal to 7, the player's shelf must contain at least 4 rows made up of at most 3 types of tiles.
+ */
 public class RowColumn extends CommonGoalStrategy{
 
     private int diffTiles;

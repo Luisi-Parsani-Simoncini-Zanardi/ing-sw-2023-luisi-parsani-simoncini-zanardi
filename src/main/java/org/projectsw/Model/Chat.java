@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class Chat extends Observable<GameEvent> {
 
     private final ArrayList<Message> messages;
-    private static int counter = 0;
 
     /**
      * Constructs a Chat object with an empty chat log.
@@ -25,8 +24,7 @@ public class Chat extends Observable<GameEvent> {
      * @param message the message to add to the chat log
      */
     public void addChatLog (Message message){
-        messages.add(counter, message);
-        counter++;
+        messages.add(message);
     }
 
     /**

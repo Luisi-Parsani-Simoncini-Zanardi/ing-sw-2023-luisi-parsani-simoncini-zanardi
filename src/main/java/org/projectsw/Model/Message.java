@@ -36,6 +36,10 @@ public class Message implements Serializable {
      */
     public String getSender() { return this.sender; }
 
+    /**
+     * Returns the scope of the message.
+     * @return the scope of the message
+     */
     public String getScope() { return this.scope; }
 
 }

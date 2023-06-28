@@ -2,6 +2,11 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Distributed.Client;
+import org.projectsw.Distributed.ClientImplementation;
+import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
+import org.projectsw.Distributed.Server;
+import org.projectsw.Distributed.ServerImplementation;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
@@ -10,11 +15,17 @@ import org.projectsw.Exceptions.*;
 import org.projectsw.Model.*;
 import org.projectsw.Model.CommonGoal.CommonGoal;
 import org.projectsw.Model.CommonGoal.RowColumn;
+import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.TestUtils;
+import org.projectsw.Util.Observer;
+import org.projectsw.View.SerializableInput;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.projectsw.Model.Enums.TilesEnum.*;
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class EngineTest extends TestUtils {
 
@@ -22,680 +33,634 @@ class EngineTest extends TestUtils {
      * Cleans the list of used codes before each test.
      */
     @BeforeEach
-    void codesCleaner(){
+    void codesCleaner() {
         PersonalGoal.cleanUsedCodes();
     }
 
     /**
-     * Tests the creation of a game in LOBBY state, also checking if the filling of the lobby
-     * works correctly and if the state of the game changes after the last join
+     * Test that the clients_ID hashmap has the right values
      */
     @Test
-    void startingGameSimulation() throws LobbyClosedException, InvalidNumberOfPlayersException, InvalidNameException {
-        //creates a new engine and checks if it has an empty game
+    void getClients_ID() {
         Engine engine = new Engine();
-        assertNull(engine.getGame());
-        //calls firstPlayerJoin and checks if all the parameters of game are correctly initialized
-        engine.firstPlayerJoin("Davide", 4);
-        assertEquals(1, engine.getGame().getPlayers().size());
-        Player player1 = engine.getGame().getPlayers().get(0);
-        assertEquals("Davide", player1.getNickname());
-        assertEquals(0, player1.getPosition());
-        assertEquals(player1, engine.getGame().getCurrentPlayer());
-        assertEquals(player1, engine.getGame().getFirstPlayer());
+        try {
+            Server server = new ServerImplementation();
+            Client client = new ClientImplementation(server);
+            engine.getClients_ID().put(client, "0");
+            assertEquals(engine.getClients_ID().getKey("0"), client);
+        } catch (RemoteException e) {
+            System.err.println("Error creating a Server in Engine test");
+        }
+    }
+
+    @Test
+    void getID_Nicks() {
+        Engine engine = new Engine();
+            engine.getID_Nicks().put("0", "pippo");
+            assertEquals(engine.getID_Nicks().getKey("pippo"), "0");
+    }
+
+    @Test
+    void getFirstClient() {
+        Engine engine = new Engine();
+        try {
+            engine.Connect("0");
+        } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertEquals("0", engine.getFirstClient());
+    }
+
+    @Test
+    void getClientObserverHashMap() {
+        Server server = null;
+        try {
+            server = new ServerImplementation();
+            Client client = new ClientImplementation(server);
+            Engine engine = new Engine(server);
+            Game game = new Game();
+            engine.setGame(game);
+            Player player = new Player("pippo", 0);
+            engine.getGame().getPlayers().add(player);
+            Observer<Game, ResponseMessage> observer = (o, response) -> {
+            };
+            engine.getClientObserverHashMap().put(client, observer);
+            assertEquals(observer, engine.getClientObserverHashMap().get(client));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Test if the method getGame() returns the game correctly
+     */
+    @Test
+    void getGame() {
+        Engine engine = new Engine();
+        assertNotNull(engine.getGame());
         assertEquals(GameState.LOBBY, engine.getGame().getGameState());
-        assertEquals(4, engine.getGame().getNumberOfPlayers());
-        assertEqualsBoard(new Board(4), engine.getGame().getBoard());
-        //calls playerJoin and checks if the player is added correctly
-        //player2
-        engine.playerJoin("Lollo");
-        assertEquals(2, engine.getGame().getPlayers().size());
-        Player player2 = engine.getGame().getPlayers().get(1);
-        assertEquals("Lollo", player2.getNickname());
-        assertEquals(1, player2.getPosition());
-        //player3
-        engine.playerJoin("Luca");
-        assertEquals(3, engine.getGame().getPlayers().size());
-        Player player3 = engine.getGame().getPlayers().get(2);
-        assertEquals("Luca", player3.getNickname());
-        assertEquals(2, player3.getPosition());
-        //player4
-        engine.playerJoin("Lore");
-        assertEquals(4, engine.getGame().getPlayers().size());
-        Player player4 = engine.getGame().getPlayers().get(3);
-        assertEquals("Lore", player4.getNickname());
-        assertEquals(3, player4.getPosition());
-        //checks if now the state of the game is changed
+        assertNotNull(engine.getGame().getChat());
+        assertNotNull(engine.getGame().getPlayers());
+        assertNotNull(engine.getGame().getCommonGoals());
+        assertEquals(0, engine.getGame().getNumberOfPlayers());
+        engine.getGame().setGameState(GameState.RUNNING);
+        engine.getGame().setNumberOfPlayers(4);
         assertEquals(GameState.RUNNING, engine.getGame().getGameState());
+        assertEquals(4, engine.getGame().getNumberOfPlayers());
     }
 
     /**
-     * Tests if firstPlayerJoin correctly throws the InvalidNumberOfPlayersException when is passed a wrong number
-     * of players (too low or too big).
+     * Test if the method returns correctly the player associated with the passed nickname, or null otherwise
      */
     @Test
-    void invalidNumberOfPlayersJoinTest() {
+    void getPlayerFromNickname() {
         Engine engine = new Engine();
-        assertThrows(InvalidNumberOfPlayersException.class, () -> engine.firstPlayerJoin("Davide", Config.minPlayers-1));
-        assertThrows(InvalidNumberOfPlayersException.class, () -> engine.firstPlayerJoin("Davide", Config.maxPlayers+1));
+        Game game = new Game();
+        Player player1 = new Player("Lorenzo",0);
+        Player player2 = new Player("Luca",1);
+        Player player3 = new Player("Davide",2);
+        Player player4 = new Player("Piero",4);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
+        game.addPlayer(player4);
+        engine.setGame(game);
+        assertEquals(player1, engine.getPlayerFromNickname("Lorenzo"));
+        assertEquals(player2, engine.getPlayerFromNickname("Luca"));
+        assertEquals(player3, engine.getPlayerFromNickname("Davide"));
+        assertEquals(player4, engine.getPlayerFromNickname("Piero"));
+        assertNull(engine.getPlayerFromNickname("Elisa"));
     }
 
     /**
-     * Tests if playerJoin correctly throws InvalidNameException if called with a duplicated nickname.
+     * Test that setGame is setting the engine game correctly
      */
     @Test
-    void invalidNicknameAlreadyUsedTest() throws InvalidNumberOfPlayersException {
+    void setGame() {
         Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide", 2);
-        assertThrows(InvalidNameException.class, () -> engine.playerJoin("Davide"));
+        Game game = new Game();
+        Player player1 = new Player("Lorenzo",0);
+        Player player2 = new Player("Luca",1);
+        Player player3 = new Player("Davide",2);
+        Player player4 = new Player("Piero",4);
+        game.addPlayer(player1);
+        game.addPlayer(player2);
+        game.addPlayer(player3);
+        game.addPlayer(player4);
+        engine.setGame(game);
+        assertEquals(game, engine.getGame());
     }
 
-    /**
-     * Tests if playerJoin correctly throws LobbyClosedException if called after the join of the last player.
-     */
     @Test
-    void invalidJoinAttemptLobbyClosedTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException {
+    void getSaveGameStatus() {
         Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide", 2);
-        engine.playerJoin("Lore");
-        assertThrows(LobbyClosedException.class, () -> engine.playerJoin("Lollo"));
+        engine.saveFileFound();
+        SaveGameStatus save = new SaveGameStatus(engine.getGame(), "...");
+        engine.setSaveGameStatus(save);
+        assertEquals(save, engine.getSaveGameStatus());
     }
 
-    /**
-     * Tests if selectTiles works correctly for both selecting and deselecting tiles.
-     */
     @Test
-    void selectAndDeselectTilesTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException, UnselectableTileException, NoMoreColumnSpaceException {
+    void getOptionChoosed() {
         Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide",2);
-        engine.playerJoin("Marco");
-        Board board = new Board(4);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),1,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),2,3);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,1);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,2);
-        board.updateBoard(new Tile(TilesEnum.CATS,0),3,3);
-        engine.getGame().getBoard().setBoard(board.getBoard());
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,2));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,1));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,3));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,3));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,3));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,2));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,2));
-        engine.getGame().getBoard().printBoard();
+        engine.setOptionChoosed(true);
+        assertEquals(true, engine.getOptionChoosed());
     }
 
-    private Shelf getFullShelf(){
-        Shelf shelf = new Shelf();
-        for(int i=0;i<Config.shelfHeight;i++){
-            for(int j=0;j<Config.shelfLength;j++){
-                shelf.insertTiles(new Tile(CATS,0),i,j);
-            }
+    @Test
+    void startGame() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        engine.startGame();
+        assertEquals(engine.getGame().getGameState(), GameState.RUNNING);
+    }
+
+    @Test
+    void smallJoin() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        engine.smallJoin("pippo");
+        assertEquals(engine.getGame().getPlayers().size(), 1);
+    }
+
+
+    @Test
+    void playerJoin() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        assertEquals(engine.getGame().getPlayers().size(), 0);
+        engine.playerJoin("pippo", "0");
+        assertEquals(engine.getGame().getPlayers().size(), 1);
+    }
+
+    @Test
+    public void testPlayerJoinInLobby() {
+        Engine engine = new Engine();
+        // Setup
+        String nickname = "John";
+        String ID = "123";
+        engine.getGame().setGameState(GameState.LOBBY);
+
+        // Invoke the method
+        engine.playerJoin(nickname, ID);
+
+        // Check the game state
+        assertEquals(GameState.LOBBY, engine.getGame().getGameState());
+
+        // Check the number of players
+        assertEquals(1, engine.getGame().getPlayers().size());
+
+        // Check the first player
+        Player firstPlayer = engine.getGame().getFirstPlayer();
+        assertEquals(nickname, firstPlayer.getNickname());
+        assertEquals(0, firstPlayer.getPosition());
+
+        // Check the current player
+        Player currentPlayer = engine.getGame().getCurrentPlayer();
+        assertEquals(nickname, currentPlayer.getNickname());
+        assertEquals(0, currentPlayer.getPosition());
+
+        // Check the ID-Nickname mapping
+        assertEquals(nickname, engine.getID_Nicks().getValue(ID));
+
+    }
+
+    @Test
+    void deselectTiles() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        engine.fillBoard();
+        engine.getGame().getBoard().getSelectablePoints().add(new Point(4,2));
+        try {
+            engine.getGame().getBoard().addTemporaryPoints(new Point(4,2));
+        } catch (UnselectableTileException e) {
+            throw new RuntimeException(e);
         }
-        return shelf;
-    }
-
-    @Test
-    void selectionExceptionsTest() throws InvalidNumberOfPlayersException, InvalidNameException, LobbyClosedException{
-        Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide",2);
-        engine.playerJoin("Lorenzo");
-        assertThrows(UnselectableTileException.class,() -> engine.selectTiles(new Point(0,0)));
-        engine.getGame().getCurrentPlayer().setShelf(getFullShelf());
-        assertThrows(NoMoreColumnSpaceException.class, () -> engine.selectTiles(new Point(3,3)));
-    }
-
-    @Test
-    void selectAndDeselectColumn(){}
-
-    @Test
-    void tileSelectionSimulationEmptyShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException, EmptyTemporaryPointsException, UpdatingOnWrongPlayerException {
-        Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide",2);
-        engine.playerJoin("Marco");
-        Board board = new Board(4);
-        board.updateBoard(new Tile(CATS,0),1,1);
-        board.updateBoard(new Tile(BOOKS,0),1,2);
-        board.updateBoard(new Tile(FRAMES,0),1,3);
-        board.updateBoard(new Tile(CATS,0),2,1);
-        board.updateBoard(new Tile(BOOKS,0),2,2);
-        board.updateBoard(new Tile(FRAMES,0),2,3);
-        board.updateBoard(new Tile(CATS,0),3,1);
-        board.updateBoard(new Tile(BOOKS,0),3,2);
-        board.updateBoard(new Tile(FRAMES,0),3,3);
-        engine.getGame().getBoard().setBoard(board.getBoard());
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,1));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,2));
-        engine.getGame().getBoard().printBoard();
-        engine.selectTiles(new Point(1,3));
-        engine.getGame().getBoard().printBoard();
-        engine.confirmSelectedTiles();
-        engine.selectColumn(3);
-        engine.placeTiles(0);
-        engine.placeTiles(0);
-        engine.placeTiles(0);
-        engine.getGame().getBoard().printBoard();
-        //engine.getGame().getCurrentPlayer().getShelf().printShelf();
-    }
-
-    @Test
-    void tileSelectionAndInsertionSimulationFullShelf() throws LobbyClosedException, UnselectableColumnException, MaxTemporaryTilesExceededException, InvalidNumberOfPlayersException, InvalidNameException, UnselectableTileException, NoMoreColumnSpaceException, EmptyTemporaryPointsException, UpdatingOnWrongPlayerException {
-        Engine engine = new Engine();
-        engine.firstPlayerJoin("Davide",2);
-        engine.playerJoin("Marco");
-        Board board = new Board(4);
-        board.updateBoard(new Tile(CATS,0),1,1);
-        board.updateBoard(new Tile(BOOKS,0),1,2);
-        board.updateBoard(new Tile(FRAMES,0),1,3);
-        board.updateBoard(new Tile(CATS,0),2,1);
-        board.updateBoard(new Tile(BOOKS,0),2,2);
-        board.updateBoard(new Tile(FRAMES,0),2,3);
-        board.updateBoard(new Tile(CATS,0),3,1);
-        board.updateBoard(new Tile(BOOKS,0),3,2);
-        board.updateBoard(new Tile(FRAMES,0),3,3);
-        Shelf shelf = new Shelf();
-        for(int i=0;i<3;i++){
-            for(int j=0;j<5;j++) {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, j);
-            }
-        }
-        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,0);
-        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,1);
-        shelf.insertTiles(new Tile(TilesEnum.CATS,0),3,2);
-        engine.getGame().getCurrentPlayer().setShelf(shelf);
-        engine.getGame().getBoard().setBoard(board.getBoard());
-        engine.getGame().getBoard().printBoard();
-        engine.getGame().getCurrentPlayer().getShelf().updateSelectableColumns(engine.getGame().getCurrentPlayer());
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
-        engine.selectTiles(new Point(1,1));
-        engine.selectTiles(new Point(1,2));
-        engine.selectTiles(new Point(1,3));
-        engine.getGame().getBoard().printBoard();
-        engine.confirmSelectedTiles();
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
-        engine.getGame().getBoard().printBoard();
-        engine.selectColumn(3);
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
-        engine.placeTiles(0);
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
-        engine.placeTiles(0);
-        engine.getGame().getCurrentPlayer().getShelf().printShelf();
-        engine.placeTiles(0);
-        //engine.getGame().getCurrentPlayer().getShelf().printShelf();
-        engine.getGame().getBoard().printBoard();
+        engine.deselectTiles(new Point(4,2));
+        assertEquals(engine.getGame().getBoard().getTemporaryPoints().size(), 0);
     }
 
     /**
-     * Tests if the players get points for CommonGoals they have achieved.
-     * Tests if no points are awarded if a CommonGoal has already been achieved by a player.
-     * Tests if the redeemedNumber is updated if the CommonGoal achieved.
+     * Test that temporaryPoints and selectablePoints are updated correctly after the call of selectTiles()
      */
+    @Test
+    void selectTiles() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(4);
+        engine.playerJoin("Lorenzo","0");
+        engine.playerJoin("Piero","1");
+        engine.playerJoin("Asia","2");
+        engine.playerJoin("Riccardo","3");
+        Board board = engine.getGame().getBoard();
+        assertEquals(0, engine.getGame().getBoard().getTemporaryPoints().size());
+        assertEquals(20, engine.getGame().getBoard().getSelectablePoints().size());assertEquals(0, engine.getGame().getBoard().getTemporaryPoints().size());
+        engine.selectTiles("0", new Point(0,0));
+        assertEquals(0, engine.getGame().getBoard().getTemporaryPoints().size());
+        assertEquals(20, engine.getGame().getBoard().getSelectablePoints().size());
+        engine.selectTiles("0", new Point(4,1));
+        assertEquals(board.getTemporaryPoints(),engine.getGame().getBoard().getTemporaryPoints());
+        assertEquals(board.getSelectablePoints(),engine.getGame().getBoard().getSelectablePoints());
+    }
+
+    @Test
+    void confirmSelectedTiles() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        ArrayList<Integer> sel = new ArrayList<>();
+        sel.add(1);
+        engine.fillBoard();
+        player.getShelf().setSelectableColumns(sel);
+        assertEquals(player.getTemporaryTiles().size(), 0);
+        Point point = new Point(5,2);
+        engine.getGame().getBoard().getSelectablePoints().add(point);
+        try {
+            engine.getGame().getBoard().addTemporaryPoints(point);
+        } catch (UnselectableTileException e) {
+            throw new RuntimeException(e);
+        }
+        engine.confirmSelectedTiles("0");
+        assertEquals(player.getTemporaryTiles().size(), 1);
+    }
+
+    @Test
+    void selectColumn() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        ArrayList<Integer> sel = new ArrayList<>();
+        sel.add(1);
+        player.getShelf().setSelectableColumns(sel);
+        assertNull(player.getShelf().getSelectedColumn());
+        engine.selectColumn("0", 1);
+        assertEquals(player.getShelf().getSelectedColumn(), 1);
+    }
+
+    @Test
+    void placeTiles() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        ArrayList<Integer> sel = new ArrayList<>();
+        sel.add(1);
+        try {
+            player.getShelf().setSelectableColumns(sel);
+            player.getShelf().setSelectedColumn(1);
+        } catch (UnselectableColumnException e) {
+            throw new RuntimeException(e);
+        }
+        Tile tile = new Tile(TilesEnum.GAMES, 0);
+        engine.getGame().getCurrentPlayer().addTemporaryTile(tile);
+        assertEquals(player.getTemporaryTiles().size(), 1);
+        engine.placeTiles("0", 0);
+        assertEquals(player.getTemporaryTiles().size(), 0);
+    }
+
     @Test
     void checkCommonGoals() {
         Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Davide", 2);
-            engine.playerJoin("Lorenzo");
-        } catch (Exception ignore) {
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        engine.checkPersonalGoal();
+        for(Player players: engine.getGame().getPlayers()){
+            assertEquals(players.getPoints(), 0);
         }
-        //manually setting CommonGoal otherwise they are random and the test result will be influenced
-        CommonGoal commonGoal1 = new CommonGoal(new RowColumn(2));
-        CommonGoal commonGoal2 = new CommonGoal(new RowColumn(7));
-        ArrayList<CommonGoal> common = new ArrayList<>();
-        common.add(0, commonGoal1);
-        common.add(1, commonGoal2);
-        engine.getGame().setCommonGoals(common);
-
-        //setting custom shelf for both players
-        Shelf shelf = new Shelf();
-        Shelf shelf1 = new Shelf();
-        for (int i = 0; i < 2; i++) {
-            try {
-                shelf.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES, 0), 1, i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS, 0), 2, i);
-                shelf.insertTiles(new Tile(PLANTS, 0), 3, i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES, 0), 4, i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES, 0), 5, i);
-                shelf1.insertTiles(new Tile(TilesEnum.CATS, 0), 0, i);
-                shelf1.insertTiles(new Tile(TilesEnum.TROPHIES, 0), 1, i);
-                shelf1.insertTiles(new Tile(TilesEnum.BOOKS, 0), 2, i);
-                shelf1.insertTiles(new Tile(PLANTS, 0), 3, i);
-                shelf1.insertTiles(new Tile(TilesEnum.FRAMES, 0), 4, i);
-                shelf1.insertTiles(new Tile(TilesEnum.GAMES, 0), 5, i);
-            } catch (Exception ignore) {
-            }
-        }
-        engine.getGame().getPlayers().get(0).setShelf(shelf);
-        for (int i = 0; i < 5; i++) {
-            try {
-                shelf1.insertTiles(new Tile(TilesEnum.BOOKS, 0), 2, i);
-                shelf1.insertTiles(new Tile(PLANTS, 0), 3, i);
-                shelf1.insertTiles(new Tile(TilesEnum.FRAMES, 0), 4, i);
-                shelf1.insertTiles(new Tile(TilesEnum.GAMES, 0), 5, i);
-            } catch (Exception ignore) {
-            }
-        }
-        engine.getGame().getPlayers().get(1).setShelf(shelf1);
-
-        //behaviour of the method tested
-        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(0));
-        engine.checkCommonGoals();
-        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(1));
-        engine.checkCommonGoals();
-        engine.checkCommonGoals();
-
-        assertEquals(8, engine.getGame().getPlayers().get(0).getPoints());
-        assertEquals(14, engine.getGame().getPlayers().get(1).getPoints());
-        assertEquals(2, engine.getGame().getCommonGoals().get(0).getRedeemedNumber());
-        assertEquals(3, engine.getGame().getCommonGoals().get(1).getRedeemedNumber());
-        assertTrue(engine.getGame().getPlayers().get(0).isCommonGoalRedeemed(0));
-        assertFalse(engine.getGame().getPlayers().get(0).isCommonGoalRedeemed(1));
-        assertTrue(engine.getGame().getPlayers().get(1).isCommonGoalRedeemed(0));
-        assertTrue(engine.getGame().getPlayers().get(1).isCommonGoalRedeemed(1));
     }
 
     @Test
-    void testCheckPersonalGoal(){
+    void checkPersonalGoal() {
         Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Davide", 2);
-        }catch(Exception ignore){}
-        engine.getGame().getCurrentPlayer().setPersonalGoal(new PersonalGoal(0));
-        TilesEnum[][] shelf0 = {
-                {PLANTS, EMPTY, FRAMES, EMPTY, EMPTY},
-                {EMPTY, EMPTY, EMPTY, EMPTY, CATS},
-                {EMPTY, EMPTY, EMPTY, BOOKS, EMPTY},
-                {EMPTY, GAMES, EMPTY, EMPTY, EMPTY},
-                {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY},
-                {EMPTY, EMPTY, TROPHIES, EMPTY, EMPTY}
-        };
-        Shelf shelf = new Shelf();
-        for (int i = 0; i < shelf0.length; i++) {
-            for (int j = 0; j < shelf0[i].length; j++) {
-                if (shelf0[i][j]!=EMPTY)
-                    shelf.insertTiles(new Tile(shelf0[i][j], 0), i, j);
-            }
-        }
-        engine.getGame().getCurrentPlayer().setShelf(shelf);
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
         engine.checkPersonalGoal();
-        assertEquals(engine.getGame().getCurrentPlayer().getPoints(), 12);
-
-        TilesEnum[][] shelf1 = {
-                {FRAMES, EMPTY, FRAMES, EMPTY, EMPTY},
-                {EMPTY, EMPTY, EMPTY, EMPTY, CATS},
-                {EMPTY, EMPTY, PLANTS, BOOKS, EMPTY},
-                {EMPTY, BOOKS, EMPTY, EMPTY, EMPTY},
-                {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY},
-                {BOOKS, CATS, CATS, EMPTY, EMPTY}
-        };
-        for (int i = 0; i < shelf1.length; i++) {
-            for (int j = 0; j < shelf1[i].length; j++) {
-                if (shelf1[i][j]!=EMPTY)
-                    shelf.insertTiles(new Tile(shelf1[i][j], 0), i, j);
-            }
+        for(Player players: engine.getGame().getPlayers()){
+            assertEquals(players.getPoints(), 0);
         }
-        engine.getGame().getCurrentPlayer().setShelf(shelf);
-        engine.getGame().getCurrentPlayer().setPoints(0);
-        engine.checkPersonalGoal();
-        assertEquals(engine.getGame().getCurrentPlayer().getPoints(), 4);
-
-        TilesEnum[][] shelf2 = {
-                {CATS, FRAMES, GAMES, BOOKS, PLANTS},
-                {GAMES, TROPHIES, BOOKS, CATS, FRAMES},
-                {PLANTS, BOOKS, TROPHIES, FRAMES, CATS},
-                {FRAMES, GAMES, TROPHIES, PLANTS, CATS},
-                {TROPHIES, CATS, FRAMES, PLANTS, BOOKS},
-                {BOOKS, PLANTS, CATS, GAMES, TROPHIES}
-        };
-        for (int i = 0; i < shelf2.length; i++) {
-            for (int j = 0; j < shelf2[i].length; j++) {
-                if (shelf2[i][j]!=EMPTY)
-                    shelf.insertTiles(new Tile(shelf2[i][j], 0), i, j);
-            }
-        }
-        engine.getGame().getCurrentPlayer().setShelf(shelf);
-        engine.getGame().getCurrentPlayer().setPoints(0);
-        engine.checkPersonalGoal();
-        assertEquals(engine.getGame().getCurrentPlayer().getPoints(), 1);
-
     }
 
-    /**
-     * Test if the end turn method correctly set the next player to the current one
-     * Test if the end turn method correctly set the endGame status to true if the current
-     * player shelf is full
-     */
+    @Test
+    void checkEndgameGoal() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        engine.checkEndgameGoal();
+        for(Player players: engine.getGame().getPlayers()){
+            assertEquals(players.getPoints(), 0);
+        }
+    }
+
+    @Test
+    void saveFileFound() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        engine.saveFileFound();
+        engine.getSaveGameStatus().saveGame();
+        assertTrue(engine.saveFileFound());
+    }
+
+    @Test
+    void retrieveGame() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        engine.saveFileFound();
+        engine.getSaveGameStatus().saveGame();
+        assertEquals(engine.retrieveGame().getPlayers(), engine.getGame().getPlayers());
+    }
+
     @Test
     void endTurn() {
         Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Santa", 2);
-            engine.playerJoin("Claus");
-        }catch(Exception ignore){}
-        Shelf shelf = new Shelf();
-        Shelf shelf1 = new Shelf();
-        for(int i=0; i<2; i++){
-            try{
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
-            }catch(Exception ignore){}
-        }
-        engine.getGame().getPlayers().get(0).setShelf(shelf);
-        Player nextPlayer = engine.getGame().getNextPlayer();
-        engine.endTurn();
-        assertEqualsPlayer(engine.getGame().getCurrentPlayer(), nextPlayer);
-        assertFalse(engine.getGame().getBoard().isEndGame());
-        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(0));
-        for(int i=0; i<5; i++){
-            try{
-                shelf1.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
-                shelf1.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
-                shelf1.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
-                shelf1.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
-                shelf1.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
-                shelf1.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
-            }catch(Exception ignore){}
-        }
-        engine.getGame().getCurrentPlayer().setShelf(shelf1);
-        engine.endTurn();
-        engine.getGame().setCurrentPlayer(engine.getGame().getNextPlayer());
-        assertTrue(engine.getGame().getBoard().isEndGame());
-        assertEqualsPlayer(engine.getGame().getPlayers().get(0), engine.getGame().getCurrentPlayer());
+        engine.saveFileFound();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        assertEquals(engine.getGame().getCurrentPlayer().getNickname(),"pippo");
+        engine.endTurn("0", "pippo");
+        assertEquals(engine.getGame().getCurrentPlayer().getNickname(),"lupus");
     }
 
-    /**
-     * Test if the getWinner method correctly retrieve the player with the most points
-     */
+
     @Test
-    void getWinnerTest() {
+    void endTurnForced() {
         Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Lynx", 2);
-            engine.playerJoin("Owl");
-        }catch(Exception ignore){}
-        engine.getGame().getCurrentPlayer().setPoints(10);
-        engine.getGame().getNextPlayer().setPoints(30);
-        assertEqualsPlayer(engine.getGame().getNextPlayer(), engine.getWinner());
+        engine.saveFileFound();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("lupus", 1);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        engine.getGame().setCurrentPlayer(player);
+        engine.endTurnForced();
+        assertEquals(engine.getPlayerFromNickname("pippo").getTemporaryTiles().size(), 0);
+        assertEquals(engine.getGame().getCurrentPlayer().getNickname(), "lupus");
+
     }
+
+    @Test
+    void checkEndGame() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        player.setPoints(100);
+        for(int i=0; i< Config.shelfHeight; i++)
+            for(int j=0; j< Config.shelfLength; j++) {
+                Tile tile = new Tile(TilesEnum.GAMES, 0);
+                player.getShelf().insertTiles(tile, i,j);
+            }
+        engine.getGame().setCurrentPlayer(player);
+        engine.getGame().getBoard().setEndGame(false);
+        engine.checkEndGame("0", "pippo");
+        assertTrue(engine.getGame().getBoard().isEndGame());
+        assertEquals(player.getPoints(), 101);
+    }
+
+
     @Test
     void endGame() {
         Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Eric", 2);
-            engine.playerJoin("MrMackey");
-        }catch(Exception ignore){}
-        engine.getGame().getCurrentPlayer().setPoints(10);
-        engine.getGame().getNextPlayer().setPoints(100);
-        assertEqualsPlayer(engine.getGame().getPlayers().get(1), engine.endGame());
+        engine.getGame().initializeGame(2);
+        engine.saveFileFound();
+        engine.getSaveGameStatus().saveGame();
+        assertTrue(engine.saveFileFound());
+        engine.getSaveGameStatus().deleteSaveFile();
+        assertFalse(engine.saveFileFound());
     }
 
-    /**
-     * check if the resetGame method correctly reset the game
-     */
-    @Test
-    void resetGame() {
-        Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Glop", 2);
-            engine.playerJoin("Broop");
-        }catch(Exception ignore){}
-        Shelf shelf = new Shelf();
-        for(int i=0; i<2; i++){
-            try{
-                shelf.insertTiles(new Tile(TilesEnum.CATS,0),0,i);
-                shelf.insertTiles(new Tile(TilesEnum.TROPHIES,0),1,i);
-                shelf.insertTiles(new Tile(TilesEnum.BOOKS,0),2,i);
-                shelf.insertTiles(new Tile(TilesEnum.PLANTS,0),3,i);
-                shelf.insertTiles(new Tile(TilesEnum.FRAMES,0),4,i);
-                shelf.insertTiles(new Tile(TilesEnum.GAMES,0),5,i);
-            }catch(Exception ignore){}
-        }
-        engine.getGame().getPlayers().get(0).setShelf(shelf);
-        assertEqualsPlayer(engine.getGame().getPlayers().get(0), engine.getGame().getCurrentPlayer());
-        assertEqualsPlayer(engine.getGame().getPlayers().get(1), engine.getGame().getNextPlayer());
-        assertEqualsShelf(shelf, engine.getGame().getPlayers().get(0).getShelf());
-        engine.resetGame();
-        assertNull(engine.getGame());
 
+    @Test
+    void sayInChat() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Chat chat = new Chat();
+        assertEquals(chat.getMessages(), engine.getGame().getChat().getMessages());
+        engine.sayInChat("pippo", "ciao", Config.everyone, "0");
+        Message mess = new Message("pippo", Config.everyone, "ciao");
+        chat.addChatLog(mess);
+        assertEquals(chat.getMessages().get(0).getPayload(), engine.getGame().getChat().getMessages().get(0).getPayload());
     }
 
-    /**
-     * Tests if the messages work correctly.
-     */
     @Test
-    void sayInChatTest() throws InvalidRecipientException {
-        Engine engine = new Engine();
+    void removeObserver() {
         try {
-            engine.firstPlayerJoin("Davide", 2);
-            engine.playerJoin("Lorenzo");
-        } catch (Exception ignore) {
-        }
-        Game game = engine.getGame();
-        String content = "content test for sayInChat";
-        Player sender = game.getPlayers().get(0);
-        Player recipient = game.getPlayers().get(1);
-        ArrayList<Player> recipients = new ArrayList<>();
-        recipients.add(recipient);
-        Message messageTest = new Message(sender, content);
-        messageTest.setRecipients(recipients);
-        engine.sayInChat(sender, content, recipients);
-
-        game.getChat().getMessages().forEach((element) -> assertEqualsMessage(element, messageTest));
-
-    }
-
-    /**
-     * Checks if the method fillBoard doesn't fill the board when it doesn't have to.
-     */
-    @Test
-    void checkFillBoardFalse() {
-        Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Davide", 2);
-            engine.playerJoin("Lorenzo");
-        } catch (Exception ignore) {
-        }
-        Tile[][] matrix = {
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
-                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
-                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(CATS, 0), new Tile(CATS, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)}};
-
-        Board boardTest = new Board();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                boardTest.updateBoard(matrix[i][j], i, j);
-            }
-        }
-
-        Board board = new Board();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                board.updateBoard(matrix[i][j], i, j);
-            }
-        }
-        engine.getGame().setBoard(board);
-        engine.fillBoard();
-        engine.getGame().getBoard().printBoard();
-        assertEqualsBoard(engine.getGame().getBoard(), boardTest);
-    }
-
-    /**
-     * Checks if the method fillBoard fills the board when it has to.
-     */
-    @Test
-    void checkFillBoardTrue() {
-        Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Davide", 2);
-            engine.playerJoin("Lorenzo");
-        } catch (Exception ignore) {
-        }
-
-        Tile[][] tmp = {
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
-                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
-                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(EMPTY, 0), new Tile(EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)}};
-
-        Tile[][] matrix = {
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(BOOKS, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(CATS, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
-                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0)},
-                {new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.EMPTY, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)},
-                {new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(EMPTY, 0), new Tile(CATS, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0), new Tile(TilesEnum.UNUSED, 0)}};
-
-        Board board = new Board();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                board.updateBoard(matrix[i][j], i, j);
-            }
-        }
-        engine.getGame().setBoard(board);
-        engine.fillBoard();
-        engine.getGame().getBoard().printBoard();
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (tmp[i][j].getTile() == UNUSED)
-                    assertEquals(engine.getGame().getBoard().getBoard()[i][j].getTile(), UNUSED);
-                if (tmp[i][j].getTile() == EMPTY)
-                    assertNotEquals(engine.getGame().getBoard().getBoard()[i][j].getTile(), EMPTY);
-            }
+            Server server = new ServerImplementation();
+            Client client = new ClientImplementation(server);
+            Engine engine = new Engine(server);
+            Game game = new Game();
+            engine.setGame(game);
+            Player player = new Player("pippo", 0);
+            engine.getGame().getPlayers().add(player);
+            HashMap<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
+            Observer<Game, ResponseMessage> observer = (o, response) -> {
+            };
+            engine.getClientObserverHashMap().put(client, observer);
+            engine.getClients_ID().put(client, "0");
+            engine.getID_Nicks().put("0", "pippo");
+            engine.removeObserver("0", 0);
+            assertEquals(engine.getClientObserverHashMap(), new HashMap<>());
+            assertEquals(engine.getClients_ID().getAllKey(), new ArrayList<>());
+            assertEquals(engine.getID_Nicks().getAllKey(), new ArrayList<>());
+        } catch (RemoteException e) {
+            System.err.println("Error creating a Server in Engine test");
         }
     }
 
-    /**
-     * Test if endGame switches from false to true and that only the first player to complete his shelf gets the point
-     */
     @Test
-    public void checkEndGame() {
+    void fillBoard() {
         Engine engine = new Engine();
-        try {
-            engine.firstPlayerJoin("Davide", 2);
-            engine.playerJoin("Lorenzo");
-        } catch (Exception ignore) {
-        }
-        Shelf shelf = new Shelf();
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++)
-                try {
-                    shelf.insertTiles(new Tile(TilesEnum.CATS, 0), i, j);
-                } catch (Exception ignore) {
+        engine.getGame().initializeGame(2);
+        Bag bag = engine.getGame().getBoard().getBag();
+        for(int i=0; i< Config.boardHeight; i++){
+            for (int j=0; j< Config.boardLength; j++) {
+                if (engine.getGame().getBoard().getBoard()[i][j].getTile()==EMPTY){
+                    bag.pop();
                 }
+            }
         }
-        assertFalse(engine.getGame().getBoard().isEndGame());
-
-        engine.getGame().getPlayers().get(0).setShelf(shelf);
-        engine.getGame().getPlayers().get(1).setShelf(shelf);
-        engine.checkEndGame();
-
-        assertTrue(engine.getGame().getBoard().isEndGame());
-
-        engine.getGame().setCurrentPlayer(engine.getGame().getPlayers().get(1));
-        engine.checkEndGame();
-
-        assertEquals(1, engine.getGame().getPlayers().get(0).getPoints());
-        assertEquals(0, engine.getGame().getPlayers().get(1).getPoints());
+        engine.fillBoard();
+        assertEquals(bag, engine.getGame().getBoard().getBag());
     }
 
-    /**
-     * Checks if the EndgameGoal method correctly assigns the points.
-     */
     @Test
-    void testCheckEndGameGoal() {
+    void initializeFromSave() {
         Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        Player player1 = new Player("pluto", 0);
+        engine.getGame().initializeGame(2);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().getPlayers().add(player1);
+        assertFalse(engine.getLoadFromFile());
+        ArrayList<String> empty = new ArrayList<>();
+        ArrayList<String> pippo = new ArrayList<>();
+        pippo.add("pippo");
+        pippo.add("pluto");
+        assertEquals(empty, engine.getFreeNamesUsedInLastGame());
+        assertFalse(engine.getOptionChoosed());
+        engine.initializeFromSave("0");
+        assertTrue(engine.getLoadFromFile());
+        assertTrue(engine.getOptionChoosed());
+        assertEquals(pippo, engine.getFreeNamesUsedInLastGame());
+    }
+
+    @Test
+    void getNickFromClient() {
+        Server server = null;
         try {
-            engine.firstPlayerJoin("Davide", 2);
-        } catch (Exception ignore) {
+            server = new ServerImplementation();
+            Client client = new ClientImplementation(server);
+            Engine engine = new Engine(server);
+            Game game = new Game();
+            engine.setGame(game);
+            Player player = new Player("pippo", 0);
+            engine.getGame().getPlayers().add(player);
+            Observer<Game, ResponseMessage> observer = (o, response) -> {
+            };
+            engine.getClientObserverHashMap().put(client, observer);
+            engine.getClients_ID().put(client, "0");
+            engine.getID_Nicks().put("0", "pippo");
+            assertEquals(engine.getNickFromClient(client), "pippo");
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
-        TilesEnum[][] shelf0 = {
-                {PLANTS, PLANTS, PLANTS, EMPTY, EMPTY},
-                {PLANTS, PLANTS, EMPTY, EMPTY, CATS},
-                {EMPTY, BOOKS, BOOKS, BOOKS, CATS},
-                {EMPTY, GAMES, EMPTY, EMPTY, EMPTY},
-                {EMPTY, EMPTY, EMPTY, TROPHIES, EMPTY},
-                {EMPTY, EMPTY, TROPHIES, TROPHIES, TROPHIES}
-        };
-        Shelf shelf = new Shelf();
-        for (int i = 0; i < shelf0.length; i++) {
-            for (int j = 0; j < shelf0[i].length; j++) {
-                if (shelf0[i][j] != EMPTY)
-                    shelf.insertTiles(new Tile(shelf0[i][j], 0), i, j);
-            }
-        }
-        engine.getGame().getCurrentPlayer().setShelf(shelf);
-        engine.checkEndgameGoal();
-        assertEquals(engine.getGame().getCurrentPlayer().getPoints(), 10);
+    }
 
-        TilesEnum[][] shelf1 = {
-                {CATS, CATS, CATS, CATS, CATS},
-                {CATS, CATS, CATS, CATS, CATS},
-                {CATS, CATS, CATS, CATS, CATS},
-                {CATS, CATS, CATS, CATS, CATS},
-                {CATS, CATS, CATS, CATS, CATS},
-                {CATS, CATS, CATS, CATS, CATS}
-        };
-        for (int i = 0; i < shelf1.length; i++) {
-            for (int j = 0; j < shelf1[i].length; j++) {
-                if (shelf1[i][j] != EMPTY)
-                    shelf.insertTiles(new Tile(shelf1[i][j], 0), i, j);
-            }
+    @Test
+    void setIsActiveFromClient() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        engine.getGame().getPlayers().add(player);
+        try {
+            Server server = new ServerImplementation();
+            Client client = new ClientImplementation(server);
+            engine.getClients_ID().put(client, "0");
+            engine.getID_Nicks().put("0", "pippo");
+            assertTrue(player.getIsActive());
+            engine.setIsActiveFromClient(client, false);
+            assertFalse(player.getIsActive());
+        } catch (RemoteException e) {
+            System.err.println("Error creating a Server in Engine test");
         }
-        engine.getGame().getCurrentPlayer().setShelf(shelf);
-        engine.getGame().getCurrentPlayer().setPoints(0);
-        engine.checkEndgameGoal();
-        assertEquals(engine.getGame().getCurrentPlayer().getPoints(), 8);
+    }
 
-        TilesEnum[][] shelf2 = {
-                {CATS, FRAMES, GAMES, BOOKS, PLANTS},
-                {GAMES, TROPHIES, BOOKS, CATS, FRAMES},
-                {PLANTS, BOOKS, TROPHIES, FRAMES, CATS},
-                {FRAMES, GAMES, TROPHIES, PLANTS, CATS},
-                {TROPHIES, CATS, FRAMES, PLANTS, BOOKS},
-                {BOOKS, PLANTS, CATS, GAMES, TROPHIES}
-        };
-        for (int i = 0; i < shelf2.length; i++) {
-            for (int j = 0; j < shelf2[i].length; j++) {
-                if (shelf2[i][j] != EMPTY)
-                    shelf.insertTiles(new Tile(shelf2[i][j], 0), i, j);
-            }
+    @Test
+    void takeNick() {
+        Server server = null;
+        Client client = null;
+        try {
+            server = new ServerImplementation();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
-        engine.getGame().getCurrentPlayer().setShelf(shelf);
-        engine.getGame().getCurrentPlayer().setPoints(0);
-        engine.checkEndgameGoal();
-        assertEquals(engine.getGame().getCurrentPlayer().getPoints(), 0);
+        try {
+            client = new ClientImplementation(server);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        Player player = new Player("pippo", 0);
+        engine.getGame().getPlayers().add(player);
+        engine.getGame().setCurrentPlayer(player);
+        engine.getGame().setFirstPlayer(player);
+        engine.takeNick(new SerializableInput("0", "lupus", new Point(1,1), client));
+        assertEquals(engine.getGame().getPlayers().size(), 2);
+    }
+
+    @Test
+    void connect() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        assertFalse(engine.getPlayerReconnection());
+        engine.getGame().getPlayers().add(player);
+        player.setIsActive(false);
+        try {
+            engine.Connect("0");
+        } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue(engine.getPlayerReconnection());
+    }
+
+    @Test
+    void setNumberOfPlayers() {
+        Engine engine = new Engine();
+        engine.setNumberOfPlayers(2,"0");
+        assertEquals(engine.getGame().getNumberOfPlayers(), 2);
+    }
+
+    @Test
+    void transferMethods() {
+        Engine engine = new Engine();
+        engine.getGame().initializeGame(2);
+        engine.playerJoin("pippo", "0");
+        engine.currentPlayerTransfer("0");
+        engine.commonGoalTransfer("0");
+        engine.temporaryTilesTransfer("0");
+        engine.personalGoalTransfer("0", "pippo");
+        engine.shelfTransferAll("0");
+        engine.shelfTransfer("pippo", "0");
+        engine.boardTransfer("0");
+        engine.sendChat(" ", "0");
+        engine.sendResults();
+    }
+
+    @Test
+    void reconnectionCheck() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        player.setIsActive(false);
+        engine.getGame().getPlayers().add(player);
+        assertFalse(engine.getPlayerReconnection());
+        String id = "000";
+        engine.reconnectionCheck(id);
+        assertTrue(engine.getPlayerReconnection());
+    }
+
+    @Test
+    void notActive() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        engine.getGame().getPlayers().add(player);
+        assertTrue(engine.getGame().getPlayers().get(0).getIsActive());
+        Client client = null;
+        SerializableInput input = new SerializableInput("1", "pippo", client);
+        engine.notActive(input);
+        assertFalse(engine.getGame().getPlayers().get(0).getIsActive());
     }
 }

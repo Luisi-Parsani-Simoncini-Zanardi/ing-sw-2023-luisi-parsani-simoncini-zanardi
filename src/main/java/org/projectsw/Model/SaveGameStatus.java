@@ -36,7 +36,9 @@ public class SaveGameStatus {
     }
 
     /**
-     * Saves the serialized game state into a file.
+     * Saves the current game state to a file in JSON format.
+     * The game state is converted to a JSON string using the {@link #gameToJson()} method,
+     * and then written to the specified file path.
      */
     public void saveGame() {
 
@@ -56,9 +58,10 @@ public class SaveGameStatus {
     }
 
     /**
-     * retrieve game status data of the latest save from file and return the game object
-     * updated to the last turn
-     * @return game object updated to the last turn
+     * Retrieves a saved game state from the specified file path and returns it as a `Game` object.
+     * The game state is read from the file in JSON format and then converted back into a `Game` object using Gson.
+     * @param path the file path from which to retrieve the game state
+     * @return the retrieved `Game` object, or null if an error occurs during the retrieval process
      */
     public Game retrieveGame(String path) {
 
@@ -104,14 +107,27 @@ public class SaveGameStatus {
         }
     }
 
+    /**
+     * Retrieves a saved game state from the default file path and returns it as a `Game` object.
+     * The game state is read from the file in JSON format and then converted back into a `Game` object using Gson.
+     * @return the retrieved `Game` object, or null if an error occurs during the retrieval process
+     */
     public Game retrieveGame() {
         return retrieveGame(filePath);
     }
 
+    /**
+     * Deletes the save file at the specified path.
+     * @param path the path of the save file to be deleted
+     */
     public void deleteSaveFile(String path){
         File fileDaEliminare = new File(path);
         fileDaEliminare.delete();
     }
+
+    /**
+     * Deletes the save file at the filePath.
+     */
     public void deleteSaveFile(){
         File fileDaEliminare = new File(filePath);
         if (fileDaEliminare.exists()) {
@@ -121,6 +137,11 @@ public class SaveGameStatus {
         }
     }
 
+    /**
+     * Checks if a save file exists at the specified path.
+     * @param path the path of the save file to be checked
+     * @return true if the save file exists, false otherwise
+     */
     public boolean checkExistingSaveFile(String path) {
         File file =new File(path);
         if(file.exists())
@@ -128,6 +149,10 @@ public class SaveGameStatus {
         return false;
     }
 
+    /**
+     * Checks if a save file exists at the filePath.
+     * @return true if the save file exists, false otherwise
+     */
     public boolean checkExistingSaveFile() {
         return checkExistingSaveFile(filePath);
     }

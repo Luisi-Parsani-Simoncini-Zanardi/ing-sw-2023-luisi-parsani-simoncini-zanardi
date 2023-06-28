@@ -3,6 +3,9 @@ import org.projectsw.Util.Config;
 import org.projectsw.Exceptions.MinimumRedeemedPointsException;
 import org.projectsw.Model.Shelf;
 
+/**
+ * the common goals model class
+ */
 public class CommonGoal{
     private int redeemedNumber;
     private final CommonGoalStrategy strategy;

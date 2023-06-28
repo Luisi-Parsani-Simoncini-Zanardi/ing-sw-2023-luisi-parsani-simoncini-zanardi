@@ -143,6 +143,10 @@ public class Player {
         this.commonGoalRedeemed.set(index, status);
     }
 
+    /**
+     * Sets the isActive of the player.
+     * @param state the isActive to set for the player
+     */
     public void setIsActive(boolean state){this.isActive=state; }
 
     /**

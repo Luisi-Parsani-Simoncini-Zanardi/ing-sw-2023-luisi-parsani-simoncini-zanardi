@@ -3,6 +3,9 @@ package org.projectsw.Model.CommonGoal;
 import org.projectsw.Model.Shelf;
 import org.projectsw.Model.Enums.TilesEnum;
 
+/**
+ * The Diagonal class represents a game strategy where the goal is to have five tiles of the same type forming a diagonal.
+ */
 public class Diagonal extends CommonGoalStrategy {
 
     /**

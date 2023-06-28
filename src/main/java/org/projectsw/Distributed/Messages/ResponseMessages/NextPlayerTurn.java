@@ -7,12 +7,27 @@ import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Represents a response message indicating a next player response.
+ * Extends the ResponseMessage class and implements the Serializable interface.
+ */
 public class NextPlayerTurn extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Constructs a new NextPlayerTurn object with the specified SerializableGame.
+     * @param model the SerializableGame object representing the response message
+     */
     public NextPlayerTurn(SerializableGame model) {
         super(model);
     }
+
+    /**
+     * Executes the NextPlayerTurn message on the specified TextualUI.
+     * Sets the flags in the TextualUI to update its state accordingly.
+     * @param tui the TextualUI on which to execute the action
+     */
     @Override
     public void execute(TextualUI tui){
         if (tui.getEndState() == UIEndState.LOBBY) {

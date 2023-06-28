@@ -218,6 +218,9 @@ class ShelfTest {
     @Test
     void setGetAndCleanSelectedColumnTest() throws UnselectableColumnException {
         Shelf shelf = new Shelf();
+        ArrayList<Integer> selectableColumns = new ArrayList<>();
+        selectableColumns.add(0);
+        shelf.setSelectableColumns(selectableColumns);
         Integer selectedColumn = 0;
         assertNull(shelf.getSelectedColumn());
         shelf.setSelectedColumn(selectedColumn);
@@ -254,7 +257,7 @@ class ShelfTest {
      * If the description isn't enough clear try to run the test with the commented lines and check what the function prints.
      */
     @Test
-    void updateSelectableColumnsTest() throws MaxTemporaryTilesExceededException, UpdatingOnWrongPlayerException {
+    void updateSelectableColumnsTest(){
         Player player = new Player("Davide",0);
         Shelf shelf = player.getShelf();
         for(int numberOfTiles = 0; numberOfTiles < Config.maximumTilesPickable + 1; numberOfTiles++){

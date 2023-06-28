@@ -1,64 +1,38 @@
 package org.projectsw.ModelTest;
 
-import org.junit.Test;
-import org.projectsw.Exceptions.InvalidRecipientException;
+import org.junit.jupiter.api.Test;
 import org.projectsw.Model.Message;
-import org.projectsw.Model.Player;
-
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 /**
  * test for the Message class methods
  */
 public class MessageTest {
 
     /**
-     * test if the setRecipients method correctly set the recipients list
+     * Test if the payload is returned correctly
      */
     @Test
-    public void setRecipientsTest() throws InvalidRecipientException {
-        Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test Content");
+    void getPayload() {
+        Message message = new Message("Lorenzo","Luca","This is a test!!!");
+        assertEquals("This is a test!!!",message.getPayload());
+    }
 
-        ArrayList<Player> recipients = new ArrayList<>();
-        Player recipient1 = new Player("Nabbus", 2);
-        Player recipient2 = new Player("Mimmo", 3);
-        Player recipient3 = new Player("Giacobbe", 2);
 
-        recipients.add(recipient1);
-        recipients.add(recipient2);
-        recipients.add(recipient3);
-        message.setRecipients(recipients);
-
-        assertEquals(recipient1, message.getRecipients().get(0));
-        assertEquals(recipient2, message.getRecipients().get(1));
-        assertEquals(recipient3, message.getRecipients().get(2));
-
+    /**
+     * Test if the Sender is returned correctly
+     */
+    @Test
+    void getSender() {
+        Message message = new Message("Lorenzo","Luca","This is a test!!!");
+        assertEquals("Lorenzo",message.getSender());
     }
 
     /**
-     * test if the method getContent retrieve the correct content
+     * Test if the Scope is returned correctly
      */
     @Test
-    public void getContentTest() {
-        Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test content");
-        String contentTest = "test content";
-        String contentAssert = message.getPayload();
-        assertEquals(contentTest, contentAssert);
-    }
-
-    /**
-     * test if the method getSender retrieve the correct sender
-     */
-    @Test
-    public void getSenderTest() {
-        Player sender = new Player("Pippo", 1);
-        Message message = new Message(sender, "test content");
-        String senderTest = "Pippo";
-        Player senderAssert = message.getSender();
-        assertEquals(senderTest, senderAssert.getNickname());
+    void getScope() {
+        Message message = new Message("Lorenzo","Luca","This is a test!!!");
+        assertEquals("Luca",message.getScope());
     }
 }

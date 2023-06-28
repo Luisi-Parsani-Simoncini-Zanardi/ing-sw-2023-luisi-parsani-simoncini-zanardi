@@ -1,5 +1,8 @@
 package org.projectsw.Util;
 
+/**
+ * Pathsolver class
+ */
 public class PathSolverGui {
 
     private static final String standardInitialPath = "src/main/resources/ImagesGui/";

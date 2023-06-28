@@ -41,32 +41,97 @@ public class Engine{
     private boolean optionChoosed = false;
 
     /**
-     * constructor
-     * @param server is the server bound to this controller
+
+     Constructs a new instance of the Engine class.
+     This constructor initializes the server to null and creates a new instance of the Game class.
+     */
+    public Engine(){
+        server=null;
+        game = new Game();
+    }
+
+    /**
+
+     Constructs a new instance of the Engine class with the specified server.
+     @param server The server to be associated with the engine.
      */
     public Engine(Server server){
         this.clientObserverHashMap=new HashMap<>();
         this.server=server;
     }
 
-    public Boolean getOptionChoosed() { return this.optionChoosed; }
-    public String getFirstClient() {return this.firstClient; }
     /**
-     * get the Clients
-     * @return the clients
+
+     Returns the current value of the optionChoosed variable.
+     @return The current value of the optionChoosed variable.
+     */
+    public Boolean getOptionChoosed() { return this.optionChoosed; }
+
+    /**
+
+     Sets the optionChoosed to the specified optionChoosed.
+     @param optionChoosed The optionChoosed to be set as the optionChoosed.
+     */
+    public void setOptionChoosed(Boolean optionChoosed) { this.optionChoosed = optionChoosed; }
+
+
+    public ArrayList<String> getFreeNamesUsedInLastGame() { return this.freeNamesUsedInLastGame; }
+    /**
+
+     Returns the current value of the loadFromFile variable.
+     @return The current value of the loadFromFile variable.
+     */
+    public Boolean getLoadFromFile() { return this.loadFromFile; }
+    /**
+
+     Returns the current value of the firstClient variable.
+     @return The current value of the firstClient variable.
+     */
+    public String getFirstClient() {return this.firstClient; }
+
+    /**
+
+     Returns the current value of the playerReconnect variable.
+     @return The current value of the playerReconnect variable.
+     */
+    public Boolean getPlayerReconnection() { return this.playerReconnect; }
+
+    /**
+
+     Returns the current value of the clients_ID variable.
+     @return The current value of the clients_ID variable.
      */
     public OneToOneHashmap<Client, String> getClients_ID() { return this.clients_ID; }
-    //public HashMap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
-    public OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
-    public HashMap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
+
     /**
-     * get the game on which the controller is running
-     * @return current game
+
+     Returns the current value of the ID_Nicks variable.
+     @return The current value of the ID_Nicks variable.
+     */
+    public OneToOneHashmap<String,String> getID_Nicks(){return this.ID_Nicks;}
+
+    /**
+
+     Returns the current value of the clientObserverHashMap variable.
+     @return The current value of the clientObserverHashMap variable.
+     */
+    public HashMap<Client, Observer<Game, ResponseMessage>> getClientObserverHashMap(){return this.clientObserverHashMap;}
+
+    /**
+
+     Returns the current value of the game variable.
+     @return The current value of the game variable.
      */
     public Game getGame() {
         return this.game;
     }
 
+    /**
+
+     Retrieves the player object associated with the specified nickname.
+     @param nickname The nickname of the player to be retrieved.
+     @return The Player object with the specified nickname, or null if no player is found with the given nickname.
+     */
     public Player getPlayerFromNickname(String nickname) {
         for(Player player : game.getPlayers()){
             if(player.getNickname().equals(nickname)){
@@ -76,31 +141,66 @@ public class Engine{
         return null;
     }
 
-    private boolean saveFileFound(){
+    /**
+
+     Checks if a save file exists and returns the result.
+     This method creates a new instance of the SaveGameStatus class, passing the game object and the file path as parameters,
+     and calls the checkExistingSaveFile() method to determine if a save file exists.
+     @return true if a save file exists, false otherwise.
+     */
+    public boolean saveFileFound(){
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         return saveGameStatus.checkExistingSaveFile();
     }
-    private Game retrieveGame(){
+
+    /**
+
+     Retrieves the saved game from the existing save file.
+     This method creates a new instance of the SaveGameStatus class, passing the game object and the file path as parameters,
+     and calls the retrieveGame() method to retrieve the game data from the save file.
+     @return The retrieved Game object from the save file.
+     */
+    public Game retrieveGame(){
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         return saveGameStatus.retrieveGame();
     }
 
+    /**
+
+     Sets the active game to the specified Game object.
+     @param activeGame The Game object to be set as the active game.
+     */
     public void setGame(Game activeGame){
             this.game=activeGame;
     }
 
     /**
-     * get the saveGameStatus of the game
-     * @return saveGameStatus of the game
+
+     Returns the current value of the saveGameStatus variable.
+     @return The current value of the saveGameStatus variable.
      */
     public SaveGameStatus getSaveGameStatus() { return this.saveGameStatus; }
 
     /**
-     * If the game state isn't LOBBY the join request is negated. If the game state is LOBBY it creates a new
-     * player object with the right position and puts it in the arrayList of players.
-     * Then checks if the lobby is fulled: if it is, calls the method to start the game,
-     * if it isn't the game state remains LOBBY, waiting for new join requests.
-     * @param nickname the nickname of the player to be created.
+
+     Sets the saveGameStatus to the specified saveGameStatus object.
+     @param saveGameStatus The saveGameStatus object to be set as the active game.
+     */
+    public void setSaveGameStatus(SaveGameStatus saveGameStatus) { this.saveGameStatus = saveGameStatus; }
+
+
+    /**
+
+     Handles the process when a player joins the game.
+     If the game is in the lobby state, the player is added to the game with the provided nickname and ID.
+     If the player is the first one to join, they become the first player and the current player.
+     Other players are notified of the new player's arrival if the game has not reached the maximum number of players.
+     Any existing players beyond the maximum are marked for removal.
+     The player's nickname and ID are stored in the ID_Nicks map.
+     If the game reaches the maximum number of players and is still in the lobby state, the game is started.
+     If the game is not in the lobby state, the player is removed as an observer and their ID is removed from the ID_Nicks map.
+     @param nickname the nickname of the player
+     @param ID the ID of the player
      */
     public void playerJoin (String nickname, String ID){
             if (game.getGameState().equals(GameState.LOBBY)) {
@@ -129,12 +229,26 @@ public class Engine{
             }
     }
 
-    private void smallJoin(String nickname) {
+    /**
+
+     Performs a small join operation by adding a new player to the game with the specified nickname.
+     This method creates a new Player object with the given nickname and assigns it the position equal to the current number of players in the game.
+     The new player is then added to the game.
+     @param nickname The nickname of the player to be added.
+     */
+    public void smallJoin(String nickname) {
         int newPlayerPosition = game.getPlayers().size();
         Player newPlayer = new Player(nickname, newPlayerPosition);
         game.addPlayer(newPlayer);
     }
 
+    /**
+
+     Performs a killing spree operation by removing multiple observers from the engine.
+     This method iterates through the list of IDs to be killed and calls the removeObserver() method to remove each observer with the specified ID.
+     After removing all the observers, the list of IDs to kill is cleared.
+     @param idToKill The list of IDs to be killed (removed as observers).
+     */
     private void killingSpree(ArrayList<String> idToKill){
         for(String id : idToKill){
             removeObserver(id, 0);
@@ -143,9 +257,13 @@ public class Engine{
     }
 
     /**
-     * Sets the game status to RUNNING, saves the first instance of the game and lunch the first turn.
+
+     Starts the game by changing the game state to "RUNNING", saving the game status,
+     filling the board, notifying players of name colors, notifying the next player's turn,
+     and notifying the nickname of the last player.
+     The game status is saved to the specified file path.
      */
-    private void startGame() {
+    public void startGame() {
         game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         fillBoard();
@@ -170,10 +288,17 @@ public class Engine{
     }
 
     /**
-     * If the selected point isn't already selected it adds a point to the temporaryPoints list after checking if the
-     * size of temporaryPoints is smaller than the maximum remaining space in player's columns.
-     * If the selected point is already selected it calls deselect tiles on that point.
-     * @param selectedPoint the point that the player wants to select.
+
+     Handles the selection of tiles by a player.
+     If the selected point is already in the temporary points list, the tiles are deselected.
+     Otherwise, if the selection is possible, the selected point is added to the temporary points list,
+     the selectable points on the board are updated, and the updated board is sent to the observers.
+     If there are no selectable points left or the player's shelf has reached maximum capacity,
+     an error message indicating the selection is not possible is sent to the observers.
+     If the selected tile is not selectable, an error message is sent to the observers.
+     Finally, a flag indicating the completion of the selection process is sent to the observers.
+     @param ID the ID of the player
+     @param selectedPoint the selected point on the board
      */
     public void selectTiles(String ID, Point selectedPoint) {
         if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
@@ -212,27 +337,32 @@ public class Engine{
     }
 
     /**
-     * Remove the given point from the temporaryPoints list.
-     * @param point the point to remove.
+
+     Remove the given point from the temporaryPoints list.
+     @param point the point to remove.
      */
-    private void deselectTiles(Point point){
+    public void deselectTiles(Point point){
         game.getBoard().removeTemporaryPoints(point);
     }
 
     /**
-     * The function returns true if the maximum columns space in the current's player shelf is bigger then the board's
-     * temporaryPoints arraylist size, meaning that the selections is still possible.
-     * @return true if the selection is possible, false if it isn't.
+
+     Checks if the selection is possible for the current player.
+     This method determines if there is enough free column space in the player's shelf to accommodate the selected tiles.
+     @return true if the selection is possible, false otherwise.
      */
     private boolean selectionPossible() {
         return game.getCurrentPlayer().getShelf().maxFreeColumnSpace() > game.getBoard().getTemporaryPoints().size();
     }
 
     /**
-     * Calls a getTileFromBoard for every point in temporaryPoints, so adds the corresponding tiles in temporaryTiles,
-     * after the copying cleans the temporaryPoints list and update the selectable columns.
-     * Thanks to other exceptions in selectTiles the TemporaryPoints passed already do not correspond to empty or unused tiles,
-     * but if they don't addTemporaryTile throws InvalidArgumentException.
+
+     Confirms the selection of tiles by a player.
+     If the temporary points list is empty, an error message indicating empty temporary points is sent to the observers.
+     Otherwise, the tiles corresponding to the selected points are added to the player's temporary tiles list,
+     the temporary points list is cleared, and the selectable columns on the player's shelf are updated.
+     The temporary tiles are then transferred to the appropriate destination.
+     @param ID the ID of the player
      */
     public synchronized void confirmSelectedTiles(String ID) {
         if(game.getBoard().getTemporaryPoints().isEmpty()) {
@@ -253,10 +383,16 @@ public class Engine{
         temporaryTilesTransfer(ID);
     }
 
+
     /**
-     * Checks if the player has already selected a tile, if he did it, it calls deselectTiles, if he didn't and the column at the
-     * specified index is selectable, it sets the passed index as selected column of the player.
-     * @param index The index of column that player wants to select.
+
+     Selects a column on the player's shelf.
+     If the player's shelf allows for column selection:
+     If no column is currently selected, the specified column index is set as the selected column.
+     If a column is already selected, it is deselected.
+     Finally, a flag indicating the completion of the selection process is sent to the observers.
+     @param ID the ID of the player
+     @param index the index of the column to select
      */
     public synchronized void selectColumn(String ID,Integer index) {
         if(game.getCurrentPlayer().getShelf().isSelectionPossible()){
@@ -280,13 +416,24 @@ public class Engine{
     }
 
     /**
-     * Sets as null the selected column index and updates the selectable columns arrayList in currentPlayer's shelf.
+
+     Deselects the currently selected column in the current player's shelf.
+     This method performs the following steps:
+     Cleans the selected column in the current player's shelf by calling the cleanSelectedColumn() method.
+     Updates the selectable columns in the current player's shelf by calling the updateSelectableColumns() method.
      */
     private void deselectColumn() {
         game.getCurrentPlayer().getShelf().cleanSelectedColumn();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());
     }
 
+    /**
+
+     Sends the player's shelf and temporary tiles to the observers.
+     First, the player's shelf is sent to update the observers with the current state of the player's shelf.
+     If the player has any temporary tiles, they are also sent to the observers.
+     @param ID the ID of the player
+     */
     private void sendShelfAndTiles(String ID) {
        // waitForPreviousMethod();
         try {
@@ -303,9 +450,22 @@ public class Engine{
             }
         }
     }
+
     /**
-     * Add the tile at the selected index of temporaryTiles to the player's shelf in the previously selected column.
-     * @param temporaryIndex the selected index of temporaryTiles.
+
+     Places a tile from the player's temporary tiles onto the player's shelf.
+     The selection possibility on the player's shelf is set to false to prevent further tile placement.
+     The tile at the specified temporary index is selected from the player's temporary tiles.
+     The selected column on the shelf is obtained.
+     Starting from the bottom row of the shelf, the method searches for the first non-empty tile in the selected column.
+     If a non-empty tile is found, the tile to insert is placed one row above it (if possible), and the updated shelf and tiles are sent to the observers.
+     If the search reaches the top row without finding a non-empty tile, the tile to insert is placed in the top row, and the updated shelf and tiles are sent to the observers.
+     If the player no longer has any temporary tiles, the selected column is deselected, the selection possibility on the shelf is set to true,
+     and a notification indicating the completion of the tile placement is sent to the observers.
+     If the specified temporary index is invalid, an error message indicating an invalid temporary tile is sent to the observers.
+     Finally, a flag indicating the completion of the method is sent to the observers.
+     @param ID the ID of the player
+     @param temporaryIndex the index of the temporary tile to place
      */
     public synchronized void placeTiles(String ID, Integer temporaryIndex) {
         game.getCurrentPlayer().getShelf().setSelectionPossible(false);
@@ -350,9 +510,11 @@ public class Engine{
     }
 
     /**
-     * Function that checks if the player has the requirements of the commonGoals in the game.
-     * In the positive case it assigns the points and marks that the player has obtained
-     * the points of the CommonGoal in question
+
+     Checks the common goals to see if any of them can be redeemed by the current player.
+     If a common goal's requirements are met by the player's shelf and the goal has not been previously redeemed by the player,
+     the player earns points based on the number of times the goal has been redeemed, and the goal's redeemed count is decreased.
+     The player's points are updated accordingly, and the goal is marked as redeemed by the player.
      */
     public void checkCommonGoals(){
         for(int i=0; i<Config.numberOfCommonGoals; i++){
@@ -369,7 +531,11 @@ public class Engine{
     }
 
     /**
-     * Sends results to the clients
+
+     Sends the game results to the observers.
+     The updated game state, including the results, is serialized and sent to the observers.
+     A flag indicating the completion of the method is also sent to the observers.
+     Any network errors that occur during the process are handled and an error message is thrown.
      */
     public synchronized void sendResults() {
         try {
@@ -383,8 +549,12 @@ public class Engine{
             throw new RuntimeException(e);
         }
     }
+
     /**
-     * Checks the number of tiles in the personal goal placed correctly and assigns the points earned.
+
+     Checks the personal goals of each player and updates their points based on the redeemed tiles.
+     For each player, it compares their personal goal with the tiles on their shelf and counts the number of redeemed tiles.
+     Based on the number of redeemed tiles, the player's points are updated accordingly.
      */
     public void checkPersonalGoal(){
         for (Player player : game.getPlayers()) {
@@ -412,9 +582,11 @@ public class Engine{
     }
 
     /**
-     * Auxiliary method that transforms a shelf in a matrix of TilesEnum.
-     * @param shelf the shelf to be transformed
-     * @return the correspondent matrix of TilesEnum
+
+     Converts a Shelf object to a 2D array of TilesEnum.
+     Each element in the resulting array represents the tile at the corresponding position on the shelf.
+     @param shelf The Shelf object to be converted.
+     @return A 2D array of TilesEnum representing the tiles on the shelf.
      */
     private TilesEnum[][] tileToTilesEnum (Shelf shelf){
         TilesEnum[][] tmp = new TilesEnum[Config.shelfHeight][Config.shelfLength];
@@ -427,7 +599,9 @@ public class Engine{
     }
 
     /**
-     * Checks the number adjacent tiles of the same type and assigns the points earned.
+
+     Checks the endgame goal for each player.
+     Updates the player's points based on the completion of the endgame goal.
      */
     public void checkEndgameGoal(){
         int dim;
@@ -487,7 +661,18 @@ public class Engine{
     }
 
     /**
-     * end turn logic
+
+     Ends the turn for the current player.
+     Checks common goals and updates player points accordingly.
+     Checks if the end game condition is met.
+     Clears the temporary tiles of the current player.
+     Refills the board if it is empty.
+     Sets the next active player as the current player.
+     If the current player is in the first position and the board is in the end game state, ends the game.
+     Notifies the next active player and broadcasts the updated game state.
+     Saves the game status.
+     @param ID The ID of the player ending the turn.
+     @param nickName The nickname of the player ending the turn.
      */
     public synchronized void endTurn(String ID, String nickName) {
         this.checkCommonGoals();
@@ -516,6 +701,10 @@ public class Engine{
         getSaveGameStatus().saveGame();
     }
 
+    /**
+
+     Pauses the execution for 10 seconds.
+     */
     public static void waitFor10Seconds() {
         try {
             TimeUnit.SECONDS.sleep(10);
@@ -534,6 +723,21 @@ public class Engine{
         }
     }
 
+
+    /**
+
+     Ends the turn for the current player in the game.
+     This method performs the following actions:
+     Checks for common goals.
+     Checks if the game should end based on the provided player ID and nickname.
+     Clears the temporary tiles of the current player.
+     Fills the board if it is empty.
+     Sets the next active player as the current player.
+     Ends the game if the current player's position is 0 and the board has reached the end game state.
+     Saves the game status.
+     @param ID the ID of the current player
+     @param nickName the nickname of the current player
+     */
     private void dcEndTurn(String ID, String nickName) {
         this.checkCommonGoals();
         this.checkEndGame(ID, nickName);
@@ -549,6 +753,17 @@ public class Engine{
         getSaveGameStatus().saveGame();
     }
 
+    /**
+
+     Ends the turn forcefully for the current player in the game.
+     This method performs the following actions:
+     Clears the temporary tiles of the current player.
+     Fills the board if it is empty.
+     Sets the next player as the current player.
+     Notifies the next player and updates the game state.
+     Saves the game status.
+     This method is synchronized to ensure thread safety.
+     */
     public synchronized void endTurnForced() {
         getGame().getCurrentPlayer().clearTemporaryTiles();
         if (getGame().getBoard().isBoardEmpty())
@@ -564,7 +779,17 @@ public class Engine{
     }
 
     /**
-     * Checks if a player has completed his shelf and if so sets endGame and adds the point to the player
+
+     Checks if the game should end based on the provided player ID and nickname.
+     This method performs the following actions:
+     Checks if the game has reached the end game state on the board.
+     If the current player's shelf is full, sets the end game flag to true, increments the player's points,
+     and notifies observers of the end game.
+     If the provided nickname has a position greater than 0, sends force ending notifications to players
+     with positions lower than the provided nickname's position.
+     Notifies observers of the returned flag.
+     @param ID the ID of the player
+     @param nickName the nickname of the player
      */
     public void checkEndGame(String ID, String nickName) {
         if(!this.getGame().getBoard().isEndGame()){
@@ -609,8 +834,14 @@ public class Engine{
         return Collections.max(getGame().getPlayers(), Comparator.comparing(Player::getPoints));
     }
 
+
     /**
-     * logic for the end game. Calculate personalGoals and EndgameGoal points, sending them to the clients
+
+     Ends the game.
+     This method performs the following actions:
+     Checks the personal goal.
+     Checks the endgame goal.
+     Deletes the save file.
      */
     public void endGame() {
         this.checkPersonalGoal();
@@ -625,9 +856,15 @@ public class Engine{
     }
 
     /**
-     * Send the chat to a client
-     * @param scope it is the chat you want to view: everyone to view the global chat
-     *              or a player's nickname to view the chat with the specific player
+
+     Sends a chat message within the specified scope.
+     This method performs the following actions:
+     Checks if the specified scope contains an invalid nickname.
+     If the nickname is valid, sends the chat message to observers.
+     If the nickname is invalid, sends an error message to observers.
+     Notifies observers of the returned flag.
+     @param scope the scope of the chat message
+     @param ID the ID of the player
      */
     public synchronized void sendChat(String scope, String ID) {
         if(invalidNickname(scope)) {
@@ -651,10 +888,17 @@ public class Engine{
     }
 
     /**
-     * Creates a message with sender, content and recipients and adds it to the chat.
-     * @param sender message sender
-     * @param content message content
-     * @param scope message scope
+
+     Sends a chat message from the specified sender with the given content and scope.
+     This method performs the following actions:
+     Checks if the scope is an error scope. If so, sends an error message to observers.
+     Checks if the scope contains an invalid nickname. If so, sends an error message to observers.
+     Adds the chat message to the chat log.
+     Sends the chat message to observers.
+     @param sender the nickname of the sender
+     @param content the content of the chat message
+     @param scope the scope of the chat message
+     @param ID the ID of the player
      */
     public synchronized void sayInChat(String sender, String content, String scope, String ID) {
         if (scope.equals(Config.error)) {
@@ -682,6 +926,19 @@ public class Engine{
         }
     }
 
+    /**
+
+     Removes an observer with the specified ID and number from the game.
+     This method performs the following actions:
+     Decrements the counter.
+     Notifies observers of the observer's removal.
+     Deletes the observer from the game.
+     Removes the observer from the clientObserverHashMap.
+     Removes the ID from the Clients_ID map.
+     Removes the ID from the ID_Nicks map.
+     @param id the ID of the observer
+     @param num the number of the observer
+     */
     public synchronized void removeObserver(String id, int num) {
         counter--;
         try {
@@ -695,6 +952,12 @@ public class Engine{
         getID_Nicks().removeByKey(id);
     }
 
+    /**
+
+     Performs an everlasting kill by notifying all observers of the kill event.
+     This method performs the following actions:
+     Notifies observers of the kill event with a broadcast ID and a dummy number.
+     */
     public void everlastingKill() {
         try {
             game.setChangedAndNotifyObservers(new Kill(new SerializableGame(Config.broadcastID,0)));
@@ -703,9 +966,10 @@ public class Engine{
     }
 
     /**
-     * Checks if the nickname is a nickname of the players in game of equals everyone
-     * @param nickname is the nickname to check
-     * @return true if nickname is the nickname of a player in game or the broadcast string
+
+     Checks if the nickname is a nickname of the players in game of equals everyone
+     @param nickname is the nickname to check
+     @return true if nickname is the nickname of a player in game or the broadcast string
      */
     private boolean invalidNickname(String nickname){
         if(nickname.equals(Config.everyone))
@@ -715,6 +979,11 @@ public class Engine{
         return !game.getPlayersNickname(getInactivePlayers()).contains(nickname) && playerReconnect;
     }
 
+    /**
+
+     Retrieves a list of inactive players in the game.
+     @return an ArrayList of inactive players
+     */
     private ArrayList<Player> getInactivePlayers() {
         ArrayList<Player> dcPlayer = new ArrayList<>();
         for(Player player : game.getPlayers()){
@@ -725,6 +994,11 @@ public class Engine{
         return dcPlayer;
     }
 
+    /**
+
+     Retrieves a list of active players in the game.
+     @return an ArrayList of inactive players
+     */
     private ArrayList<Player> getActivePlayers() {
         ArrayList<Player> activePlayer = new ArrayList<>();
         for(Player player : game.getPlayers()){
@@ -780,6 +1054,11 @@ public class Engine{
                 (game.getBoard().getBoard()[y][x].getTile() == UNUSED);
     }
 
+    /**
+
+     Sets the game state and related properties from a saved game.
+     @param gameSave the saved game object
+     */
     private void setGameFromSave(Game gameSave) {
         this.game.setGameState(gameSave.getGameState());
         this.game.setNumberOfPlayers(gameSave.getNumberOfPlayers());
@@ -789,8 +1068,20 @@ public class Engine{
         this.game.setBoard(gameSave.getBoard());
         this.game.setCommonGoals(gameSave.getCommonGoals());
     }
+
+    /**
+
+     Initializes the game from a saved state.
+     This method performs the following actions:
+     Retrieves the saved game.
+     Sets the game state and related properties from the saved game.
+     Updates the necessary flags and variables.
+     Notifies observers of the option choice and the returned flag.
+     @param ID the ID of the player
+     */
     public synchronized void initializeFromSave(String ID) {
-        setGameFromSave(retrieveGame());
+        if(saveFileFound())
+            setGameFromSave(retrieveGame());
         this.loadFromFile = true;
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
         optionChoosed = true;
@@ -806,6 +1097,13 @@ public class Engine{
         }
     }
 
+    /**
+
+     Sends a request to load a previous game with the specified alphanumeric ID.
+     This method performs the following actions:
+     Notifies observers to ask for loading a previous game with the given ID.
+     @param alphanumericID the alphanumeric ID of the previous game
+     */
     private void askLoadGame(String alphanumericID){
         try {
             getGame().setChangedAndNotifyObservers(new AskLoadGame(new SerializableGame(alphanumericID)));
@@ -814,6 +1112,22 @@ public class Engine{
         }
     }
 
+    /**
+
+     Loads a game from a file with the specified ID and nickname.
+     This method performs the following actions:
+     If the ID matches the first client, clears the ID_Nicks map.
+     Checks if the nickname is in the list of free names used in the last game.
+     If it is, removes the nickname from the list, adds the ID-nickname mapping to the ID_Nicks map, and notifies observers of a successful nickname choice.
+     If it is not, sends an error message to the client and notifies observers of a returned flag.
+     If the ID does not match the first client:
+     Checks if the nickname is in the list of free names used in the last game.
+     If it is, removes the nickname from the list, adds the ID-nickname mapping to the ID_Nicks map, and notifies observers of a successful nickname choice.
+     If it is not, sends an error message to the client and notifies observers of a returned flag.
+     If the list of free names used in the last game is empty, starts the game from the loaded file.
+     @param ID the ID of the client
+     @param nickname the nickname chosen by the client
+     */
     private void loadFromFile(String ID, String nickname) {
         if(ID.equals(firstClient)){
             ID_Nicks.clear();
@@ -863,6 +1177,18 @@ public class Engine{
             startGameFromFile();
     }
 
+    /**
+
+     Initializes a player based on the provided input.
+     This method performs the following actions:
+     Checks if the client nickname is invalid. If it is, sends a wrong nickname message to observers and returns.
+     Sends an OK nickname message to observers.
+     If the client nickname is not already in use and the alphanumeric ID is not equal to the first client's ID, adds the ID-nickname mapping to the ID_Nicks map.
+     If it's not a player reconnect, calls the playerJoin() method.
+     If it's a player reconnect, sets the player's active status to true and notifies observers of the name colors and the next player's turn.
+     Resets the playerReconnect flag to false.
+     @param input the serializable input containing the client's nickname and alphanumeric ID
+     */
     private void initializePlayer(SerializableInput input)  {
         if (invalidNickname(input.getClientNickname())) {
             try {
@@ -893,14 +1219,40 @@ public class Engine{
         }
         this.playerReconnect = false;
     }
+
+    /**
+
+     Sets the active status of a player based on the client's choice.
+     @param client the client for which to set the active status
+     @param choice the choice indicating whether the player is active or not
+     */
     public void setIsActiveFromClient(Client client, Boolean choice){
         getPlayerFromNickname(ID_Nicks.getValue(clients_ID.getValue(client))).setIsActive(choice);
     }
 
+    /**
+
+     Retrieves the nickname associated with a client.
+     @param client the client for which to retrieve the nickname
+     @return the nickname associated with the client
+     */
     public String getNickFromClient(Client client) {
         return ID_Nicks.getValue(clients_ID.getValue(client));
     }
 
+
+    /**
+
+     Handles the process of assigning a nickname to a client.
+     If the client's alphanumeric ID matches the first client's ID:
+     If loading from a saved game, attempts to load the game with the provided nickname.
+     If not loading from a saved game, checks if the nickname is already taken. If not, initializes the player with the nickname.
+     If the client's alphanumeric ID does not match the first client's ID:
+     If not loading from a saved game and the first player is not yet assigned, checks if the nickname is already taken.
+     If not, assigns the nickname to the client.
+     If loading from a saved game, attempts to load the game with the provided nickname.
+     @param input the input containing the client's alphanumeric ID and nickname
+     */
     public synchronized void takeNick(SerializableInput input) {
         if(input.getAlphanumericID().equals(firstClient)){
             if(loadFromFile){
@@ -949,6 +1301,12 @@ public class Engine{
             }
 
     }
+
+    /**
+
+     Sends a request to the clients to input the number of players in the game.
+     @param alphanumericID the alphanumeric ID of the client initiating the request
+     */
     private void askNumOfPlayers(String alphanumericID){
         try {
             getGame().setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(alphanumericID)));
@@ -956,7 +1314,14 @@ public class Engine{
             throw new RuntimeException("Network error while sending setting client flags: "+e.getMessage());
         }
     }
-    
+
+    /**
+
+     Connects a client to the game.
+     @param alphanumericID the alphanumeric ID of the client
+     @throws RemoteException if a network error occurs during the connection process
+     @throws InterruptedException if the thread is interrupted while waiting for the connection
+     */
     public synchronized void Connect(String alphanumericID) throws RemoteException, InterruptedException {
         if(getInactivePlayers().size() > 0){
             playerReconnect = true;
@@ -979,6 +1344,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Starts the game from a saved state.
+     If all players from the previous game have reconnected and chosen their nicknames, the game is started.
+     The game state, including player colors, current player, and next player turn, is sent to the clients.
+     */
     private void startGameFromFile(){
         if (freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
             for(String id : clients_ID.getAllValue()){
@@ -996,10 +1367,17 @@ public class Engine{
             }
         }
     }
-    public synchronized void setNumberOfPlayers(int numberOfPlayers){
-        loadFromFile=false;
-        getGame().initializeGame(numberOfPlayers);
-    }
+
+    /**
+
+     Sets the number of players for the game and initializes the game state.
+     This method is called when the number of players is chosen by the first client.
+     The game is initialized with the specified number of players.
+     The option chosen flag is set to true, indicating that the number of players has been selected.
+     The game state is sent to the clients.
+     @param numberOfPlayers The number of players for the game.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);
@@ -1016,6 +1394,13 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game board to the client identified by the specified ID.
+     This method sends the game board to the client and notifies the client that the board has been transferred.
+     If there is a network error during the process, the client observer is removed.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void boardTransfer(String ID) {
         try {
             getGame().setChangedAndNotifyObservers(new SendBoard(new SerializableGame(ID ,getGame())));
@@ -1030,6 +1415,13 @@ public class Engine{
 
     }
 
+    /**
+
+     Transfers the game shelf to the client identified by the specified ID.
+     This method sends the game shelf to the client and notifies the client that the board has been transferred.
+     If there is a network error during the process, the client observer is removed.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void shelfTransfer(String clientNickname, String ID) {
         int pos = getGame().getPositionByNick(clientNickname);
         try {
@@ -1044,6 +1436,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers all the game shelves to the client identified by the specified ID.
+     This method sends the all game shelves to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void shelfTransferAll(String ID) {
         try {
             getGame().setChangedAndNotifyObservers(new SendAllShelves(new SerializableGame(ID, game.getPlayers())));
@@ -1057,6 +1455,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game personal Goal to the client identified by the specified ID.
+     This method sends the game personal Goal to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void personalGoalTransfer(String ID, String nickname) {
         try {
             game.setChangedAndNotifyObservers(new SendPersonalGoal(new SerializableGame(ID, getGame(), nickname)));
@@ -1070,6 +1474,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game temporary Tiles to the client identified by the specified ID.
+     This method sends the game temporary Tiles to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void temporaryTilesTransfer(String ID) {
         try {
             game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(ID, getGame())));
@@ -1083,6 +1493,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game common Goal to the client identified by the specified ID.
+     This method sends the game common Goal to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void commonGoalTransfer(String ID) {
         try {
             game.setChangedAndNotifyObservers(new SendCommonGoals(new SerializableGame(ID, game)));
@@ -1096,6 +1512,12 @@ public class Engine{
         }
     }
 
+    /**
+
+     Transfers the game current Player to the client identified by the specified ID.
+     This method sends the game current Player to the client and notifies the client that the board has been transferred.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void currentPlayerTransfer(String ID){
         try {
             getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(ID,getGame())));
@@ -1109,6 +1531,13 @@ public class Engine{
         }
     }
 
+    /**
+
+     Checks if any inactive player needs to reconnect.
+     For each player in the game, if the player is inactive, it sends a request to the client identified by the specified ID
+     to provide the nickname for reconnection. It also sets the playerReconnect flag to true.
+     @param ID The alphanumeric ID of the client.
+     */
     public synchronized void reconnectionCheck(String ID){
         for(Player player : game.getPlayers()){
             if(!player.getIsActive()){
@@ -1122,6 +1551,11 @@ public class Engine{
         }
     }
 
+    /**
+
+     Sets the isActive flag of the player with the specified nickname to false.
+     @param input The input containing the client nickname.
+     */
     public synchronized void notActive(SerializableInput input){
         for(Player player : getGame().getPlayers()){
             if(input.getClientNickname().equals(player.getNickname()))
@@ -1129,6 +1563,11 @@ public class Engine{
         }
     }
 
+    /**
+
+     Generates random colors for each player in the game.
+     @return A HashMap containing player nicknames as keys and their corresponding random colors as values.
+     */
     private HashMap<String, String> randomColors() {
         HashMap<String, String> colors = new HashMap<>();
         ArrayList<Integer> alreadyUsed = new ArrayList<>();

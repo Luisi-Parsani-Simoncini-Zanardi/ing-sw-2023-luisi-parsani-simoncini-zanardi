@@ -7,6 +7,10 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * The Square class represents a game strategy where the goal is to have at least 2 separate 2x2 squares on the shelf
+ * that contain tiles of the same type.
+ */
 public class Square extends CommonGoalStrategy {
 
     /**
