@@ -45,11 +45,6 @@ public class ClientSkeleton implements Client, Serializable {
 
     }
 
-    @Override
-    public TextualUI getTui() throws RemoteException {
-        return null;
-    }
-
     /**
      * Sends a response message to the client.
      * @param response the response message to send

@@ -13,5 +13,4 @@ public interface Client extends Remote {
     void update(ResponseMessage response) throws RemoteException;
     void kill()throws RemoteException;
     void ping() throws  RemoteException;
-    TextualUI getTui()throws  RemoteException;
 }

@@ -103,12 +103,6 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
     }
 
     /**
-     * Returns the textual user interface (TUI) of the client.
-     * @return the textual user interface
-     */
-    public TextualUI getTui() {return this.tui;}
-
-    /**
      * Closes the client application.
      * @throws RemoteException if a remote communication error occurs
      */
