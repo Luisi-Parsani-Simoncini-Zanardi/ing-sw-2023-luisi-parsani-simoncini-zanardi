@@ -1054,7 +1054,7 @@ public class Engine{
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
         optionChoosed = true;
         try {
-            game.setChangedAndNotifyObservers(new optionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
+            game.setChangedAndNotifyObservers(new OptionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -1344,7 +1344,7 @@ public class Engine{
         getGame().initializeGame(numberOfPlayers);
         optionChoosed = true;
         try {
-            game.setChangedAndNotifyObservers(new optionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
+            game.setChangedAndNotifyObservers(new OptionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

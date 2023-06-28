@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Represents a response message indicating an option chose response.
  * Extends the ResponseMessage class and implements the Serializable interface.
  */
-public class optionChoosed extends ResponseMessage implements Serializable {
+public class OptionChoosed extends ResponseMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -18,7 +18,7 @@ public class optionChoosed extends ResponseMessage implements Serializable {
      * Constructs a new optionChoosed object with the specified SerializableGame.
      * @param model the SerializableGame object representing the response message
      */
-    public optionChoosed(SerializableGame model) {
+    public OptionChoosed(SerializableGame model) {
         super(model);
     }
 
