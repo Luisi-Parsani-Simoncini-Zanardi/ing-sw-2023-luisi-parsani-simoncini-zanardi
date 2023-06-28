@@ -1087,17 +1087,7 @@ public class Engine{
             setGameFromSave(retrieveGame());
         this.loadFromFile = true;
         this.freeNamesUsedInLastGame = game.getPlayersNickname();
-        optionChoosed = true;
-        try {
-            game.setChangedAndNotifyObservers(new optionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        optionChooseSet(ID);
     }
 
     /**
@@ -1385,6 +1375,10 @@ public class Engine{
     public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
         loadFromFile=false;
         getGame().initializeGame(numberOfPlayers);
+        optionChooseSet(ID);
+    }
+
+    private void optionChooseSet(String ID) {
         optionChoosed = true;
         try {
             game.setChangedAndNotifyObservers(new optionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));

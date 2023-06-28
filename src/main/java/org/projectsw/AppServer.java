@@ -93,6 +93,13 @@ public class AppServer extends UnicastRemoteObject
         } catch (InterruptedException e) {
             System.err.println("No connection protocol available. Exiting...");
         }
+
+        try {
+            getServer().startPingThread();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
