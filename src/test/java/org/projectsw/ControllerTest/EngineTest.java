@@ -522,6 +522,8 @@ class EngineTest extends TestUtils {
         Engine engine = new Engine();
         Player player = new Player("pippo", 0);
         Player player1 = new Player("pluto", 0);
+        if (engine.saveFileFound())
+            engine.getSaveGameStatus().deleteSaveFile();
         engine.getGame().initializeGame(2);
         engine.getGame().getPlayers().add(player);
         engine.getGame().getPlayers().add(player1);
