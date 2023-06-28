@@ -45,7 +45,6 @@ public class Engine{
      This constructor initializes the server to null and creates a new instance of the Game class.
      */
     public Engine(){
-        server=null;
         game = new Game();
     }
 
@@ -56,7 +55,6 @@ public class Engine{
      */
     public Engine(Server server){
         this.clientObserverHashMap=new HashMap<>();
-        this.server=server;
     }
 
     /**
@@ -266,23 +264,21 @@ public class Engine{
         game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         fillBoard();
-        //for(String ID : ID_Nicks.getAllKey()) {
-            try {
-                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while setting the name colors: " + e);
-            }
-            try {
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
-            }
-            try{
-                game.setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
-            }
-        //}
+        try {
+            game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while setting the name colors: " + e);
+        }
+        try {
+            game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
+        }
+        try {
+            game.setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID, getGame().getPlayers().get(getGame().getNumberOfPlayers() - 1).getNickname())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
+        }
         saveGameStatus.saveGame();
     }
 
@@ -303,7 +299,7 @@ public class Engine{
         if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
         else {
             try {
-                if (selectionPossible()) {  //TODO il controllo fatto a riga 185 avviene anche dentro al metodo selectionPossible, controllare
+                if (selectionPossible()) {
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     game.getBoard().updateSelectablePoints();
                     try {
@@ -439,7 +435,6 @@ public class Engine{
      @param ID the ID of the player
      */
     private void sendShelfAndTiles(String ID) {
-       // waitForPreviousMethod();
         try {
             game.setChangedAndNotifyObservers(new SendShelf(new SerializableGame(ID, game)));
         } catch (RemoteException e) {
@@ -717,9 +712,7 @@ public class Engine{
         }
     }
 
-
     /**
-
      Ends the turn for the current player in the game.
      This method performs the following actions:
      Checks for common goals.
@@ -820,9 +813,7 @@ public class Engine{
         return true;
     }
 
-
     /**
-
      Ends the game.
      This method performs the following actions:
      Checks the personal goal.
@@ -836,7 +827,6 @@ public class Engine{
     }
 
     /**
-
      Sends a chat message within the specified scope.
      This method performs the following actions:
      Checks if the specified scope contains an invalid nickname.
@@ -1300,7 +1290,7 @@ public class Engine{
             removeObserver(alphanumericID, 0);
         } else {
             if(saveFileFound()){
-                game.setChangedAndNotifyObservers((new gameFound(new SerializableGame(alphanumericID))));
+                game.setChangedAndNotifyObservers((new GameFound(new SerializableGame(alphanumericID))));
             }
             getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID, optionChoosed)));
         }
@@ -1350,7 +1340,7 @@ public class Engine{
     private void optionChooseSet(String ID) {
         optionChoosed = true;
         try {
-            game.setChangedAndNotifyObservers(new optionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
+            game.setChangedAndNotifyObservers(new OptionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
