@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -22,6 +23,7 @@ public class ErrorSelectionNotPossible extends ResponseMessage implements Serial
         super(model);
     }
 
+
     /**
      * Executes the ErrorSelectionNotPossible message on the specified TextualUI.
      * Sets the flags in the TextualUI to update its state accordingly.
@@ -29,6 +31,13 @@ public class ErrorSelectionNotPossible extends ResponseMessage implements Serial
      */
     @Override
     public void execute(TextualUI tui){
-        tui.setNoMoreSelectableTiles(false);
+        tui.setTileSelectionPossible(false);
     }
+
+    //TODO javadoc gui
+    @Override
+    public void execute(GuiManager gui) {
+        gui.setTileSelectionPossible(false);
+    }
+
 }

@@ -1,7 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
-import org.projectsw.View.GraphicalUI;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -30,5 +30,5 @@ public class SendShelf extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui){
         tui.showShelf(model);
     }
-    public void execute(GraphicalUI gui){}
+    public void execute(GuiManager gui){gui.updateModel(model);}
 }

@@ -29,6 +29,6 @@ public class FinishedInserting extends ResponseMessage implements Serializable {
      */
     @Override
     public void execute(TextualUI tui) {
-        tui.setNoMoreTemporaryTiles(false);
+        tui.setTemporaryTilesHold(false);
     }
 }

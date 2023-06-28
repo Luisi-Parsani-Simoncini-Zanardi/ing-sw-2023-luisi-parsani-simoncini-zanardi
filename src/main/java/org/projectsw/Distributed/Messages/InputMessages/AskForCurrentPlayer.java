@@ -32,4 +32,6 @@ public class AskForCurrentPlayer extends InputMessage implements Serializable {
     public void execute(Engine engine) throws RemoteException {
         engine.currentPlayerTransfer(input.getAlphanumericID());
     }
+
+
 }

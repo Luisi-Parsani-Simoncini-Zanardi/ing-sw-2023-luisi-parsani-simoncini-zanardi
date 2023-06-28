@@ -37,22 +37,17 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private boolean returnedFlag = false;
     private boolean stillChoosing = true;
     private boolean loadFromFile = false;
-
     private Integer number;
     private Point point;
     private String nickname;
     private String string;
     private String alphanumericKey;
-
     private String lastPlayerNick;
-
-    private Boolean noMoreSelectableTiles = true;
-    private Boolean noMoreTemporaryTiles = true;
-
+    private Boolean tileSelectionPossible = true;
+    private Boolean temporaryTilesHold = true;
     private HashMap<String, String> nameColors;
     private final Client client;
     Scanner masterScanner = new Scanner(System.in);
-  
     private ArrayList<Message> chatBuffer = new ArrayList<>();
 
     /**
@@ -253,16 +248,16 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
      * Sets the value of the noMoreTemporaryTiles flag.
      * @param bool The value to set for the noMoreTemporaryTiles flag.
      */
-    public void setNoMoreTemporaryTiles(boolean bool){
-        this.noMoreTemporaryTiles = bool;
+    public void setTemporaryTilesHold(boolean bool){
+        this.temporaryTilesHold = bool;
     }
 
     /**
      * Sets the value of the noMoreSelectableTiles flag.
      * @param bool The value to set for the noMoreSelectableTiles flag.
      */
-    public void setNoMoreSelectableTiles(boolean bool){
-        this.noMoreSelectableTiles = bool;
+    public void setTileSelectionPossible(boolean bool){
+        this.tileSelectionPossible = bool;
     }
 
     /**
@@ -645,7 +640,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
             waitReturn();
-        }while(noMoreSelectableTiles && chooseTiles());
+        }while(tileSelectionPossible && chooseTiles());
         try {
             setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
@@ -685,7 +680,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             waitReturn();
-        }while(noMoreTemporaryTiles);
+        }while(temporaryTilesHold);
     }
 
     /**

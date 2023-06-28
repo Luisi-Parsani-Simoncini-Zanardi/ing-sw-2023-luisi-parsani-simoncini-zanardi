@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -33,5 +34,10 @@ public class ReturnedFlag extends ResponseMessage implements Serializable {
         synchronized (tui) {
             tui.notifyAll();
         }
+    }
+
+    @Override
+    public void execute(GuiManager guiManager) {
+        guiManager.notifyResponse2();
     }
 }

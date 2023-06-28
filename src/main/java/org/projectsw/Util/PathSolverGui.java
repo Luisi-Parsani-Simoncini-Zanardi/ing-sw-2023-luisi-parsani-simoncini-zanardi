@@ -57,4 +57,83 @@ public class PathSolverGui {
         return standardInitialPath+"/PersonalGoals/empty"+formatJpg;
     }
 
+    public static String boxLogo() {
+        return standardInitialPath+"LogoAndIcons/Box280x280"+formatPng;
+    }
+
+    public static String icon() {
+        return standardInitialPath+"LogoAndIcons/Icon"+formatPng;
+    }
+
+    public static String publisher() {
+        return standardInitialPath+"LogoAndIcons/Publisher"+formatPng;
+    }
+
+    public static String title618() {
+        return standardInitialPath+"LogoAndIcons/Title2000x618"+formatPng;
+    }
+
+    public static String title2000() {
+        return standardInitialPath+"LogoAndIcons/Title2000x2000"+formatPng;
+    }
+
+    public static String endGameToken() {
+        return standardInitialPath+"ScoringTokens/EndGame"+formatJpg;
+    }
+
+    public static String scoringToken2() {
+        return standardInitialPath+"ScoringTokens/Scoring2"+formatJpg;
+    }
+
+    public static String scoringToken4() {
+        return standardInitialPath+"ScoringTokens/Scoring4"+formatJpg;
+    }
+
+    public static String scoringToken6() {
+        return standardInitialPath+"ScoringTokens/Scoring6"+formatJpg;
+    }
+
+    public static String scoringToken8() {
+        return standardInitialPath+"ScoringTokens/Scoring8"+formatJpg;
+    }
+
+    public static String scoringTokenEmpty1() {
+        return standardInitialPath+"ScoringTokens/ScoringEmpty1"+formatJpg;
+    }
+
+    public static String scoringTokenEmpty2() {
+        return standardInitialPath+"ScoringTokens/ScoringEmpty2"+formatJpg;
+    }
+
+    public static String scoringTokenBack() {
+        return standardInitialPath+"ScoringTokens/ScoringBack"+formatJpg;
+    }
+
+    public static String firstPlayerToken() {
+        return standardInitialPath+"Various/FirstPlayerToken"+formatPng;
+    }
+
+    public static String books(int code){
+        return standardInitialPath+"Tiles/Books"+code+formatPng;
+    }
+
+    public static String cats(int code){
+        return standardInitialPath+"Tiles/Cats"+code+formatPng;
+    }
+
+    public static String frames(int code){
+        return standardInitialPath+"Tiles/Frames"+code+formatPng;
+    }
+
+    public static String games(int code){
+        return standardInitialPath+"Tiles/Games"+code+formatPng;
+    }
+
+    public static String plants(int code){
+        return standardInitialPath+"Tiles/Plants"+code+formatPng;
+    }
+
+    public static String trophies(int code){
+        return standardInitialPath+"Tiles/Trophies"+code+formatPng;
+    }
 }

@@ -13,12 +13,10 @@ import org.projectsw.Util.Observer;
 import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.SerializableInput;
-
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
 import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
 import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
 
@@ -304,7 +302,7 @@ public class Engine{
         if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);
         else {
             try {
-                if (selectionPossible()) {
+                if (selectionPossible()) {  //TODO il controllo fatto a riga 185 avviene anche dentro al metodo selectionPossible, controllare
                     game.getBoard().addTemporaryPoints(selectedPoint);
                     game.getBoard().updateSelectablePoints();
                     try {
@@ -377,6 +375,11 @@ public class Engine{
         for(Point point : selectedPoints){
             Tile tile = game.getBoard().getTileFromBoard(point);
             game.getCurrentPlayer().addTemporaryTile(tile);
+        }
+        try {
+            game.setChangedAndNotifyObservers(new GuiUpdateBoards(new SerializableGame(Config.broadcastID,game)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while sending the boards update"+e.getMessage());
         }
         game.getBoard().cleanTemporaryPoints();
         game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());

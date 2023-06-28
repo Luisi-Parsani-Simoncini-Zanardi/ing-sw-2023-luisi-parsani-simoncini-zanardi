@@ -1,6 +1,7 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -30,4 +31,10 @@ public class SendPersonalGoal extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui){
         tui.showPersonalGoal(model);
     }
+
+    @Override
+    public void execute(GuiManager gui){
+        gui.updateModel(model);
+    }
+
 }
