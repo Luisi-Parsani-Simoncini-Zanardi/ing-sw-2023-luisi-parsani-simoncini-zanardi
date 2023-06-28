@@ -1,18 +1,18 @@
-<mxfile host="app.diagrams.net" modified="2023-06-28T19:02:42.672Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="dx25CKYA0wvZdHDs0jM7" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-28T19:15:31.364Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="WUqF3xiufsg8HUvfqIgr" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="2843" dy="3277" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="2731" dy="3365" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
         </object>
         <mxCell id="1" parent="0" />
-        <mxCell id="0j8p1se4WsX_w9YfrRnY-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;shadow=0;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="1430" y="-790" width="830" height="490" as="geometry" />
+        <mxCell id="0j8p1se4WsX_w9YfrRnY-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=60;tabHeight=30;tabPosition=left;html=1;whiteSpace=wrap;shadow=0;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2660" y="-790" width="830" height="490" as="geometry" />
         </mxCell>
-        <mxCell id="EzJUuA46leq047YBjK1z-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=none;" parent="1" vertex="1">
+        <mxCell id="EzJUuA46leq047YBjK1z-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=30;tabPosition=left;html=1;whiteSpace=wrap;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="-340" y="-210" width="2920" height="1140" as="geometry" />
         </mxCell>
-        <mxCell id="9WpMfCR_n4XsZXEiZ-4h-2" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;shadow=0;fillStyle=hatch;fillColor=default;" parent="1" vertex="1">
+        <mxCell id="9WpMfCR_n4XsZXEiZ-4h-2" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=130;tabHeight=30;tabPosition=left;html=1;whiteSpace=wrap;shadow=0;fillStyle=hatch;fillColor=default;" parent="1" vertex="1">
           <mxGeometry x="1110" y="-160" width="1460" height="730" as="geometry" />
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-1" value="Game" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -163,7 +163,7 @@
           <mxGeometry x="-320" y="450" width="170" height="160" as="geometry" />
         </mxCell>
         <mxCell id="EzJUuA46leq047YBjK1z-2" value="Model" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="-310" y="-190" width="30" height="10" as="geometry" />
+          <mxGeometry x="-310" y="-200" width="30" height="10" as="geometry" />
         </mxCell>
         <mxCell id="AMuZGpQVMHgPtwnpilzj-1" value="Bag" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="710" y="530" width="160" height="130" as="geometry" />
@@ -204,30 +204,32 @@
         <mxCell id="mHvKu2w7ndSmzs79eD4w-9" value="+ addChatLog(Message): void&lt;br&gt;+getChat(): ArrayList&amp;lt;Message&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="mHvKu2w7ndSmzs79eD4w-6" vertex="1">
           <mxGeometry y="60" width="210" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="mHvKu2w7ndSmzs79eD4w-10" value="" style="endArrow=diamondThin;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="mHvKu2w7ndSmzs79eD4w-7" edge="1">
+        <mxCell id="mHvKu2w7ndSmzs79eD4w-10" value="" style="endArrow=diamondThin;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" edge="1">
           <mxGeometry x="-1" relative="1" as="geometry">
-            <mxPoint x="160" y="10" as="sourcePoint" />
-            <mxPoint x="260" y="-50" as="targetPoint" />
+            <mxPoint x="-110" y="-100.5" as="sourcePoint" />
+            <mxPoint x="260" y="-49.5" as="targetPoint" />
             <mxPoint as="offset" />
             <Array as="points">
-              <mxPoint x="75" y="-101" />
-              <mxPoint x="260" y="-100" />
+              <mxPoint x="75" y="-100.5" />
+              <mxPoint x="75" y="-99.5" />
+              <mxPoint x="240" y="-99.5" />
+              <mxPoint x="240" y="-49.5" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="mHvKu2w7ndSmzs79eD4w-11" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" parent="mHvKu2w7ndSmzs79eD4w-10" connectable="0" vertex="1">
           <mxGeometry x="-1" relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="3VdPLMrZcKA6GoJQrmLX-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=none;" parent="1" vertex="1">
+        <mxCell id="3VdPLMrZcKA6GoJQrmLX-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=60;tabHeight=30;tabPosition=left;html=1;whiteSpace=wrap;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="-320" y="-1740" width="530" height="1340" as="geometry" />
         </mxCell>
         <mxCell id="3VdPLMrZcKA6GoJQrmLX-2" value="Controller" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="-310" y="-1720" width="60" height="30" as="geometry" />
+          <mxGeometry x="-320" y="-1740" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="3VdPLMrZcKA6GoJQrmLX-12" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Engine&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- game: Game&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- clientObserverHashMap: HashMap&amp;lt;Client, Observer&amp;lt;Game, ResponseMessage&amp;gt;&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- client_ID: OneToOneHashmap&amp;lt;Client, String&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- ID_Nicks: OneToOneHashmap&amp;lt;String, String&amp;gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- counter: int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- saveGameStatus: SaveGameStatus&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- freeNamesUsedInLastGame: ArrayList&amp;lt;String&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- loadFromFile: boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- playerReconnect: boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- firstClient: String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- IDToKill: ArrayList&amp;lt;String&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- optionChoosed: boolean&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getOptionChoosed(): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ setOptionChoosed(boolean): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getFreeNamesUsedInLastGame(): ArrayList&amp;lt;String&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getLoadFromFile(): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getFirstClient(): String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getPlayerReconnection(): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getClients_ID(): OneToOneHashmap&amp;lt;Client, String&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getID_Nicks(): OneToOneHashmap&amp;lt;String, String&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getClientObserverHashMap(): HashMap&amp;lt;Client, Observer&amp;lt;Game, ResponseMessage&amp;gt;&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getGame(): Game&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getPlayerFromNickname(Sring): Player&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ saveFileFound(): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ retrieveGame(): Game&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ setGame(Game): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getSaveGameStatus(): SaveGameStatus&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ setSaveGameStatus(SaveGameStatus): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ playerJoin(String): void&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ smallJoin(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- killingSpree(ArrayList&amp;lt;String&amp;gt;): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ startGame(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ selectTiles(String, Point): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ deselectTiles(Point): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- selectionPossible(): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ confirmSelectedTiles(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ selectColumn(String, Integer): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- deselectColumn(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sendShelfAndTiles(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ placeTiles(String, Integer): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ chekcCommonGoals(): void&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ sendResults(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ checkPersonalGoal(): void&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- tileToTilesEnum(Shelf): TilesEnum[][]&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ checkEndGameGoal(): void&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- costomShelfIterator(ArrayList&amp;lt;Point&amp;gt;, Shelf, boolean[][], TilesEnum, int, int): int&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ endTurn(String, String): void&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ waitFor10Seconds(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- dcEndTurn(String, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ endTurnForced(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ checkEndGame(String, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- fullShelf(Shelf): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ endGame(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ sendChat(String, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ sayInChat(String, String, String, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ removeObserver(String, int): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ everlastingKill(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- invalidNickname(String)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- getInactivePlayers(): ArrayList&amp;lt;Player&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- getActivePlayers(): ArrayList&amp;lt;Player&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ fillBoard(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- isBoardValid(): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;-isEmptyOrUnusedBoard(int, int): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- setGameFromSave(Game): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ initializeFromSave(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- askLoadGame(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- loadFromFile(String, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- initializePlayer(SerializableInput): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ setIsActiveFromClient(Client, Boolean): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+getNickFromClient(Client): String&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ takeNick(SerializableInput): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- askNumOfPlayers(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ Connect(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- startGameFromFile(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ setNumberOfPlayers(int, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ boardTransfer(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ shelfTransfer(String, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ shelfTransferAll(String ID): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ personalGoalTransfer(String, String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ temporaryTilesTransfer(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ commonGoalTransfer(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ currentPlayerTransfer(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ reconnectionCheck(String): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ notActive(SerializableInput): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- randomColors(): HashMap&amp;lt;String, String&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="-310" y="-1690" width="510" height="1270" as="geometry" />
         </mxCell>
-        <mxCell id="9U84HWBfrnvw68wfZRjt-1" value="Uses" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.046;exitY=0.014;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.264;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="EzJUuA46leq047YBjK1z-1" target="3VdPLMrZcKA6GoJQrmLX-1" edge="1">
+        <mxCell id="9U84HWBfrnvw68wfZRjt-1" value="Uses" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.045;exitY=0.023;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.264;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="EzJUuA46leq047YBjK1z-1" target="3VdPLMrZcKA6GoJQrmLX-1" edge="1">
           <mxGeometry x="0.2308" width="160" relative="1" as="geometry">
             <mxPoint x="-280" y="-70" as="sourcePoint" />
             <mxPoint x="315" y="-340" as="targetPoint" />
@@ -269,7 +271,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="9WpMfCR_n4XsZXEiZ-4h-3" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;CommonGoals&lt;/font&gt;" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
-          <mxGeometry x="1110" y="-160" width="100" height="40" as="geometry" />
+          <mxGeometry x="1120" y="-170" width="100" height="40" as="geometry" />
         </mxCell>
         <mxCell id="o77QHmqQmNkal7PHkD5_-2" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="1754" y="30" width="20" height="10" as="geometry" />
@@ -387,11 +389,11 @@
         <mxCell id="Bs_YzykeCiTkUcpEXx2v-14" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Square&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ check(Shelf shelf): boolean&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- insertCoords(ArrayList&amp;lt;Point&amp;gt; coordinates, int x, int y): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- notContainsCoords(ArrayList&amp;lt;Point&amp;gt; coordinates, int x, int y): boolean&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- isValidSquare(Shelf shelf, TilesEnum tileType, int x, int y): boolean&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;fillColor=default;" parent="1" vertex="1">
           <mxGeometry x="1180" y="240" width="390" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="1AL47Ae-udw0xNspE_Op-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;shadow=0;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="250" y="-790" width="1140" height="490" as="geometry" />
+        <mxCell id="1AL47Ae-udw0xNspE_Op-1" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=80;tabHeight=30;tabPosition=left;html=1;whiteSpace=wrap;shadow=0;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="240" y="-1730" width="2380" height="1430" as="geometry" />
         </mxCell>
         <mxCell id="1AL47Ae-udw0xNspE_Op-2" value="Distributed" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="255" y="-770" width="60" height="30" as="geometry" />
+          <mxGeometry x="280" y="-1730" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="1AL47Ae-udw0xNspE_Op-3" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Client&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ update(GameView, Event): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getGui(): GrephicalUI&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ getTui(): TextualUI&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="280" y="-540" width="380" height="100" as="geometry" />
@@ -486,7 +488,7 @@
           <mxGeometry x="50" y="-60" width="160" height="120" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-14" value="TextualUI" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1460" y="-735" width="270" height="370" as="geometry" />
+          <mxGeometry x="2700" y="-750" width="270" height="370" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-15" value="- lock: Object&lt;br&gt;- nickname: String&lt;br&gt;- coordinate: Point&lt;br&gt;- state: UIState&lt;br&gt;- number: Integer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="F7evz0KNMgZYf-CdFRLq-14" vertex="1">
           <mxGeometry y="26" width="270" height="84" as="geometry" />
@@ -498,7 +500,7 @@
           <mxGeometry y="118" width="270" height="252" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-18" value="GraphicalUI" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1760" y="-735" width="270" height="120" as="geometry" />
+          <mxGeometry x="3000" y="-749.5" width="270" height="120" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-19" value="- state: UIState" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="F7evz0KNMgZYf-CdFRLq-18" vertex="1">
           <mxGeometry y="26" width="270" height="24" as="geometry" />
@@ -510,10 +512,10 @@
           <mxGeometry y="58" width="270" height="62" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-22" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enumeration&amp;gt;&amp;gt;&lt;/i&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;&lt;i&gt;UIState&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;GAME_ENDING&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;OPPONENT_TURN&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;YOUR_TURN&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="2070" y="-513" width="170" height="100" as="geometry" />
+          <mxGeometry x="3300" y="-560" width="170" height="100" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-23" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Enumeration&amp;gt;&amp;gt;&lt;/i&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;&lt;i&gt;UIEvent&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;CONFIRM_SELECTION&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;TILE_SELECTION&lt;br&gt;&amp;nbsp;SAY_IN_CHAT&lt;br&gt;&amp;nbsp;CHOOSE_NICKNAME&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;TILE_INSETION&lt;br&gt;&amp;nbsp;COLUMN_SELECTION&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="2070" y="-735" width="170" height="149" as="geometry" />
+          <mxGeometry x="3300" y="-749.5" width="170" height="149" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-27" value="GameView" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="700" y="700" width="200" height="190" as="geometry" />
@@ -540,7 +542,18 @@
           <mxGeometry y="88" width="160" height="62" as="geometry" />
         </mxCell>
         <mxCell id="0j8p1se4WsX_w9YfrRnY-2" value="View" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="1440" y="-770" width="60" height="30" as="geometry" />
+          <mxGeometry x="2660" y="-790" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="7zn35PvWmJtqcguIeIPs-1" value="" style="shape=folder;fontStyle=1;tabWidth=100;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;whiteSpace=wrap;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="260" y="-1690" width="1140" height="740" as="geometry" />
+        </mxCell>
+        <mxCell id="7zn35PvWmJtqcguIeIPs-2" value="" style="html=1;strokeColor=none;resizeWidth=1;resizeHeight=1;fillColor=none;part=1;connectable=0;allowArrows=0;deletable=0;whiteSpace=wrap;" vertex="1" parent="7zn35PvWmJtqcguIeIPs-1">
+          <mxGeometry width="1140" height="518" relative="1" as="geometry">
+            <mxPoint y="30" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7zn35PvWmJtqcguIeIPs-3" value="InputMessages" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="7zn35PvWmJtqcguIeIPs-1">
+          <mxGeometry x="20" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
