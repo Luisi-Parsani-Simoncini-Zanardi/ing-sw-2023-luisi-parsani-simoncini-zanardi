@@ -2,30 +2,29 @@ package org.projectsw.ControllerTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.ClientImplementation;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Distributed.ServerImplementation;
+import org.projectsw.Exceptions.UnselectableColumnException;
+import org.projectsw.Exceptions.UnselectableTileException;
+import org.projectsw.Model.*;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
-import org.projectsw.Util.Config;
-import org.projectsw.Controller.Engine;
-import org.projectsw.Exceptions.*;
-import org.projectsw.Model.*;
-import org.projectsw.Model.CommonGoal.CommonGoal;
-import org.projectsw.Model.CommonGoal.RowColumn;
-import org.projectsw.Util.OneToOneHashmap;
 import org.projectsw.TestUtils;
+import org.projectsw.Util.Config;
 import org.projectsw.Util.Observer;
 import org.projectsw.View.SerializableInput;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.projectsw.Model.Enums.TilesEnum.*;
 import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
 
 class EngineTest extends TestUtils {
 
@@ -53,6 +52,9 @@ class EngineTest extends TestUtils {
         }
     }
 
+    /**
+     * Test the getID_Nicks() engine function
+     */
     @Test
     void getID_Nicks() {
         Engine engine = new Engine();
@@ -60,6 +62,9 @@ class EngineTest extends TestUtils {
             assertEquals(engine.getID_Nicks().getKey("pippo"), "0");
     }
 
+    /**
+     * Test the getFirstClient() engine function
+     */
     @Test
     void getFirstClient() {
         Engine engine = new Engine();
@@ -71,9 +76,12 @@ class EngineTest extends TestUtils {
         assertEquals("0", engine.getFirstClient());
     }
 
+    /**
+     * Test the getClientObserverHashMap() engine function
+     */
     @Test
     void getClientObserverHashMap() {
-        Server server = null;
+        Server server;
         try {
             server = new ServerImplementation();
             Client client = new ClientImplementation(server);
@@ -151,6 +159,9 @@ class EngineTest extends TestUtils {
         assertEquals(game, engine.getGame());
     }
 
+    /**
+     * Test the getSaveGameStatus() engine function
+     */
     @Test
     void getSaveGameStatus() {
         Engine engine = new Engine();
@@ -160,6 +171,9 @@ class EngineTest extends TestUtils {
         assertEquals(save, engine.getSaveGameStatus());
     }
 
+    /**
+     * Test the getOptionChoosed() engine function
+     */
     @Test
     void getOptionChoosed() {
         Engine engine = new Engine();
@@ -167,6 +181,9 @@ class EngineTest extends TestUtils {
         assertEquals(true, engine.getOptionChoosed());
     }
 
+    /**
+     * Test the startGame() engine function
+     */
     @Test
     void startGame() {
         Engine engine = new Engine();
@@ -180,6 +197,9 @@ class EngineTest extends TestUtils {
         assertEquals(engine.getGame().getGameState(), GameState.RUNNING);
     }
 
+    /**
+     * Test the smallJoin() engine function
+     */
     @Test
     void smallJoin() {
         Engine engine = new Engine();
@@ -188,7 +208,9 @@ class EngineTest extends TestUtils {
         assertEquals(engine.getGame().getPlayers().size(), 1);
     }
 
-
+    /**
+     * Test the playerJoin() engine function
+     */
     @Test
     void playerJoin() {
         Engine engine = new Engine();
@@ -198,6 +220,9 @@ class EngineTest extends TestUtils {
         assertEquals(engine.getGame().getPlayers().size(), 1);
     }
 
+    /**
+     * Test the testPlayerJoinInLobby() engine function
+     */
     @Test
     public void testPlayerJoinInLobby() {
         Engine engine = new Engine();
@@ -230,6 +255,9 @@ class EngineTest extends TestUtils {
 
     }
 
+    /**
+     * Test the deselectTiles() engine function
+     */
     @Test
     void deselectTiles() {
         Engine engine = new Engine();
@@ -272,6 +300,9 @@ class EngineTest extends TestUtils {
         assertEquals(board.getSelectablePoints(),engine.getGame().getBoard().getSelectablePoints());
     }
 
+    /**
+     * Test the confirmSelectedTiles() engine function
+     */
     @Test
     void confirmSelectedTiles() {
         Engine engine = new Engine();
@@ -297,6 +328,9 @@ class EngineTest extends TestUtils {
         assertEquals(player.getTemporaryTiles().size(), 1);
     }
 
+    /**
+     * Test the selectColumn() engine function
+     */
     @Test
     void selectColumn() {
         Engine engine = new Engine();
@@ -314,6 +348,9 @@ class EngineTest extends TestUtils {
         assertEquals(player.getShelf().getSelectedColumn(), 1);
     }
 
+    /**
+     * Test the placeTiles() engine function
+     */
     @Test
     void placeTiles() {
         Engine engine = new Engine();
@@ -338,6 +375,9 @@ class EngineTest extends TestUtils {
         assertEquals(player.getTemporaryTiles().size(), 0);
     }
 
+    /**
+     * Test the checkCommonGoals() engine function
+     */
     @Test
     void checkCommonGoals() {
         Engine engine = new Engine();
@@ -353,6 +393,9 @@ class EngineTest extends TestUtils {
         }
     }
 
+    /**
+     * Test the checkPersonalGoal() engine function
+     */
     @Test
     void checkPersonalGoal() {
         Engine engine = new Engine();
@@ -368,6 +411,9 @@ class EngineTest extends TestUtils {
         }
     }
 
+    /**
+     * Test the checkEndgameGoal() engine function
+     */
     @Test
     void checkEndgameGoal() {
         Engine engine = new Engine();
@@ -383,6 +429,9 @@ class EngineTest extends TestUtils {
         }
     }
 
+    /**
+     * Test the saveFileFound() engine function
+     */
     @Test
     void saveFileFound() {
         Engine engine = new Engine();
@@ -392,6 +441,9 @@ class EngineTest extends TestUtils {
         assertTrue(engine.saveFileFound());
     }
 
+    /**
+     * Test the retrieveGame() engine function
+     */
     @Test
     void retrieveGame() {
         Engine engine = new Engine();
@@ -401,6 +453,9 @@ class EngineTest extends TestUtils {
         assertEquals(engine.retrieveGame().getPlayers(), engine.getGame().getPlayers());
     }
 
+    /**
+     * Test the endTurn() engine function
+     */
     @Test
     void endTurn() {
         Engine engine = new Engine();
@@ -416,7 +471,9 @@ class EngineTest extends TestUtils {
         assertEquals(engine.getGame().getCurrentPlayer().getNickname(),"lupus");
     }
 
-
+    /**
+     * Test the endTurnForced() engine function
+     */
     @Test
     void endTurnForced() {
         Engine engine = new Engine();
@@ -433,6 +490,9 @@ class EngineTest extends TestUtils {
 
     }
 
+    /**
+     * Test the checkEndGame() engine function
+     */
     @Test
     void checkEndGame() {
         Engine engine = new Engine();
@@ -451,19 +511,24 @@ class EngineTest extends TestUtils {
         assertEquals(player.getPoints(), 101);
     }
 
-
+    /**
+     * Test the endGame() engine function
+     */
     @Test
     void endGame() {
         Engine engine = new Engine();
         engine.getGame().initializeGame(2);
         engine.saveFileFound();
+        engine.endGame();
         engine.getSaveGameStatus().saveGame();
         assertTrue(engine.saveFileFound());
         engine.getSaveGameStatus().deleteSaveFile();
         assertFalse(engine.saveFileFound());
     }
 
-
+    /**
+     * Test the sayInChat() engine function
+     */
     @Test
     void sayInChat() {
         Engine engine = new Engine();
@@ -471,11 +536,16 @@ class EngineTest extends TestUtils {
         Chat chat = new Chat();
         assertEquals(chat.getMessages(), engine.getGame().getChat().getMessages());
         engine.sayInChat("pippo", "ciao", Config.everyone, "0");
+        engine.sayInChat("pippo", "ciao", Config.error, "0");
         Message mess = new Message("pippo", Config.everyone, "ciao");
         chat.addChatLog(mess);
         assertEquals(chat.getMessages().get(0).getPayload(), engine.getGame().getChat().getMessages().get(0).getPayload());
+
     }
 
+    /**
+     * Test the removeObserver() engine function
+     */
     @Test
     void removeObserver() {
         try {
@@ -486,7 +556,6 @@ class EngineTest extends TestUtils {
             engine.setGame(game);
             Player player = new Player("pippo", 0);
             engine.getGame().getPlayers().add(player);
-            HashMap<Client, Observer<Game, ResponseMessage>> clientObserverHashMap = new HashMap<>();
             Observer<Game, ResponseMessage> observer = (o, response) -> {
             };
             engine.getClientObserverHashMap().put(client, observer);
@@ -501,6 +570,9 @@ class EngineTest extends TestUtils {
         }
     }
 
+    /**
+     * Test the fillBoard() engine function
+     */
     @Test
     void fillBoard() {
         Engine engine = new Engine();
@@ -517,6 +589,9 @@ class EngineTest extends TestUtils {
         assertEquals(bag, engine.getGame().getBoard().getBag());
     }
 
+    /**
+     * Test the initializeFromSave() engine function
+     */
     @Test
     void initializeFromSave() {
         Engine engine = new Engine();
@@ -525,22 +600,30 @@ class EngineTest extends TestUtils {
         engine.getGame().initializeGame(2);
         engine.getGame().getPlayers().add(player);
         engine.getGame().getPlayers().add(player1);
+        engine.getGame().setFirstPlayer(player);
         assertFalse(engine.getLoadFromFile());
         ArrayList<String> empty = new ArrayList<>();
         ArrayList<String> pippo = new ArrayList<>();
+        engine.saveFileFound();
+        pippo.add("pippo");
+        pippo.add("pluto");
         pippo.add("pippo");
         pippo.add("pluto");
         assertEquals(empty, engine.getFreeNamesUsedInLastGame());
         assertFalse(engine.getOptionChoosed());
+        engine.getSaveGameStatus().saveGame();
         engine.initializeFromSave("0");
         assertTrue(engine.getLoadFromFile());
         assertTrue(engine.getOptionChoosed());
         assertEquals(pippo, engine.getFreeNamesUsedInLastGame());
     }
 
+    /**
+     * Test the getNickFromClient() engine function
+     */
     @Test
     void getNickFromClient() {
-        Server server = null;
+        Server server;
         try {
             server = new ServerImplementation();
             Client client = new ClientImplementation(server);
@@ -560,6 +643,9 @@ class EngineTest extends TestUtils {
         }
     }
 
+    /**
+     * Test the setIsActiveFromClient() engine function
+     */
     @Test
     void setIsActiveFromClient() {
         Engine engine = new Engine();
@@ -578,10 +664,13 @@ class EngineTest extends TestUtils {
         }
     }
 
+    /**
+     * Test the takeNick() engine function
+     */
     @Test
     void takeNick() {
-        Server server = null;
-        Client client = null;
+        Server server;
+        Client client;
         try {
             server = new ServerImplementation();
         } catch (RemoteException e) {
@@ -600,8 +689,13 @@ class EngineTest extends TestUtils {
         engine.getGame().setFirstPlayer(player);
         engine.takeNick(new SerializableInput("0", "lupus", new Point(1,1), client));
         assertEquals(engine.getGame().getPlayers().size(), 2);
+        engine.initializeFromSave("0");
+        engine.takeNick(new SerializableInput("0", "zzz", new Point(1,1), client));
     }
 
+    /**
+     * Test the connect() engine function
+     */
     @Test
     void connect() {
         Engine engine = new Engine();
@@ -615,8 +709,39 @@ class EngineTest extends TestUtils {
             throw new RuntimeException(e);
         }
         assertTrue(engine.getPlayerReconnection());
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
+        try {
+            engine.Connect("1");
+        } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue(engine.getPlayerReconnection());
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
     }
 
+    @Test
+    void connect2() {
+        Engine engine = new Engine();
+        Player player = new Player("pippo", 0);
+        assertFalse(engine.getPlayerReconnection());
+        engine.getGame().getPlayers().add(player);
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
+        try {
+            engine.Connect("1");
+        } catch (RemoteException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        assertFalse(engine.getPlayerReconnection());
+        engine.saveFileFound();
+        engine.getSaveGameStatus().deleteSaveFile();
+    }
+
+    /**
+     * Test the setNumberOfPlayers() engine function
+     */
     @Test
     void setNumberOfPlayers() {
         Engine engine = new Engine();
@@ -624,6 +749,9 @@ class EngineTest extends TestUtils {
         assertEquals(engine.getGame().getNumberOfPlayers(), 2);
     }
 
+    /**
+     * Test the transferMethods() engine function
+     */
     @Test
     void transferMethods() {
         Engine engine = new Engine();
@@ -638,8 +766,12 @@ class EngineTest extends TestUtils {
         engine.boardTransfer("0");
         engine.sendChat(" ", "0");
         engine.sendResults();
+        engine.everlastingKill();
     }
 
+    /**
+     * Test the reconnectionCheck() engine function
+     */
     @Test
     void reconnectionCheck() {
         Engine engine = new Engine();
@@ -652,6 +784,9 @@ class EngineTest extends TestUtils {
         assertTrue(engine.getPlayerReconnection());
     }
 
+    /**
+     * Test the notActive() engine function
+     */
     @Test
     void notActive() {
         Engine engine = new Engine();

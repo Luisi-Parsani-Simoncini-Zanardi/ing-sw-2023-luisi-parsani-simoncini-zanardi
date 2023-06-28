@@ -1,10 +1,8 @@
 package org.projectsw.Model;
 
 import com.google.gson.Gson;
-import org.projectsw.Model.Enums.GameEvent;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
-import org.projectsw.Util.Observable;
 
 import org.projectsw.Exceptions.UnselectableTileException;
 import org.projectsw.View.ConsoleColors;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 /**
  * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
  */
-public class Board extends Observable<GameEvent> {
+public class Board {
     private Tile[][] board;
     private boolean endGame;
     private Bag bag;

@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import java.awt.*;
+import java.util.ArrayList;
 
 class BoardTest {
     /**
@@ -32,6 +33,11 @@ class BoardTest {
         board.updateBoard(new Tile(TilesEnum.FRAMES, 0), 4,1);
         board.updateBoard(new Tile(TilesEnum.PLANTS, 0), 4,2);
         board.updateBoard(new Tile(TilesEnum.GAMES, 0), 4,3);
+        assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
+        assertEquals(TilesEnum.FRAMES, board.getBoard()[4][1].getTile());
+        assertEquals(TilesEnum.PLANTS, board.getBoard()[4][2].getTile());
+        assertEquals(TilesEnum.GAMES, board.getBoard()[4][3].getTile());
+        Board board1 = new Board(new ArrayList<>(), new ArrayList<>());
         assertEquals(TilesEnum.CATS, board.getBoard()[4][0].getTile());
         assertEquals(TilesEnum.FRAMES, board.getBoard()[4][1].getTile());
         assertEquals(TilesEnum.PLANTS, board.getBoard()[4][2].getTile());
@@ -390,6 +396,7 @@ class BoardTest {
         board.cleanTemporaryPoints();
         assertEquals(0,board.getTemporaryPoints().size());
     }
+
 
     /*
      * Tests if getSelectablePoints and updateSelectablePoints works correctly by printing some tests cases.
