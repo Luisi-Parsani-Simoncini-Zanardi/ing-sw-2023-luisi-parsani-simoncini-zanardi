@@ -128,7 +128,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         }
         // Rimuovi i client disconnessi dalla registrazione dei client
         unregisterClients(disconnectedClients);
-        if(controller.getClients_ID().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING) && controller.getOptionChoosed()){
+        if(controller.getClients_ID().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING) && controller.getOptionChoosed() && controller.getFreeNamesUsedInLastGame().isEmpty()){
             try {
                 controller.getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(controller.getID_Nicks().getAllKey().get(0), "You are alone in this game. You will win in 10 seconds if no one reconnect")));
             } catch (RemoteException e) {
@@ -160,16 +160,19 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
      */
     private void unregisterClients(List<Client> clients) {
         for (Client client : clients) {
-            String nick = controller.getNickFromClient(client);
-            String ID = controller.getClients_ID().getValue(client);
-            if(!controller.getGame().getGameState().equals(GameState.RUNNING) && ID.equals(controller.getFirstClient())) {
-                controller.everlastingKill();
-                System.exit(0);
-            }
-            controller.setIsActiveFromClient(client, false);
-            controller.removeObserver(controller.getClients_ID().getValue(client), 0);
-            if (nick.equals(controller.getGame().getCurrentPlayer().getNickname())) {
-                controller.endTurn(ID, controller.getGame().getCurrentPlayer().getNickname());
+            if (controller.getID_Nicks().getAllKey().contains(controller.getClients_ID().getValue(client))) {
+                String nick = controller.getNickFromClient(client);
+                String ID = controller.getClients_ID().getValue(client);
+                if (!controller.getGame().getGameState().equals(GameState.RUNNING) && ID.equals(controller.getFirstClient())) {
+                    controller.everlastingKill();
+                    System.exit(0);
+                }
+                if (controller.getGame().getPlayersNickname().contains(nick))
+                    controller.setIsActiveFromClient(client, false);
+                controller.removeObserver(controller.getClients_ID().getValue(client), 0);
+                if (nick.equals(controller.getGame().getCurrentPlayer().getNickname())) {
+                    controller.endTurn(ID, controller.getGame().getCurrentPlayer().getNickname());
+                }
             }
         }
     }

@@ -1352,7 +1352,8 @@ public class Engine{
      */
     private void startGameFromFile(){
         if (freeNamesUsedInLastGame.isEmpty() && loadFromFile) {
-            for(String id : clients_ID.getAllValue()){
+            ArrayList<String> ids = new ArrayList<>(clients_ID.getAllValue());
+            for (String id : ids){
                 if(!ID_Nicks.getAllKey().contains(id)){
                     removeObserver(id, 0);
                 }
@@ -1363,7 +1364,7 @@ public class Engine{
                 getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
                 getGame().setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));
             } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while setting the name colors: " + e);
+                throw new RuntimeException("An error occurred while setting the name colors: " + e.getMessage());
             }
         }
     }
