@@ -3,6 +3,8 @@ package org.projectsw.Util;
 /**
  * Global config class
  */
+import java.awt.*;
+
 public class Config {
     public static final int boardLength = 9;
     public static final int boardHeight = 9;
@@ -19,7 +21,6 @@ public class Config {
     public static final int numberOfCommonGoals = 2;
     public static final String broadcastID = "broadcast";
     public static final String everyone = "MIGfMA0GCSqGSIb3";
-
     public static final String error = "DQEBAQUAA4GNADCB";
-    private Config() {}
+    public static final Color defaultGuiBackgroundColor = new Color(110,48,10);
 }

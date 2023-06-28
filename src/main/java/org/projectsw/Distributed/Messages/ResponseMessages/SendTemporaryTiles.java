@@ -3,6 +3,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.View.ConsoleColors;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
@@ -44,5 +45,10 @@ public class SendTemporaryTiles extends ResponseMessage implements Serializable 
                 case PLANTS -> System.out.println(integer + " " + ConsoleColors.PLANTS);
             }
         }
+    }
+
+    @Override
+    public void execute(GuiManager guiManager) {
+        guiManager.updateModel(model);
     }
 }

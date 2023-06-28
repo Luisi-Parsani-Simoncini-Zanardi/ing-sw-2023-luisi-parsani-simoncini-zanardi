@@ -1,8 +1,8 @@
 package org.projectsw.Distributed.Messages.ResponseMessages;
 
 import org.projectsw.Model.SerializableGame;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
-
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -32,5 +32,12 @@ public class AskLoadGame extends ResponseMessage implements Serializable {
         tui.setNickFlag(false);
         tui.setFirstPlayerFlag(true);
         tui.setPreviousGameExist(true);
+    }
+
+    @Override
+    public void execute(GuiManager guiManager) {
+        guiManager.setFirstPlayer(true);
+        guiManager.setGameSavedExist(true);
+        guiManager.setAskNickname(false);
     }
 }

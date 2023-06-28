@@ -1,9 +1,8 @@
 package org.projectsw.Distributed;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Observer;
-import org.projectsw.View.GraphicalUI;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serializable;
@@ -17,9 +16,9 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class ClientImplementation extends UnicastRemoteObject implements Client, Serializable {
     private TextualUI tui;
-    private GraphicalUI gui;
+    private GuiManager gui;
     private Observer<TextualUI, InputMessage> tuiObserver;
-    private Observer<GraphicalUI, InputMessage> guiObserver;
+    private Observer<GuiManager, InputMessage> guiObserver;
 
     /**
      * Constructs a new ClientImplementation instance with the specified server.
@@ -91,15 +90,14 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
      * @param server the server to update with user input
      */
     public void setGui (Server server) {
-        gui = new GraphicalUI();
+        gui = new GuiManager(this);
         tui = null;
-        gui.addObserver((o, arg) -> {
-                /*try {
-                    server.update(new InputController(tui.getClientUID(), tui.getPoint(),tui.getNumber(),tui.getNickname()), arg);
-                    cambiare una volta finita GUI
-                } catch (RemoteException e) {
-                    throw new RuntimeException("Cannot send the client input" + e.getMessage());
-                }*/
+        gui.addObserver((o, input) -> {
+            try {
+                server.update(this,input);
+            } catch (RemoteException e) {
+                throw new RuntimeException("A network error occurred: " + e.getMessage());
+            }
         });
         gui.run();
     }
@@ -116,7 +114,10 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
      */
     @Override
     public void kill() throws RemoteException{
-        tui.deleteObserver(tuiObserver);
+        if(tui != null)
+            tui.deleteObserver(tuiObserver);
+        else
+            gui.deleteObserver(guiObserver);
         System.exit(0);
     }
 
@@ -163,7 +164,7 @@ public class ClientImplementation extends UnicastRemoteObject implements Client,
      * @throws RemoteException if a remote communication error occurs
      */
     @Override
-    public Observer<GraphicalUI, InputMessage>  getGuiObserver()  throws RemoteException{
+    public Observer<GuiManager, InputMessage>  getGuiObserver()  throws RemoteException{
         return guiObserver;
     }
 

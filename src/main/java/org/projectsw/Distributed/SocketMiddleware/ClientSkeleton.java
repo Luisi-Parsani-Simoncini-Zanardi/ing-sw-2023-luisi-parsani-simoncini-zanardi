@@ -5,7 +5,7 @@ import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
 import org.projectsw.Distributed.Server;
 import org.projectsw.Util.Observer;
-import org.projectsw.View.GraphicalUI;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class ClientSkeleton implements Client, Serializable {
     }
 
     @Override
-    public Observer<GraphicalUI, InputMessage> getGuiObserver() throws RemoteException {
+    public Observer<GuiManager, InputMessage> getGuiObserver() throws RemoteException {
         return null;
     }
 

@@ -25,7 +25,15 @@ public class AppServer extends UnicastRemoteObject
 
     private static AppServer instance;
 
-    private final Server server = new ServerImplementation();
+    private static final Server server;
+
+    static {
+        try {
+            server = new ServerImplementation();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -57,7 +65,7 @@ public class AppServer extends UnicastRemoteObject
             @Override
             public void run() {
                 try {
-                    startRMI(getInstance().getServer());
+                    startRMI(getServer());
                 } catch (RemoteException | UnknownHostException e) {
                     System.err.println("Cannot start RMI. This protocol will be disabled.");
                 }
@@ -70,7 +78,7 @@ public class AppServer extends UnicastRemoteObject
             @Override
             public void run() {
                 try {
-                    startSocket(getInstance().getServer());
+                    startSocket(getServer());
                 } catch (RemoteException e) {
                     System.err.println("Cannot start socket. This protocol will be disabled.");
                 }
@@ -138,7 +146,8 @@ public class AppServer extends UnicastRemoteObject
      * @return the server instance
      * @throws RemoteException if a remote exception occurs
      */
-    public Server getServer() throws RemoteException {
-        return this.server;
+    public static Server getServer() throws RemoteException {
+        return server;
+
     }
 }

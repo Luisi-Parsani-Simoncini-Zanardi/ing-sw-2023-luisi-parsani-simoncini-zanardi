@@ -3,6 +3,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
@@ -32,5 +33,10 @@ public class Kill extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui) {
         tui.kill(model.getInteger());
         System.exit(0);
+    }
+
+    @Override
+    public void execute(GuiManager guiManager) {
+        guiManager.kill(0);
     }
 }

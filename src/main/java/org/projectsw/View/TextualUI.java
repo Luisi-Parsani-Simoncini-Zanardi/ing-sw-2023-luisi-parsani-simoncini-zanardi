@@ -37,22 +37,18 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     private boolean returnedFlag = false;
     private boolean stillChoosing = true;
     private boolean loadFromFile = false;
-
     private Integer number;
     private Point point;
     private String nickname;
     private String string;
     private String alphanumericKey;
-
     private String lastPlayerNick;
-
-    private Boolean noMoreSelectableTiles = true;
+    private Boolean tileSelectionPossible = true;
+    private Boolean temporaryTilesHold = true;
     private Boolean noMoreTemporaryTiles = true;
-
     private HashMap<String, String> nameColors;
     private final Client client;
     Scanner masterScanner = new Scanner(System.in);
-  
     private ArrayList<Message> chatBuffer = new ArrayList<>();
 
     /**
@@ -645,7 +641,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 throw new RuntimeException("An error occurred while choosing the tiles: "+e.getCause());
             }
             waitReturn();
-        }while(noMoreSelectableTiles && chooseTiles());
+        }while(tileSelectionPossible && chooseTiles());
         try {
             setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));
         } catch (RemoteException e) {
@@ -685,7 +681,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 throw new RuntimeException("An error occurred while inserting the tiles: "+e.getCause());
             }
             waitReturn();
-        }while(noMoreTemporaryTiles);
+        }while(temporaryTilesHold);
     }
 
     /**
