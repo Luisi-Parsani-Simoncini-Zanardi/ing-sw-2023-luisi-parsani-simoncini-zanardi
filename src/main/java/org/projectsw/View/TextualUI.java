@@ -291,7 +291,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
         int choice = 0;
         RandomAlphanumericGen randomizer = new RandomAlphanumericGen();
         alphanumericKey = randomizer.generateRandomString(100);
-        System.out.println(alphanumericKey);
         connect();
         while (connectFlag) {
         }

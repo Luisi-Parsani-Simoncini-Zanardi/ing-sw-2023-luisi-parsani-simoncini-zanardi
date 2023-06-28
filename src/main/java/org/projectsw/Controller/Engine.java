@@ -30,7 +30,6 @@ public class Engine{
     private Game game;
     private static int counter = 0;
     private SaveGameStatus saveGameStatus;
-    private final Server server;
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
@@ -44,7 +43,6 @@ public class Engine{
      This constructor initializes the server to null and creates a new instance of the Game class.
      */
     public Engine(){
-        server=null;
         game = new Game();
     }
 
@@ -55,7 +53,6 @@ public class Engine{
      */
     public Engine(Server server){
         this.clientObserverHashMap=new HashMap<>();
-        this.server=server;
     }
 
     /**
@@ -265,23 +262,21 @@ public class Engine{
         game.setGameState(GameState.RUNNING);
         saveGameStatus = new SaveGameStatus(game, "src/main/java/org/projectsw/Util/save.txt");
         fillBoard();
-        //for(String ID : ID_Nicks.getAllKey()) {
-            try {
-                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while setting the name colors: " + e);
-            }
-            try {
-                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
-            }
-            try{
-                game.setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));
-            } catch (RemoteException e) {
-                throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
-            }
-        //}
+        try {
+            game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while setting the name colors: " + e);
+        }
+        try {
+            game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
+        }
+        try {
+            game.setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID, getGame().getPlayers().get(getGame().getNumberOfPlayers() - 1).getNickname())));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while notifying the next player: " + e.getCause());
+        }
         saveGameStatus.saveGame();
     }
 
