@@ -68,6 +68,8 @@ class EngineTest extends TestUtils {
     @Test
     void getFirstClient() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         try {
             engine.Connect("0");
         } catch (RemoteException | InterruptedException e) {
@@ -85,7 +87,7 @@ class EngineTest extends TestUtils {
         try {
             server = new ServerImplementation();
             Client client = new ClientImplementation(server);
-            Engine engine = new Engine(server);
+            Engine engine = new Engine();
             Game game = new Game();
             engine.setGame(game);
             Player player = new Player("pippo", 0);
@@ -105,6 +107,8 @@ class EngineTest extends TestUtils {
     @Test
     void getGame() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         assertNotNull(engine.getGame());
         assertEquals(GameState.LOBBY, engine.getGame().getGameState());
         assertNotNull(engine.getGame().getChat());
@@ -178,7 +182,7 @@ class EngineTest extends TestUtils {
     void getOptionChoosed() {
         Engine engine = new Engine();
         engine.setOptionChoosed(true);
-        assertEquals(true, engine.getOptionChoosed());
+        assertEquals(true, engine.getOptionChosen());
     }
 
     /**
@@ -187,6 +191,8 @@ class EngineTest extends TestUtils {
     @Test
     void startGame() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -203,6 +209,8 @@ class EngineTest extends TestUtils {
     @Test
     void smallJoin() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         engine.smallJoin("pippo");
         assertEquals(engine.getGame().getPlayers().size(), 1);
@@ -214,6 +222,8 @@ class EngineTest extends TestUtils {
     @Test
     void playerJoin() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         assertEquals(engine.getGame().getPlayers().size(), 0);
         engine.playerJoin("pippo", "0");
@@ -226,6 +236,8 @@ class EngineTest extends TestUtils {
     @Test
     public void testPlayerJoinInLobby() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         // Setup
         String nickname = "John";
         String ID = "123";
@@ -261,6 +273,8 @@ class EngineTest extends TestUtils {
     @Test
     void deselectTiles() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -284,6 +298,8 @@ class EngineTest extends TestUtils {
     @Test
     void selectTiles() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(4);
         engine.playerJoin("Lorenzo","0");
         engine.playerJoin("Piero","1");
@@ -306,6 +322,8 @@ class EngineTest extends TestUtils {
     @Test
     void confirmSelectedTiles() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -334,6 +352,8 @@ class EngineTest extends TestUtils {
     @Test
     void selectColumn() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -354,6 +374,8 @@ class EngineTest extends TestUtils {
     @Test
     void placeTiles() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -381,6 +403,8 @@ class EngineTest extends TestUtils {
     @Test
     void checkCommonGoals() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -399,6 +423,8 @@ class EngineTest extends TestUtils {
     @Test
     void checkPersonalGoal() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -417,6 +443,8 @@ class EngineTest extends TestUtils {
     @Test
     void checkEndgameGoal() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("lupus", 1);
@@ -435,6 +463,8 @@ class EngineTest extends TestUtils {
     @Test
     void saveFileFound() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         engine.saveFileFound();
         engine.getSaveGameStatus().saveGame();
@@ -447,6 +477,8 @@ class EngineTest extends TestUtils {
     @Test
     void retrieveGame() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         engine.saveFileFound();
         engine.getSaveGameStatus().saveGame();
@@ -459,6 +491,8 @@ class EngineTest extends TestUtils {
     @Test
     void endTurn() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.saveFileFound();
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
@@ -477,6 +511,8 @@ class EngineTest extends TestUtils {
     @Test
     void endTurnForced() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.saveFileFound();
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
@@ -496,6 +532,8 @@ class EngineTest extends TestUtils {
     @Test
     void checkEndGame() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         player.setPoints(100);
@@ -517,6 +555,8 @@ class EngineTest extends TestUtils {
     @Test
     void endGame() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         engine.saveFileFound();
         engine.endGame();
@@ -532,6 +572,8 @@ class EngineTest extends TestUtils {
     @Test
     void sayInChat() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Chat chat = new Chat();
         assertEquals(chat.getMessages(), engine.getGame().getChat().getMessages());
@@ -551,7 +593,7 @@ class EngineTest extends TestUtils {
         try {
             Server server = new ServerImplementation();
             Client client = new ClientImplementation(server);
-            Engine engine = new Engine(server);
+            Engine engine = new Engine();
             Game game = new Game();
             engine.setGame(game);
             Player player = new Player("pippo", 0);
@@ -576,6 +618,8 @@ class EngineTest extends TestUtils {
     @Test
     void fillBoard() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Bag bag = engine.getGame().getBoard().getBag();
         for(int i=0; i< Config.boardHeight; i++){
@@ -595,6 +639,8 @@ class EngineTest extends TestUtils {
     @Test
     void initializeFromSave() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         Player player = new Player("pippo", 0);
         Player player1 = new Player("pluto", 0);
         engine.getGame().initializeGame(2);
@@ -610,11 +656,11 @@ class EngineTest extends TestUtils {
         pippo.add("pippo");
         pippo.add("pluto");
         assertEquals(empty, engine.getFreeNamesUsedInLastGame());
-        assertFalse(engine.getOptionChoosed());
+        assertFalse(engine.getOptionChosen());
         engine.getSaveGameStatus().saveGame();
         engine.initializeFromSave("0");
         assertTrue(engine.getLoadFromFile());
-        assertTrue(engine.getOptionChoosed());
+        assertTrue(engine.getOptionChosen());
         assertEquals(pippo, engine.getFreeNamesUsedInLastGame());
     }
 
@@ -627,7 +673,7 @@ class EngineTest extends TestUtils {
         try {
             server = new ServerImplementation();
             Client client = new ClientImplementation(server);
-            Engine engine = new Engine(server);
+            Engine engine = new Engine();
             Game game = new Game();
             engine.setGame(game);
             Player player = new Player("pippo", 0);
@@ -649,6 +695,8 @@ class EngineTest extends TestUtils {
     @Test
     void setIsActiveFromClient() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         Player player = new Player("pippo", 0);
         engine.getGame().getPlayers().add(player);
         try {
@@ -682,6 +730,8 @@ class EngineTest extends TestUtils {
             throw new RuntimeException(e);
         }
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);
         engine.getGame().getPlayers().add(player);
@@ -699,6 +749,8 @@ class EngineTest extends TestUtils {
     @Test
     void connect() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         Player player = new Player("pippo", 0);
         assertFalse(engine.getPlayerReconnection());
         engine.getGame().getPlayers().add(player);
@@ -724,6 +776,8 @@ class EngineTest extends TestUtils {
     @Test
     void connect2() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         Player player = new Player("pippo", 0);
         assertFalse(engine.getPlayerReconnection());
         engine.getGame().getPlayers().add(player);
@@ -745,6 +799,8 @@ class EngineTest extends TestUtils {
     @Test
     void setNumberOfPlayers() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.setNumberOfPlayers(2,"0");
         assertEquals(engine.getGame().getNumberOfPlayers(), 2);
     }
@@ -755,6 +811,8 @@ class EngineTest extends TestUtils {
     @Test
     void transferMethods() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.getGame().initializeGame(2);
         engine.playerJoin("pippo", "0");
         engine.currentPlayerTransfer("0");
@@ -775,6 +833,8 @@ class EngineTest extends TestUtils {
     @Test
     void reconnectionCheck() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         Player player = new Player("pippo", 0);
         player.setIsActive(false);
         engine.getGame().getPlayers().add(player);
@@ -790,6 +850,8 @@ class EngineTest extends TestUtils {
     @Test
     void notActive() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         Player player = new Player("pippo", 0);
         engine.getGame().getPlayers().add(player);
         assertTrue(engine.getGame().getPlayers().get(0).getIsActive());

@@ -2,7 +2,6 @@ package org.projectsw.Distributed;
 
 import org.projectsw.Controller.Engine;
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
-import org.projectsw.Distributed.Messages.InputMessages.SendNickname;
 import org.projectsw.Distributed.Messages.ResponseMessages.ErrorMessage;
 import org.projectsw.Distributed.Messages.ResponseMessages.Kill;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
@@ -24,7 +23,7 @@ import java.util.*;
  */
 public class ServerImplementation extends UnicastRemoteObject implements Server{
 
-    private final Engine controller = new Engine(this);
+    private final Engine controller = new Engine();
     private final Game model = new Game();
     private final MessageQueueHandler queueHandler = new MessageQueueHandler(controller);
     private final Thread queueThread;
@@ -128,7 +127,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
         }
         // Rimuovi i client disconnessi dalla registrazione dei client
         unregisterClients(disconnectedClients);
-        if(controller.getClients_ID().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING) && controller.getOptionChoosed() && controller.getFreeNamesUsedInLastGame().isEmpty()){
+        if(controller.getClients_ID().getAllKey().size() == 1 && controller.getGame().getGameState().equals(GameState.RUNNING) && controller.getOptionChosen() && controller.getFreeNamesUsedInLastGame().isEmpty()){
             try {
                 controller.getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(controller.getID_Nicks().getAllKey().get(0), "You are alone in this game. You will win in 10 seconds if no one reconnect")));
             } catch (RemoteException e) {
