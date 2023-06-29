@@ -1,7 +1,5 @@
 package org.projectsw.View.GraphicalUI.GuiModel;
 
-import org.projectsw.Model.Tile;
-import org.projectsw.Util.Config;
 import org.projectsw.Util.PathSolverGui;
 
 import javax.swing.*;

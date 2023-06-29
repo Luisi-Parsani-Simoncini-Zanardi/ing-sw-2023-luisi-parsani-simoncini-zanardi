@@ -7,7 +7,6 @@ import javax.swing.*;
  * This class is the frame where the player can insert his nickname.
  */
 public class NicknameFrame extends StartingMenuFrame {
-    private String nickname;
 
     /**
      * Creates the nickname frame with a JTextField where the user can insert his nickname.
