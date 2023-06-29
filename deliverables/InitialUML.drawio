@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-06-29T14:16:33.693Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="qqhkUuKvoiFcb0zGxJO6" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-29T14:33:44.390Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="wXN_f7BNezJ5qvf-Cwob" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="5605" dy="5315" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="4766" dy="4843" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -1405,6 +1405,20 @@
               <mxPoint x="1840" y="-2740" />
             </Array>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-45" value="Util" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;whiteSpace=wrap;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-2485" y="-1650" width="1775" height="930" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-46" value="" style="html=1;strokeColor=none;resizeWidth=1;resizeHeight=1;fillColor=none;part=1;connectable=0;allowArrows=0;deletable=0;whiteSpace=wrap;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-45">
+          <mxGeometry width="1775" height="651" relative="1" as="geometry">
+            <mxPoint y="30" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-47" value="Config&lt;br&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-45">
+          <mxGeometry x="35" y="56" width="260" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-50" value="boardLenght: int&lt;br&gt;boardHeight: int&lt;br&gt;shelfLenght: int&lt;br&gt;shelfHeight: int&lt;br&gt;numberOfPersonalGoals: int&lt;br&gt;numberOfCommonGoalPoints: int&lt;br&gt;maximumTilesPickable: int&lt;br&gt;numberOfImages: int&lt;br&gt;minPlayers: int&lt;br&gt;maxPlayers: int&lt;br&gt;numberOfCommonGoals: int&lt;br&gt;broadcastID:String&lt;br&gt;everyone: String&lt;br&gt;error: String&lt;br&gt;defaultGuiBackgroundColor: Color" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-47">
+          <mxGeometry y="26" width="260" height="224" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
