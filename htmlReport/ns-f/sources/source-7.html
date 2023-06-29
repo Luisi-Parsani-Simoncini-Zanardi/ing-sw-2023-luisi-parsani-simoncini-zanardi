@@ -1,0 +1,147 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SelectableColumnShelf</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.View.GraphicalUI.GuiModel</a>
+</div>
+
+<h1>Coverage Summary for Class: SelectableColumnShelf (org.projectsw.View.GraphicalUI.GuiModel)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SelectableColumnShelf</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.View.GraphicalUI.GuiModel;
+&nbsp;
+&nbsp;import org.projectsw.Model.Enums.GameState;
+&nbsp;import org.projectsw.Model.SerializableGame;
+&nbsp;import org.projectsw.Model.Tile;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.View.GraphicalUI.GameMainFrame;
+&nbsp;import org.projectsw.View.GraphicalUI.GuiManager;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;
+&nbsp;public class SelectableColumnShelf extends JPanel {
+&nbsp;    GuiManager guiManager;
+&nbsp;
+&nbsp;    public SelectableColumnShelf(Tile[][] shelf, GuiManager  guiManager) {
+<b class="nc">&nbsp;        super();</b>
+<b class="nc">&nbsp;        this.guiManager = guiManager;</b>
+<b class="nc">&nbsp;        setLayout(new BorderLayout());</b>
+&nbsp;
+<b class="nc">&nbsp;        JPanel gridPanel = new JPanel();</b>
+<b class="nc">&nbsp;        gridPanel.setLayout(new GridLayout(7,5,4,4));</b>
+<b class="nc">&nbsp;        for(int i=Config.shelfHeight-1; i&gt;=0; i--) {</b>
+<b class="nc">&nbsp;            for(int j=0; j&lt;Config.shelfLength; j++) {</b>
+<b class="nc">&nbsp;                Tile tile = shelf[i][j];</b>
+<b class="nc">&nbsp;                NoSelectableTile noSelectableTile = new NoSelectableTile(tile);</b>
+<b class="nc">&nbsp;                gridPanel.add(noSelectableTile);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        for(int h=0;h&lt;Config.shelfLength;h++) {</b>
+<b class="nc">&nbsp;            ColumnButton columnButton = new ColumnButton(&quot;^ Place in this column ^&quot;,h);</b>
+<b class="nc">&nbsp;            columnButton.addActionListener(e -&gt; {</b>
+<b class="nc">&nbsp;                if(e.getSource() instanceof ColumnButton selectedColumnButton) {</b>
+<b class="nc">&nbsp;                    SwingUtilities.invokeLater( () -&gt; {</b>
+<b class="nc">&nbsp;                        guiManager.sendColumnSelection(selectedColumnButton.getColumn());</b>
+&nbsp;                    });
+&nbsp;                }
+&nbsp;            });
+<b class="nc">&nbsp;            gridPanel.add(columnButton);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        gridPanel.setPreferredSize(new Dimension(15,15));</b>
+<b class="nc">&nbsp;        add(gridPanel,BorderLayout.CENTER);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

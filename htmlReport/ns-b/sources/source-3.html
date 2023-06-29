@@ -1,0 +1,209 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > OneToOneHashmap</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Util</a>
+</div>
+
+<h1>Coverage Summary for Class: OneToOneHashmap (org.projectsw.Util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OneToOneHashmap</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88,9%
+  </span>
+  <span class="absValue">
+    (8/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92%
+  </span>
+  <span class="absValue">
+    (23/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Util;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;/**
+&nbsp; * A one-to-one hashmap implementation that allows mapping between keys and values.
+&nbsp; * @param &lt;K&gt; The type of keys.
+&nbsp; * @param &lt;V&gt; The type of values.
+&nbsp; */
+&nbsp;public class OneToOneHashmap&lt;K,V&gt; {
+&nbsp;    private final Map&lt;K, V&gt; forwardMap;
+&nbsp;    private final Map&lt;V, K&gt; reverseMap;
+&nbsp;    private ArrayList&lt;K&gt; allKey;
+&nbsp;    private ArrayList&lt;V&gt; allValue;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new OneToOneHashmap.
+&nbsp;     */
+<b class="fc">&nbsp;    public OneToOneHashmap() {</b>
+<b class="fc">&nbsp;        forwardMap = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        reverseMap = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        allValue = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        allKey = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Associates the specified key with the specified value in the hashmap.
+&nbsp;     * @param key   The key to be associated.
+&nbsp;     * @param value The value to be associated.
+&nbsp;     */
+&nbsp;    public void put(K key, V value) {
+<b class="fc">&nbsp;        forwardMap.put(key, value);</b>
+<b class="fc">&nbsp;        reverseMap.put(value, key);</b>
+<b class="fc">&nbsp;        allKey.add(key);</b>
+<b class="fc">&nbsp;        allValue.add(value);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the mapping for the specified key from the hashmap.
+&nbsp;     * @param key The key to be removed.
+&nbsp;     */
+&nbsp;    public void removeByKey(K key) {
+<b class="fc">&nbsp;        V value = forwardMap.remove(key);</b>
+<b class="fc">&nbsp;        if (value != null) {</b>
+<b class="fc">&nbsp;            reverseMap.remove(value);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        allKey.remove(key);</b>
+<b class="fc">&nbsp;        allValue.remove(value);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the mapping for the specified value from the hashmap.
+&nbsp;     * @param value The value to be removed.
+&nbsp;     */
+&nbsp;    public void removeByValue(V value) {
+<b class="fc">&nbsp;        K key = reverseMap.remove(value);</b>
+<b class="fc">&nbsp;        if (key != null) {</b>
+<b class="fc">&nbsp;            forwardMap.remove(key);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        allKey.remove(key);</b>
+<b class="fc">&nbsp;        allValue.remove(value);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Clears all the mappings in the hashmap.
+&nbsp;     */
+&nbsp;    public void clear(){
+<b class="nc">&nbsp;        forwardMap.clear();</b>
+<b class="nc">&nbsp;        reverseMap.clear();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an ArrayList containing all the keys in the hashmap.
+&nbsp;     * @return An ArrayList of keys.
+&nbsp;     */
+&nbsp;    public ArrayList&lt;K&gt; getAllKey(){
+<b class="fc">&nbsp;        return allKey;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns an ArrayList containing all the values in the hashmap.
+&nbsp;     * @return An ArrayList of values.
+&nbsp;     */
+&nbsp;    public ArrayList&lt;V&gt; getAllValue(){
+<b class="fc">&nbsp;        return allValue;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the value to which the specified key is mapped, or null if the key is not present in the hashmap.
+&nbsp;     * @param key The key whose associated value is to be returned.
+&nbsp;     * @return The value to which the specified key is mapped, or null if the key is not present.
+&nbsp;     */
+&nbsp;    public V getValue(K key) {
+<b class="fc">&nbsp;        return forwardMap.get(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the key to which the specified value is mapped, or null if the value is not present in the hashmap.
+&nbsp;     * @param value The value whose associated key is to be returned.
+&nbsp;     * @return The key to which the specified value is mapped, or null if the value is not present.
+&nbsp;     */
+&nbsp;    public K getKey(V value) {
+<b class="fc">&nbsp;        return reverseMap.get(value);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

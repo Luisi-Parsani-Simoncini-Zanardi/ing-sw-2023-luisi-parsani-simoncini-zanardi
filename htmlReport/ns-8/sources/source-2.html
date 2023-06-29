@@ -1,0 +1,554 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Board</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: Board (org.projectsw.Model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Board</td>
+<td class="coverageStat">
+  <span class="percent">
+    96%
+  </span>
+  <span class="absValue">
+    (24/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90,5%
+  </span>
+  <span class="absValue">
+    (162/179)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Board$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    96,2%
+  </span>
+  <span class="absValue">
+    (25/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90,6%
+  </span>
+  <span class="absValue">
+    (163/180)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model;
+&nbsp;
+&nbsp;import com.google.gson.Gson;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;
+&nbsp;import org.projectsw.Exceptions.UnselectableTileException;
+&nbsp;import org.projectsw.View.ConsoleColors;
+&nbsp;
+&nbsp;import java.awt.*;
+&nbsp;import java.io.FileReader;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.ArrayList;
+&nbsp;
+&nbsp;/**
+&nbsp; * The class represents the game board as a Tiles matrix, it also has a flag for endGame and a bag reference.
+&nbsp; */
+&nbsp;public class Board {
+&nbsp;    private Tile[][] board;
+&nbsp;    private boolean endGame;
+&nbsp;    private Bag bag;
+&nbsp;    private ArrayList&lt;Point&gt; temporaryPoints;
+&nbsp;    private ArrayList&lt;Point&gt; selectablePoints;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new instance of the Board class with the specified selected points and temporary points.
+&nbsp;     * @param selPoints    the selected points
+&nbsp;     * @param tmpPoints    the temporary points
+&nbsp;     */
+<b class="fc">&nbsp;    public Board(ArrayList&lt;Point&gt; selPoints, ArrayList&lt;Point&gt; tmpPoints){</b>
+<b class="fc">&nbsp;        board = new Tile[Config.boardHeight][Config.boardLength];</b>
+<b class="fc">&nbsp;        bag = new Bag();</b>
+<b class="fc">&nbsp;        endGame = false;</b>
+<b class="fc">&nbsp;        temporaryPoints = tmpPoints;</b>
+<b class="fc">&nbsp;        selectablePoints = selPoints;</b>
+<b class="fc">&nbsp;        for(int i=0;i&lt;Config.boardHeight;i++){</b>
+<b class="fc">&nbsp;            for(int j=0;j&lt;Config.boardLength;j++){</b>
+<b class="fc">&nbsp;                board[i][j] = new Tile(TilesEnum.UNUSED,0);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a Board object from a json file, initializing the board for the number of players requested.
+&nbsp;     * @param playersNumber the number of players playing the game
+&nbsp;     * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
+&nbsp;     */
+<b class="fc">&nbsp;    public Board(int playersNumber) {</b>
+&nbsp;        try{
+<b class="fc">&nbsp;            Gson gson = new Gson();</b>
+<b class="fc">&nbsp;            String[][][] tmpMatrix = gson.fromJson(new FileReader(&quot;src/main/resources/StartingBoards.json&quot;), String[][][].class);</b>
+<b class="fc">&nbsp;            board = new Tile[Config.boardHeight][Config.boardLength];</b>
+<b class="fc">&nbsp;            for(int i=0;i&lt;Config.boardHeight;i++){</b>
+<b class="fc">&nbsp;                for(int j=0;j&lt;Config.boardLength;j++){</b>
+<b class="fc">&nbsp;                    if(tmpMatrix[playersNumber-2][i][j].equals(&quot;UNUSED&quot;)){board[i][j] = new Tile(TilesEnum.UNUSED,0);}</b>
+<b class="fc">&nbsp;                    if(tmpMatrix[playersNumber-2][i][j].equals(&quot;EMPTY&quot;)){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            endGame = false;</b>
+<b class="fc">&nbsp;            bag = new Bag();</b>
+<b class="fc">&nbsp;            temporaryPoints = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            selectablePoints = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            updateSelectablePoints();</b>
+<b class="nc">&nbsp;        }catch (IOException e){</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Error opening the json&quot;+e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a Board object with the same state as another Board object.
+&nbsp;     * @param board the Board object to copy from
+&nbsp;     */
+<b class="fc">&nbsp;    public Board(Board board){</b>
+<b class="fc">&nbsp;        this.board = board.getBoard();</b>
+<b class="fc">&nbsp;        this.endGame = board.isEndGame();</b>
+<b class="fc">&nbsp;        this.bag = board.getBag();</b>
+<b class="fc">&nbsp;        this.temporaryPoints = board.getTemporaryPoints();</b>
+<b class="fc">&nbsp;        this.updateSelectablePoints();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the current state of the board.
+&nbsp;     * @return the Tile array representing the board
+&nbsp;     */
+&nbsp;    public Tile[][] getBoard(){
+<b class="fc">&nbsp;        return board;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the bag of tiles.
+&nbsp;     * @return the Bag object representing the bag of tiles
+&nbsp;     */
+&nbsp;    public Bag getBag(){
+<b class="fc">&nbsp;        return bag;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the temporary Points of selected tiles vector.
+&nbsp;     * @return the Points vector.
+&nbsp;     */
+&nbsp;    public ArrayList&lt;Point&gt; getTemporaryPoints() {
+<b class="fc">&nbsp;        return temporaryPoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the selectable Points of the board.
+&nbsp;     * @return the selectable Points vector.
+&nbsp;     */
+&nbsp;    public ArrayList&lt;Point&gt; getSelectablePoints() {
+<b class="fc">&nbsp;        return selectablePoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the flag endGame.
+&nbsp;     * @return true if the game has ended, false otherwise
+&nbsp;     */
+&nbsp;    public boolean isEndGame() {
+<b class="fc">&nbsp;        return endGame;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the board as the passed matrix of tiles.
+&nbsp;     * @param board the board to set.
+&nbsp;     */
+&nbsp;    public void setBoard(Tile[][] board){
+<b class="nc">&nbsp;        if(board.length != Config.boardHeight) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;        if(board[0].length != Config.boardLength) throw new IllegalArgumentException();</b>
+<b class="nc">&nbsp;        this.board = board;</b>
+<b class="nc">&nbsp;        updateSelectablePoints();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the end game flag to the specified value.
+&nbsp;     * @param endGame the value to set the end game flag to
+&nbsp;     */
+&nbsp;    public void setEndGame(boolean endGame) {
+<b class="fc">&nbsp;        this.endGame = endGame;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the Tile at the given position on the board and replaces it with an empty Tile.
+&nbsp;     * @param point the indexes of the tile to remove.
+&nbsp;     * @return the Tile at the given position.
+&nbsp;     * @throws IndexOutOfBoundsException if the given row or column&#39;s index is out of bounds.
+&nbsp;     */
+&nbsp;    public Tile getTileFromBoard(Point point) throws IndexOutOfBoundsException{
+<b class="fc">&nbsp;        if(point.getX()&gt;Config.boardLength-1 || point.getY()&gt;Config.boardHeight-1){</b>
+<b class="fc">&nbsp;            throw new IndexOutOfBoundsException(&quot;Index out of bounds&quot;);</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            Tile tmp = board[(int) point.getX()][(int) point.getY()];</b>
+<b class="fc">&nbsp;            board[(int) point.getX()][(int) point.getY()] = new Tile(TilesEnum.EMPTY, 0);</b>
+<b class="fc">&nbsp;            updateSelectablePoints();</b>
+<b class="fc">&nbsp;            return tmp;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the board by placing the given Tile at the specified position.
+&nbsp;     * @param tile the Tile to place on the board
+&nbsp;     * @param row the row index of the position to place the Tile at
+&nbsp;     * @param column the column index of the position to place the Tile at
+&nbsp;     * @throws IndexOutOfBoundsException if the given row or column&#39;s index is out of bounds
+&nbsp;     */
+&nbsp;    public void updateBoard(Tile tile, int row, int column) throws IndexOutOfBoundsException{
+<b class="fc">&nbsp;        if(row&gt;Config.boardHeight || column&gt;Config.boardLength) throw new IndexOutOfBoundsException(&quot;Index out of bounds&quot;);</b>
+<b class="fc">&nbsp;        else board[row][column]=tile;</b>
+<b class="fc">&nbsp;        updateSelectablePoints();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a new Point object to the temporaryPoints arrayList
+&nbsp;     * @param point the Point to add.
+&nbsp;     */
+&nbsp;    public void addTemporaryPoints(Point point) throws UnselectableTileException {
+<b class="fc">&nbsp;        if(selectablePoints.contains(point) &amp;&amp;</b>
+<b class="fc">&nbsp;        !board[(int) point.getX()][(int) point.getY()].getTile().equals(TilesEnum.EMPTY) &amp;&amp;</b>
+<b class="fc">&nbsp;        !board[(int) point.getX()][(int) point.getY()].getTile().equals(TilesEnum.UNUSED)) {</b>
+<b class="fc">&nbsp;                temporaryPoints.add(point);</b>
+<b class="fc">&nbsp;                updateSelectablePoints();</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            throw new UnselectableTileException();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Remove the point from the temporaryPoints list checking if the remaining points inside the list are adjacent, if they are not
+&nbsp;     * the method cleans all the list.
+&nbsp;     * @param point the point to remove from the list.
+&nbsp;     */
+&nbsp;    public void removeTemporaryPoints(Point point){
+<b class="fc">&nbsp;        if(temporaryPoints.size() == Config.maximumTilesPickable){</b>
+<b class="fc">&nbsp;            temporaryPoints.remove(point);</b>
+<b class="fc">&nbsp;            if(!areAdjacentPoints(temporaryPoints.get(0),temporaryPoints.get(1))){</b>
+<b class="fc">&nbsp;                cleanTemporaryPoints();</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="fc">&nbsp;            temporaryPoints.remove(point);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        updateSelectablePoints();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Cleans the arrayList of temporaryPoints (remove all the elements).
+&nbsp;     */
+&nbsp;    public void cleanTemporaryPoints() {
+<b class="fc">&nbsp;        temporaryPoints.clear();</b>
+<b class="fc">&nbsp;        updateSelectablePoints();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the selectable points based on the number of temporary points.
+&nbsp;     */
+&nbsp;    public void updateSelectablePoints() {
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; newSelectablePoints = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="fc">&nbsp;        switch (temporaryPoints.size()) {</b>
+<b class="fc">&nbsp;            case 0 -&gt; newSelectablePoints = getFreeEdgesPoints();</b>
+<b class="fc">&nbsp;            case 1 -&gt; newSelectablePoints = getAdjacentSelectablePoints();</b>
+<b class="fc">&nbsp;            case 2 -&gt; newSelectablePoints = getSelectablePointsInStraightLine();</b>
+&nbsp;
+&nbsp;        }
+<b class="fc">&nbsp;        selectablePoints = newSelectablePoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the points adjacent to a given point
+&nbsp;     * @param middle the point whose adjacent points are desired
+&nbsp;     * @return an ArrayList of points, all adjacent to the given point
+&nbsp;     */
+&nbsp;    private ArrayList&lt;Point&gt; getAdjacentPoints(Point middle){
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; adjacentPoints = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        int middleRow = (int) middle.getX();</b>
+<b class="fc">&nbsp;        int middleColumn = (int) middle.getY();</b>
+<b class="fc">&nbsp;        if(middleRow != 0) adjacentPoints.add(new Point(middleRow-1,middleColumn));</b>
+<b class="fc">&nbsp;        if(middleColumn != 0) adjacentPoints.add(new Point(middleRow,middleColumn-1));</b>
+<b class="fc">&nbsp;        if(middleColumn != Config.boardLength-1) adjacentPoints.add(new Point(middleRow,middleColumn+1));</b>
+<b class="fc">&nbsp;        if(middleRow != Config.boardHeight) adjacentPoints.add(new Point(middleRow+1,middleColumn));</b>
+<b class="fc">&nbsp;        return adjacentPoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the points of all the game-tiles which have free edges.
+&nbsp;     * @return an arrayList containing the points of all the game-tiles which have free edges
+&nbsp;     */
+&nbsp;    private ArrayList&lt;Point&gt; getFreeEdgesPoints() {
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; newSelectablePoints = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; Config.boardHeight; i++) {</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.boardLength; j++) {</b>
+<b class="fc">&nbsp;                Tile currentTile1 = board[i][j];</b>
+<b class="fc">&nbsp;                if(currentTile1.getTile().equals(TilesEnum.CATS ) || currentTile1.getTile().equals(TilesEnum.BOOKS)</b>
+<b class="fc">&nbsp;                        || currentTile1.getTile().equals(TilesEnum.FRAMES) || currentTile1.getTile().equals(TilesEnum.GAMES)</b>
+<b class="fc">&nbsp;                        || currentTile1.getTile().equals(TilesEnum.PLANTS) || currentTile1.getTile().equals(TilesEnum.TROPHIES)) {</b>
+<b class="fc">&nbsp;                    ArrayList&lt;Point&gt; adjacentPoints = getAdjacentPoints(new Point(i,j));</b>
+<b class="fc">&nbsp;                    boolean emptyEdgeFound = false;</b>
+<b class="fc">&nbsp;                    for(Point point : adjacentPoints){</b>
+<b class="fc">&nbsp;                        Tile currentTile2 = board[(int) point.getX()][(int) point.getY()];</b>
+<b class="fc">&nbsp;                        if(currentTile2.getTile().equals(TilesEnum.EMPTY) || currentTile2.getTile().equals(TilesEnum.UNUSED)){</b>
+<b class="fc">&nbsp;                            emptyEdgeFound = true;</b>
+<b class="fc">&nbsp;                            break;</b>
+&nbsp;                        }
+<b class="fc">&nbsp;                    }</b>
+<b class="fc">&nbsp;                    if(emptyEdgeFound) newSelectablePoints.add(new Point(i,j));</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return newSelectablePoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all the selectable points next to the one present in temporaryPoints.
+&nbsp;     * @return an arrayList containing all the selectable points next to the one present in temporaryPoints.
+&nbsp;     */
+&nbsp;    private ArrayList&lt;Point&gt; getAdjacentSelectablePoints(){
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; newSelectablePoints = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        selectablePoints = getFreeEdgesPoints();</b>
+&nbsp;
+<b class="fc">&nbsp;        Point selectedPoint = temporaryPoints.get(0);</b>
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; adjacentToSelectedPoint = getAdjacentPoints(selectedPoint);</b>
+<b class="fc">&nbsp;        for (Point point : adjacentToSelectedPoint) {</b>
+<b class="fc">&nbsp;            if (selectablePoints.contains(point)) newSelectablePoints.add(point);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return newSelectablePoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns all the selectable points in straight line with the two present in the temporaryPoints.
+&nbsp;     * @return an arrayList containing all the selectable points in straight line with the two present in the temporaryPoints.
+&nbsp;     */
+&nbsp;    private ArrayList&lt;Point&gt; getSelectablePointsInStraightLine(){
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; newSelectablePoints = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        Point selectedPoint0 = temporaryPoints.get(0);</b>
+<b class="fc">&nbsp;        Point selectedPoint1 = temporaryPoints.get(1);</b>
+<b class="fc">&nbsp;        selectablePoints = getFreeEdgesPoints();</b>
+<b class="fc">&nbsp;        if (selectedPoint0.getX() == selectedPoint1.getX() + 1) {</b>
+<b class="nc">&nbsp;            if(selectablePoints.contains(new Point((int) selectedPoint0.getX()+1,(int) selectedPoint0.getY())))</b>
+<b class="nc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint0.getX()+1,(int) selectedPoint0.getY()));</b>
+<b class="nc">&nbsp;            if(selectablePoints.contains(new Point((int) selectedPoint1.getX()-1,(int) selectedPoint1.getY())))</b>
+<b class="nc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint1.getX()-1,(int) selectedPoint1.getY()));</b>
+<b class="fc">&nbsp;        } else if (selectedPoint0.getX() == selectedPoint1.getX() - 1) {</b>
+<b class="fc">&nbsp;            if(selectablePoints.contains(new Point((int) selectedPoint0.getX()-1,(int) selectedPoint0.getY())))</b>
+<b class="nc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint0.getX()-1,(int) selectedPoint0.getY()));</b>
+<b class="fc">&nbsp;            if(selectablePoints.contains(new Point((int) selectedPoint1.getX()+1,(int) selectedPoint1.getY())))</b>
+<b class="fc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint1.getX()+1,(int) selectedPoint1.getY()));</b>
+<b class="fc">&nbsp;        } else if (selectedPoint0.getY() == selectedPoint1.getY() + 1){</b>
+<b class="fc">&nbsp;            if(selectablePoints.contains(new Point((int) selectedPoint0.getX(),(int) selectedPoint0.getY()+1)))</b>
+<b class="fc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint0.getX(),(int) selectedPoint0.getY()+1));</b>
+<b class="fc">&nbsp;            if(selectablePoints.contains(new Point((int) selectedPoint1.getX(),(int) selectedPoint1.getY()-1)))</b>
+<b class="nc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint1.getX(),(int) selectedPoint1.getY()-1));</b>
+<b class="fc">&nbsp;        } else if (selectedPoint0.getY() == selectedPoint1.getY() - 1) {</b>
+<b class="fc">&nbsp;            if (selectablePoints.contains(new Point((int) selectedPoint0.getX(), (int) selectedPoint0.getY() - 1)))</b>
+<b class="fc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint0.getX(), (int) selectedPoint0.getY() - 1));</b>
+<b class="fc">&nbsp;            if (selectablePoints.contains(new Point((int) selectedPoint1.getX(), (int) selectedPoint1.getY() + 1)))</b>
+<b class="fc">&nbsp;                newSelectablePoints.add(new Point((int) selectedPoint1.getX(), (int) selectedPoint1.getY() + 1));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return  newSelectablePoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the padded points are adjacent.
+&nbsp;     * @param p0 the first point to check.
+&nbsp;     * @param p1 the second point to check.
+&nbsp;     * @return true if p0 and p1 are adjacent, false if they are not.
+&nbsp;     */
+&nbsp;    public boolean areAdjacentPoints(Point p0, Point p1){
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; adjacentP0 = getAdjacentPoints(p0);</b>
+<b class="fc">&nbsp;        for(Point adjacentPoint : adjacentP0){</b>
+<b class="fc">&nbsp;            if(adjacentPoint.equals(p1)) return true;</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prints the board, elements are between [] if they are selectable, between ** if they are selected.
+&nbsp;     */
+&nbsp;    public void printBoard(){
+<b class="fc">&nbsp;        String printedString = &quot;  &quot;;</b>
+<b class="fc">&nbsp;        for(int i=0;i&lt;Config.boardLength;i++) {</b>
+<b class="fc">&nbsp;            int integer = i+1;</b>
+<b class="fc">&nbsp;            printedString = printedString + &quot;     &quot; +  integer + &quot;      &quot;;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        System.out.println(printedString);</b>
+<b class="fc">&nbsp;        for(int j=0;j&lt;Config.boardHeight;j++){</b>
+<b class="fc">&nbsp;            Integer integer = j+1;</b>
+<b class="fc">&nbsp;            printedString = integer + &quot; &quot;;</b>
+<b class="fc">&nbsp;            for(int i=0;i&lt;Config.boardLength;i++) {</b>
+<b class="fc">&nbsp;                printedString = printedString + printPadding(true, i,j) + stringColorAndMarker(i,j) + printPadding(false, i,j);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            System.out.println(printedString);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string representation of the color and marker for a given position on the board.
+&nbsp;     * @param i the row index
+&nbsp;     * @param j the column index
+&nbsp;     * @return the string representation of the color and marker
+&nbsp;     */
+&nbsp;    private String stringColorAndMarker(int i, int j){
+<b class="fc">&nbsp;        String result = &quot;&quot;;</b>
+<b class="fc">&nbsp;        TilesEnum type = board[i][j].getTile();</b>
+<b class="fc">&nbsp;        if(selectablePoints.contains(new Point(i,j))) result = result + &quot;(&quot;;</b>
+<b class="fc">&nbsp;        if(temporaryPoints.contains(new Point(i,j))) result = result + &quot;[&quot;;</b>
+<b class="fc">&nbsp;        switch (type){</b>
+<b class="fc">&nbsp;            case CATS -&gt; result = result + ConsoleColors.CATS;</b>
+<b class="nc">&nbsp;            case TROPHIES -&gt; result = result + ConsoleColors.TROPHIES;</b>
+<b class="nc">&nbsp;            case BOOKS -&gt; result = result + ConsoleColors.BOOKS;</b>
+<b class="nc">&nbsp;            case FRAMES -&gt; result = result + ConsoleColors.FRAMES;</b>
+<b class="nc">&nbsp;            case GAMES -&gt; result = result + ConsoleColors.GAMES;</b>
+<b class="nc">&nbsp;            case PLANTS -&gt; result = result + ConsoleColors.PLANTS;</b>
+<b class="fc">&nbsp;            case EMPTY -&gt; result = result + ConsoleColors.EMPTY;</b>
+<b class="fc">&nbsp;            case UNUSED -&gt; result = result + &quot; ---------- &quot;;</b>
+&nbsp;
+&nbsp;        }
+<b class="fc">&nbsp;        if(selectablePoints.contains(new Point(i,j))) result = result + &quot;)&quot;;</b>
+<b class="fc">&nbsp;        if(temporaryPoints.contains(new Point(i,j))) result = result + &quot;]&quot;;</b>
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a string of padding spaces for left or right alignment of tile printing.
+&nbsp;     * @param left true for left alignment, false for right alignment
+&nbsp;     * @param i the row index
+&nbsp;     * @param j the column index
+&nbsp;     * @return the string of padding spaces
+&nbsp;     */
+&nbsp;    private String printPadding (boolean left, int i, int j){
+<b class="fc">&nbsp;        float padding = 12;</b>
+<b class="fc">&nbsp;        String paddingSpaces = &quot;&quot;;</b>
+<b class="fc">&nbsp;        if (board[i][j].getTile() != TilesEnum.UNUSED)</b>
+<b class="fc">&nbsp;            padding -= board[i][j].getTile().toString().length();</b>
+&nbsp;        else
+<b class="fc">&nbsp;            return &quot;&quot;;</b>
+<b class="fc">&nbsp;        if(selectablePoints.contains(new Point(i,j)) || temporaryPoints.contains(new Point(i,j))) padding -= 2;</b>
+<b class="fc">&nbsp;        if (left) {</b>
+<b class="fc">&nbsp;            for (int k=0; k&lt;Math.ceil(padding/2); k++) {</b>
+<b class="fc">&nbsp;                if (k == 0) paddingSpaces = paddingSpaces + &quot; &quot;;</b>
+<b class="fc">&nbsp;                else paddingSpaces = paddingSpaces + &quot;-&quot;;</b>
+&nbsp;
+&nbsp;            }
+&nbsp;        } else {
+<b class="fc">&nbsp;            for (int k=0; k&lt;Math.floor(padding/2); k++) {</b>
+<b class="fc">&nbsp;                if (k == Math.floor(padding/2)-1) paddingSpaces = paddingSpaces + &quot; &quot;;</b>
+<b class="fc">&nbsp;                else paddingSpaces = paddingSpaces + &quot;-&quot;;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return paddingSpaces;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * check if a board is only composed of EMPTY or UNUSED tiles
+&nbsp;     * @return whether the board is empty or not
+&nbsp;     */
+&nbsp;    public boolean isBoardEmpty() {
+<b class="fc">&nbsp;        for (Tile[] tiles : board) {</b>
+<b class="fc">&nbsp;            for (Tile tile : tiles) {</b>
+<b class="fc">&nbsp;                if (!(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED))</b>
+<b class="fc">&nbsp;                    return false;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

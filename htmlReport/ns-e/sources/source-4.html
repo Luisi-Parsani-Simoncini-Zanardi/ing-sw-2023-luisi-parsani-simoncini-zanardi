@@ -1,0 +1,150 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LobbyFrame</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.View.GraphicalUI</a>
+</div>
+
+<h1>Coverage Summary for Class: LobbyFrame (org.projectsw.View.GraphicalUI)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LobbyFrame</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.View.GraphicalUI;
+&nbsp;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;
+&nbsp;public class LobbyFrame extends StartingMenuFrame {
+&nbsp;
+&nbsp;    public LobbyFrame(GuiManager guiManager){
+<b class="nc">&nbsp;        super(guiManager);</b>
+<b class="nc">&nbsp;        setTitle(&quot;My Shelfie Launcher&quot;);</b>
+<b class="nc">&nbsp;        JPanel menuButtonsPanel = new JPanel();</b>
+<b class="nc">&nbsp;        menuButtonsPanel.setLayout(new GridLayout(3,1));</b>
+<b class="nc">&nbsp;        menuButtonsPanel.setBackground(Config.defaultGuiBackgroundColor);</b>
+<b class="nc">&nbsp;        add(menuButtonsPanel,BorderLayout.CENTER);</b>
+&nbsp;
+<b class="nc">&nbsp;        if(guiManager.isAskNickname()){</b>
+<b class="nc">&nbsp;            JButton buttonNickname = new JButton(&quot;Insert nickname&quot;);</b>
+<b class="nc">&nbsp;            buttonNickname.addActionListener(e -&gt; {</b>
+<b class="nc">&nbsp;                new NicknameFrame(guiManager);</b>
+<b class="nc">&nbsp;                dispose();</b>
+&nbsp;            });
+<b class="nc">&nbsp;            menuButtonsPanel.add(buttonNickname);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if(guiManager.isFirstPlayer()) {</b>
+<b class="nc">&nbsp;            JButton buttonNumberPlayers = new JButton(&quot;Insert number of players&quot;);</b>
+<b class="nc">&nbsp;            buttonNumberPlayers.addActionListener(e -&gt; {</b>
+<b class="nc">&nbsp;                new AskNumberFrame(guiManager);</b>
+<b class="nc">&nbsp;                dispose();</b>
+&nbsp;            });
+<b class="nc">&nbsp;            menuButtonsPanel.add(buttonNumberPlayers);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if(guiManager.isGameSavedExist() &amp;&amp; guiManager.isFirstPlayer()) {</b>
+<b class="nc">&nbsp;            JButton buttonSavedGame = new JButton(&quot;Load previous game\n(Old save found)&quot;);</b>
+<b class="nc">&nbsp;            buttonSavedGame.addActionListener(e -&gt; {</b>
+<b class="nc">&nbsp;                guiManager.sendLoadGameSelection();</b>
+<b class="nc">&nbsp;                dispose();</b>
+&nbsp;            });
+<b class="nc">&nbsp;            menuButtonsPanel.add(buttonSavedGame);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        setVisible(true);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

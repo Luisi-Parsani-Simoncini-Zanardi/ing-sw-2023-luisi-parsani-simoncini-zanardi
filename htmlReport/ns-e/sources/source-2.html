@@ -1,0 +1,360 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GameMainFrame</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.View.GraphicalUI</a>
+</div>
+
+<h1>Coverage Summary for Class: GameMainFrame (org.projectsw.View.GraphicalUI)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameMainFrame</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/122)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GameMainFrame$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GameMainFrame$AppState</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/126)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.View.GraphicalUI;
+&nbsp;
+&nbsp;import org.projectsw.Model.Tile;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.Util.PathSolverGui;
+&nbsp;import org.projectsw.View.Enums.UITurnState;
+&nbsp;import org.projectsw.View.GraphicalUI.GuiModel.*;
+&nbsp;import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;import java.util.ArrayList;
+&nbsp;
+&nbsp;public class GameMainFrame extends JFrame {
+&nbsp;
+<b class="nc">&nbsp;    public enum AppState {</b>
+<b class="nc">&nbsp;        WAITING_PLAYER,</b>
+<b class="nc">&nbsp;        WAITING_APP</b>
+&nbsp;    }
+&nbsp;    private final GuiManager guiManager;
+<b class="nc">&nbsp;    private final Object lock = new Object();</b>
+<b class="nc">&nbsp;    private final Object turnLock = new Object();</b>
+<b class="nc">&nbsp;    private UITurnState turnState = UITurnState.OPPONENT_TURN;</b>
+<b class="nc">&nbsp;    private  AppState appState = GameMainFrame.AppState.WAITING_PLAYER;</b>
+<b class="nc">&nbsp;    private JPanel turnInformationsNorthPanel = new JPanel();</b>
+<b class="nc">&nbsp;    private JTabbedPane centralTabbedPane = new JTabbedPane();</b>
+<b class="nc">&nbsp;    private JPanel selectedTilesSouthPanel = new JPanel();</b>
+<b class="nc">&nbsp;    private JLabel turnInformationLabel = new JLabel();</b>
+&nbsp;    private ArrayList&lt;Tile&gt; takenTiles;
+&nbsp;    private int selectedColumn;
+&nbsp;
+<b class="nc">&nbsp;    public GameMainFrame(GuiManager guiManager){</b>
+<b class="nc">&nbsp;        this.guiManager = guiManager;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void createFrame(){
+&nbsp;
+<b class="nc">&nbsp;        setLayout(new BorderLayout());</b>
+<b class="nc">&nbsp;        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</b>
+<b class="nc">&nbsp;        setSize(1200, 900);</b>
+<b class="nc">&nbsp;        setResizable(false);</b>
+<b class="nc">&nbsp;        setTitle(&quot;My Shelfie&quot;);</b>
+<b class="nc">&nbsp;        setBackground(Config.defaultGuiBackgroundColor);</b>
+<b class="nc">&nbsp;        ImageIcon imageIcon = new ImageIcon(PathSolverGui.icon());</b>
+<b class="nc">&nbsp;        setIconImage(imageIcon.getImage());</b>
+&nbsp;
+<b class="nc">&nbsp;        turnInformationsNorthPanel.setPreferredSize(new Dimension(1200,75));</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.setPreferredSize(new Dimension(50,150));</b>
+<b class="nc">&nbsp;        add(turnInformationsNorthPanel,BorderLayout.NORTH);</b>
+<b class="nc">&nbsp;        add(centralTabbedPane,BorderLayout.CENTER);</b>
+<b class="nc">&nbsp;        add(selectedTilesSouthPanel,BorderLayout.SOUTH);</b>
+&nbsp;
+<b class="nc">&nbsp;        turnInformationsNorthPanel.add(turnInformationLabel);</b>
+<b class="nc">&nbsp;        turnInformationLabel.setHorizontalAlignment(SwingConstants.CENTER);</b>
+<b class="nc">&nbsp;        turnInformationLabel.setVerticalAlignment(SwingConstants.CENTER);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    private void refresh () {
+<b class="nc">&nbsp;        centralTabbedPane.removeAll();</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.removeAll();</b>
+<b class="nc">&nbsp;        SwingUtilities.invokeLater( () -&gt; {</b>
+<b class="nc">&nbsp;            turnInformationLabel.setText(guiManager.askForCurrentPlayerString());</b>
+&nbsp;        });
+&nbsp;
+<b class="nc">&nbsp;        if(turnState.equals(UITurnState.OPPONENT_TURN)) {</b>
+<b class="nc">&nbsp;            SwingUtilities.invokeLater(this::refreshNoCurrentPlayer);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            SwingUtilities.invokeLater(this::refreshCurrentPlayer);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        revalidate();</b>
+<b class="nc">&nbsp;        repaint();</b>
+<b class="nc">&nbsp;        setVisible(true);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void refreshNoCurrentPlayer() {
+<b class="nc">&nbsp;        JLabel noCurrentPlayerLabel = new JLabel(&quot;You are not the current player, wait your turn&quot;);</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.add(noCurrentPlayerLabel);</b>
+<b class="nc">&nbsp;        noCurrentPlayerLabel.setHorizontalAlignment(SwingConstants.CENTER);</b>
+<b class="nc">&nbsp;        noCurrentPlayerLabel.setVerticalAlignment(SwingConstants.CENTER);</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Board&quot;, askForBoard());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Your Shelf&quot;, askForNsShelf());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Personal Goal&quot;, returnPersonalGoal());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Common Goals&quot;, returnCommonGoalImage());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Chat&quot;, new JPanel());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void refreshCurrentPlayer() {
+<b class="nc">&nbsp;        switch (turnState) {</b>
+<b class="nc">&nbsp;            case YOUR_TURN_SELECTION -&gt; selectionRefresh();</b>
+<b class="nc">&nbsp;            case YOUR_TURN_COLUMN -&gt; columnRefresh();</b>
+<b class="nc">&nbsp;            case YOUR_TURN_INSERTION -&gt; insertionRefresh();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void selectionRefresh() {
+<b class="nc">&nbsp;        SelectableBoard selectableBoard = askForBoard();</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Board&quot;,selectableBoard);</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Your Shelf&quot;, askForNsShelf());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Personal Goal&quot;, returnPersonalGoal());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Common Goals&quot;, returnCommonGoalImage());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Chat&quot;, new JPanel());</b>
+<b class="nc">&nbsp;        if (selectableBoard.getTemporaryPoints().isEmpty()) {</b>
+<b class="nc">&nbsp;            JLabel chooseTilesLabel = new JLabel(&quot;Choose your tiles in the board page!&quot;);</b>
+<b class="nc">&nbsp;            selectedTilesSouthPanel.add(chooseTilesLabel);</b>
+<b class="nc">&nbsp;            chooseTilesLabel.setHorizontalAlignment(SwingConstants.CENTER);</b>
+<b class="nc">&nbsp;            chooseTilesLabel.setVerticalAlignment(SwingConstants.CENTER);</b>
+<b class="nc">&nbsp;        } else {</b>
+<b class="nc">&nbsp;            selectedTilesSouthPanel.setLayout(new FlowLayout());</b>
+<b class="nc">&nbsp;            JLabel selectedTilesLabel = new JLabel(&quot;You have selected these tiles:  &quot;);</b>
+<b class="nc">&nbsp;            selectedTilesSouthPanel.add(selectedTilesLabel);</b>
+<b class="nc">&nbsp;            for(Point point : selectableBoard.getTemporaryPoints()) {</b>
+<b class="nc">&nbsp;                selectedTilesSouthPanel.add(selectableBoard.getLabelFromPoint(point));</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            JButton confirmButton = new JButton(&quot;Confirm Selection&quot;);</b>
+<b class="nc">&nbsp;            confirmButton.addActionListener( e -&gt; {</b>
+<b class="nc">&nbsp;                if(e.getSource() instanceof JButton) {</b>
+<b class="nc">&nbsp;                    new TemporaryTilesConfirmedMessage();</b>
+<b class="nc">&nbsp;                    setAppState(AppState.WAITING_APP);</b>
+<b class="nc">&nbsp;                    guiManager.confirmTilesSelection();</b>
+&nbsp;                }
+&nbsp;            });
+<b class="nc">&nbsp;            confirmButton.setContentAreaFilled(false);</b>
+<b class="nc">&nbsp;            selectedTilesSouthPanel.add(confirmButton);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void columnRefresh() {
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Your Shelf&quot;, askForScShelf());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Board&quot;, askForBoard());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Personal Goal&quot;, returnPersonalGoal());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Common Goals&quot;, returnCommonGoalImage());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Chat&quot;, new JPanel());</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));</b>
+<b class="nc">&nbsp;        JLabel selectedTilesLabel = new JLabel(&quot;You have selected these tiles:  &quot;);</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.add(selectedTilesLabel);</b>
+<b class="nc">&nbsp;        for(Tile tile : takenTiles) {</b>
+<b class="nc">&nbsp;            selectedTilesSouthPanel.add(new NoSelectableTile(tile));</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void insertionRefresh() {
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Your Shelf&quot;, askForNsShelf());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Board&quot;, askForBoard());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Personal Goal&quot;, returnPersonalGoal());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Common Goals&quot;, returnCommonGoalImage());</b>
+<b class="nc">&nbsp;        centralTabbedPane.add(&quot;Chat&quot;, new JPanel());</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));</b>
+<b class="nc">&nbsp;        JLabel selectedTilesLabel = new JLabel(&quot;Which tile do you want to insert?  &quot;);</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.add(selectedTilesLabel);</b>
+<b class="nc">&nbsp;        JPanel takenTilesButtonGrid = new JPanel(new GridLayout(1,3));</b>
+<b class="nc">&nbsp;        for(Tile tile : takenTiles) {</b>
+<b class="nc">&nbsp;            SelectableTile selectableTile = new SelectableTile(tile);</b>
+<b class="nc">&nbsp;            selectableTile.addActionListener(e -&gt; {</b>
+<b class="nc">&nbsp;                SwingUtilities.invokeLater(() -&gt; {</b>
+<b class="nc">&nbsp;                    guiManager.sendTemporaryTilesSelection(takenTiles.indexOf(tile));</b>
+<b class="nc">&nbsp;                    appState = AppState.WAITING_APP;</b>
+<b class="nc">&nbsp;                    takenTiles.remove(tile);</b>
+<b class="nc">&nbsp;                    if(takenTiles.isEmpty()) {</b>
+<b class="nc">&nbsp;                        guiManager.sendEndTurn();</b>
+&nbsp;                    }
+&nbsp;                });
+&nbsp;            });
+<b class="nc">&nbsp;            selectableTile.setContentAreaFilled(false);</b>
+<b class="nc">&nbsp;            takenTilesButtonGrid.add(selectableTile);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        selectedTilesSouthPanel.add(takenTilesButtonGrid);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UITurnState getTurnState() {
+<b class="nc">&nbsp;        return turnState;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTurnState(UITurnState turnState) {
+<b class="nc">&nbsp;        this.turnState = turnState;</b>
+<b class="nc">&nbsp;        refresh();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTakenTiles(ArrayList&lt;Tile&gt; takenTiles) {
+<b class="nc">&nbsp;        this.takenTiles = takenTiles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSelectedColumn(int selectedColumn) {
+<b class="nc">&nbsp;        this.selectedColumn = selectedColumn;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private SelectableBoard askForBoard() {
+<b class="nc">&nbsp;        return guiManager.askBoard(this);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private  NoSelectableShelf askForNsShelf() {
+<b class="nc">&nbsp;        return guiManager.askNsShelf();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private SelectableColumnShelf askForScShelf() {
+<b class="nc">&nbsp;        return guiManager.askScShelf();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private NoSelectableShelf returnPersonalGoal() {
+<b class="nc">&nbsp;        return guiManager.askPersonalGoal();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private CommonGoalImage returnCommonGoalImage(){
+<b class="nc">&nbsp;        return guiManager.askCommonGoal();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAppState(AppState appState) {
+<b class="nc">&nbsp;        synchronized (lock) {</b>
+<b class="nc">&nbsp;            this.appState = appState;</b>
+<b class="nc">&nbsp;            if(appState.equals(AppState.WAITING_PLAYER)) refresh();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

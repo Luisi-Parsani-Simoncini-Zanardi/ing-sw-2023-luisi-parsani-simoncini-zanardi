@@ -1,0 +1,148 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > NicknameFrame</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.View.GraphicalUI</a>
+</div>
+
+<h1>Coverage Summary for Class: NicknameFrame (org.projectsw.View.GraphicalUI)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NicknameFrame</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.View.GraphicalUI;
+&nbsp;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import javax.swing.*;
+&nbsp;
+&nbsp;public class NicknameFrame extends StartingMenuFrame {
+&nbsp;    private String nickname;
+&nbsp;
+&nbsp;    public NicknameFrame(GuiManager guiManager) {
+<b class="nc">&nbsp;        super(guiManager);</b>
+&nbsp;
+<b class="nc">&nbsp;        boolean nicknameInsert = false;</b>
+<b class="nc">&nbsp;        JPanel panel = new JPanel();</b>
+<b class="nc">&nbsp;        panel.add(new JLabel(&quot;Enter Nickname:&quot;));</b>
+<b class="nc">&nbsp;        JTextField nicknameField = new JTextField(20);</b>
+<b class="nc">&nbsp;        panel.add(nicknameField);</b>
+&nbsp;        do {
+<b class="nc">&nbsp;            int option = JOptionPane.showConfirmDialog(null, panel, &quot;Nickname Input&quot;, JOptionPane.OK_CANCEL_OPTION);</b>
+<b class="nc">&nbsp;            if (option == JOptionPane.OK_OPTION) {</b>
+<b class="nc">&nbsp;                String nickname = nicknameField.getText();</b>
+<b class="nc">&nbsp;                if (nickname.isEmpty()) {</b>
+<b class="nc">&nbsp;                    JOptionPane.showMessageDialog(NicknameFrame.this, &quot;Please insert a nickname before clicking \&quot;OK\&quot;&quot;);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    if(nickname.equals(Config.broadcastID)){</b>
+<b class="nc">&nbsp;                        JOptionPane.showMessageDialog(NicknameFrame.this, &quot;You can&#39;t choose the broadcast nickname&quot;);</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        nicknameInsert = true;</b>
+<b class="nc">&nbsp;                        guiManager.sendNickname(nickname);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;            if (option == JOptionPane.CANCEL_OPTION){</b>
+<b class="nc">&nbsp;                nicknameInsert = true;</b>
+<b class="nc">&nbsp;                guiManager.kill(1);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } while(!nicknameInsert);</b>
+&nbsp;    }
+&nbsp;    public String getNickname() {
+<b class="nc">&nbsp;        return nickname;</b>
+&nbsp;    }
+&nbsp;    public void setNickname(String nickname) {
+<b class="nc">&nbsp;        this.nickname = nickname;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

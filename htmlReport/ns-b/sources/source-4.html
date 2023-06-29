@@ -1,0 +1,242 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PathSolverGui</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Util</a>
+</div>
+
+<h1>Coverage Summary for Class: PathSolverGui (org.projectsw.Util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PathSolverGui</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Util;
+&nbsp;
+&nbsp;/**
+&nbsp; * Pathsolver class
+&nbsp; */
+<b class="nc">&nbsp;public class PathSolverGui {</b>
+&nbsp;
+&nbsp;    private static final String standardInitialPath = &quot;src/main/resources/ImagesGui/&quot;;
+&nbsp;    private static final String formatJpg = &quot;.jpg&quot;;
+&nbsp;    private static final String formatPng = &quot;.png&quot;;
+&nbsp;
+&nbsp;    public static String bannerPath(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/Backgrounds/Banner&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String basePagePath(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/Backgrounds/BasePage&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String squareParquetPath(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/Backgrounds/SquareParquet&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String closedBagPath(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/Bags/ClosedBag&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String openBagPath(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/Bags/OpenBag&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String boardPath(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/Boards/Board&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String shelfPath(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/Boards/Shelf&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String commonGoalPath(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/CommonGoals/&quot;+code+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String commonGoalBack(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/CommonGoals/back&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String personalGoalPath(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/PersonalGoals/&quot;+code+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String personalGoalBack(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/PersonalGoals/back&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String personalGoalEmpty(){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;/PersonalGoals/empty&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String boxLogo() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;LogoAndIcons/Box280x280&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String icon() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;LogoAndIcons/Icon&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String publisher() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;LogoAndIcons/Publisher&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String title618() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;LogoAndIcons/Title2000x618&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String title2000() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;LogoAndIcons/Title2000x2000&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String endGameToken() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/EndGame&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String scoringToken2() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/Scoring2&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String scoringToken4() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/Scoring4&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String scoringToken6() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/Scoring6&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String scoringToken8() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/Scoring8&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String scoringTokenEmpty1() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/ScoringEmpty1&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String scoringTokenEmpty2() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/ScoringEmpty2&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String scoringTokenBack() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;ScoringTokens/ScoringBack&quot;+formatJpg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String firstPlayerToken() {
+<b class="nc">&nbsp;        return standardInitialPath+&quot;Various/FirstPlayerToken&quot;+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String books(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;Tiles/Books&quot;+code+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String cats(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;Tiles/Cats&quot;+code+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String frames(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;Tiles/Frames&quot;+code+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String games(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;Tiles/Games&quot;+code+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String plants(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;Tiles/Plants&quot;+code+formatPng;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static String trophies(int code){
+<b class="nc">&nbsp;        return standardInitialPath+&quot;Tiles/Trophies&quot;+code+formatPng;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,309 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Player</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: Player (org.projectsw.Model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Player</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97,6%
+  </span>
+  <span class="absValue">
+    (40/41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model;
+&nbsp;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Objects;
+&nbsp;import java.util.Random;
+&nbsp;
+&nbsp;/**
+&nbsp; * Class representing a player in the game.
+&nbsp; */
+&nbsp;public class Player {
+&nbsp;    private final int position;
+&nbsp;    private final String nickname;
+&nbsp;    private int points;
+&nbsp;    private Shelf shelf;
+&nbsp;    private PersonalGoal personalGoal;
+&nbsp;    private ArrayList&lt;Tile&gt; temporaryTiles;
+&nbsp;    private final ArrayList&lt;Boolean&gt; commonGoalRedeemed;
+&nbsp;    private boolean isActive;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new player with the given nickname and position.
+&nbsp;     * Points are set 0 by default.
+&nbsp;     * Shelf is instanced as an empty shelf.
+&nbsp;     * The personal goal is assigned randomly.
+&nbsp;     * @param nickname the nickname of the player
+&nbsp;     * @param position the position of the player
+&nbsp;     */
+<b class="fc">&nbsp;    public Player(String nickname, int position) {</b>
+<b class="fc">&nbsp;        this.nickname= nickname;</b>
+<b class="fc">&nbsp;        this.position=position;</b>
+<b class="fc">&nbsp;        points=0;</b>
+<b class="fc">&nbsp;        shelf = new Shelf();</b>
+&nbsp;        //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
+<b class="fc">&nbsp;        if (Objects.equals(nickname, &quot;backdoor&quot;))</b>
+<b class="nc">&nbsp;            shelf = new Shelf(4);</b>
+&nbsp;        //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
+<b class="fc">&nbsp;        personalGoal = tryPersonalGoal();</b>
+<b class="fc">&nbsp;        temporaryTiles = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        commonGoalRedeemed = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        commonGoalRedeemed.add(false);</b>
+<b class="fc">&nbsp;        commonGoalRedeemed.add(false);</b>
+<b class="fc">&nbsp;        isActive=true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the player is connected to the server, false otherwise.
+&nbsp;     * @return true if the player is connected to the server, false otherwise
+&nbsp;     */
+&nbsp;    public boolean getIsActive(){
+<b class="fc">&nbsp;        return this.isActive;</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Returns the position of the player.
+&nbsp;     * @return the position of the player
+&nbsp;     */
+&nbsp;    public int getPosition(){
+<b class="fc">&nbsp;        return position;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the nickname of the player.
+&nbsp;     * @return the nickname of the player
+&nbsp;     */
+&nbsp;    public String getNickname(){
+<b class="fc">&nbsp;        return nickname;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the points scored by the player.
+&nbsp;     * @return the points scored by the player
+&nbsp;     */
+&nbsp;    public int getPoints(){
+<b class="fc">&nbsp;        return points;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the shelf of the player.
+&nbsp;     * @return the shelf of the player
+&nbsp;     */
+&nbsp;    public Shelf getShelf() {
+<b class="fc">&nbsp;        return shelf;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the temporary tiles of the player.
+&nbsp;     * @return the temporary tiles of the player
+&nbsp;     */
+&nbsp;    public ArrayList&lt;Tile&gt; getTemporaryTiles() {
+<b class="fc">&nbsp;        return temporaryTiles;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the personal goal of the player.
+&nbsp;     * @return the personal goal of the player
+&nbsp;     */
+&nbsp;    public PersonalGoal getPersonalGoal() {
+<b class="fc">&nbsp;        return personalGoal;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns whether the number i common goal has been redeemed or not.
+&nbsp;     * @param i the index of the personalGoalArray element to be checked
+&nbsp;     * @return true if the personal goal has been redeemed, false otherwise
+&nbsp;     */
+&nbsp;    public boolean isCommonGoalRedeemed(int i){
+<b class="fc">&nbsp;        return commonGoalRedeemed.get(i);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the shelf of the player to the given shelf.
+&nbsp;     * @param shelf the shelf to set for the player
+&nbsp;     */
+&nbsp;    public void setShelf(Shelf shelf) {
+<b class="fc">&nbsp;        this.shelf=shelf;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the points scored by the player to the given points.
+&nbsp;     * @param points the points to set for the player
+&nbsp;     */
+&nbsp;    public void setPoints(int points){
+<b class="fc">&nbsp;        this.points=points;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the personalGoal of the player to the given personalGoal.
+&nbsp;     * @param personalGoal the personalGoal to set for the player
+&nbsp;     */
+&nbsp;    public void setPersonalGoal(PersonalGoal personalGoal) {
+<b class="fc">&nbsp;        this.personalGoal=personalGoal;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the commonGoalRedeemed at the desired index to the desired status.
+&nbsp;     * @param index the index of the position to be set
+&nbsp;     * @param status the status to be set
+&nbsp;     */
+&nbsp;    public void setCommonGoalRedeemed(int index, Boolean status) {
+<b class="fc">&nbsp;        this.commonGoalRedeemed.set(index, status);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the isActive of the player.
+&nbsp;     * @param state the isActive to set for the player
+&nbsp;     */
+<b class="fc">&nbsp;    public void setIsActive(boolean state){this.isActive=state; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the given tile to the player&#39;s temporary tiles.
+&nbsp;     * @param tile the tile to be added to the player&#39;s temporary tiles
+&nbsp;     */
+&nbsp;    public void addTemporaryTile(Tile tile) {
+<b class="fc">&nbsp;        if(tile.getTile() == TilesEnum.EMPTY || tile.getTile() == TilesEnum.UNUSED) throw new IllegalArgumentException(&quot;You can&#39;t add an EMPTY tile&quot;);</b>
+<b class="fc">&nbsp;        else temporaryTiles.add(tile);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *Removes and returns the tile at the specified index from the player&#39;s temporary tile list.
+&nbsp;     *@param i the index of the tile to select and remove
+&nbsp;     *@return the selected tile
+&nbsp;     *@throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;= temporaryTiles.size())
+&nbsp;     */
+&nbsp;    public Tile selectTemporaryTile(int i) throws IndexOutOfBoundsException {
+<b class="fc">&nbsp;        if(i &lt; 0 || i &gt;= temporaryTiles.size()) throw new IndexOutOfBoundsException();</b>
+<b class="fc">&nbsp;        Tile temp = temporaryTiles.get(i);</b>
+<b class="fc">&nbsp;        temporaryTiles.remove(i);</b>
+<b class="fc">&nbsp;        return temp;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Tries to instance a PersonalGoal object, and iterates in case of IllegalArgumentException,
+&nbsp;     * each time generating a new random code.
+&nbsp;     * @return a PersonalGoal which isn&#39;t used by any of the others players
+&nbsp;     */
+&nbsp;    public PersonalGoal tryPersonalGoal(){
+&nbsp;        PersonalGoal generatedPersonalGoal;
+&nbsp;        //if(PersonalGoal.getUsedCodes().size() == 12) return null;
+&nbsp;        try {
+<b class="fc">&nbsp;            Random random = new Random();</b>
+<b class="fc">&nbsp;            int randomNumber = random.nextInt(Config.numberOfPersonalGoals);</b>
+<b class="fc">&nbsp;            generatedPersonalGoal = new PersonalGoal(randomNumber);</b>
+<b class="fc">&nbsp;        } catch (IllegalArgumentException e) {</b>
+<b class="fc">&nbsp;            return tryPersonalGoal();</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return generatedPersonalGoal;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Clears the temporaryTiles array list.
+&nbsp;     */
+&nbsp;    public void clearTemporaryTiles(){
+<b class="fc">&nbsp;        temporaryTiles.clear();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the given tile from the temporaryTiles array list.
+&nbsp;     * @param tile the tile to be removed from the array
+&nbsp;     */
+&nbsp;    public void removeTemporaryTile(Tile tile){
+<b class="fc">&nbsp;        temporaryTiles.remove(tile);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

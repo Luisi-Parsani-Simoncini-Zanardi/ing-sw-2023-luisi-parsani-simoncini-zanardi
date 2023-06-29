@@ -1,0 +1,1298 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TextualUI</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.View</a>
+</div>
+
+<h1>Coverage Summary for Class: TextualUI (org.projectsw.View)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TextualUI</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/70)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/478)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.View;
+&nbsp;import org.projectsw.Distributed.Client;
+&nbsp;import org.projectsw.Distributed.Messages.InputMessages.*;
+&nbsp;import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
+&nbsp;import org.projectsw.Model.*;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.Util.Observable;
+&nbsp;import org.projectsw.View.Enums.UIEndState;
+&nbsp;import org.projectsw.View.Enums.UITurnState;
+&nbsp;import org.projectsw.Util.RandomAlphanumericGen;
+&nbsp;import java.awt.*;
+&nbsp;import java.io.IOException;
+&nbsp;import java.rmi.RemoteException;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.TimeUnit;
+&nbsp;
+&nbsp;/**
+&nbsp; * The TextualUI class represents a textual user interface for a game.
+&nbsp; * It provides methods to interact with the user through the command line interface.
+&nbsp; * This class extends the Observable class and implements the Runnable interface.
+&nbsp; */
+&nbsp;public class TextualUI extends Observable&lt;InputMessage&gt; implements Runnable {
+<b class="nc">&nbsp;    private UITurnState turnState = UITurnState.OPPONENT_TURN;</b>
+<b class="nc">&nbsp;    private UIEndState endState = UIEndState.LOBBY;</b>
+&nbsp;
+<b class="nc">&nbsp;    private final Object lock = new Object();</b>
+<b class="nc">&nbsp;    private final Object lock2 = new Object();</b>
+&nbsp;
+<b class="nc">&nbsp;    private volatile boolean connectFlag = true;</b>
+<b class="nc">&nbsp;    private boolean flag = true;</b>
+<b class="nc">&nbsp;    private boolean nickFlag = true;</b>
+<b class="nc">&nbsp;    private boolean firstPlayerFlag = false;</b>
+<b class="nc">&nbsp;    private boolean previousGameExist = false;</b>
+<b class="nc">&nbsp;    private volatile boolean waitResult = true;</b>
+<b class="nc">&nbsp;    private boolean endedTurn = false;</b>
+<b class="nc">&nbsp;    private boolean reconnection = false;</b>
+<b class="nc">&nbsp;    private boolean returnedFlag = false;</b>
+<b class="nc">&nbsp;    private boolean stillChoosing = true;</b>
+<b class="nc">&nbsp;    private boolean loadFromFile = false;</b>
+&nbsp;    private Integer number;
+&nbsp;    private Point point;
+&nbsp;    private String nickname;
+&nbsp;    private String string;
+&nbsp;    private String alphanumericKey;
+&nbsp;    private String lastPlayerNick;
+<b class="nc">&nbsp;    private Boolean tileSelectionPossible = true;</b>
+<b class="nc">&nbsp;    private Boolean temporaryTilesHold = true;</b>
+&nbsp;    private HashMap&lt;String, String&gt; nameColors;
+&nbsp;    private final Client client;
+<b class="nc">&nbsp;    Scanner masterScanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;    private ArrayList&lt;Message&gt; chatBuffer = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The constructor for the TextualUI class.
+&nbsp;     * @param client The client object used for communication with the server.
+&nbsp;     */
+&nbsp;    public TextualUI(Client client)
+<b class="nc">&nbsp;    {</b>
+<b class="nc">&nbsp;        this.client = client;</b>
+<b class="nc">&nbsp;        displayLogo();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the returned flag.
+&nbsp;     * @param returnedFlag The value to set for the returned flag.
+&nbsp;     */
+<b class="nc">&nbsp;    public void setReturnedFlag(boolean returnedFlag){this.returnedFlag=returnedFlag;}</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the turnState.
+&nbsp;     * @return The value of the turnState.
+&nbsp;     */
+&nbsp;    public UITurnState getTurnState(){
+<b class="nc">&nbsp;        synchronized(lock){</b>
+<b class="nc">&nbsp;            return turnState;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the endState.
+&nbsp;     * @return The value of the endState.
+&nbsp;     */
+&nbsp;    public UIEndState getEndState(){
+<b class="nc">&nbsp;        synchronized(lock2){</b>
+<b class="nc">&nbsp;            return endState;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the loadFromFile flag.
+&nbsp;     * @param loadFromFile The value to set for the returned flag.
+&nbsp;     */
+<b class="nc">&nbsp;    public void setLoadFromFile(boolean loadFromFile){this.loadFromFile = loadFromFile;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the stillChoosing flag.
+&nbsp;     * @param stillChoosing The value to set for the stillChoosing flag.
+&nbsp;     */
+<b class="nc">&nbsp;    public void setStillChoosing(boolean stillChoosing){this.stillChoosing = stillChoosing;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the firstPlayerFlag flag.
+&nbsp;     * @param firstPlayerFlag The value to set for the firstPlayerFlag flag.
+&nbsp;     */
+&nbsp;    public void setFirstPlayerFlag(boolean firstPlayerFlag) {
+<b class="nc">&nbsp;        this.firstPlayerFlag = firstPlayerFlag;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the nickFlag flag.
+&nbsp;     * @param nickFlag The value to set for the nickFlag flag.
+&nbsp;     */
+&nbsp;    public void setNickFlag(boolean nickFlag){
+<b class="nc">&nbsp;        this.nickFlag=nickFlag;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the previousGameExist flag.
+&nbsp;     * @param previousGameExist The value to set for the previousGameExist flag.
+&nbsp;     */
+&nbsp;    public void setPreviousGameExist(boolean previousGameExist){
+<b class="nc">&nbsp;        this.previousGameExist=previousGameExist;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the client.
+&nbsp;     * @return The value of the client.
+&nbsp;     */
+<b class="nc">&nbsp;    public Client getClient(){return this.client;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the string.
+&nbsp;     * @return The value of the string.
+&nbsp;     */
+<b class="nc">&nbsp;    public String getString(){return this.string;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the number.
+&nbsp;     * @return The value of the number.
+&nbsp;     */
+&nbsp;    public Integer getNumber(){
+<b class="nc">&nbsp;        return this.number;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the point.
+&nbsp;     * @return The value of the point.
+&nbsp;     */
+&nbsp;    public Point getPoint(){
+<b class="nc">&nbsp;        return this.point;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the nickname.
+&nbsp;     * @return The value of the nickname.
+&nbsp;     */
+<b class="nc">&nbsp;    public String getNickname(){return this.nickname;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the nameColors.
+&nbsp;     * @return The value of the nameColors.
+&nbsp;     */
+<b class="nc">&nbsp;    public HashMap&lt;String, String&gt; getNameColors(){return this.nameColors;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the value of the masterScanner.
+&nbsp;     * @return The value of the masterScanner.
+&nbsp;     */
+&nbsp;    public Scanner getMasterScanner(){
+<b class="nc">&nbsp;        return this.masterScanner;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the response flag.
+&nbsp;     * @param response The value to set for the response flag.
+&nbsp;     */
+&nbsp;    public void setWaitResult(boolean response){
+<b class="nc">&nbsp;        this.waitResult = response;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the nameColors.
+&nbsp;     * @param nameColors The value to set for the nameColors.
+&nbsp;     */
+&nbsp;    public void setNameColors(HashMap&lt;String, String&gt; nameColors){
+<b class="nc">&nbsp;        this.nameColors = nameColors;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the resp flag.
+&nbsp;     * @param resp The value to set for the resp flag.
+&nbsp;     */
+&nbsp;    public void setFlag(boolean resp){
+<b class="nc">&nbsp;        this.flag =resp;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the turnState.
+&nbsp;     * @param state The value to set for the turnState.
+&nbsp;     */
+&nbsp;    public void setTurnState(UITurnState state){
+<b class="nc">&nbsp;        synchronized (lock){</b>
+<b class="nc">&nbsp;            this.turnState = state;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the endState.
+&nbsp;     * @param state The value to set for the endState.
+&nbsp;     */
+&nbsp;    public void setEndState(UIEndState state){
+<b class="nc">&nbsp;        synchronized (lock2){</b>
+<b class="nc">&nbsp;            this.endState = state;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the connectFlag flag.
+&nbsp;     * @param connectFlag The value to set for the connectFlag flag.
+&nbsp;     */
+<b class="nc">&nbsp;    public void setConnectFlag(boolean connectFlag){this.connectFlag=connectFlag;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the lastPlayerNick.
+&nbsp;     * @param nick The value to set for the lastPlayerNick.
+&nbsp;     */
+&nbsp;    public void setLastPlayerName(String nick){
+<b class="nc">&nbsp;        this.lastPlayerNick=nick;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the reconnection flag.
+&nbsp;     * @param flag The value to set for the reconnection flag.
+&nbsp;     */
+<b class="nc">&nbsp;    public void setReconnection(Boolean flag) {this.reconnection=flag; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the noMoreTemporaryTiles flag.
+&nbsp;     * @param bool The value to set for the noMoreTemporaryTiles flag.
+&nbsp;     */
+&nbsp;    public void setTemporaryTilesHold(boolean bool){
+<b class="nc">&nbsp;        this.temporaryTilesHold = bool;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the value of the noMoreSelectableTiles flag.
+&nbsp;     * @param bool The value to set for the noMoreSelectableTiles flag.
+&nbsp;     */
+&nbsp;    public void setTileSelectionPossible(boolean bool){
+<b class="nc">&nbsp;        this.tileSelectionPossible = bool;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Waits until the returned flag is set to true.
+&nbsp;     * This method blocks the execution until the flag is set.
+&nbsp;     */
+&nbsp;    private void waitReturn() {
+<b class="nc">&nbsp;        returnedFlag=false;</b>
+<b class="nc">&nbsp;        while (!returnedFlag) {</b>
+<b class="nc">&nbsp;            synchronized (this) {</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    this.wait();</b>
+<b class="nc">&nbsp;                } catch (InterruptedException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;An error occurred while waiting for the returned flag: &quot; + e);</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        returnedFlag=false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Runs the textual user interface.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void run() {
+&nbsp;        try {
+<b class="nc">&nbsp;            TimeUnit.SECONDS.sleep(1);</b>
+<b class="nc">&nbsp;        } catch (InterruptedException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        int choice = 0;</b>
+<b class="nc">&nbsp;        RandomAlphanumericGen randomizer = new RandomAlphanumericGen();</b>
+<b class="nc">&nbsp;        alphanumericKey = randomizer.generateRandomString(100);</b>
+<b class="nc">&nbsp;        connect();</b>
+<b class="nc">&nbsp;        while (connectFlag) {</b>
+&nbsp;        }
+&nbsp;        do {
+<b class="nc">&nbsp;            System.out.println(&quot;\nCHOOSE AN OPTION:&quot;);</b>
+<b class="nc">&nbsp;            if (nickFlag)</b>
+<b class="nc">&nbsp;                System.out.println(&quot;1: Insert your nickname&quot;);</b>
+<b class="nc">&nbsp;            if (firstPlayerFlag)</b>
+<b class="nc">&nbsp;                System.out.println(&quot;2: Insert the number of players&quot;);</b>
+<b class="nc">&nbsp;            if (firstPlayerFlag &amp;&amp; previousGameExist)</b>
+<b class="nc">&nbsp;                System.out.println(&quot;3: Load the game from file&quot;);</b>
+<b class="nc">&nbsp;            if (firstPlayerFlag || nickFlag) {</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    choice = masterScanner.nextInt();</b>
+<b class="nc">&nbsp;                } catch (InputMismatchException e) {</b>
+<b class="nc">&nbsp;                    choice = 0;</b>
+<b class="nc">&nbsp;                    masterScanner.next();</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;                switch (choice) {</b>
+<b class="nc">&nbsp;                    case 1 -&gt; askNickname();</b>
+<b class="nc">&nbsp;                    case 2 -&gt; askNumber();</b>
+<b class="nc">&nbsp;                    case 3 -&gt; askLoadGame();</b>
+<b class="nc">&nbsp;                    default -&gt; System.err.println(&quot;Invalid selection!!!&quot;);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        } while (nickFlag || firstPlayerFlag);</b>
+<b class="nc">&nbsp;        endedTurn = false;</b>
+<b class="nc">&nbsp;        if (getEndState() == UIEndState.LOBBY)</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Waiting response from the server...\n&quot;);</b>
+<b class="nc">&nbsp;        if (stillChoosing &amp;&amp; !firstPlayerFlag) {</b>
+<b class="nc">&nbsp;            waitReturn();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (loadFromFile) {</b>
+<b class="nc">&nbsp;                nickFlag = true;</b>
+&nbsp;                do {
+<b class="nc">&nbsp;                    System.out.println(&quot;\nCHOOSE AN OPTION:&quot;);</b>
+<b class="nc">&nbsp;                    if (nickFlag)</b>
+<b class="nc">&nbsp;                        System.out.println(&quot;1: Insert your nickname&quot;);</b>
+&nbsp;                    try {
+<b class="nc">&nbsp;                        choice = masterScanner.nextInt();</b>
+<b class="nc">&nbsp;                    } catch (InputMismatchException e) {</b>
+<b class="nc">&nbsp;                        choice = 0;</b>
+<b class="nc">&nbsp;                        masterScanner.next();</b>
+<b class="nc">&nbsp;                    }</b>
+<b class="nc">&nbsp;                    switch (choice) {</b>
+<b class="nc">&nbsp;                        case 1 -&gt; askNameAgainForReload();</b>
+<b class="nc">&nbsp;                        default -&gt; System.err.println(&quot;Invalid selection!!!&quot;);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                } while (nickFlag || firstPlayerFlag);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        while (getEndState() == UIEndState.LOBBY) {</b>
+<b class="nc">&nbsp;            synchronized (this) {</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    this.wait();</b>
+<b class="nc">&nbsp;                } catch (InterruptedException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;An error occurred while waiting for the game to start: &quot; + e);</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.println(&quot;Game started!&quot;);</b>
+<b class="nc">&nbsp;        flag = true;</b>
+<b class="nc">&nbsp;        askCurrentPlayer();</b>
+&nbsp;        do {
+<b class="nc">&nbsp;            writeBufferMessage();</b>
+<b class="nc">&nbsp;            System.out.println(&quot;---CHOOSE AN ACTION---&quot;);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Press 0 to see all possible actions...&quot;);</b>
+<b class="nc">&nbsp;            if(flag) {</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    choice = masterScanner.nextInt();</b>
+<b class="nc">&nbsp;                } catch (InputMismatchException | IllegalStateException ignored) {</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (flag) {</b>
+<b class="nc">&nbsp;                switch (choice) {</b>
+<b class="nc">&nbsp;                    case 0 -&gt; printCommandMenu();</b>
+&nbsp;                    case 1 -&gt; {
+<b class="nc">&nbsp;                        if (getTurnState() == UITurnState.OPPONENT_TURN) {</b>
+<b class="nc">&nbsp;                            System.err.println(&quot;It&#39;s not your turn. Please wait...&quot;);</b>
+&nbsp;                        }
+&nbsp;                        else {
+<b class="nc">&nbsp;                            if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {</b>
+<b class="nc">&nbsp;                                setTurnState(UITurnState.YOUR_TURN_COLUMN);</b>
+<b class="nc">&nbsp;                                askBoard();</b>
+<b class="nc">&nbsp;                                selectTiles();</b>
+&nbsp;                            } else {
+<b class="nc">&nbsp;                                System.err.println(&quot;You can&#39;t select a tile now...&quot;);</b>
+&nbsp;                            }
+&nbsp;                        }
+<b class="nc">&nbsp;                    }</b>
+&nbsp;                    case 2 -&gt; {
+<b class="nc">&nbsp;                        if (getTurnState() == UITurnState.OPPONENT_TURN) {</b>
+<b class="nc">&nbsp;                            System.err.println(&quot;It&#39;s not your turn. Please wait...&quot;);</b>
+&nbsp;                        } else {
+<b class="nc">&nbsp;                            if (getTurnState() == UITurnState.YOUR_TURN_SELECTION) {</b>
+<b class="nc">&nbsp;                                System.err.println(&quot;You can&#39;t insert a tile now...&quot;);</b>
+&nbsp;                            } else {
+<b class="nc">&nbsp;                                askShelf();</b>
+<b class="nc">&nbsp;                                askTemporaryTiles();</b>
+<b class="nc">&nbsp;                                waitReturn();</b>
+<b class="nc">&nbsp;                                if (getTurnState() == UITurnState.YOUR_TURN_COLUMN) {</b>
+<b class="nc">&nbsp;                                    setTurnState(UITurnState.YOUR_TURN_INSERTION);</b>
+<b class="nc">&nbsp;                                    selectColumn();</b>
+<b class="nc">&nbsp;                                    waitReturn();</b>
+&nbsp;                                }
+<b class="nc">&nbsp;                                if (getTurnState() == UITurnState.YOUR_TURN_INSERTION) {</b>
+<b class="nc">&nbsp;                                    selectTemporaryTiles();</b>
+<b class="nc">&nbsp;                                    System.out.println(&quot;You ended your turn.&quot;);</b>
+&nbsp;                                    try {
+<b class="nc">&nbsp;                                        setChangedAndNotifyObservers(new EndTurn(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;                                    } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                                        throw new RuntimeException(&quot;An error occurred while ending the turn: &quot; + e);</b>
+<b class="nc">&nbsp;                                    }</b>
+<b class="nc">&nbsp;                                    waitReturn();</b>
+<b class="nc">&nbsp;                                    if (getEndState().equals(UIEndState.ENDING))</b>
+<b class="nc">&nbsp;                                        setWaitResult(false);</b>
+<b class="nc">&nbsp;                                    setTurnState(UITurnState.OPPONENT_TURN);</b>
+<b class="nc">&nbsp;                                    endedTurn=true;</b>
+&nbsp;                                }
+&nbsp;                            }
+&nbsp;                        }
+&nbsp;                    }
+<b class="nc">&nbsp;                    case 3 -&gt; askPersonalGoal();</b>
+<b class="nc">&nbsp;                    case 4 -&gt; askCommonGoals();</b>
+<b class="nc">&nbsp;                    case 5 -&gt; askBoard();</b>
+<b class="nc">&nbsp;                    case 6 -&gt; askShelf();</b>
+<b class="nc">&nbsp;                    case 7 -&gt; askAllShelves();</b>
+<b class="nc">&nbsp;                    case 8 -&gt; askCurrentPlayer();</b>
+<b class="nc">&nbsp;                    case 9 -&gt; writeInChat();</b>
+<b class="nc">&nbsp;                    case 10 -&gt; showChat();</b>
+&nbsp;                    case 11 -&gt; {//impossibile da testare su intellij, ma solo da cli linux e cli windows
+&nbsp;                        try {
+<b class="nc">&nbsp;                            if (System.getProperty(&quot;os.name&quot;).contains(&quot;Windows&quot;)) {</b>
+<b class="nc">&nbsp;                                new ProcessBuilder(&quot;cmd&quot;, &quot;/c&quot;, &quot;cls&quot;).inheritIO().start().waitFor();</b>
+&nbsp;                            } else {
+<b class="nc">&nbsp;                                Runtime.getRuntime().exec(&quot;clear&quot;);</b>
+&nbsp;                            }
+<b class="nc">&nbsp;                        } catch (IOException | InterruptedException e) {</b>
+<b class="nc">&nbsp;                            e.printStackTrace();</b>
+<b class="nc">&nbsp;                        }</b>
+<b class="nc">&nbsp;                    }</b>
+<b class="nc">&nbsp;                    case 12 -&gt; exit();</b>
+<b class="nc">&nbsp;                    default -&gt; System.err.println(&quot;Invalid command. Try again...&quot;);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        } while (getEndState() == UIEndState.RUNNING || waitResult);</b>
+<b class="nc">&nbsp;        ending();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Performs the necessary actions when the game ends.
+&nbsp;     * Closes the scanner, sets the flag to false, and prints messages.
+&nbsp;     * If the nickname is the last player&#39;s nickname, asks for results, waits for return, and kills the client.
+&nbsp;     */
+&nbsp;    public void ending(){
+<b class="nc">&nbsp;        getMasterScanner().close();</b>
+<b class="nc">&nbsp;        System.err.println(&quot;The game ended. You can no longer do actions.&quot;);</b>
+<b class="nc">&nbsp;        setFlag(false);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Wait for results please...&quot;);</b>
+<b class="nc">&nbsp;        if(nickname.equals(lastPlayerNick)) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                setChangedAndNotifyObservers(new AskForResults(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;A network error occurred while asking for results: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            client.kill();</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while killing the client: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prints the command menu for the game.
+&nbsp;     * Displays a numbered list of available commands.
+&nbsp;     */
+&nbsp;    private void printCommandMenu(){
+<b class="nc">&nbsp;        System.out.print(&quot;&quot;&quot;</b>
+&nbsp;                1-  Select tiles from the board
+&nbsp;                2-  Insert tiles in your shelf
+&nbsp;                3-  Show your personal goal
+&nbsp;                4-  Show the common goals
+&nbsp;                5-  Show the board
+&nbsp;                6-  Show your shelf
+&nbsp;                7-  Show all the shelves
+&nbsp;                8-  Show the current player
+&nbsp;                9-  Write in chat
+&nbsp;                10- Show the chat
+&nbsp;                11- Clear the cli
+&nbsp;                12- Exit
+&nbsp;                &quot;&quot;&quot;);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Connects to the server.
+&nbsp;     * Notifies the observers with a Connect object containing the necessary input.
+&nbsp;     * Handles network errors by throwing a RuntimeException.
+&nbsp;     */
+&nbsp;    private void connect(){
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new Connect(new SerializableInput(alphanumericKey, client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;A network error occurred connecting to the server: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Exits the game.
+&nbsp;     * Notifies the observers with the necessary input to perform cleanup actions and end the game.
+&nbsp;     * Handles network errors by throwing a RuntimeException.
+&nbsp;     */
+&nbsp;    public void exit(){
+<b class="nc">&nbsp;        System.out.println(&quot;Exiting...&quot;);</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new NotActive(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new DeleteModelObserver(new SerializableInput(alphanumericKey, client)));</b>
+<b class="nc">&nbsp;            if(getTurnState()!=UITurnState.OPPONENT_TURN)</b>
+<b class="nc">&nbsp;                setChangedAndNotifyObservers(new EndTurnExit(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;            client.kill();</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;A network error occurred while removing the tui observer: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Writes a message in the chat.
+&nbsp;     * Prompts the user to enter a message and sends it to the server.
+&nbsp;     * Messages can be either public or private (directed to a specific player).
+&nbsp;     * Handles network errors by throwing a RuntimeException.
+&nbsp;     */
+&nbsp;    private void writeInChat(){
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;&quot;&quot;</b>
+&nbsp;                Messages should be formatted like this:
+&nbsp;                nickname/message -&gt; to send a secret message to the player with the specified nickname
+&nbsp;                message -&gt; to send a message to everyone&quot;&quot;&quot;);
+<b class="nc">&nbsp;        string = scanner.nextLine();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new ChatMessage(new SerializableInput(alphanumericKey, getNickname(),getString(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;A network error occurred while sending the message: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the client based on the received response message.
+&nbsp;     * Executes the response if the alphanumeric ID matches the client&#39;s key or the broadcast ID.
+&nbsp;     * @param response the response message to process and execute
+&nbsp;     */
+&nbsp;    public void update(ResponseMessage response){
+<b class="nc">&nbsp;        if(response.getModel().getAlphanumericID().equals(this.alphanumericKey)||response.getModel().getAlphanumericID().equals(Config.broadcastID))</b>
+<b class="nc">&nbsp;            response.execute(this);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the user to choose a column.
+&nbsp;     * Returns true if the user chooses to proceed, false otherwise.
+&nbsp;     * @return true if the user chooses to proceed, false otherwise
+&nbsp;     */
+&nbsp;    public boolean chooseColumn(){
+<b class="nc">&nbsp;        System.out.println(&quot;Are you sure?\n1: Yes\n2: No&quot;);</b>
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        while (!scanner.hasNextInt()) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Please insert a number...&quot;);</b>
+<b class="nc">&nbsp;            scanner.next();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int choice = scanner.nextInt();</b>
+<b class="nc">&nbsp;        if (choice == 1 || choice == 2)</b>
+<b class="nc">&nbsp;            return choice == 2;</b>
+&nbsp;        else {
+<b class="nc">&nbsp;            System.err.println(&quot;Invalid input. Try again...&quot;);</b>
+<b class="nc">&nbsp;            return chooseColumn();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the user to select a temporary tile input.
+&nbsp;     * Returns the selected tile number minus one.
+&nbsp;     * @return the selected tile number minus one
+&nbsp;     */
+&nbsp;    public Integer selectTemporaryTileInput(){
+<b class="nc">&nbsp;        System.out.println(&quot;Which tile do you want to insert?&quot;);</b>
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        while (!scanner.hasNextInt()) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Invalid input&quot;);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Insert the tile number: &quot;);</b>
+<b class="nc">&nbsp;            scanner.next();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return scanner.nextInt()-1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the user to select a column input.
+&nbsp;     * Returns the selected column number minus one.
+&nbsp;     * @return the selected column number minus one
+&nbsp;     */
+&nbsp;    public Integer selectColumnInput(){
+<b class="nc">&nbsp;        System.out.println(&quot;\nIn which column do you want to insert your tiles?&quot;);</b>
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        while (!scanner.hasNextInt()) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Invalid input&quot;);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Insert the column: &quot;);</b>
+<b class="nc">&nbsp;            scanner.next();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return scanner.nextInt()-1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the user to select a temporary tile input.
+&nbsp;     * Returns the selected tile number minus one.
+&nbsp;     * @return the selected tile number minus one
+&nbsp;     */
+&nbsp;    private boolean chooseTiles(){
+<b class="nc">&nbsp;        System.out.println(&quot;Do you want to choose another tile?\n1: Yes\n2: No&quot;);</b>
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        while (!scanner.hasNextInt()) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Please insert a number...&quot;);</b>
+<b class="nc">&nbsp;            scanner.next();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int choice = scanner.nextInt();</b>
+<b class="nc">&nbsp;        if (choice == 1 || choice == 2) {</b>
+<b class="nc">&nbsp;            setTurnState(UITurnState.YOUR_TURN_COLUMN);</b>
+<b class="nc">&nbsp;            return choice == 1;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            System.err.println(&quot;Invalid input. Try again...&quot;);</b>
+<b class="nc">&nbsp;            return chooseTiles();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Allows the user to select tiles from the board.
+&nbsp;     * It prompts the user to select tiles until there are no more selectable tiles or the user chooses to stop.
+&nbsp;     * After each tile selection, it notifies the observers with the selected tile.
+&nbsp;     * Finally, it confirms the selected tiles.
+&nbsp;     */
+&nbsp;    private void selectTiles(){
+&nbsp;        do{
+<b class="nc">&nbsp;            point = selectTilesInput();</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                setChangedAndNotifyObservers(new ConfirmTileSelection(new SerializableInput(alphanumericKey, getNickname(), getPoint(), client)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;An error occurred while choosing the tiles: &quot;+e.getCause());</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            waitReturn();</b>
+<b class="nc">&nbsp;        }while(tileSelectionPossible &amp;&amp; chooseTiles());</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new ConfirmSelectedTiles(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while confirming the tile selection: &quot;+e.getCause());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Allows the user to select a column on the board.
+&nbsp;     * It prompts the user to select a column until the user chooses to stop.
+&nbsp;     * After each column selection, it notifies the observers with the selected column.
+&nbsp;     * Finally, it confirms the selected column.
+&nbsp;     */
+&nbsp;    private void selectColumn(){
+&nbsp;        do{
+<b class="nc">&nbsp;            number = selectColumnInput();</b>
+<b class="nc">&nbsp;        }while(chooseColumn());</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new ConfirmColumnSelection(new SerializableInput(alphanumericKey, number, client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while confirming the column: &quot;+e.getCause());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Allows the user to select temporary tiles to insert.
+&nbsp;     * It prompts the user to select a temporary tile until there are no more temporary tiles left.
+&nbsp;     * After each tile selection, it notifies the observers with the selected tile placement.
+&nbsp;     * Finally, it waits for the return flag to be set to continue the loop.
+&nbsp;     */
+&nbsp;    private void selectTemporaryTiles(){
+&nbsp;        do {
+<b class="nc">&nbsp;            number = selectTemporaryTileInput();</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                setChangedAndNotifyObservers(new ConfirmTilePlacement(new SerializableInput(alphanumericKey, getNickname(), number, client)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;An error occurred while inserting the tiles: &quot;+e.getCause());</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            waitReturn();</b>
+<b class="nc">&nbsp;        }while(temporaryTilesHold);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the user to input the row and column for tile selection.
+&nbsp;     * It validates the user&#39;s input and returns the selected point (row, column).
+&nbsp;     * @return The selected point (row, column).
+&nbsp;     */
+&nbsp;    private Point selectTilesInput(){
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Insert the row: &quot;);</b>
+<b class="nc">&nbsp;        while (!scanner.hasNextInt()) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Invalid input&quot;);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Insert the row: &quot;);</b>
+<b class="nc">&nbsp;            scanner.next();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int row = scanner.nextInt();</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Insert the column: &quot;);</b>
+<b class="nc">&nbsp;        while (!scanner.hasNextInt()) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Invalid input&quot;);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Insert the column: &quot;);</b>
+<b class="nc">&nbsp;            scanner.next();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        int column = scanner.nextInt();</b>
+<b class="nc">&nbsp;        return new Point(column-1, row-1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the current game board.
+&nbsp;     * It waits for the response and updates the local board state.
+&nbsp;     */
+&nbsp;    private void askBoard() {
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForBoard(new SerializableInput(alphanumericKey, client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while asking for the board: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the current shelf.
+&nbsp;     * It waits for the response and updates the local shelf state.
+&nbsp;     */
+&nbsp;    private void askShelf() {
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForShelf(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while asking for the shelf: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the all the shelves.
+&nbsp;     * It waits for the response and updates the local all the shelves state.
+&nbsp;     */
+&nbsp;    private void askAllShelves() {
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForAllShelves(new SerializableInput(alphanumericKey, client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while asking for all shelves: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the personal goal.
+&nbsp;     * It waits for the response and updates the local personal goal.
+&nbsp;     */
+&nbsp;    private void askPersonalGoal() {
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForPersonalGoal(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while asking for all shelves: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the temporary tiles.
+&nbsp;     * It waits for the response and updates the local temporary tiles.
+&nbsp;     */
+&nbsp;    private void askTemporaryTiles() {
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForTemporaryTiles(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while asking for all shelves: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the common goals.
+&nbsp;     * It waits for the response and updates the local common goals.
+&nbsp;     */
+&nbsp;    private void askCommonGoals() {
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForCommonGoals(new SerializableInput(alphanumericKey, getNickname(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while asking for all shelves: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the current player.
+&nbsp;     * It waits for the response and updates the local current player.
+&nbsp;     */
+&nbsp;    private void askCurrentPlayer() {
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForCurrentPlayer(new SerializableInput(alphanumericKey, client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while asking for the current player: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the global chat.
+&nbsp;     * It waits for the response and updates the local global chat.
+&nbsp;     */
+&nbsp;    private void askGlobalChat(){
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(alphanumericKey, getNickname(),Config.everyone, client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;A network error occurred while asking for the Global chat&quot; + e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a request to the server to retrieve the chat.
+&nbsp;     * It waits for the response and updates the local chat.
+&nbsp;     */
+&nbsp;    private void askSpecificChat(){
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Write the name of the player that you want to see the chat with:&quot;);</b>
+<b class="nc">&nbsp;        string = scanner.nextLine();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(alphanumericKey, getNickname(),getString(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;A network error occurred while asking for the Specific chat: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the player to enter their previous nickname when reloading a game from a file.
+&nbsp;     * Sends the entered nickname to the server and waits for a response.
+&nbsp;     */
+&nbsp;    public void askNameAgainForReload() {
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Loading game from file, insert your previous nickname:\n&quot;);</b>
+<b class="nc">&nbsp;        nickname = scanner.nextLine();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred: &quot; + e.getCause());</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        waitReturn();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the player to enter their nickname.
+&nbsp;     * If the `nickFlag` is set to true, the player can enter their nickname.
+&nbsp;     * If the `nickFlag` is set to false, an error message is displayed.
+&nbsp;     * If the player is reconnecting to a game, it calls the `reconnectionJoin()` method.
+&nbsp;     * Sends the entered nickname to the server and waits for a response.
+&nbsp;     */
+&nbsp;    public void askNickname() {
+<b class="nc">&nbsp;        if(nickFlag) {</b>
+<b class="nc">&nbsp;            Scanner scanner = new Scanner(System.in);</b>
+&nbsp;            //playerReconnection();
+<b class="nc">&nbsp;            if (!reconnection) {</b>
+&nbsp;                do {
+<b class="nc">&nbsp;                    System.out.println(&quot;Insert your nickname: &quot;);</b>
+<b class="nc">&nbsp;                    nickname = scanner.nextLine();</b>
+<b class="nc">&nbsp;                    if (nickname.equals(Config.broadcastID))</b>
+<b class="nc">&nbsp;                        System.err.println(&quot;You can&#39;t choose \&quot;broadcast\&quot; as nickname...&quot;);</b>
+<b class="nc">&nbsp;                } while (nickname.equals(Config.broadcastID));</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;An error occurred: &quot; + e.getCause());</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                reconnectionJoin();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            waitReturn();</b>
+<b class="nc">&nbsp;        }else{</b>
+<b class="nc">&nbsp;            System.err.println(&quot;You can&#39;t choose your nickname now!!!&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the first player to enter the number of players.
+&nbsp;     * If the `firstPlayerFlag` is set to true, the player can enter the number of players.
+&nbsp;     * If the `firstPlayerFlag` is set to false, an error message is displayed.
+&nbsp;     * Uses a `Scanner` to read the user input and validates the entered number.
+&nbsp;     * Sends the entered number of players to the server and waits for a response.
+&nbsp;     * Updates the `firstPlayerFlag` and `nickFlag` accordingly.
+&nbsp;     */
+&nbsp;    public void askNumber(){
+<b class="nc">&nbsp;        if(firstPlayerFlag) {</b>
+<b class="nc">&nbsp;            Scanner scanner = new Scanner(System.in);</b>
+&nbsp;            do {
+<b class="nc">&nbsp;                System.out.println(&quot;Insert number of players: &quot;);</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    number = scanner.nextInt();</b>
+<b class="nc">&nbsp;                } catch (InputMismatchException e) {</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;Invalid Number of players. Try again...&quot;);</b>
+<b class="nc">&nbsp;                    System.out.println(&quot;Insert number of players: &quot;);</b>
+<b class="nc">&nbsp;                    scanner.next();</b>
+<b class="nc">&nbsp;                    number = scanner.nextInt();</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;                if (number &lt; Config.minPlayers || number &gt; Config.maxPlayers)</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;Invalid Number of players. Try again...&quot;);</b>
+<b class="nc">&nbsp;            } while (number &lt; Config.minPlayers || number &gt; Config.maxPlayers);</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                setChangedAndNotifyObservers(new ConfirmNumberOfPlayers(new SerializableInput(alphanumericKey, getNumber(), client)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Network error&quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }else{</b>
+<b class="nc">&nbsp;            System.err.println(&quot;You can&#39;t choose the number of players now!!!&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        firstPlayerFlag=false;</b>
+<b class="nc">&nbsp;        nickFlag = true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prompts the first player to choose whether to load a previous game or not.
+&nbsp;     * If the `firstPlayerFlag` is true and a previous game exists, the player can choose to load the game.
+&nbsp;     * If the `firstPlayerFlag` is false or no previous game exists, an error message is displayed.
+&nbsp;     * Uses a `Scanner` to read the user input.
+&nbsp;     * Sends the load game selection to the server and waits for a response.
+&nbsp;     * Prompts the player to enter their previous nickname and sends it to the server.
+&nbsp;     * Updates the `nickFlag` and `firstPlayerFlag` accordingly.
+&nbsp;     */
+&nbsp;    public void askLoadGame(){
+<b class="nc">&nbsp;        if(firstPlayerFlag&amp;&amp; previousGameExist) {</b>
+<b class="nc">&nbsp;            Scanner scanner = new Scanner(System.in);</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                setChangedAndNotifyObservers(new LoadGameSelection(new SerializableInput(alphanumericKey, client)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Network error&quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            waitReturn();</b>
+&nbsp;            do {
+<b class="nc">&nbsp;                nickFlag = true;</b>
+<b class="nc">&nbsp;                System.out.println(&quot;\ninsert your previous nickname: &quot;);</b>
+<b class="nc">&nbsp;                nickname = scanner.nextLine();</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;An error occurred: &quot; + e.getCause());</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;                waitReturn();</b>
+<b class="nc">&nbsp;            } while(nickFlag);</b>
+<b class="nc">&nbsp;        }else if(!previousGameExist){</b>
+<b class="nc">&nbsp;            System.err.println(&quot;There isn&#39;t a file to load!!!&quot;);</b>
+&nbsp;            return;
+&nbsp;        }else{
+<b class="nc">&nbsp;            System.err.println(&quot;You can&#39;t do this selection now!!!&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        firstPlayerFlag=false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the current game board.
+&nbsp;     * @param model The SerializableGame object containing the game board.
+&nbsp;     */
+&nbsp;    public void showBoard(SerializableGame model){
+<b class="nc">&nbsp;        Board board = new Board(model.getSelectablePoints(), model.getTemporaryPoints());</b>
+<b class="nc">&nbsp;        board.setBoard(model.getGameBoard());</b>
+<b class="nc">&nbsp;        System.out.println(&quot;-----GAME BOARD-----&quot;);</b>
+<b class="nc">&nbsp;        board.printBoard();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the current shelf.
+&nbsp;     * @param model The SerializableGame object containing the shelf.
+&nbsp;     */
+&nbsp;    public void showShelf(SerializableGame model){
+<b class="nc">&nbsp;        System.out.println(&quot;\n--- &quot;+nameColors.get(model.getPlayerName())+model.getPlayerName()+ConsoleColors.RESET+&quot; ---&quot;);</b>
+<b class="nc">&nbsp;        Shelf shelf = new Shelf();</b>
+<b class="nc">&nbsp;        shelf.setShelf(model.getPlayerShelf());</b>
+<b class="nc">&nbsp;        shelf.printShelf();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays all the shelves.
+&nbsp;     * @param model The SerializableGame object containing all the shelves.
+&nbsp;     */
+&nbsp;    public void showAllShelves(SerializableGame model){
+<b class="nc">&nbsp;        for (String name : model.getAllShelves().keySet())</b>
+&nbsp;        {
+<b class="nc">&nbsp;            System.out.println(&quot;\n--- &quot; + nameColors.get(name) + name + ConsoleColors.RESET + &quot; ---&quot;);</b>
+<b class="nc">&nbsp;            Shelf shelf = new Shelf();</b>
+<b class="nc">&nbsp;            shelf.setShelf(model.getAllShelves().get(name));</b>
+<b class="nc">&nbsp;            shelf.printShelf();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the personal goal.
+&nbsp;     * @param model The SerializableGame object containing the personal goal.
+&nbsp;     */
+&nbsp;    public void showPersonalGoal(SerializableGame model){
+<b class="nc">&nbsp;        System.out.println(&quot;---YOUR PERSONAL GOAL---&quot;);</b>
+<b class="nc">&nbsp;        Shelf shelf = new Shelf();</b>
+<b class="nc">&nbsp;        shelf.setShelf(model.getPlayerPersonalGoal());</b>
+<b class="nc">&nbsp;        shelf.printShelf();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the common goals.
+&nbsp;     * @param model The SerializableGame object containing the common goals.
+&nbsp;     */
+&nbsp;    public void showCommonGoals(SerializableGame model){
+<b class="nc">&nbsp;        System.out.println(&quot;---COMMON GOALS---\n&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(model.getCommonGoalDesc().get(0) + &quot;\n&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(model.getCommonGoalDesc().get(1));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the current player.
+&nbsp;     * @param model The SerializableGame object containing the current player.
+&nbsp;     */
+&nbsp;    public void showCurrentPlayer(SerializableGame model){
+<b class="nc">&nbsp;        if (model.getPlayerName().equals(nickname))</b>
+<b class="nc">&nbsp;            System.out.println(ConsoleColors.PURPLE+&quot;   --It&#39;s your turn--&quot;+ConsoleColors.RESET);</b>
+&nbsp;        else
+<b class="nc">&nbsp;            System.out.println(&quot;The current player is: &quot;+nameColors.get(model.getPlayerName()) + model.getPlayerName()+ConsoleColors.RESET);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the chat.
+&nbsp;     */
+&nbsp;    private void showChat() {
+<b class="nc">&nbsp;        number = 0;</b>
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+<b class="nc">&nbsp;            System.out.print(&quot;&quot;&quot;</b>
+&nbsp;                    Do you want to print the global chat or the chat with a specific player?
+&nbsp;                    1- Global chat
+&nbsp;                    2- A specific chat
+&nbsp;                    &quot;&quot;&quot;);
+&nbsp;            try {
+<b class="nc">&nbsp;                number = scanner.nextInt();</b>
+<b class="nc">&nbsp;            } catch (InputMismatchException ignore) {</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            if (number == 1) {</b>
+<b class="nc">&nbsp;                askGlobalChat();</b>
+<b class="nc">&nbsp;            } else if (number == 2) {</b>
+<b class="nc">&nbsp;                askSpecificChat();</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                System.err.println(&quot;Invalid input...&quot;);</b>
+&nbsp;            }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Handles the reconnection process for a disconnected player.
+&nbsp;     * Prompts the player to enter their old nickname and sends it to the server.
+&nbsp;     */
+&nbsp;    private void reconnectionJoin() {
+<b class="nc">&nbsp;        Scanner scanner = new Scanner(System.in);</b>
+&nbsp;        do {
+<b class="nc">&nbsp;            System.out.println(&quot;Looks like this game has a disconnected player, insert your old nickname to play: &quot;);</b>
+<b class="nc">&nbsp;            nickname = scanner.nextLine();</b>
+<b class="nc">&nbsp;            if (nickname.equals(Config.broadcastID))</b>
+<b class="nc">&nbsp;                System.err.println(&quot;You can&#39;t choose \&quot;broadcast\&quot; as nickname...&quot;);</b>
+<b class="nc">&nbsp;        } while (nickname.equals(Config.broadcastID));</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            setChangedAndNotifyObservers(new SendNickname(new SerializableInput(alphanumericKey, this.getNickname(), client)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred: &quot; + e.getCause());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Terminates the client process.
+&nbsp;     * If the `option` is 0, it indicates that the client was unable to join the game because the lobby is full.
+&nbsp;     * In this case, an error message is displayed, and the process is closed after printing an image.
+&nbsp;     * Otherwise, the `kill()` method of the client is called to terminate the process.
+&nbsp;     * If an error occurs while closing the process, a message is displayed instructing the user to manually close the client.
+&nbsp;     * Finally, the process is exited with a status of 0.
+&nbsp;     * @param option the option indicating the reason for the termination
+&nbsp;     */
+&nbsp;    public void kill(int option){
+<b class="nc">&nbsp;        if(option==0) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Unable to join the game; lobby is full.\nClosing the process...&quot;);</b>
+<b class="nc">&nbsp;            printImageKill();</b>
+&nbsp;        }
+&nbsp;        try {
+<b class="nc">&nbsp;            client.kill();</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Error while closing the process, please manually close the client&quot;);</b>
+<b class="nc">&nbsp;            System.exit(0);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        System.exit(0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the game logo using colored console output.
+&nbsp;     */
+&nbsp;    private void displayLogo(){
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.PURPLE_BOLD + &quot;  __  __&quot; + ConsoleColors.BLUE_BOLD + &quot;        _____ _          _  __ _      &quot;);</b>
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.PURPLE_BOLD + &quot; |  \\/  |&quot; + ConsoleColors.BLUE_BOLD + &quot;      / ____| |        | |/ _(_)     &quot;);</b>
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.PURPLE_BOLD + &quot; | \\  / |_   _&quot; + ConsoleColors.BLUE_BOLD + &quot;| (___ | |__   ___| | |_ _  ___ &quot;);</b>
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.PURPLE_BOLD + &quot; | |\\/| | | | |&quot; + ConsoleColors.BLUE_BOLD + &quot;\\___ \\| &#39;_ \\ / _ \\ |  _| |/ _ \\&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.PURPLE_BOLD + &quot; | |  | | |_| |&quot; + ConsoleColors.BLUE_BOLD + &quot;____) | | | |  __/ | | | |  __/&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.PURPLE_BOLD + &quot; |_|  |_|\\__, |&quot; + ConsoleColors.BLUE_BOLD + &quot;_____/|_| |_|\\___|_|_| |_|\\___|&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.PURPLE_BOLD + &quot;          __/ |                               &quot; );</b>
+<b class="nc">&nbsp;        System.out.println(&quot;         |___/                                &quot; + ConsoleColors.RESET);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the kill image using colored console output.
+&nbsp;     */
+&nbsp;    private void printImageKill(){
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.YELLOW + &quot;\n                      &quot;+ConsoleColors.GREY+&quot;/^--^\\     /^--^\\     /^--^\\\n&quot; +</b>
+&nbsp;                &quot;                      \\____/     \\____/     \\____/\n&quot; +
+&nbsp;                &quot;                     /      \\   /      \\   /      \\\n&quot; +
+&nbsp;                &quot;                    |        | |        | |        |\n&quot; +
+&nbsp;                &quot;                     \\__  __/   \\__  __/   \\__  __/\n&quot; +ConsoleColors.YELLOW+
+&nbsp;                &quot;|^|^|^|^|^|^|^|^|^|^|^|^&quot;+ConsoleColors.GREY+&quot;\\ \\&quot;+ConsoleColors.YELLOW+&quot;^|^|^|^&quot;+ConsoleColors.GREY+&quot;/ /&quot;+ConsoleColors.YELLOW+&quot;^|^|^|^|^&quot;+ConsoleColors.GREY+&quot;\\ \\&quot;+ConsoleColors.YELLOW+&quot;^|^|^|^|^|^|^|^|^|^|^|^|\n&quot; +
+&nbsp;                &quot;| | | | | | | | | | | | |&quot;+ConsoleColors.GREY+&quot;\\ \\&quot;+ConsoleColors.YELLOW+&quot;| | |&quot;+ConsoleColors.GREY+&quot;/ /&quot;+ConsoleColors.YELLOW+&quot;| | | | | |&quot;+ConsoleColors.GREY+&quot;\\ \\&quot;+ConsoleColors.YELLOW+&quot;| | | | | | | | | | | |\n&quot; +
+&nbsp;                &quot;####### &quot;+ConsoleColors.RED_BOLD+&quot;PROCESS&quot;+ConsoleColors.YELLOW +&quot; ########&quot;+ConsoleColors.GREY+&quot;/ /&quot;+ConsoleColors.YELLOW+&quot;######&quot;+ConsoleColors.GREY+&quot;\\ \\&quot;+ConsoleColors.YELLOW+&quot;###########&quot;+ConsoleColors.GREY+&quot;/ /&quot;+ConsoleColors.YELLOW+&quot;####### &quot;+ConsoleColors.RED_BOLD+&quot;CLOSED&quot;+ConsoleColors.YELLOW+&quot; ########\n&quot; +
+&nbsp;                &quot;| | | | | | | | | | | | &quot;+ConsoleColors.GREY+&quot;\\/&quot;+ConsoleColors.YELLOW+&quot;| | | | &quot;+ConsoleColors.GREY+&quot;\\/&quot;+ConsoleColors.YELLOW+&quot;| | | | | |&quot;+ConsoleColors.GREY+&quot;\\/&quot;+ConsoleColors.YELLOW+&quot; | | | | | | | | | | | |\n&quot; +
+&nbsp;                &quot;|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|&quot;+ConsoleColors.RESET);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the results medals using colored console output.
+&nbsp;     */
+&nbsp;    public void printMedal(String metal, String place) {
+<b class="nc">&nbsp;        System.out.println(ConsoleColors.BLUE + &quot;                        %,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%%           %%,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                       \n&quot; +</b>
+&nbsp;                ConsoleColors.BLUE +&quot;                         %,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%%         %%,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                        \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                          %,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%%       %%,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                         \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                           %,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%%     %%,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%&quot;+ConsoleColors.RESET+&quot;     You placed &quot;+place+&quot;!                          \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                            %,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%%   %%,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                           \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                             %,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%% %%,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                            \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                              %,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%%%,&quot;+ConsoleColors.RED +&quot;%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                             \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                               %,&quot;+ConsoleColors.RED +&quot;%%%%%%,%%%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                              \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                                %,&quot;+ConsoleColors.RED +&quot;%%%%%%,%%%%%%,&quot;+ConsoleColors.BLUE +&quot;%                               \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                                 %,&quot;+ConsoleColors.RED +&quot;%%%%%%,%%%%,&quot;+ConsoleColors.BLUE +&quot;%                                \n&quot; +
+&nbsp;                ConsoleColors.BLUE +&quot;                                 ,%,#        ,%,                                \n&quot; + metal +
+&nbsp;                &quot;                                 ,,,,,,,,,,,,,,,                                \n&quot; +
+&nbsp;                &quot;                             ,,,,,,,,,,,,,,,,,,,,,,,                            \n&quot; +
+&nbsp;                &quot;                          .,,,,,*//*************,,,,,,                          \n&quot; +
+&nbsp;                &quot;                         ,,,,,//*******************,,,,,                        \n&quot; +
+&nbsp;                &quot;                        ,,,,//*********,,***********.,,,,                       \n&quot; +
+&nbsp;                &quot;                       ,,,,//*********,,,,/**********,,,,,                      \n&quot; +
+&nbsp;                &quot;                       ,,,,/*****,,,,,,,,,,,,,,/******,,,,                      \n&quot; +
+&nbsp;                &quot;                       ,,,,/********,,,,,,,,,/*******,,,,,                      \n&quot; +
+&nbsp;                &quot;                       ,,,,,/*******,,,,,,,,,********,,,,*                      \n&quot; +
+&nbsp;                &quot;                        ,,,,,/******,//****/,/******,,,,*                       \n&quot; +
+&nbsp;                &quot;                         ,,,,,,*******************,,,,,*                        \n&quot; +
+&nbsp;                &quot;                           ,,,,,,,************,,,,,,,*                          \n&quot; +
+&nbsp;                &quot;                             *,,,,,,,,,,,,,,,,,,,,,*                            \n&quot; +
+&nbsp;                &quot;                                 **,,,,,,,,,,,**                                \n&quot; +
+&nbsp;                &quot;                                                                           &quot; +  ConsoleColors.RESET);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Displays the cobweb using colored console output.
+&nbsp;     */
+&nbsp;    public void printNoMedal() {
+<b class="nc">&nbsp;        System.out.println(&quot;&quot;&quot;</b>
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????     You placed 4th...????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????
+&nbsp;                ????????????????????????????????????????????????????????????????????????&quot;&quot;&quot;);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a message to the chat buffer.
+&nbsp;     * @param message The message to be added to the buffer.
+&nbsp;     */
+&nbsp;    public void addBufferMessage(Message message)
+&nbsp;    {
+<b class="nc">&nbsp;        chatBuffer.add(message);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prints the messages stored in the chat buffer and clears the buffer.
+&nbsp;     */
+&nbsp;    public void writeBufferMessage()
+&nbsp;    {
+<b class="nc">&nbsp;        if (chatBuffer.size()!=0)</b>
+<b class="nc">&nbsp;            System.out.println(&quot;\n---INCOMING MESSAGES---&quot;);</b>
+<b class="nc">&nbsp;        for (Message message : chatBuffer) {</b>
+<b class="nc">&nbsp;            if (message.getScope().equals(Config.everyone)) {</b>
+<b class="nc">&nbsp;                System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + &quot; in global chat: &quot; + message.getPayload());</b>
+<b class="nc">&nbsp;            } else System.out.println(getNameColors().get(message.getSender()) + message.getSender() + ConsoleColors.RESET + &quot; in private chat: &quot; + message.getPayload());</b>
+&nbsp;
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        chatBuffer.clear();</b>
+<b class="nc">&nbsp;        System.out.print(&quot;\n&quot;);</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

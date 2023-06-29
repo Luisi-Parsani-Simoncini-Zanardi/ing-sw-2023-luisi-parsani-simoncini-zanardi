@@ -1,0 +1,155 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > MessageQueueHandler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Distributed</a>
+</div>
+
+<h1>Coverage Summary for Class: MessageQueueHandler (org.projectsw.Distributed)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MessageQueueHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (2/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36,4%
+  </span>
+  <span class="absValue">
+    (4/11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Distributed;
+&nbsp;
+&nbsp;import org.projectsw.Controller.Engine;
+&nbsp;import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+&nbsp;
+&nbsp;import java.rmi.RemoteException;
+&nbsp;import java.util.concurrent.ConcurrentLinkedQueue;
+&nbsp;
+&nbsp;/**
+&nbsp; * The MessageQueueHandler class is responsible for handling input messages from clients.
+&nbsp; * It implements the Runnable interface to run in a separate thread.
+&nbsp; * The class maintains a concurrent linked queue to store input messages.
+&nbsp; * It executes the input messages sequentially by invoking their execute() method on the provided Engine.
+&nbsp; */
+&nbsp;public class MessageQueueHandler implements Runnable {
+<b class="fc">&nbsp;    private final ConcurrentLinkedQueue&lt;InputMessage&gt; messages = new ConcurrentLinkedQueue&lt;&gt;();</b>
+&nbsp;    private final Engine engine;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new MessageQueueHandler with the specified Engine.
+&nbsp;     * @param engine the Engine to process the input messages
+&nbsp;     */
+<b class="fc">&nbsp;    public MessageQueueHandler(Engine engine) {</b>
+<b class="fc">&nbsp;        this.engine = engine;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Runs the MessageQueueHandler in a separate thread.
+&nbsp;     * It continuously checks for input messages in the queue and processes them by invoking their execute() method on the Engine.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void run() {
+&nbsp;        while (true) {
+<b class="fc">&nbsp;            if (messages.size() &gt; 0) {</b>
+<b class="nc">&nbsp;               InputMessage message = messages.poll();</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    message.execute(engine);</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    System.err.println(&quot;Unable to process request from client: &quot;+message.getInput().getAlphanumericID()+&quot;\nError: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds an InputMessage to the message queue.
+&nbsp;     * @param input the InputMessage to be added to the queue
+&nbsp;     */
+&nbsp;    public void add(InputMessage input){
+<b class="nc">&nbsp;        messages.offer(input);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

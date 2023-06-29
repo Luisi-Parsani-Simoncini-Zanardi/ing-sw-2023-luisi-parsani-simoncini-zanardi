@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Groups</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model.CommonGoal</a>
+</div>
+
+<h1>Coverage Summary for Class: Groups (org.projectsw.Model.CommonGoal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Groups</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97,2%
+  </span>
+  <span class="absValue">
+    (35/36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model.CommonGoal;
+&nbsp;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.Model.Shelf;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;
+&nbsp;import java.awt.*;
+&nbsp;import java.util.ArrayList;
+&nbsp;
+&nbsp;/**
+&nbsp; * The Groups class represents a game strategy where the goal is to have a certain number of groups of tiles on the bookshelf.
+&nbsp; * If strategyCode = 3, the player&#39;s shelf must have at least four groups, each containing at least four tiles of the same type.
+&nbsp; * If strategyCode = 4, the player&#39;s shelf must have at least six groups, each containing at least two tiles of the same type.
+&nbsp; */
+&nbsp;public class Groups extends CommonGoalStrategy{
+&nbsp;
+&nbsp;    private final int groupDim;
+&nbsp;
+&nbsp;    private final ArrayList&lt;Point&gt; coordinates;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new instance of the Groups class using the unique code of the CommonGoal.
+&nbsp;     * If strategyCode = 3 the player&#39;s shelf must have at least 4 groups of 4 Tiles made up of the same Tile types.
+&nbsp;     * If strategyCode = 4 the player&#39;s shelf must have at least 6 groups of 2 Tiles made up of the same Tile types
+&nbsp;     * @param strategyCode is the unique code of the CommonGoal instance to be created
+&nbsp;     */
+&nbsp;    public Groups(Integer strategyCode){
+<b class="fc">&nbsp;        super(strategyCode);</b>
+<b class="fc">&nbsp;        this.coordinates = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        if(this.strategyCode == 3) {</b>
+<b class="fc">&nbsp;            this.numObjects = 4;</b>
+<b class="fc">&nbsp;            this.groupDim = 4;</b>
+<b class="fc">&nbsp;            this.setDescription(&quot;&quot;&quot;</b>
+&nbsp;                    Four groups each containing at least
+&nbsp;                    4 tiles of the same type.
+&nbsp;                    The tiles of one group can be different
+&nbsp;                    from those of another group.&quot;&quot;&quot;);
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            this.numObjects = 6;</b>
+<b class="fc">&nbsp;            this.groupDim = 2;</b>
+<b class="fc">&nbsp;            this.setDescription(&quot;&quot;&quot;</b>
+&nbsp;                    Six groups each containing at least
+&nbsp;                    2 tiles of the same type.
+&nbsp;                    The tiles of one group can be different
+&nbsp;                    from those of another group.&quot;&quot;&quot;);
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks that the player&#39;s shelf meets the CommonGoal requirements
+&nbsp;     * @param shelf is the player shelf
+&nbsp;     * @return true if the player shelf meets the requirements of the CommonGoal
+&nbsp;     * associated with strategyCode
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean check(Shelf shelf){
+<b class="fc">&nbsp;        boolean [][]matrix = new boolean[6][5];</b>
+&nbsp;
+<b class="fc">&nbsp;        int rightGroup=0;</b>
+&nbsp;        int dim;
+&nbsp;
+<b class="fc">&nbsp;        for(int i = Config.shelfHeight-1; i&gt;-1; i--){</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                if(shelf.getTileShelf(i,j).getTile() != TilesEnum.EMPTY){</b>
+<b class="fc">&nbsp;                    dim = 0;</b>
+<b class="fc">&nbsp;                    if (!matrix[i][j])</b>
+<b class="fc">&nbsp;                        dim = this.customShelfIterator(shelf, matrix, shelf.getTileShelf(i, j).getTile(), i, j);</b>
+<b class="fc">&nbsp;                    if (dim &gt;= this.groupDim)</b>
+<b class="fc">&nbsp;                        rightGroup++;</b>
+<b class="fc">&nbsp;                    if (rightGroup == this.numObjects)</b>
+<b class="fc">&nbsp;                        return true;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method that given a shelf position and type iterates over all the joint Tiles present, and returns the size of the found group
+&nbsp;     * @param shelf is the player&#39;s shelf
+&nbsp;     * @param matrix is an array of booleans to keep track of the shelf boxes that have already been navigated
+&nbsp;     * @param type is the Tile type of the group
+&nbsp;     * @param row is the current row in the shelf
+&nbsp;     * @param column is the current column in the shelf
+&nbsp;     * @return returns the size of the found group
+&nbsp;     */
+&nbsp;    private int customShelfIterator(Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
+&nbsp;        Point nextPoint;
+&nbsp;
+<b class="fc">&nbsp;        if(row-1 &gt; -1 &amp;&amp; !matrix[row-1][column] &amp;&amp; shelf.getTileShelf(row-1,column).getTile()==type &amp;&amp; !this.coordinates.contains(new Point(row-1,column)))</b>
+<b class="fc">&nbsp;            this.coordinates.add(new Point(row-1,column));</b>
+<b class="fc">&nbsp;        if(row+1 &lt; Config.shelfHeight &amp;&amp; !matrix[row+1][column] &amp;&amp; shelf.getTileShelf(row+1,column).getTile()==type &amp;&amp; !this.coordinates.contains(new Point(row+1,column)))</b>
+<b class="nc">&nbsp;            this.coordinates.add(new Point(row+1,column));</b>
+<b class="fc">&nbsp;        if(column-1 &gt; -1 &amp;&amp; !matrix[row][column-1] &amp;&amp; shelf.getTileShelf(row,column-1).getTile()==type &amp;&amp; !this.coordinates.contains(new Point(row,column-1)))</b>
+<b class="fc">&nbsp;            this.coordinates.add(new Point(row,column-1));</b>
+<b class="fc">&nbsp;        if(column+1 &lt; Config.shelfLength &amp;&amp; !matrix[row][column+1] &amp;&amp; shelf.getTileShelf(row,column + 1).getTile()==type &amp;&amp; !this.coordinates.contains(new Point(row,column+1)))</b>
+<b class="fc">&nbsp;            this.coordinates.add(new Point(row,column+1));</b>
+&nbsp;
+<b class="fc">&nbsp;        matrix[row][column]=true;</b>
+<b class="fc">&nbsp;        if(this.coordinates.size()!=0) {</b>
+<b class="fc">&nbsp;            nextPoint = this.coordinates.get(0);</b>
+<b class="fc">&nbsp;            this.coordinates.remove(0);</b>
+<b class="fc">&nbsp;            return 1 + customShelfIterator(shelf, matrix, type, (int) nextPoint.getX(), (int) nextPoint.getY());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return 1;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

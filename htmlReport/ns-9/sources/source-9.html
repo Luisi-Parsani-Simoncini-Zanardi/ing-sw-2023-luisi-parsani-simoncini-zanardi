@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Triangle</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model.CommonGoal</a>
+</div>
+
+<h1>Coverage Summary for Class: Triangle (org.projectsw.Model.CommonGoal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Triangle</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92%
+  </span>
+  <span class="absValue">
+    (23/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model.CommonGoal;
+&nbsp;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.Model.Shelf;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;
+&nbsp;/**
+&nbsp; * The Triangle class represents a game strategy where the goal is to have columns on the bookshelf
+&nbsp; * that either ascend or descend in height from left to right.
+&nbsp; */
+&nbsp;public class Triangle extends CommonGoalStrategy{
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new instance of the Triangle class using the unique code of the CommonGoal
+&nbsp;     * @param strategyCode is the unique code of the CommonGoal instance to be created
+&nbsp;     */
+&nbsp;    public Triangle(Integer strategyCode){
+<b class="fc">&nbsp;        super(strategyCode);</b>
+<b class="fc">&nbsp;        this.setDescription(&quot;&quot;&quot;</b>
+&nbsp;                Five columns of increasing or decreasing
+&nbsp;                height. Starting from the first column on
+&nbsp;                the left or on the right, each next column
+&nbsp;                must be made of exactly one more tile.
+&nbsp;                Tiles can be of any type.&quot;&quot;&quot;);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the player&#39;s shelf has columns ascending or descending from left to right
+&nbsp;     * @param shelf is the player shelf
+&nbsp;     * @return true if the player&#39;s shelf has columns ascending or descending from left to right.
+&nbsp;     * Returns false otherwise
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean check(Shelf shelf){
+&nbsp;
+<b class="fc">&nbsp;        int [] height = this.columnsHeight(shelf);</b>
+<b class="fc">&nbsp;        return this.ascending(height) || this.descending(height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Auxiliary method that returns a vector with the heights of the columns from left to right or
+&nbsp;     * returns -1 in columnHeight[0] to interrupt the algorithm
+&nbsp;     * @param shelf is the player shelf
+&nbsp;     * @return a vector with the heights of the columns from left to right.
+&nbsp;     * If the height of a column is 0 it returns -1 in columnHeight[0] to interrupt the algorithm
+&nbsp;     */
+&nbsp;    private int[] columnsHeight(Shelf shelf){
+<b class="fc">&nbsp;        int [] columnHeight = new int[Config.shelfLength];</b>
+<b class="fc">&nbsp;        for(int i=0;i&lt;Config.shelfLength;i++) {</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.shelfHeight; j++) {</b>
+<b class="fc">&nbsp;                if (shelf.getTileShelf(j, i).getTile() != TilesEnum.EMPTY)</b>
+<b class="fc">&nbsp;                    columnHeight[i]++;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if(columnHeight[i] == 0) {</b>
+<b class="nc">&nbsp;                columnHeight[0] = -1;</b>
+<b class="nc">&nbsp;                return columnHeight;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return columnHeight;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Auxiliary function that returns true
+&nbsp;     * if the columns are arranged in ascending order from left to right
+&nbsp;     * @param height is the vector containing the heights of the columns
+&nbsp;     * @return true if columns are increasing from left to right
+&nbsp;     */
+&nbsp;    private boolean ascending(int []height){
+<b class="fc">&nbsp;        int increasing=0;</b>
+<b class="fc">&nbsp;        for(int i = 0; i&lt;Config.shelfLength-1; i++)</b>
+<b class="fc">&nbsp;            if (height[i + 1] - height[i] != 1) {</b>
+<b class="fc">&nbsp;                increasing = 1;</b>
+<b class="fc">&nbsp;                break;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        return increasing == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Auxiliary function that returns true
+&nbsp;     * if the columns are arranged in descending order from left to right
+&nbsp;     * @param height is the vector containing the heights of the columns
+&nbsp;     * @return true if columns are decreasing from left to right
+&nbsp;     */
+&nbsp;    private boolean descending(int []height){
+<b class="fc">&nbsp;        int decreasing=0;</b>
+<b class="fc">&nbsp;        for(int i = 0; i&lt;Config.shelfLength-1; i++)</b>
+<b class="fc">&nbsp;            if (height[i] - height[i + 1] != 1) {</b>
+<b class="fc">&nbsp;                decreasing = 1;</b>
+<b class="fc">&nbsp;                break;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        return decreasing == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

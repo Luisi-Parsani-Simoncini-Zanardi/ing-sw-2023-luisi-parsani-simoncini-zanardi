@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > NextPlayerTurn</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Distributed.Messages.ResponseMessages</a>
+</div>
+
+<h1>Coverage Summary for Class: NextPlayerTurn (org.projectsw.Distributed.Messages.ResponseMessages)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NextPlayerTurn</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,6%
+  </span>
+  <span class="absValue">
+    (1/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Distributed.Messages.ResponseMessages;
+&nbsp;
+&nbsp;import org.projectsw.Model.SerializableGame;
+&nbsp;import org.projectsw.View.Enums.UIEndState;
+&nbsp;import org.projectsw.View.Enums.UITurnState;
+&nbsp;import org.projectsw.View.GraphicalUI.GuiManager;
+&nbsp;import org.projectsw.View.TextualUI;
+&nbsp;import java.io.Serial;
+&nbsp;import java.io.Serializable;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a response message indicating a next player response.
+&nbsp; * Extends the ResponseMessage class and implements the Serializable interface.
+&nbsp; */
+&nbsp;public class NextPlayerTurn extends ResponseMessage implements Serializable {
+&nbsp;    @Serial
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new NextPlayerTurn object with the specified SerializableGame.
+&nbsp;     * @param model the SerializableGame object representing the response message
+&nbsp;     */
+&nbsp;    public NextPlayerTurn(SerializableGame model) {
+<b class="fc">&nbsp;        super(model);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Executes the NextPlayerTurn message on the specified TextualUI.
+&nbsp;     * Sets the flags in the TextualUI to update its state accordingly.
+&nbsp;     * @param tui the TextualUI on which to execute the action
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void execute(TextualUI tui){
+<b class="nc">&nbsp;        if (tui.getEndState() == UIEndState.LOBBY) {</b>
+<b class="nc">&nbsp;            synchronized (tui) {</b>
+<b class="nc">&nbsp;                tui.setEndState(UIEndState.RUNNING);</b>
+<b class="nc">&nbsp;                tui.notifyAll();</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (model.getPlayerName().equals(tui.getNickname())) {</b>
+<b class="nc">&nbsp;            tui.setTurnState(UITurnState.YOUR_TURN_SELECTION);</b>
+<b class="nc">&nbsp;            tui.setTileSelectionPossible(true);</b>
+<b class="nc">&nbsp;            tui.setTemporaryTilesHold(true);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void execute(GuiManager guiManager) {
+<b class="nc">&nbsp;        if (guiManager.getEndState().equals(UIEndState.LOBBY)) {</b>
+<b class="nc">&nbsp;            guiManager.setEndState(UIEndState.RUNNING);</b>
+<b class="nc">&nbsp;            guiManager.notifyResponse1();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (model.getPlayerName().equals(guiManager.getNickname())) {</b>
+<b class="nc">&nbsp;            guiManager.setGameMainFrameState(UITurnState.YOUR_TURN_SELECTION);</b>
+<b class="nc">&nbsp;            guiManager.setTileSelectionPossible(true);</b>
+<b class="nc">&nbsp;            guiManager.setTemporaryTilesHold(true);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            guiManager.setGameMainFrameState(UITurnState.OPPONENT_TURN);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>
