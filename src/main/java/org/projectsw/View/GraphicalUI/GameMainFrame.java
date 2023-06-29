@@ -73,6 +73,7 @@ public class GameMainFrame extends JFrame {
     public void chatUpdate() {
         centralTabbedPane.add("Chat", askChat());
         centralTabbedPane.remove(4);
+    }
 
     private void endingRefresh(){
         SwingUtilities.invokeLater( () -> turnInformationLabel.setText("The game has ended but some players are still playing."));
