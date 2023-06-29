@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-06-29T15:12:42.205Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="Cy8iDH3jjHwiHPPbM1Ex" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-29T15:24:01.014Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="2iqg8D1o-9w20VR1QNqe" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="4206" dy="4528" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="5605" dy="5315" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -1461,6 +1461,18 @@
         </mxCell>
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-74" value="+ generateRandomString(int): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-71">
           <mxGeometry y="60" width="205" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-75" value="PathSolverGui" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-45">
+          <mxGeometry x="835" y="160" width="200" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-76" value="- standardInitialPath: String&lt;br&gt;- formatJpg: String&lt;br&gt;- formatPng: String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-75">
+          <mxGeometry y="26" width="200" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-77" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-75">
+          <mxGeometry y="80" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-78" value="+ boardPath(): String&lt;br&gt;+ shelfPath(): String&lt;br&gt;+ commonGoalPath(): String&lt;br&gt;+ commonGoalBack(): String&lt;br&gt;+ personalGoalPath(): String&lt;br&gt;+ icon(): String&lt;br&gt;+ books(int): String&lt;br&gt;+ cats(int): String&lt;br&gt;+ frames(int): String&lt;br&gt;+ games(int): String&lt;br&gt;+ plants(int): String&lt;br&gt;+ trophies(int): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-75">
+          <mxGeometry y="88" width="200" height="182" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
