@@ -4,6 +4,7 @@ import org.projectsw.Model.Message;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Config;
 import org.projectsw.View.ConsoleColors;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 import java.io.Serial;
 import java.io.Serializable;
@@ -55,5 +56,10 @@ public class SendChat extends ResponseMessage implements Serializable {
         if(counter == 0)
             System.err.println("This chat is empty...");
         System.out.print("\n");
+    }
+
+    @Override
+    public void execute(GuiManager gui) {
+        gui.updateModel(model);
     }
 }

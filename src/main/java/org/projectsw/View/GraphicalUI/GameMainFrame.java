@@ -1,5 +1,6 @@
 package org.projectsw.View.GraphicalUI;
 
+import org.projectsw.Model.Message;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.PathSolverGui;
@@ -69,6 +70,10 @@ public class GameMainFrame extends JFrame {
         setVisible(true);
     }
 
+    public void chatUpdate() {
+        centralTabbedPane.add("Chat", askChat());
+        centralTabbedPane.remove(4);
+
     private void endingRefresh(){
         SwingUtilities.invokeLater( () -> turnInformationLabel.setText("The game has ended but some players are still playing."));
         SwingUtilities.invokeLater( () ->{
@@ -79,8 +84,9 @@ public class GameMainFrame extends JFrame {
             centralTabbedPane.add("Your Shelf", askForNsShelf());
             centralTabbedPane.add("Personal Goal", returnPersonalGoal());
             centralTabbedPane.add("Common Goals", returnCommonGoalImage());
-            centralTabbedPane.add("Chat", new JPanel());
+            centralTabbedPane.add("Chat", askChat());
         });
+
     }
 
     private void refreshNoCurrentPlayer() {
@@ -92,7 +98,7 @@ public class GameMainFrame extends JFrame {
         centralTabbedPane.add("Your Shelf", askForNsShelf());
         centralTabbedPane.add("Personal Goal", returnPersonalGoal());
         centralTabbedPane.add("Common Goals", returnCommonGoalImage());
-        centralTabbedPane.add("Chat", new JPanel());
+        centralTabbedPane.add("Chat", askChat());
     }
 
     private void refreshCurrentPlayer() {
@@ -109,7 +115,7 @@ public class GameMainFrame extends JFrame {
         centralTabbedPane.add("Your Shelf", askForNsShelf());
         centralTabbedPane.add("Personal Goal", returnPersonalGoal());
         centralTabbedPane.add("Common Goals", returnCommonGoalImage());
-        centralTabbedPane.add("Chat", new JPanel());
+        centralTabbedPane.add("Chat", askChat());
         if (selectableBoard.getTemporaryPoints().isEmpty()) {
             JLabel chooseTilesLabel = new JLabel("Choose your tiles in the board page!");
             selectedTilesSouthPanel.add(chooseTilesLabel);
@@ -140,7 +146,7 @@ public class GameMainFrame extends JFrame {
         centralTabbedPane.add("Board", askForBoard());
         centralTabbedPane.add("Personal Goal", returnPersonalGoal());
         centralTabbedPane.add("Common Goals", returnCommonGoalImage());
-        centralTabbedPane.add("Chat", new JPanel());
+        centralTabbedPane.add("Chat", askChat());
         selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));
         JLabel selectedTilesLabel = new JLabel("You have selected these tiles:  ");
         selectedTilesSouthPanel.add(selectedTilesLabel);
@@ -154,7 +160,7 @@ public class GameMainFrame extends JFrame {
         centralTabbedPane.add("Board", askForBoard());
         centralTabbedPane.add("Personal Goal", returnPersonalGoal());
         centralTabbedPane.add("Common Goals", returnCommonGoalImage());
-        centralTabbedPane.add("Chat", new JPanel());
+        centralTabbedPane.add("Chat", askChat());
         selectedTilesSouthPanel.setLayout(new BoxLayout(selectedTilesSouthPanel,BoxLayout.X_AXIS));
         JLabel selectedTilesLabel = new JLabel("Which tile do you want to insert?  ");
         selectedTilesSouthPanel.add(selectedTilesLabel);
@@ -199,6 +205,10 @@ public class GameMainFrame extends JFrame {
 
     private SelectableBoard askForBoard() {
         return guiManager.askBoard(this);
+    }
+
+    private ChatGui askChat() {
+        return guiManager.askChat();
     }
 
     private  NoSelectableShelf askForNsShelf() {

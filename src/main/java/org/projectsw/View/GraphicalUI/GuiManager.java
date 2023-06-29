@@ -3,22 +3,24 @@ package org.projectsw.View.GraphicalUI;
 import org.projectsw.Distributed.Client;
 import org.projectsw.Distributed.Messages.InputMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
+import org.projectsw.Model.Message;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.Observable;
 import org.projectsw.Util.RandomAlphanumericGen;
 import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
-import org.projectsw.View.GraphicalUI.GuiModel.CommonGoalImage;
-import org.projectsw.View.GraphicalUI.GuiModel.NoSelectableShelf;
-import org.projectsw.View.GraphicalUI.GuiModel.SelectableBoard;
-import org.projectsw.View.GraphicalUI.GuiModel.SelectableColumnShelf;
+import org.projectsw.View.GraphicalUI.GuiModel.*;
 import org.projectsw.View.GraphicalUI.MessagesGUI.*;
 import org.projectsw.View.SerializableInput;
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
+
+import java.util.ArrayList;
+
 import java.util.LinkedHashMap;
+
 
 public class GuiManager extends Observable<InputMessage> {
 
@@ -129,6 +131,7 @@ public class GuiManager extends Observable<InputMessage> {
         this.game = game;
     }
 
+
     private boolean checkLogInCompleted(){
         return !askNickname && !firstPlayer;
     }
@@ -212,6 +215,20 @@ public class GuiManager extends Observable<InputMessage> {
         }
         waitForResponse2();
         return new SelectableBoard(game.getGameBoard(), game.getSelectablePoints(), game.getTemporaryPoints(), this, gameMainFrame);
+    }
+
+    public void updateChat(){
+        SwingUtilities.invokeLater( () -> gameMainFrame.chatUpdate());
+    }
+
+    public ChatGui askChat() {
+        try {
+            setChangedAndNotifyObservers(new AskForChat(new SerializableInput(alphanumericKey, getNickname(), Config.everyone, client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("An error occurred while asking for the shelf: "+e.getMessage());
+        }
+        waitForResponse2();
+        return new ChatGui(this, game.getChat(), client, alphanumericKey, nickname);
     }
 
     public NoSelectableShelf askNsShelf(){
