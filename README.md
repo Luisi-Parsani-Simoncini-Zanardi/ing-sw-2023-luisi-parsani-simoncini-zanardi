@@ -1,3 +1,5 @@
+### FUNZIONALITÀ:
+Sono state implementate le regole complete, sia TUI che GUI, e sia il protocollo RMI sia il protocollo socket. Le funzionalità aggiuntive implementate sono chat, resilienza alle disconnessioni e persistenza.
 ### FUNZIONAMENTO AVVIO SERVER:
 Fare doppio click sul jar 'Server.jar' o in alternativa aprire la CLI e spostarsi nella directory con il file 'Server.jar' e digitare:  java -jar Server.jar<br>
 ### FUNZIONAMENTO AVVIO CLIENT:
