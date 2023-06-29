@@ -1,16 +1,21 @@
 package org.projectsw.View.GraphicalUI.GuiModel;
 
-import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.PathSolverGui;
-import org.projectsw.View.GraphicalUI.GuiManager;
 
 import javax.swing.*;
 import java.awt.*;
 
+/*
+ * This class represents the JPanel equivalent to the Shelf, with, at the bottom some buttons to select the column.
+ */
 public class NoSelectableShelf extends JPanel {
 
+    /**
+     * Constructs the JPanel equivalent to the Shelf.
+     * @param shelf the shelf to copy.
+     */
     public NoSelectableShelf(Tile[][] shelf) {
         super();
 

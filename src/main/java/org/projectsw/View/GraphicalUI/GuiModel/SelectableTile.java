@@ -8,10 +8,23 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+ * This class represents the JButton equivalent of the tile.
+ */
 public class SelectableTile extends JButton {
 
     private final Point position;
 
+    /**
+     * Constructs the JButton that corresponds to the passed tile, putting the right border:
+     *      if the tile is selected the border is red,
+     *      if the tile is selectable the border is green,
+     *      in other cases is black.
+     * @param tile the tile to create.
+     * @param point the coordinates of the tile.
+     * @param selectablePoints the current selectable points.
+     * @param temporaryPoints the current temporary points
+     */
     public SelectableTile(Tile tile, Point point, ArrayList<Point> selectablePoints, ArrayList<Point> temporaryPoints) {
         super();
         position = point;
@@ -43,6 +56,11 @@ public class SelectableTile extends JButton {
         }
     }
 
+    /**
+     * Constructs the JButton that corresponds to the passed tile, without setting the border.
+     * Set the position parameter to null.
+     * @param tile the tile to create.
+     */
     public SelectableTile(Tile tile) {
         super();
         position = null;
@@ -67,6 +85,10 @@ public class SelectableTile extends JButton {
         setBorder(normalBorder);
     }
 
+    /**
+     * Returns the coordinates of the button.
+     * @return the Point representing the coordinates of the button.
+     */
     public Point getPosition() {
         return position;
     }

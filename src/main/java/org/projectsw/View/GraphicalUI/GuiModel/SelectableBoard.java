@@ -10,6 +10,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+ * This class represents the JPanel equivalent to the Board.
+ */
 public class SelectableBoard extends JPanel {
 
     GuiManager guiManager;
@@ -19,7 +22,14 @@ public class SelectableBoard extends JPanel {
     Tile[][] gameBoard;
     private Image backgroundImage;
 
-
+    /**
+     * Constructs the JPanel equivalent to the Board.
+     * @param gameBoard the actual game board.
+     * @param selectablePoints the actual selectablePoints.
+     * @param temporaryPoints the actual temporary points.
+     * @param guiManager the GuiManager related to the panel.
+     * @param gameMainFrame the GameMainFrame related to the panel.
+     */
     public SelectableBoard(Tile[][] gameBoard, ArrayList<Point> selectablePoints, ArrayList<Point> temporaryPoints, GuiManager guiManager, GameMainFrame gameMainFrame){
         super();
         this.gameMainFrame = gameMainFrame;
@@ -60,10 +70,20 @@ public class SelectableBoard extends JPanel {
 
     }
 
+    /**
+     * Returns the temporaryPoints array list.
+     * @return the temporaryPoints arrayList.
+     */
     public ArrayList<Point> getTemporaryPoints() {
         return temporaryPoints;
     }
 
+    /**
+     * Based on the provided coordinates returns the NoSelectableTile label that
+     * currents to the tile at those coordinates.
+     * @param point the coordinates of the tile of which you want the NoSelectableTile.
+     * @return the NoSelectableTile corresponding to the tile at the provides coordinates.
+     */
     public NoSelectableTile getLabelFromPoint(Point point) {
         return new NoSelectableTile(gameBoard[point.x][point.y]);
     }

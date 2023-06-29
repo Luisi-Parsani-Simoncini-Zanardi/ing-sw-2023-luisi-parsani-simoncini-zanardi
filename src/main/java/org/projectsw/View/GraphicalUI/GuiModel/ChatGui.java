@@ -14,10 +14,21 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+/*
+ * This class represents the Chet, putting it on a panel.
+ */
 public class ChatGui extends JPanel {
     private JTextArea chatLogTextArea;
     private JTextField inputTextField;
 
+    /**
+     * Constructs a ChatGui object.
+     * @param guiManager the GuiManager instance.
+     * @param chat the ArrayList of Message objects representing the chat.
+     * @param client the Client object associated with the chat.
+     * @param alphanumericKey the alphanumeric key used for serialization.
+     * @param nickname the nickname of the user.
+     */
     public ChatGui(GuiManager guiManager, ArrayList<Message> chat, Client client, String alphanumericKey, String nickname) {
         setLayout(new BorderLayout());
 
@@ -46,6 +57,10 @@ public class ChatGui extends JPanel {
         appendToChatLog(chat);
     }
 
+    /**
+     * Appends the messages from the chat to the chat log.
+     * @param chat The ArrayList of Message objects representing the chat.
+     */
     public void appendToChatLog(ArrayList<Message> chat) {
         for(Message message : chat) {
             chatLogTextArea.append(message.getSender() + ": " + message.getPayload() + "\n");
