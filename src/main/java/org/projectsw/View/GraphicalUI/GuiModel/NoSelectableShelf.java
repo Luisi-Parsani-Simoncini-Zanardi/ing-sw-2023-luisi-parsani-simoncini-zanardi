@@ -3,6 +3,7 @@ package org.projectsw.View.GraphicalUI.GuiModel;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
+import org.projectsw.Util.PathSolverGui;
 import org.projectsw.View.GraphicalUI.GuiManager;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class NoSelectableShelf extends JPanel {
     public NoSelectableShelf(Tile[][] shelf) {
         super();
 
-        ImageIcon backgroundImage = new ImageIcon("src/main/resources/ImagesGui/Boards/Shelf.png");
+        ImageIcon backgroundImage = new ImageIcon(PathSolverGui.shelfPath());
 
         // Crea il pannello con sfondo
         BackgroundPanel gridPanel = new BackgroundPanel(backgroundImage.getImage(), 1200, 600);

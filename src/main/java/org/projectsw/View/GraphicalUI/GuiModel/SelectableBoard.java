@@ -2,6 +2,7 @@ package org.projectsw.View.GraphicalUI.GuiModel;
 
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
+import org.projectsw.Util.PathSolverGui;
 import org.projectsw.View.GraphicalUI.GameMainFrame;
 import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.GraphicalUI.MessagesGUI.*;
@@ -29,7 +30,7 @@ public class SelectableBoard extends JPanel {
         setSize(200,200);
         setLayout(new BorderLayout());
 
-        ImageIcon backgroundImage = new ImageIcon("src/main/resources/ImagesGui/Boards/Board.png");
+        ImageIcon backgroundImage = new ImageIcon(PathSolverGui.boardPath());
 
         // Crea il pannello con sfondo
         BackgroundPanel gridPanel = new BackgroundPanel(backgroundImage.getImage(), 1200, 600);

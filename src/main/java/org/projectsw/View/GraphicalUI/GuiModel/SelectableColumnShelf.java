@@ -4,6 +4,7 @@ import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
+import org.projectsw.Util.PathSolverGui;
 import org.projectsw.View.GraphicalUI.GameMainFrame;
 import org.projectsw.View.GraphicalUI.GuiManager;
 
@@ -18,7 +19,7 @@ public class SelectableColumnShelf extends JPanel {
         this.guiManager = guiManager;
         setLayout(new BorderLayout());
 
-        ImageIcon backgroundImage = new ImageIcon("src/main/resources/ImagesGui/Boards/Shelf.png");
+        ImageIcon backgroundImage = new ImageIcon(PathSolverGui.shelfPath());
 
         // Crea il pannello con sfondo
         BackgroundPanel gridPanel = new BackgroundPanel(backgroundImage.getImage(), 1200, 600);
