@@ -75,6 +75,7 @@ public class GameMainFrame extends JFrame {
         centralTabbedPane.remove(4);
     }
 
+
     private void endingRefresh(){
         SwingUtilities.invokeLater( () -> turnInformationLabel.setText("The game has ended but some players are still playing."));
         SwingUtilities.invokeLater( () ->{
