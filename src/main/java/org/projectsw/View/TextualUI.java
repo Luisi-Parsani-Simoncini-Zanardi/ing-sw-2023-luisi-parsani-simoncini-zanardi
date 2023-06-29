@@ -839,7 +839,6 @@ public class TextualUI extends Observable<InputMessage> {
     public void askNickname() {
         if(nickFlag) {
             Scanner scanner = new Scanner(System.in);
-            //playerReconnection();
             if (!reconnection) {
                 do {
                     System.out.println("Insert your nickname: ");

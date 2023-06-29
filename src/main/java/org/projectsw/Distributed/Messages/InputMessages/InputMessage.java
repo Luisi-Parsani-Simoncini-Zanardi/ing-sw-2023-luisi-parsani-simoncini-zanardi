@@ -37,14 +37,6 @@ public abstract class InputMessage implements Serializable {
     public void execute(Engine engine) throws RemoteException {}
 
     /**
-     * Executes the input message on the specified client and engine.
-     * @param client the client on which to execute the message
-     * @param engine the engine on which to execute the message
-     * @throws RemoteException if a remote communication error occurs
-     */
-    public void execute(Client client, Engine engine) throws RemoteException {}
-
-    /**
      * Returns the input data associated with the message.
      * @return the input data
      */
