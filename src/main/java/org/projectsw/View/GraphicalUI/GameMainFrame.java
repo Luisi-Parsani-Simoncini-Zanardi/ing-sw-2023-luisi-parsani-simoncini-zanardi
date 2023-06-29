@@ -3,6 +3,7 @@ package org.projectsw.View.GraphicalUI;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.PathSolverGui;
+import org.projectsw.View.Enums.UIEndState;
 import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI.GuiModel.*;
 import org.projectsw.View.GraphicalUI.MessagesGUI.TemporaryTilesConfirmedMessage;
@@ -18,15 +19,14 @@ public class GameMainFrame extends JFrame {
     }
     private final GuiManager guiManager;
     private final Object lock = new Object();
-    private final Object turnLock = new Object();
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private  AppState appState = GameMainFrame.AppState.WAITING_PLAYER;
-    private JPanel turnInformationsNorthPanel = new JPanel();
-    private JTabbedPane centralTabbedPane = new JTabbedPane();
-    private JPanel selectedTilesSouthPanel = new JPanel();
-    private JLabel turnInformationLabel = new JLabel();
+    private final JPanel turnInformationsNorthPanel = new JPanel();
+    private final JTabbedPane centralTabbedPane = new JTabbedPane();
+    private final JPanel selectedTilesSouthPanel = new JPanel();
+    private final JLabel turnInformationLabel = new JLabel();
     private ArrayList<Tile> takenTiles;
-    private int selectedColumn;
+    private boolean stillPlaying = true;
 
     public GameMainFrame(GuiManager guiManager){
         this.guiManager = guiManager;
@@ -55,21 +55,32 @@ public class GameMainFrame extends JFrame {
 
     }
 
-    private void refresh () {
-        centralTabbedPane.removeAll();
-        selectedTilesSouthPanel.removeAll();
-        SwingUtilities.invokeLater( () -> {
-            turnInformationLabel.setText(guiManager.askForCurrentPlayerString());
-        });
-
-        if(turnState.equals(UITurnState.OPPONENT_TURN)) {
-            SwingUtilities.invokeLater(this::refreshNoCurrentPlayer);
-        } else {
-            SwingUtilities.invokeLater(this::refreshCurrentPlayer);
+    public void refresh () {
+        SwingUtilities.invokeLater(centralTabbedPane::removeAll);
+        SwingUtilities.invokeLater(selectedTilesSouthPanel::removeAll);
+        if(guiManager.getEndState().equals(UIEndState.ENDING) && !stillPlaying) SwingUtilities.invokeLater(this::endingRefresh);
+        else {
+            SwingUtilities.invokeLater( () -> turnInformationLabel.setText(guiManager.askForCurrentPlayerString()));
+            if(turnState.equals(UITurnState.OPPONENT_TURN)) SwingUtilities.invokeLater(this::refreshNoCurrentPlayer);
+            else SwingUtilities.invokeLater(this::refreshCurrentPlayer);
         }
         revalidate();
         repaint();
         setVisible(true);
+    }
+
+    private void endingRefresh(){
+        SwingUtilities.invokeLater( () -> turnInformationLabel.setText("The game has ended but some players are still playing."));
+        SwingUtilities.invokeLater( () ->{
+            JLabel bottomLabel = new JLabel("Results are not available yet, wait until " + guiManager.getLastPlayerNick() + " ends his turn!");
+            selectedTilesSouthPanel.add(bottomLabel);
+            bottomLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            bottomLabel.setVerticalAlignment(SwingConstants.CENTER);
+            centralTabbedPane.add("Your Shelf", askForNsShelf());
+            centralTabbedPane.add("Personal Goal", returnPersonalGoal());
+            centralTabbedPane.add("Common Goals", returnCommonGoalImage());
+            centralTabbedPane.add("Chat", new JPanel());
+        });
     }
 
     private void refreshNoCurrentPlayer() {
@@ -150,20 +161,22 @@ public class GameMainFrame extends JFrame {
         JPanel takenTilesButtonGrid = new JPanel(new GridLayout(1,3));
         for(Tile tile : takenTiles) {
             SelectableTile selectableTile = new SelectableTile(tile);
-            selectableTile.addActionListener(e -> {
-                SwingUtilities.invokeLater(() -> {
-                    guiManager.sendTemporaryTilesSelection(takenTiles.indexOf(tile));
-                    appState = AppState.WAITING_APP;
-                    takenTiles.remove(tile);
-                    if(takenTiles.isEmpty()) {
-                        guiManager.sendEndTurn();
-                    }
-                });
-            });
+            selectableTile.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+                guiManager.sendTemporaryTilesSelection(takenTiles.indexOf(tile));
+                appState = AppState.WAITING_APP;
+                takenTiles.remove(tile);
+                if(takenTiles.isEmpty()) {
+                    guiManager.sendEndTurn();
+                }
+            }));
             selectableTile.setContentAreaFilled(false);
             takenTilesButtonGrid.add(selectableTile);
         }
         selectedTilesSouthPanel.add(takenTilesButtonGrid);
+    }
+
+    public void disposeFrame() {
+        dispose();
     }
 
     public UITurnState getTurnState() {
@@ -179,8 +192,9 @@ public class GameMainFrame extends JFrame {
         this.takenTiles = takenTiles;
     }
 
-    public void setSelectedColumn(int selectedColumn) {
-        this.selectedColumn = selectedColumn;
+
+    public void setStillPlaying(boolean stillPlaying) {
+        this.stillPlaying = stillPlaying;
     }
 
     private SelectableBoard askForBoard() {

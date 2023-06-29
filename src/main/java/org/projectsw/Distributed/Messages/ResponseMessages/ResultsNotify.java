@@ -34,7 +34,6 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
      * Retrieves the game results from the model, sorts them in descending order,
      * and displays the results along with the position of the current player.
      * Updates the TextualUI to indicate that it is no longer waiting for results.
-     *
      * @param tui the TextualUI on which to execute the action
      */
     public void execute(TextualUI tui){
@@ -58,5 +57,15 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
         }
         tui.setWaitResult(false);
     }
-    public void execute(GuiManager gui){}
+
+    public void execute(GuiManager gui){
+        LinkedHashMap<String, Integer> results = model.getResults().entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        gui.setResults(results);
+    }
 }
