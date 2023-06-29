@@ -19,13 +19,11 @@ import java.util.concurrent.TimeUnit;
  * It provides methods to interact with the user through the command line interface.
  * This class extends the Observable class and implements the Runnable interface.
  */
-public class TextualUI extends Observable<InputMessage> implements Runnable {
+public class TextualUI extends Observable<InputMessage> {
     private UITurnState turnState = UITurnState.OPPONENT_TURN;
     private UIEndState endState = UIEndState.LOBBY;
-
     private final Object lock = new Object();
     private final Object lock2 = new Object();
-
     private volatile boolean connectFlag = true;
     private boolean flag = true;
     private boolean nickFlag = true;
@@ -272,7 +270,6 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
     /**
      * Runs the textual user interface.
      */
-    @Override
     public void run() {
         try {
             TimeUnit.SECONDS.sleep(1);
@@ -319,7 +316,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 do {
                     System.out.println("\nCHOOSE AN OPTION:");
                     if (nickFlag)
-                        System.out.println("1: Insert your nickname");
+                        System.out.println("1: Insert your nickname old nickname");
                     try {
                         choice = masterScanner.nextInt();
                     } catch (InputMismatchException e) {

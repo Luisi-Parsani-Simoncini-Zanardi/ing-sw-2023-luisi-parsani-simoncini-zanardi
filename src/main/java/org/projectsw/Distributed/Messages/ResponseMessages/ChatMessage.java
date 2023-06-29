@@ -3,6 +3,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.Util.Config;
 import org.projectsw.View.ConsoleColors;
+import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -39,5 +40,10 @@ public class ChatMessage extends ResponseMessage implements Serializable {
                 tui.addBufferMessage(model.getMessage());
         } else if(model.getMessage().getScope().equals(tui.getNickname()))
             tui.addBufferMessage(model.getMessage());
+    }
+
+    @Override
+    public void execute(GuiManager gui) {
+        gui.updateChat();
     }
 }

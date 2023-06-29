@@ -32,5 +32,13 @@ public class EndgameNotify extends ResponseMessage implements Serializable {
     public void execute(TextualUI tui){
         tui.setEndState(UIEndState.ENDING);
     }
-    public void execute(GuiManager gui){}
+
+    /**
+     * Executes the EndgameNotify message on the specified GraphicalUI.
+     * Sets the end state of the GraphicalUI to indicate that the UI is ENDING.
+     * @param gui the TextualUI on which to execute the action
+     */
+    public void execute(GuiManager gui){
+        gui.setEndState(UIEndState.ENDING);
+    }
 }

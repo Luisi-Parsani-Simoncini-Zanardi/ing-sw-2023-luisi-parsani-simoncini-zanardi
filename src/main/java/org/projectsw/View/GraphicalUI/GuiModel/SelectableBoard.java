@@ -2,6 +2,7 @@ package org.projectsw.View.GraphicalUI.GuiModel;
 
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
+import org.projectsw.Util.PathSolverGui;
 import org.projectsw.View.GraphicalUI.GameMainFrame;
 import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.GraphicalUI.MessagesGUI.*;
@@ -16,6 +17,8 @@ public class SelectableBoard extends JPanel {
     ArrayList<Point> temporaryPoints;
     ArrayList<Point> selectablePoints;
     Tile[][] gameBoard;
+    private Image backgroundImage;
+
 
     public SelectableBoard(Tile[][] gameBoard, ArrayList<Point> selectablePoints, ArrayList<Point> temporaryPoints, GuiManager guiManager, GameMainFrame gameMainFrame){
         super();
@@ -27,8 +30,13 @@ public class SelectableBoard extends JPanel {
         setSize(200,200);
         setLayout(new BorderLayout());
 
-        JPanel gridPanel = new JPanel();
+        ImageIcon backgroundImage = new ImageIcon(PathSolverGui.boardPath());
+
+        // Crea il pannello con sfondo
+        BackgroundPanel gridPanel = new BackgroundPanel(backgroundImage.getImage(), 1200, 600);
+
         gridPanel.setLayout(new GridLayout(9,9,3,3));
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         for(int i=0;i<Config.boardHeight;i++) {
             for(int j=0;j<Config.boardLength;j++) {
                 Tile tile = gameBoard[i][j];

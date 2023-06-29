@@ -32,6 +32,7 @@ public class Engine{
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
+    private Server server;
 
     private String firstClient;
     private ArrayList<String> IDToKill = new ArrayList<>();
@@ -689,7 +690,6 @@ public class Engine{
     }
 
     /**
-
      Pauses the execution for 10 seconds.
      */
     public static void waitFor10Seconds() {
@@ -919,7 +919,8 @@ public class Engine{
     public void everlastingKill() {
         try {
             game.setChangedAndNotifyObservers(new Kill(new SerializableGame(Config.broadcastID,0)));
-        } catch (RemoteException ignored) {
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage());
         }
     }
 
