@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-06-29T13:14:53.467Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="JUL5siO60iLs1D-uawyL" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-29T13:23:18.106Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="2eVO4Apyv_xA9ZQ4vFpT" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
     <mxGraphModel dx="4569" dy="4725" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -539,16 +539,16 @@
           <mxGeometry x="50" y="-60" width="160" height="120" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-14" value="TextualUI" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-300" y="-2720" width="270" height="950" as="geometry" />
+          <mxGeometry x="-320" y="-2720" width="290" height="950" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-15" value="- lock: Object&lt;br&gt;- lock2: Object&lt;br&gt;- connectFlag: boolean&lt;br&gt;- flag: boolean&lt;br&gt;- nickFlag: boolean&lt;br&gt;- firstPlayerFlag: boolean&lt;br&gt;- previousGameExist: boolean&lt;br&gt;- waitResult: boolean&lt;br&gt;- endedTurn: boolean&lt;br&gt;- reconnection: boolean&lt;br&gt;- returnedFlag: boolean&lt;br&gt;- stillChoosing: boolean&lt;br&gt;- loadFromFile: boolean&lt;br&gt;- number: Integer&lt;br&gt;- point: Point&lt;br&gt;-&amp;nbsp;nickname: String&lt;br&gt;- string: String&lt;br&gt;- alphanumericalKey: String&lt;br&gt;- lastPlayerNick: String&lt;br&gt;- tileSelectionPossible: boolean&lt;br&gt;- temporaryTilesHold: boolean&lt;br&gt;- nameColors: HashMap&amp;lt;String, String&amp;gt;&lt;br&gt;~&amp;nbsp;masterScanner: Scanner&lt;br&gt;- chatBuffer: ArrayList&amp;lt;Message&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="F7evz0KNMgZYf-CdFRLq-14" vertex="1">
-          <mxGeometry y="26" width="270" height="354" as="geometry" />
+          <mxGeometry y="26" width="290" height="354" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-16" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="F7evz0KNMgZYf-CdFRLq-14" vertex="1">
-          <mxGeometry y="380" width="270" height="8" as="geometry" />
+          <mxGeometry y="380" width="290" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="F7evz0KNMgZYf-CdFRLq-17" value="+ setReturnedFlag(boolean): void&lt;br&gt;+ getTurnState(): UITurnState&lt;br&gt;+ getEndState(): UIEndState&lt;br&gt;+ setLoadFromFile(boolean): void&lt;br&gt;+ setStillChoosing(boolean): void&lt;br&gt;+ setFirstPlayerFlag(boolean): void&lt;br&gt;+ setNickFlag(boolean): void&lt;br&gt;+ setPreviousGameExists(boolean): void&lt;br&gt;+ getClient(): Client&lt;br&gt;+ getString(): String&lt;br&gt;+ getNumber(): Integer&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;+ update(GameView, Event): void&lt;br&gt;+ getCoordinate(): Point&lt;br&gt;- showShelf(GameView): void&lt;br&gt;- selectColumnInput(): Integer&lt;br&gt;- showBoard(GameView): void&lt;br&gt;+ getIndex(): Integer&lt;br&gt;- chooseColumn(): boolean&lt;br&gt;+ setState(UIState): void&lt;br&gt;+ run(): void&lt;br&gt;- selectTilesImput(): Point&lt;br&gt;- showCurrentPlayer(GameView): void&lt;br&gt;- showChat(GameView): void&lt;br&gt;- chooseTiles(): boolean&lt;br&gt;- insertNickname(): void&lt;br&gt;- getState(): UIState&lt;br&gt;+ getNickname(): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="F7evz0KNMgZYf-CdFRLq-14" vertex="1">
-          <mxGeometry y="388" width="270" height="562" as="geometry" />
+        <mxCell id="F7evz0KNMgZYf-CdFRLq-17" value="+ setReturnedFlag(boolean): void&lt;br&gt;+ getTurnState(): UITurnState&lt;br&gt;+ getEndState(): UIEndState&lt;br&gt;+ setLoadFromFile(boolean): void&lt;br&gt;+ setStillChoosing(boolean): void&lt;br&gt;+ setFirstPlayerFlag(boolean): void&lt;br&gt;+ setNickFlag(boolean): void&lt;br&gt;+ setPreviousGameExists(boolean): void&lt;br&gt;+ getClient(): Client&lt;br&gt;+ getString(): String&lt;br&gt;+ getNumber(): Integer&lt;br&gt;+ getPoint(): Point&lt;br&gt;+ getNickname(): String&lt;br&gt;+ getNameColors(): HashMap&amp;lt;String, String&amp;gt;&lt;br&gt;+ getMasterScanner(): Scanner&lt;br&gt;+ setWaitResult(boolean): void&lt;br&gt;+ setNameColors(HashMap&amp;lt;String,String&amp;gt;): void&lt;br&gt;+ setFlag(boolean): void&lt;br&gt;+ setTurnState(UITurnState): void&lt;br&gt;+ setEndState(UIEndState): void&lt;br&gt;+ setConnectFlag(boolean): void&lt;br&gt;+ setLastPlayerName(String): void&lt;br&gt;+ setReconnection(boolean): void&lt;br&gt;+ setTemporaryTileHold(boolean): void&lt;br&gt;+ setTileSelectionPossible(boolean): void&lt;br&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="F7evz0KNMgZYf-CdFRLq-14" vertex="1">
+          <mxGeometry y="388" width="290" height="562" as="geometry" />
         </mxCell>
         <mxCell id="F7evz0KNMgZYf-CdFRLq-18" value="GraphicalUI" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-2460" y="-3410" width="270" height="120" as="geometry" />
@@ -1376,16 +1376,16 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-37" value="ConsoleColors" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-620" y="-2420" width="310" height="620" as="geometry" />
+          <mxGeometry x="-620" y="-2420" width="270" height="620" as="geometry" />
         </mxCell>
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-38" value="- serialVersionUID: long" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-37">
-          <mxGeometry y="26" width="310" height="26" as="geometry" />
+          <mxGeometry y="26" width="270" height="26" as="geometry" />
         </mxCell>
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-39" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-37">
-          <mxGeometry y="52" width="310" height="8" as="geometry" />
+          <mxGeometry y="52" width="270" height="8" as="geometry" />
         </mxCell>
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-40" value="+ execute(TextualUI): void&lt;br&gt;+ execute(GuiManager): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-37">
-          <mxGeometry y="60" width="310" height="560" as="geometry" />
+          <mxGeometry y="60" width="270" height="560" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
