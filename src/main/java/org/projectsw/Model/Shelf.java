@@ -35,7 +35,7 @@ public class Shelf {
 
     /**
      * Constructs a Shelf object with the specified parameters. Used for backdoor only
-     * @param b The parameter used to initialize the Shelf.
+     * @param b The parameter used to initialize the Shelf for the backdoor player.
      */
     //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
     public Shelf(int b) {
@@ -301,7 +301,6 @@ public class Shelf {
 
             }
         }
-
             return paddingSpaces;
     }
 }
