@@ -3,9 +3,17 @@ package org.projectsw.View.GraphicalUI;
 import org.projectsw.Util.Config;
 import javax.swing.*;
 
+/*
+ * This class is the frame where the player can insert his nickname.
+ */
 public class NicknameFrame extends StartingMenuFrame {
     private String nickname;
 
+    /**
+     * Creates the nickname frame with a JTextField where the user can insert his nickname.
+     * It also adds to the frame an option pane, if the user press OK it sends the nickname, if press Cancel the process closes.
+     * @param guiManager The GuiManager object used to send back the messages.
+      */
     public NicknameFrame(GuiManager guiManager) {
         super(guiManager);
 
@@ -35,11 +43,4 @@ public class NicknameFrame extends StartingMenuFrame {
             }
         } while(!nicknameInsert);
     }
-    public String getNickname() {
-        return nickname;
-    }
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
 }
