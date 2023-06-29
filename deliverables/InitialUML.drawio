@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-06-29T16:47:36.607Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="J9IFsHAvQilmg6nVT9h6" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-29T16:54:25.166Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="MDuiAsyT9TBLhcxkL8qm" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="4375" dy="4623" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="3913" dy="4363" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -101,7 +101,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-18" value="Shelf" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-100" y="280" width="290" height="340" as="geometry" />
+          <mxGeometry x="-100" y="280" width="290" height="360" as="geometry" />
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-19" value="- shelf: Tile[][]&lt;br&gt;- selectionPossible: boolean&lt;br&gt;- selectableColumns: ArrayList&amp;lt;Integer&amp;gt;&lt;br&gt;- selectedColumn: Integer" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-18" vertex="1">
           <mxGeometry y="26" width="290" height="74" as="geometry" />
@@ -109,8 +109,8 @@
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-20" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="Mxky3zlpcd0uLPRcEJlR-18" vertex="1">
           <mxGeometry y="100" width="290" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="Mxky3zlpcd0uLPRcEJlR-21" value="+ getShelf(): Tile[][]&lt;br&gt;+ getTileShelf(int,int): Tile&lt;br&gt;+ isselectionPossible(): boolean&lt;br&gt;+ getSelectedcolumn(): Integer&lt;br&gt;+ getSelectableColumns(): ArrayList&amp;lt;Integer&amp;gt;&lt;br&gt;+ setShelf (Tile[][]): void&lt;br&gt;+ setSelectionPossible(boolean): void&lt;br&gt;+ setSelectableColumns(ArrayList&amp;lt;Integer&amp;gt;): void&lt;br&gt;+ setSelectedColumn(Integer): void&lt;br&gt;+ maxFreeColumnSpace(): int&lt;br&gt;+ instertTiles(Tile,int,int): void&lt;br&gt;+ updateSelectableColumns(Player): void&lt;br&gt;+ cleanSelectedColumn(): void&lt;br&gt;+ cleanSelectableColumns(): void&lt;br&gt;+ printShelf(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-18" vertex="1">
-          <mxGeometry y="108" width="290" height="232" as="geometry" />
+        <mxCell id="Mxky3zlpcd0uLPRcEJlR-21" value="+ getShelf(): Tile[][]&lt;br&gt;+ getTileShelf(int,int): Tile&lt;br&gt;+ isSelectionPossible(): boolean&lt;br&gt;+ getSelectedcolumn(): Integer&lt;br&gt;+ getSelectableColumns(): ArrayList&amp;lt;Integer&amp;gt;&lt;br&gt;+ setShelf (Tile[][]): void&lt;br&gt;+ setSelectionPossible(boolean): void&lt;br&gt;+ setSelectableColumns(ArrayList&amp;lt;Integer&amp;gt;): void&lt;br&gt;+ setSelectedColumn(Integer): void&lt;br&gt;+ maxFreeColumnSpace(): int&lt;br&gt;+ instertTiles(Tile,int,int): void&lt;br&gt;+ updateSelectableColumns(Player): void&lt;br&gt;+ cleanSelectedColumn(): void&lt;br&gt;+ cleanSelectableColumns(): void&lt;br&gt;+ printShelf(): void&lt;br&gt;- stringColor(int, int): String&lt;br&gt;- printPadding(boolean, int, int): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Mxky3zlpcd0uLPRcEJlR-18" vertex="1">
+          <mxGeometry y="108" width="290" height="252" as="geometry" />
         </mxCell>
         <mxCell id="Mxky3zlpcd0uLPRcEJlR-22" value="" style="endArrow=diamondThin;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="1" source="Mxky3zlpcd0uLPRcEJlR-18" edge="1">
           <mxGeometry x="-1" relative="1" as="geometry">
