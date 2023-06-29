@@ -94,6 +94,10 @@ public class SaveGameStatus {
             data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);
             data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);
 
+            for(Player player : data.getPlayers()){
+                player.setIsActive(true);
+            }
+
             return data;
         } catch (Exception e) {
             e.printStackTrace();

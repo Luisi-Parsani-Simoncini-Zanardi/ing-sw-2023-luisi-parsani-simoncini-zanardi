@@ -8,7 +8,15 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+/*
+ * This class represents the JLabel equivalent of the tile.
+ */
 public class NoSelectableTile extends JLabel {
+
+    /**
+     * Constructs the JLabel that corresponds to the passed tile.
+     * @param tile the tile to transform in a label.
+     */
     public NoSelectableTile(Tile tile) {
         super();
         ImageIcon icon = null;

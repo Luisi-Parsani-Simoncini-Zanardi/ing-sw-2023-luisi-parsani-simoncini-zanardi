@@ -1,11 +1,17 @@
 package org.projectsw.View.GraphicalUI.GuiModel;
 
 import org.projectsw.Util.PathSolverGui;
-
 import javax.swing.*;
 import java.awt.*;
 
+/*
+ * This class represents the CommonGoals, putting them on a panel.
+ */
 public class CommonGoalImage extends JPanel {
+
+    /*
+     * Constructs the CommonGoalImage form the descriptions of CommonGoals available for the players
+     */
     public CommonGoalImage (String description1, String description2) {
         super();
         setLayout(new BorderLayout());

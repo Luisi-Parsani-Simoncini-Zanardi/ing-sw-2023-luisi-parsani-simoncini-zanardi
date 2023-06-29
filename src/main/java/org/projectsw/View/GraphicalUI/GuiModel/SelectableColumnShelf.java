@@ -11,9 +11,17 @@ import org.projectsw.View.GraphicalUI.GuiManager;
 import javax.swing.*;
 import java.awt.*;
 
+/*
+ * This class represents the JPanel equivalent to the Shelf, with, at the bottom some buttons to select the column.
+ */
 public class SelectableColumnShelf extends JPanel {
     GuiManager guiManager;
 
+    /**
+     * Constructs the JPanel equivalent to the Shelf, with, at the bottom, some buttons to select the column.
+     * @param shelf the shelf to copy.
+     * @param guiManager the GuiManager related to the frame.
+     */
     public SelectableColumnShelf(Tile[][] shelf, GuiManager  guiManager) {
         super();
         this.guiManager = guiManager;
