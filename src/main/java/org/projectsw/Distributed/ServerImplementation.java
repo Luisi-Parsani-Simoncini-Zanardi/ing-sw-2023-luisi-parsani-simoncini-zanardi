@@ -173,7 +173,17 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
                 if (nick.equals(controller.getGame().getCurrentPlayer().getNickname())) {
                     controller.endTurn(ID, controller.getGame().getCurrentPlayer().getNickname());
                 }
+            } else {
+                controller.getGame().deleteObserver(controller.getClientObserverHashMap().get(client));
+                controller.getClientObserverHashMap().remove(client);
+                if(controller.getClients_ID().getValue(client).equals(controller.getFirstClient()) && controller.getGame().getGameState().equals(GameState.LOBBY)){
+                    controller.everlastingKill();
+                    System.exit(0);
+                }
             }
+        }
+        if(controller.getClientObserverHashMap().isEmpty() && controller.getGame().getGameState().equals(GameState.RUNNING)){
+            System.exit(0);
         }
     }
 }

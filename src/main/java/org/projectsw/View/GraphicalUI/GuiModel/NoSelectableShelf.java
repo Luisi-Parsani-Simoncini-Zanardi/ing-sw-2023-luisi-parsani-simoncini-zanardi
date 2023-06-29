@@ -12,9 +12,15 @@ public class NoSelectableShelf extends JPanel {
 
     public NoSelectableShelf(Tile[][] shelf) {
         super();
+
+        ImageIcon backgroundImage = new ImageIcon("src/main/resources/ImagesGui/Boards/Shelf.png");
+
+        // Crea il pannello con sfondo
+        BackgroundPanel gridPanel = new BackgroundPanel(backgroundImage.getImage(), 1200, 600);
+
         setLayout(new BorderLayout());
-        JPanel gridPanel = new JPanel();
-        gridPanel.setLayout(new GridLayout(7,5,4,4));
+        gridPanel.setLayout(new GridLayout(7,5,55,10));
+        gridPanel.setBorder(BorderFactory.createEmptyBorder(50, 150, 0, 150));
         for(int i=Config.shelfHeight-1; i>=0; i--) {
             for(int j=0; j<Config.shelfLength; j++) {
                 Tile tile = shelf[i][j];
@@ -22,7 +28,8 @@ public class NoSelectableShelf extends JPanel {
                 gridPanel.add(noSelectableTile);
             }
         }
-        gridPanel.setPreferredSize(new Dimension(15,15));
+
+        gridPanel.setPreferredSize(new Dimension(10,15));
         add(gridPanel,BorderLayout.CENTER);
     }
 }

@@ -1,5 +1,7 @@
 package org.projectsw.View.GraphicalUI.GuiModel;
 
+import org.projectsw.Model.Tile;
+import org.projectsw.Util.Config;
 import org.projectsw.Util.PathSolverGui;
 
 import javax.swing.*;
@@ -8,11 +10,8 @@ import java.awt.*;
 public class CommonGoalImage extends JPanel {
     public CommonGoalImage (String description1, String description2) {
         super();
-        setLayout(new GridLayout(1,2));
+        setLayout(new BorderLayout());
 
-
-        int imageDimensionX = 13;
-        int imageDimensionY = 9;
 
         ImageIcon image1;
         switch (description1) {
@@ -62,10 +61,6 @@ public class CommonGoalImage extends JPanel {
                 Tiles can be of any type.""" ->  image1 = new ImageIcon(PathSolverGui.commonGoalPath(12)); //12
             default -> image1 = new ImageIcon(PathSolverGui.commonGoalBack());
         }
-        image1.getImage().getScaledInstance(imageDimensionX,imageDimensionY,Image.SCALE_SMOOTH);
-        image1.setDescription(description1);
-        JLabel imageLabel1 = new JLabel(image1);
-        add(imageLabel1);
 
         ImageIcon image2;
         switch (description2) {
@@ -115,9 +110,25 @@ public class CommonGoalImage extends JPanel {
                 Tiles can be of any type.""" ->  image2 = new ImageIcon(PathSolverGui.commonGoalPath(12)); //12
             default -> image2 = new ImageIcon(PathSolverGui.commonGoalBack());
         }
-        image2.getImage().getScaledInstance(imageDimensionX,imageDimensionY,Image.SCALE_SMOOTH);
-        image2.setDescription(description2);
-        JLabel imageLabel2 = new JLabel(image2);
-        add(imageLabel2);
+
+        JPanel gridPanel = new JPanel();
+        gridPanel.setLayout(new GridLayout(1,2,4,4));
+
+        Image originalImage = image1.getImage();
+
+        Image resizedImage = originalImage.getScaledInstance(400, 400, Image.SCALE_SMOOTH);
+
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+
+        Image originalImage2 = image2.getImage();
+
+        Image resizedImage2 = originalImage2.getScaledInstance(400, 400, Image.SCALE_SMOOTH);
+
+        ImageIcon resizedIcon2 = new ImageIcon(resizedImage2);
+
+        gridPanel.add(new JLabel(resizedIcon));
+        gridPanel.add(new JLabel(resizedIcon2));
+        gridPanel.setPreferredSize(new Dimension(15,15));
+        add(gridPanel,BorderLayout.CENTER);
     }
 }

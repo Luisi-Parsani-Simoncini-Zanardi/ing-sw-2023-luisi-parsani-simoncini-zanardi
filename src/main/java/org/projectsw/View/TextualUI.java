@@ -319,7 +319,7 @@ public class TextualUI extends Observable<InputMessage> implements Runnable {
                 do {
                     System.out.println("\nCHOOSE AN OPTION:");
                     if (nickFlag)
-                        System.out.println("1: Insert your nickname");
+                        System.out.println("1: Insert your nickname old nickname");
                     try {
                         choice = masterScanner.nextInt();
                     } catch (InputMismatchException e) {
