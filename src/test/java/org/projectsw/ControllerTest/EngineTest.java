@@ -823,7 +823,7 @@ class EngineTest extends TestUtils {
         engine.shelfTransfer("pippo", "0");
         engine.boardTransfer("0");
         engine.sendChat(" ", "0");
-        engine.sendResults();
+        engine.sendResults(1);
         engine.everlastingKill();
     }
 

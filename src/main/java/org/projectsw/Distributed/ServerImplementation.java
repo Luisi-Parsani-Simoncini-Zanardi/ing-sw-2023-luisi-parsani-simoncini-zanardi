@@ -132,7 +132,7 @@ public class ServerImplementation extends UnicastRemoteObject implements Server{
             controller.waitFor10Seconds();
             if(controller.getID_Nicks().getAllKey().size() == 1) {
                 controller.getPlayerFromNickname(controller.getID_Nicks().getAllValue().get(0)).setPoints(10000);
-                controller.sendResults();
+                controller.sendResults(0);
                 try {
                     controller.getGame().setChangedAndNotifyObservers(new Kill(new SerializableGame(controller.getID_Nicks().getAllKey().get(0),2)));
                 } catch (RemoteException e) {

@@ -524,9 +524,9 @@ public class Engine{
      A flag indicating the completion of the method is also sent to the observers.
      Any network errors that occur during the process are handled and an error message is thrown.
      */
-    public synchronized void sendResults() {
+    public synchronized void sendResults(int forced) {
         try {
-            getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame())));
+            getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame(), forced)));
         } catch (RemoteException e) {
             throw new RuntimeException("A network error occurred while sending the results: "+e.getMessage());
         }

@@ -94,6 +94,37 @@ public SerializableGame(String alphanumericID, Game model) {
     }
 
     /**
+     * Constructs a SerializableGame object with an alphanumeric ID, a game model and clientNickname.
+     * @param alphanumericID The alphanumeric ID of the game.
+     * @param model The game model to be serialized.
+     * @param forced The integer to be serialized.
+     */
+    public SerializableGame(String alphanumericID, Game model, int forced) {
+        this.alphanumericID = alphanumericID;
+        this.gameBoard = model.getBoard().getBoard();
+        this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();
+        this.playerName = model.getCurrentPlayer().getNickname();
+        this.chat = model.getChat().getMessages();
+        this.clientNickname = null;
+        this.selectablePoints = model.getBoard().getSelectablePoints();
+        this.temporaryPoints = model.getBoard().getTemporaryPoints();
+        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();
+        this.playerPersonalGoal = null;
+        this.results = new HashMap<>();
+        for (Player p : model.getPlayers()) {
+            this.results.put(p.getNickname(), p.getPoints());
+        }
+        this.nameColors = null;
+        this.allShelves = null;
+        this.commonGoalDesc = new ArrayList<>();
+        this.commonGoalDesc.add(model.getCommonGoals().get(0).getStrategy().getDescription());
+        this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());
+        this.message = null;
+        this.integer = forced;
+        this.bool = null;
+    }
+
+    /**
      * Constructs a SerializableGame object with an alphanumeric ID.
      * @param alphanumericID The alphanumeric ID of the game.
      */
