@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-06-29T14:46:08.505Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="slaPUP_EriT-8K767Y-l" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-29T14:55:40.735Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="FeIiCzTikkB9Jek0nY4n" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="4766" dy="4843" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="4270" dy="4564" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -1431,6 +1431,12 @@
         </mxCell>
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-54" value="+ addObserver(Observer&amp;lt;?&amp;gt;): void&lt;br&gt;+ deleteObserver(Observer&amp;lt;?&amp;gt;): void&lt;br&gt;+ notifyObservers(): void&lt;br&gt;+ notifyObservers(Event): void&lt;br&gt;+ deleteObservers(): void&lt;br&gt;# setChanged(): void&lt;br&gt;# clearChanged(): void&lt;br&gt;+ hasChanged(): boolean&lt;br&gt;+ countObservers(): int&lt;br&gt;setChangedAndNotifyObservers(Event): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-51">
           <mxGeometry y="78" width="250" height="152" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-63" value="&lt;b&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Observer&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=34;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-45">
+          <mxGeometry x="605" y="56" width="205" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-64" value="~ update(SubjectType, Event): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-63">
+          <mxGeometry y="34" width="205" height="26" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
