@@ -98,7 +98,7 @@ public class ServerStub implements Server {
         try {
             socket.close();
         } catch (IOException e) {
-            throw new RemoteException("An error while closeing socket: ", e);
+            throw new RemoteException("An error while closing socket: ", e);
         }
     }
 }

@@ -3,6 +3,7 @@ package org.projectsw.ModelTest;
 import org.junit.jupiter.api.Test;
 import org.projectsw.Controller.Engine;
 import org.projectsw.Model.Chat;
+import org.projectsw.Model.Game;
 import org.projectsw.Model.Player;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.TestUtils;
@@ -29,6 +30,8 @@ public class serializableGameTest extends TestUtils {
     @Test
     void gettersTests() {
         Engine engine = new Engine();
+        Game game = new Game();
+        engine.setGame(game);
         engine.saveFileFound();
         engine.getGame().initializeGame(2);
         Player player = new Player("pippo", 0);

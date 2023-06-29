@@ -2,7 +2,6 @@ package org.projectsw.Controller;
 
 import org.projectsw.Distributed.Messages.ResponseMessages.*;
 import org.projectsw.Distributed.Messages.ResponseMessages.ChatMessage;
-import org.projectsw.Distributed.Server;
 import org.projectsw.Model.Enums.GameState;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Util.Config;
@@ -34,25 +33,16 @@ public class Engine{
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
     private Server server;
+
     private String firstClient;
     private ArrayList<String> IDToKill = new ArrayList<>();
     private boolean optionChoosed = false;
 
-    /**
 
-     Constructs a new instance of the Engine class.
-     This constructor initializes the server to null and creates a new instance of the Game class.
+    /**
+     Constructs a new instance of the Engine class
      */
     public Engine(){
-        game = new Game();
-    }
-
-    /**
-
-     Constructs a new instance of the Engine class with the specified server.
-     @param server The server to be associated with the engine.
-     */
-    public Engine(Server server){
         this.clientObserverHashMap=new HashMap<>();
     }
 
@@ -61,7 +51,7 @@ public class Engine{
      Returns the current value of the optionChoosed variable.
      @return The current value of the optionChoosed variable.
      */
-    public Boolean getOptionChoosed() { return this.optionChoosed; }
+    public Boolean getOptionChosen() { return this.optionChoosed; }
 
     /**
 

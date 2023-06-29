@@ -1,13 +1,9 @@
 package org.projectsw.Distributed;
 
 import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
-import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
-import org.projectsw.Model.Game;
-import org.projectsw.Util.Observer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.HashMap;
 
 public interface Server extends Remote {
     /**
