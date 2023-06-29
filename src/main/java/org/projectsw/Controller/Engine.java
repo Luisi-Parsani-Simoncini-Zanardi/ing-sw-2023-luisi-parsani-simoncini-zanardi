@@ -32,7 +32,6 @@ public class Engine{
     private ArrayList<String> freeNamesUsedInLastGame = new ArrayList<>();
     public boolean loadFromFile = false;
     private boolean playerReconnect = false;
-    private Server server;
 
     private String firstClient;
     private ArrayList<String> IDToKill = new ArrayList<>();
