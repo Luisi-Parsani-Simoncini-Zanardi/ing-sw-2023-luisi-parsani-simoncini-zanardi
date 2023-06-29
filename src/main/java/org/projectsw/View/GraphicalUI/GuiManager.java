@@ -13,11 +13,14 @@ import org.projectsw.View.Enums.UITurnState;
 import org.projectsw.View.GraphicalUI.GuiModel.*;
 import org.projectsw.View.GraphicalUI.MessagesGUI.*;
 import org.projectsw.View.SerializableInput;
-
 import javax.swing.*;
 import java.awt.*;
 import java.rmi.RemoteException;
+
 import java.util.ArrayList;
+
+import java.util.LinkedHashMap;
+
 
 public class GuiManager extends Observable<InputMessage> {
 
@@ -27,16 +30,17 @@ public class GuiManager extends Observable<InputMessage> {
     private final Client client;
     private final String alphanumericKey;
     private String nickname;
+    private String lastPlayerNick;
     private boolean firstPlayer = false;
     private boolean gameSavedExist = false;
     private boolean askNickname = true;
     private boolean logInCompleted = false;
-    private boolean temporaryTilesHold = true ;
     private boolean tileSelectionPossible = true ;
-    private  boolean tileSelectionAccepted = true;
+    private boolean tileSelectionAccepted = true;
     private boolean columnSelectionAccepted = true;
-    private GameMainFrame gameMainFrame = new GameMainFrame(this);
+    private final GameMainFrame gameMainFrame = new GameMainFrame(this);
     private SerializableGame game;
+    private LinkedHashMap<String, Integer> results;
 
 
     public GuiManager(Client client) {
@@ -65,16 +69,12 @@ public class GuiManager extends Observable<InputMessage> {
         return askNickname;
     }
 
-    public boolean isTemporaryTilesHold() {
-        return temporaryTilesHold;
+    public String getLastPlayerNick() {
+        return lastPlayerNick;
     }
 
-    public boolean isTileSelectionPossible() {
-        return tileSelectionPossible;
-    }
-
-    public boolean isTileSelectionAccepted() {
-        return tileSelectionAccepted;
+    public GameMainFrame getGameMainFrame() {
+        return gameMainFrame;
     }
 
     public void setEndState(UIEndState endState) {
@@ -100,10 +100,6 @@ public class GuiManager extends Observable<InputMessage> {
         this.logInCompleted = logInCompleted;
     }
 
-    public void setTemporaryTilesHold(boolean temporaryTilesHold) {
-        this.temporaryTilesHold = temporaryTilesHold;
-    }
-
     public void setTileSelectionPossible(boolean tileSelectionPossible) {
         this.tileSelectionPossible = tileSelectionPossible;
     }
@@ -114,6 +110,21 @@ public class GuiManager extends Observable<InputMessage> {
 
     public void setColumnSelectionAccepted(boolean columnSelectionAccepted) {
         this.columnSelectionAccepted = columnSelectionAccepted;
+    }
+
+    public void setLastPlayerNick(String lastPlayerNick) {
+        this.lastPlayerNick = lastPlayerNick;
+    }
+
+    public void setResults(LinkedHashMap<String, Integer> results) {
+        this.results = results;
+        SwingUtilities.invokeLater(this::closeAndShowResults);
+    }
+
+    private void closeAndShowResults() {
+        gameMainFrame.disposeFrame();
+        new ResultsFrame(results);
+        kill();
     }
 
     public void updateModel(SerializableGame game){
@@ -147,7 +158,7 @@ public class GuiManager extends Observable<InputMessage> {
         }
         if (endState.equals(UIEndState.RUNNING)) {
             //new GameStartedMessageFrame();
-            SwingUtilities.invokeLater( () -> gameMainFrame.createFrame());
+            SwingUtilities.invokeLater(gameMainFrame::createFrame);
             waitForResponse1();
         }
 
@@ -289,7 +300,6 @@ public class GuiManager extends Observable<InputMessage> {
         }
         waitForResponse2();
         if(columnSelectionAccepted) {
-            gameMainFrame.setSelectedColumn(number);
             gameMainFrame.setTurnState(UITurnState.YOUR_TURN_INSERTION);
         }
         else {
@@ -338,6 +348,20 @@ public class GuiManager extends Observable<InputMessage> {
         } catch (RemoteException e) {
             throw new RuntimeException("An error occurred while ending the turn: " + e);
         }
+        boolean bool = endState.equals(UIEndState.ENDING) && lastPlayerNick.equals(nickname);
+        System.out.println("UIEndState = " + endState + ", lastPlayerNick = " + lastPlayerNick + ", my nick = " + nickname + "\nResult of if = " + bool);
+        if(endState.equals(UIEndState.ENDING) && lastPlayerNick.equals(nickname)) {
+            sendAskForResults();
+        }
+    }
+
+    private void sendAskForResults() {
+        try {
+            setChangedAndNotifyObservers(new AskForResults(new SerializableInput(alphanumericKey, getNickname(), client)));
+        } catch (RemoteException e) {
+            throw new RuntimeException("A network error occurred while asking for results: "+e.getMessage());
+        }
+        waitForResponse2();
     }
 
     private void waitForResponse1() {
@@ -388,14 +412,4 @@ public class GuiManager extends Observable<InputMessage> {
         kill();
     }
 
-    /**
-     * Debug function
-     */
-    private void printConnectionStatus() {
-        System.out.println("\nConnection successfully established");
-        if(firstPlayer) System.out.println("You are the first player");
-        else System.out.println("You are NOT the first player");
-        if(gameSavedExist) System.out.println("Game saved found");
-        else System.out.println("Game saved NOT found");
-    }
 }
