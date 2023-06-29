@@ -26,6 +26,7 @@ public class GuiManager extends Observable<InputMessage> {
 
     private final Object lock1 = new Object();
     private final Object lock2 = new Object();
+    private final Object lock3 = new Object();
     private UIEndState endState = UIEndState.LOBBY;
     private final Client client;
     private final String alphanumericKey;
@@ -38,6 +39,8 @@ public class GuiManager extends Observable<InputMessage> {
     private boolean tileSelectionPossible = true ;
     private boolean tileSelectionAccepted = true;
     private boolean columnSelectionAccepted = true;
+    private boolean stillChoosing = true;
+    private boolean loadFromFile = false;
     private final GameMainFrame gameMainFrame = new GameMainFrame(this);
     private SerializableGame game;
     private LinkedHashMap<String, Integer> results;
@@ -121,6 +124,14 @@ public class GuiManager extends Observable<InputMessage> {
         SwingUtilities.invokeLater(this::closeAndShowResults);
     }
 
+    public void setStillChoosing(boolean stillChoosing) {
+        this.stillChoosing = stillChoosing;
+    }
+
+    public void setLoadFromFile(boolean loadFromFile) {
+        this.loadFromFile = loadFromFile;
+    }
+
     private void closeAndShowResults() {
         gameMainFrame.disposeFrame();
         new ResultsFrame(results);
@@ -150,14 +161,23 @@ public class GuiManager extends Observable<InputMessage> {
         waitForResponse1();
         do {
             SwingUtilities.invokeLater( () -> new LobbyFrame(this));
-            waitForResponse1();
+            waitForResponse3();
         } while (!logInCompleted);
+        if(stillChoosing && !firstPlayer){
+            waitForResponse1();
+            if(loadFromFile) {
+                askNickname = true;
+                new ReinsertNicknameMessage();
+                SwingUtilities.invokeLater( () -> new LobbyFrame(this));
+                waitForResponse3();
+            }
+        }
+        new WaitingMessageFrame();
         while (endState.equals(UIEndState.LOBBY)) {
-            //new WaitingMessageFrame();
             waitForResponse1();
         }
         if (endState.equals(UIEndState.RUNNING)) {
-            //new GameStartedMessageFrame();
+            new GameStartedMessageFrame();
             SwingUtilities.invokeLater(gameMainFrame::createFrame);
             waitForResponse1();
         }
@@ -175,9 +195,8 @@ public class GuiManager extends Observable<InputMessage> {
             new NicknameDeniedFrame();
             new NicknameFrame(this);
         } else {
-            //new NicknameAcceptedFrame();
             this.nickname = nickname;
-            notifyResponse1();
+            notifyResponse3();
         }
     }
 
@@ -189,9 +208,10 @@ public class GuiManager extends Observable<InputMessage> {
         }
         waitForResponse2();
         new GameCreatedMessageFrame();
+        stillChoosing = false;
         setFirstPlayer(false);
         setAskNickname(true);
-        notifyResponse1();
+        notifyResponse3();
     }
 
     public void sendLoadGameSelection(){
@@ -202,9 +222,10 @@ public class GuiManager extends Observable<InputMessage> {
         }
         waitForResponse2();
         new LoadGameSuccessMessage();
+        stillChoosing = false;
         setFirstPlayer(false);
         setAskNickname(true);
-        notifyResponse1();
+        notifyResponse3();
     }
 
     public SelectableBoard askBoard(GameMainFrame gameMainFrame){
@@ -393,6 +414,22 @@ public class GuiManager extends Observable<InputMessage> {
     public void notifyResponse2() {
         synchronized (lock2) {
             lock2.notify();
+        }
+    }
+
+    private void waitForResponse3() {
+        synchronized (lock3) {
+            try {
+                lock3.wait();
+            } catch (InterruptedException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
+
+    public void notifyResponse3() {
+        synchronized (lock3) {
+            lock3.notify();
         }
     }
 
