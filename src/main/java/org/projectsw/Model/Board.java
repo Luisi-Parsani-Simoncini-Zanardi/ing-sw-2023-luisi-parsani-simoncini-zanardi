@@ -2,14 +2,13 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import org.projectsw.Model.Enums.TilesEnum;
+import org.projectsw.Model.Enums.DataForGame;
 import org.projectsw.Util.Config;
 
 import org.projectsw.Exceptions.UnselectableTileException;
 import org.projectsw.View.ConsoleColors;
 
 import java.awt.*;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -21,6 +20,8 @@ public class Board {
     private Bag bag;
     private ArrayList<Point> temporaryPoints;
     private ArrayList<Point> selectablePoints;
+
+    private String[][][] boards = new DataForGame().getBoards();
 
     /**
      * Creates a new instance of the Board class with the specified selected points and temporary points.
@@ -46,14 +47,13 @@ public class Board {
      * @throws IllegalArgumentException if the number of players is lower than 2 or higher than 4
      */
     public Board(int playersNumber) {
-        try{
             Gson gson = new Gson();
-            String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
+            // String[][][] tmpMatrix = gson.fromJson(new FileReader("src/main/resources/StartingBoards.json"), String[][][].class);
             board = new Tile[Config.boardHeight][Config.boardLength];
             for(int i=0;i<Config.boardHeight;i++){
                 for(int j=0;j<Config.boardLength;j++){
-                    if(tmpMatrix[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
-                    if(tmpMatrix[playersNumber-2][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
+                    if(boards[playersNumber-2][i][j].equals("UNUSED")){board[i][j] = new Tile(TilesEnum.UNUSED,0);}
+                    if(boards[playersNumber-2][i][j].equals("EMPTY")){board[i][j] = new Tile(TilesEnum.EMPTY, 0);}
                 }
             }
             endGame = false;
@@ -61,9 +61,6 @@ public class Board {
             temporaryPoints = new ArrayList<>();
             selectablePoints = new ArrayList<>();
             updateSelectablePoints();
-        }catch (IOException e){
-            System.out.println("Error opening the json"+e.getMessage());
-        }
     }
 
     /**

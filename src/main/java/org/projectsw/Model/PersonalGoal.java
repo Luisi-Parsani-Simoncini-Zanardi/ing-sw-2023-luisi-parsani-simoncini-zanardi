@@ -2,10 +2,9 @@ package org.projectsw.Model;
 
 import com.google.gson.Gson;
 import org.projectsw.Model.Enums.TilesEnum;
+import org.projectsw.Model.Enums.DataForGame;
 import org.projectsw.Util.Config;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -17,6 +16,8 @@ import java.util.*;
 public class PersonalGoal {
     private TilesEnum[][] personalGoal;
     private static List<Integer> usedCodes = new ArrayList<>(); //called codes
+
+    private String[][][] personals = new DataForGame().getPersonals();
 
     /**
      * Constructs a new instance of the PersonalGoal class.
@@ -37,7 +38,6 @@ public class PersonalGoal {
      * @throws IllegalArgumentException if the goal code has already been used by another player
      */
     public PersonalGoal(int goalCode){
-        try {
             if (usedCodes.contains(goalCode))
                 throw new IllegalArgumentException("Goal code already used.");
             else if (goalCode < 0 || goalCode > Config.numberOfPersonalGoals-1)
@@ -45,12 +45,12 @@ public class PersonalGoal {
             else usedCodes.add(goalCode);
 
             Gson gson = new Gson();
-            String[][][] tmpMatrix = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
+            // String[][][] tmpMatrix = gson.fromJson(new FileReader("./src/main/resources/PersonalGoals.json"), String[][][].class);
 
             personalGoal = new TilesEnum[Config.shelfHeight][Config.shelfLength];
             for (int i = 0; i < Config.shelfHeight; i++) {
                 for (int j = 0; j < Config.shelfLength; j++) {
-                    String str = tmpMatrix[goalCode][i][j];
+                    String str = personals[goalCode][i][j];
                     switch (str) {
                         case "EMPTY" -> personalGoal[i][j] = TilesEnum.EMPTY;
                         case "PLANTS" -> personalGoal[i][j] = TilesEnum.PLANTS;
@@ -63,10 +63,6 @@ public class PersonalGoal {
                     }
                 }
             }
-        }catch (IOException e){
-            System.out.println("Error opening the file:"+ e.getMessage());
-        }
-
     }
 
     /**
