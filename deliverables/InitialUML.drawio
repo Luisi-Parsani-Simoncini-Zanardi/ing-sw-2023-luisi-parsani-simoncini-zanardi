@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-06-29T16:57:22.020Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="YyL4fAOoy1wYkYqPnkjq" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-29T16:58:40.082Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="xBk3S0dvHbaITmA2o-qR" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="4206" dy="4528" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="4093" dy="4464" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -312,16 +312,16 @@
           <mxGeometry x="1590" y="520" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="zbtttQC591RZSIthjDI6-6" value="Tile" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-320" y="304" width="160" height="110" as="geometry" />
+          <mxGeometry x="-320" y="304" width="160" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="zbtttQC591RZSIthjDI6-7" value="&lt;u&gt;- tile: TilesEnum&lt;br&gt;- imageNumber: int&lt;/u&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="zbtttQC591RZSIthjDI6-6" vertex="1">
+        <mxCell id="zbtttQC591RZSIthjDI6-7" value="- tile: TilesEnum&lt;br&gt;- imageNumber: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="zbtttQC591RZSIthjDI6-6" vertex="1">
           <mxGeometry y="26" width="160" height="34" as="geometry" />
         </mxCell>
         <mxCell id="zbtttQC591RZSIthjDI6-8" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="zbtttQC591RZSIthjDI6-6" vertex="1">
           <mxGeometry y="60" width="160" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="zbtttQC591RZSIthjDI6-9" value="+ getTile(): TilesEnum&lt;br&gt;+ getImageNumber(): int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="zbtttQC591RZSIthjDI6-6" vertex="1">
-          <mxGeometry y="68" width="160" height="42" as="geometry" />
+        <mxCell id="zbtttQC591RZSIthjDI6-9" value="+ getTile(): TilesEnum&lt;br&gt;+ getImageNumber(): int&lt;br&gt;+ toString(): String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="zbtttQC591RZSIthjDI6-6" vertex="1">
+          <mxGeometry y="68" width="160" height="52" as="geometry" />
         </mxCell>
         <mxCell id="9WpMfCR_n4XsZXEiZ-4h-3" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;CommonGoals&lt;/font&gt;" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
           <mxGeometry x="1120" y="520" width="100" height="40" as="geometry" />
