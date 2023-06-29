@@ -1,0 +1,1642 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Engine</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Controller</a>
+</div>
+
+<h1>Coverage Summary for Class: Engine (org.projectsw.Controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Engine</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94,7%
+  </span>
+  <span class="absValue">
+    (72/76)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    55,9%
+  </span>
+  <span class="absValue">
+    (338/605)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Controller;
+&nbsp;
+&nbsp;import org.projectsw.Distributed.Messages.ResponseMessages.*;
+&nbsp;import org.projectsw.Distributed.Messages.ResponseMessages.ChatMessage;
+&nbsp;import org.projectsw.Model.Enums.GameState;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.Distributed.Client;
+&nbsp;import org.projectsw.Exceptions.*;
+&nbsp;import org.projectsw.Model.*;
+&nbsp;import org.projectsw.Util.Observer;
+&nbsp;import org.projectsw.Util.OneToOneHashmap;
+&nbsp;import org.projectsw.View.ConsoleColors;
+&nbsp;import org.projectsw.View.SerializableInput;
+&nbsp;import java.awt.*;
+&nbsp;import java.rmi.RemoteException;
+&nbsp;import java.util.*;
+&nbsp;import java.util.concurrent.TimeUnit;
+&nbsp;import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
+&nbsp;import static org.projectsw.Model.Enums.TilesEnum.UNUSED;
+&nbsp;
+&nbsp;/**
+&nbsp; * The class contains the application logic methods of the game.
+&nbsp; */
+&nbsp;public class Engine{
+&nbsp;    private HashMap&lt;Client, Observer&lt;Game, ResponseMessage&gt;&gt; clientObserverHashMap;
+<b class="fc">&nbsp;    private final OneToOneHashmap&lt;Client, String&gt; clients_ID = new OneToOneHashmap&lt;&gt;();</b>
+<b class="fc">&nbsp;    private final OneToOneHashmap&lt;String, String&gt; ID_Nicks = new OneToOneHashmap&lt;&gt;();</b>
+&nbsp;    private Game game;
+<b class="fc">&nbsp;    private static int counter = 0;</b>
+&nbsp;    private SaveGameStatus saveGameStatus;
+<b class="fc">&nbsp;    private ArrayList&lt;String&gt; freeNamesUsedInLastGame = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    public boolean loadFromFile = false;</b>
+<b class="fc">&nbsp;    private boolean playerReconnect = false;</b>
+&nbsp;
+&nbsp;    private String firstClient;
+<b class="fc">&nbsp;    private ArrayList&lt;String&gt; IDToKill = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private boolean optionChoosed = false;</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     Constructs a new instance of the Engine class
+&nbsp;     */
+<b class="fc">&nbsp;    public Engine(){</b>
+<b class="fc">&nbsp;        this.clientObserverHashMap=new HashMap&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the optionChoosed variable.
+&nbsp;     @return The current value of the optionChoosed variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public Boolean getOptionChosen() { return this.optionChoosed; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sets the optionChoosed to the specified optionChoosed.
+&nbsp;     @param optionChoosed The optionChoosed to be set as the optionChoosed.
+&nbsp;     */
+<b class="fc">&nbsp;    public void setOptionChoosed(Boolean optionChoosed) { this.optionChoosed = optionChoosed; }</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public ArrayList&lt;String&gt; getFreeNamesUsedInLastGame() { return this.freeNamesUsedInLastGame; }</b>
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the loadFromFile variable.
+&nbsp;     @return The current value of the loadFromFile variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public Boolean getLoadFromFile() { return this.loadFromFile; }</b>
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the firstClient variable.
+&nbsp;     @return The current value of the firstClient variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public String getFirstClient() {return this.firstClient; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the playerReconnect variable.
+&nbsp;     @return The current value of the playerReconnect variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public Boolean getPlayerReconnection() { return this.playerReconnect; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the clients_ID variable.
+&nbsp;     @return The current value of the clients_ID variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public OneToOneHashmap&lt;Client, String&gt; getClients_ID() { return this.clients_ID; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the ID_Nicks variable.
+&nbsp;     @return The current value of the ID_Nicks variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public OneToOneHashmap&lt;String,String&gt; getID_Nicks(){return this.ID_Nicks;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the clientObserverHashMap variable.
+&nbsp;     @return The current value of the clientObserverHashMap variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public HashMap&lt;Client, Observer&lt;Game, ResponseMessage&gt;&gt; getClientObserverHashMap(){return this.clientObserverHashMap;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the game variable.
+&nbsp;     @return The current value of the game variable.
+&nbsp;     */
+&nbsp;    public Game getGame() {
+<b class="fc">&nbsp;        return this.game;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Retrieves the player object associated with the specified nickname.
+&nbsp;     @param nickname The nickname of the player to be retrieved.
+&nbsp;     @return The Player object with the specified nickname, or null if no player is found with the given nickname.
+&nbsp;     */
+&nbsp;    public Player getPlayerFromNickname(String nickname) {
+<b class="fc">&nbsp;        for(Player player : game.getPlayers()){</b>
+<b class="fc">&nbsp;            if(player.getNickname().equals(nickname)){</b>
+<b class="fc">&nbsp;                return player;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks if a save file exists and returns the result.
+&nbsp;     This method creates a new instance of the SaveGameStatus class, passing the game object and the file path as parameters,
+&nbsp;     and calls the checkExistingSaveFile() method to determine if a save file exists.
+&nbsp;     @return true if a save file exists, false otherwise.
+&nbsp;     */
+&nbsp;    public boolean saveFileFound(){
+<b class="fc">&nbsp;        saveGameStatus = new SaveGameStatus(game, &quot;src/main/java/org/projectsw/Util/save.txt&quot;);</b>
+<b class="fc">&nbsp;        return saveGameStatus.checkExistingSaveFile();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Retrieves the saved game from the existing save file.
+&nbsp;     This method creates a new instance of the SaveGameStatus class, passing the game object and the file path as parameters,
+&nbsp;     and calls the retrieveGame() method to retrieve the game data from the save file.
+&nbsp;     @return The retrieved Game object from the save file.
+&nbsp;     */
+&nbsp;    public Game retrieveGame(){
+<b class="fc">&nbsp;        saveGameStatus = new SaveGameStatus(game, &quot;src/main/java/org/projectsw/Util/save.txt&quot;);</b>
+<b class="fc">&nbsp;        return saveGameStatus.retrieveGame();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sets the active game to the specified Game object.
+&nbsp;     @param activeGame The Game object to be set as the active game.
+&nbsp;     */
+&nbsp;    public void setGame(Game activeGame){
+<b class="fc">&nbsp;            this.game=activeGame;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Returns the current value of the saveGameStatus variable.
+&nbsp;     @return The current value of the saveGameStatus variable.
+&nbsp;     */
+<b class="fc">&nbsp;    public SaveGameStatus getSaveGameStatus() { return this.saveGameStatus; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sets the saveGameStatus to the specified saveGameStatus object.
+&nbsp;     @param saveGameStatus The saveGameStatus object to be set as the active game.
+&nbsp;     */
+<b class="fc">&nbsp;    public void setSaveGameStatus(SaveGameStatus saveGameStatus) { this.saveGameStatus = saveGameStatus; }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Handles the process when a player joins the game.
+&nbsp;     If the game is in the lobby state, the player is added to the game with the provided nickname and ID.
+&nbsp;     If the player is the first one to join, they become the first player and the current player.
+&nbsp;     Other players are notified of the new player&#39;s arrival if the game has not reached the maximum number of players.
+&nbsp;     Any existing players beyond the maximum are marked for removal.
+&nbsp;     The player&#39;s nickname and ID are stored in the ID_Nicks map.
+&nbsp;     If the game reaches the maximum number of players and is still in the lobby state, the game is started.
+&nbsp;     If the game is not in the lobby state, the player is removed as an observer and their ID is removed from the ID_Nicks map.
+&nbsp;     @param nickname the nickname of the player
+&nbsp;     @param ID the ID of the player
+&nbsp;     */
+&nbsp;    public void playerJoin (String nickname, String ID){
+<b class="fc">&nbsp;            if (game.getGameState().equals(GameState.LOBBY)) {</b>
+<b class="fc">&nbsp;                int newPlayerPosition = game.getPlayers().size();</b>
+<b class="fc">&nbsp;                Player newPlayer = new Player(nickname, newPlayerPosition);</b>
+<b class="fc">&nbsp;                game.addPlayer(newPlayer);</b>
+<b class="fc">&nbsp;                if(this.game.getPlayers().size()==1){</b>
+<b class="fc">&nbsp;                    this.game.setFirstPlayer(newPlayer);</b>
+<b class="fc">&nbsp;                    this.game.setCurrentPlayer(newPlayer);</b>
+<b class="fc">&nbsp;                    for(String nick : getID_Nicks().getAllValue()) {</b>
+<b class="nc">&nbsp;                        if(game.getPlayers().size() &lt; game.getNumberOfPlayers() ){</b>
+<b class="nc">&nbsp;                        smallJoin(nick);</b>
+&nbsp;                        } else {
+<b class="nc">&nbsp;                            IDToKill.add(ID_Nicks.getKey(nick));</b>
+&nbsp;                        }
+<b class="nc">&nbsp;                    }</b>
+<b class="fc">&nbsp;                    ID_Nicks.put(ID, nickname);</b>
+<b class="fc">&nbsp;                    killingSpree(IDToKill);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                if (game.getPlayers().size() == game.getNumberOfPlayers() &amp;&amp; game.getGameState().equals(GameState.LOBBY)) {</b>
+<b class="fc">&nbsp;                    startGame();</b>
+&nbsp;                }
+<b class="fc">&nbsp;            } else {</b>
+<b class="nc">&nbsp;                removeObserver(ID, 0);</b>
+<b class="nc">&nbsp;                ID_Nicks.removeByKey(ID);</b>
+&nbsp;            }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Performs a small join operation by adding a new player to the game with the specified nickname.
+&nbsp;     This method creates a new Player object with the given nickname and assigns it the position equal to the current number of players in the game.
+&nbsp;     The new player is then added to the game.
+&nbsp;     @param nickname The nickname of the player to be added.
+&nbsp;     */
+&nbsp;    public void smallJoin(String nickname) {
+<b class="fc">&nbsp;        int newPlayerPosition = game.getPlayers().size();</b>
+<b class="fc">&nbsp;        Player newPlayer = new Player(nickname, newPlayerPosition);</b>
+<b class="fc">&nbsp;        game.addPlayer(newPlayer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Performs a killing spree operation by removing multiple observers from the engine.
+&nbsp;     This method iterates through the list of IDs to be killed and calls the removeObserver() method to remove each observer with the specified ID.
+&nbsp;     After removing all the observers, the list of IDs to kill is cleared.
+&nbsp;     @param idToKill The list of IDs to be killed (removed as observers).
+&nbsp;     */
+&nbsp;    private void killingSpree(ArrayList&lt;String&gt; idToKill){
+<b class="fc">&nbsp;        for(String id : idToKill){</b>
+<b class="nc">&nbsp;            removeObserver(id, 0);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        IDToKill.clear();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Starts the game by changing the game state to &quot;RUNNING&quot;, saving the game status,
+&nbsp;     filling the board, notifying players of name colors, notifying the next player&#39;s turn,
+&nbsp;     and notifying the nickname of the last player.
+&nbsp;     The game status is saved to the specified file path.
+&nbsp;     */
+&nbsp;    public void startGame() {
+<b class="fc">&nbsp;        game.setGameState(GameState.RUNNING);</b>
+<b class="fc">&nbsp;        saveGameStatus = new SaveGameStatus(game, &quot;src/main/java/org/projectsw/Util/save.txt&quot;);</b>
+<b class="fc">&nbsp;        fillBoard();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while setting the name colors: &quot; + e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while notifying the next player: &quot; + e.getCause());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID, getGame().getPlayers().get(getGame().getNumberOfPlayers() - 1).getNickname())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while notifying the next player: &quot; + e.getCause());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        saveGameStatus.saveGame();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Handles the selection of tiles by a player.
+&nbsp;     If the selected point is already in the temporary points list, the tiles are deselected.
+&nbsp;     Otherwise, if the selection is possible, the selected point is added to the temporary points list,
+&nbsp;     the selectable points on the board are updated, and the updated board is sent to the observers.
+&nbsp;     If there are no selectable points left or the player&#39;s shelf has reached maximum capacity,
+&nbsp;     an error message indicating the selection is not possible is sent to the observers.
+&nbsp;     If the selected tile is not selectable, an error message is sent to the observers.
+&nbsp;     Finally, a flag indicating the completion of the selection process is sent to the observers.
+&nbsp;     @param ID the ID of the player
+&nbsp;     @param selectedPoint the selected point on the board
+&nbsp;     */
+&nbsp;    public void selectTiles(String ID, Point selectedPoint) {
+<b class="fc">&nbsp;        if(game.getBoard().getTemporaryPoints().contains(selectedPoint)) deselectTiles(selectedPoint);</b>
+&nbsp;        else {
+&nbsp;            try {
+<b class="fc">&nbsp;                if (selectionPossible()) {</b>
+<b class="fc">&nbsp;                    game.getBoard().addTemporaryPoints(selectedPoint);</b>
+<b class="nc">&nbsp;                    game.getBoard().updateSelectablePoints();</b>
+&nbsp;                    try {
+<b class="nc">&nbsp;                        game.setChangedAndNotifyObservers(new SendBoard(new SerializableGame(ID,getGame())));</b>
+<b class="nc">&nbsp;                    } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                        throw new RuntimeException(&quot;An error occurred while transferring the board: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;                    }</b>
+<b class="nc">&nbsp;                    if (game.getBoard().getSelectablePoints().size() == 0 ||</b>
+<b class="nc">&nbsp;                        game.getCurrentPlayer().getShelf().maxFreeColumnSpace() == game.getBoard().getTemporaryPoints().size()) {</b>
+&nbsp;                        try {
+<b class="nc">&nbsp;                            game.setChangedAndNotifyObservers(new ErrorSelectionNotPossible(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                            throw new RuntimeException(&quot;An error occurred while notifying that the selection is not possible: &quot; + e.getCause());</b>
+<b class="nc">&nbsp;                        }</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="fc">&nbsp;            } catch (UnselectableTileException e){</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    game.setChangedAndNotifyObservers(new ErrorUnselectableTile(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException ex) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;An error occurred while notifying that the selection is not possible: &quot; + ex.getCause());</b>
+<b class="fc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Remove the given point from the temporaryPoints list.
+&nbsp;     @param point the point to remove.
+&nbsp;     */
+&nbsp;    public void deselectTiles(Point point){
+<b class="fc">&nbsp;        game.getBoard().removeTemporaryPoints(point);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks if the selection is possible for the current player.
+&nbsp;     This method determines if there is enough free column space in the player&#39;s shelf to accommodate the selected tiles.
+&nbsp;     @return true if the selection is possible, false otherwise.
+&nbsp;     */
+&nbsp;    private boolean selectionPossible() {
+<b class="fc">&nbsp;        return game.getCurrentPlayer().getShelf().maxFreeColumnSpace() &gt; game.getBoard().getTemporaryPoints().size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Confirms the selection of tiles by a player.
+&nbsp;     If the temporary points list is empty, an error message indicating empty temporary points is sent to the observers.
+&nbsp;     Otherwise, the tiles corresponding to the selected points are added to the player&#39;s temporary tiles list,
+&nbsp;     the temporary points list is cleared, and the selectable columns on the player&#39;s shelf are updated.
+&nbsp;     The temporary tiles are then transferred to the appropriate destination.
+&nbsp;     @param ID the ID of the player
+&nbsp;     */
+&nbsp;    public synchronized void confirmSelectedTiles(String ID) {
+<b class="fc">&nbsp;        if(game.getBoard().getTemporaryPoints().isEmpty()) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                game.setChangedAndNotifyObservers(new ErrorEmptyTemporaryTiles(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;An error occurred while sending and Empty Temporary Points Error&quot;+e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;            return;
+&nbsp;        }
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; selectedPoints = game.getBoard().getTemporaryPoints();</b>
+<b class="fc">&nbsp;        for(Point point : selectedPoints){</b>
+<b class="fc">&nbsp;            Tile tile = game.getBoard().getTileFromBoard(point);</b>
+<b class="fc">&nbsp;            game.getCurrentPlayer().addTemporaryTile(tile);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new GuiUpdateBoards(new SerializableGame(Config.broadcastID,game)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while sending the boards update&quot;+e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        game.getBoard().cleanTemporaryPoints();</b>
+<b class="fc">&nbsp;        game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());</b>
+<b class="fc">&nbsp;        temporaryTilesTransfer(ID);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Selects a column on the player&#39;s shelf.
+&nbsp;     If the player&#39;s shelf allows for column selection:
+&nbsp;     If no column is currently selected, the specified column index is set as the selected column.
+&nbsp;     If a column is already selected, it is deselected.
+&nbsp;     Finally, a flag indicating the completion of the selection process is sent to the observers.
+&nbsp;     @param ID the ID of the player
+&nbsp;     @param index the index of the column to select
+&nbsp;     */
+&nbsp;    public synchronized void selectColumn(String ID,Integer index) {
+<b class="fc">&nbsp;        if(game.getCurrentPlayer().getShelf().isSelectionPossible()){</b>
+<b class="fc">&nbsp;            if(game.getCurrentPlayer().getShelf().getSelectedColumn() == null) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    game.getCurrentPlayer().getShelf().setSelectedColumn(index);</b>
+<b class="nc">&nbsp;                } catch (UnselectableColumnException e){</b>
+&nbsp;                    try {
+<b class="nc">&nbsp;                        game.setChangedAndNotifyObservers(new ErrorUnselectableColumn(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                    } catch (RemoteException e2) {</b>
+<b class="nc">&nbsp;                        throw new RuntimeException(&quot;An error occurred while sending an Unselectable Column Error&quot;+e2.getMessage());</b>
+<b class="nc">&nbsp;                    }</b>
+<b class="fc">&nbsp;                }</b>
+<b class="nc">&nbsp;            } else deselectColumn();</b>
+&nbsp;        }
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Deselects the currently selected column in the current player&#39;s shelf.
+&nbsp;     This method performs the following steps:
+&nbsp;     Cleans the selected column in the current player&#39;s shelf by calling the cleanSelectedColumn() method.
+&nbsp;     Updates the selectable columns in the current player&#39;s shelf by calling the updateSelectableColumns() method.
+&nbsp;     */
+&nbsp;    private void deselectColumn() {
+<b class="fc">&nbsp;        game.getCurrentPlayer().getShelf().cleanSelectedColumn();</b>
+<b class="fc">&nbsp;        game.getCurrentPlayer().getShelf().updateSelectableColumns(game.getCurrentPlayer());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sends the player&#39;s shelf and temporary tiles to the observers.
+&nbsp;     First, the player&#39;s shelf is sent to update the observers with the current state of the player&#39;s shelf.
+&nbsp;     If the player has any temporary tiles, they are also sent to the observers.
+&nbsp;     @param ID the ID of the player
+&nbsp;     */
+&nbsp;    private void sendShelfAndTiles(String ID) {
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new SendShelf(new SerializableGame(ID, game)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while updating the shelf: &quot; + e.getCause());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        if (!game.getCurrentPlayer().getTemporaryTiles().isEmpty()) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(ID, game)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Network error while sending temporary tiles: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Places a tile from the player&#39;s temporary tiles onto the player&#39;s shelf.
+&nbsp;     The selection possibility on the player&#39;s shelf is set to false to prevent further tile placement.
+&nbsp;     The tile at the specified temporary index is selected from the player&#39;s temporary tiles.
+&nbsp;     The selected column on the shelf is obtained.
+&nbsp;     Starting from the bottom row of the shelf, the method searches for the first non-empty tile in the selected column.
+&nbsp;     If a non-empty tile is found, the tile to insert is placed one row above it (if possible), and the updated shelf and tiles are sent to the observers.
+&nbsp;     If the search reaches the top row without finding a non-empty tile, the tile to insert is placed in the top row, and the updated shelf and tiles are sent to the observers.
+&nbsp;     If the player no longer has any temporary tiles, the selected column is deselected, the selection possibility on the shelf is set to true,
+&nbsp;     and a notification indicating the completion of the tile placement is sent to the observers.
+&nbsp;     If the specified temporary index is invalid, an error message indicating an invalid temporary tile is sent to the observers.
+&nbsp;     Finally, a flag indicating the completion of the method is sent to the observers.
+&nbsp;     @param ID the ID of the player
+&nbsp;     @param temporaryIndex the index of the temporary tile to place
+&nbsp;     */
+&nbsp;    public synchronized void placeTiles(String ID, Integer temporaryIndex) {
+<b class="fc">&nbsp;        game.getCurrentPlayer().getShelf().setSelectionPossible(false);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            Tile tileToInsert = game.getCurrentPlayer().selectTemporaryTile(temporaryIndex);</b>
+<b class="fc">&nbsp;            int selectedColumn = game.getCurrentPlayer().getShelf().getSelectedColumn();</b>
+<b class="fc">&nbsp;            for (int i = Config.shelfHeight - 1; i &gt;= 0; i--) {</b>
+<b class="fc">&nbsp;                if (!game.getCurrentPlayer().getShelf().getShelf()[i][selectedColumn].getTile().equals(EMPTY)) {</b>
+<b class="nc">&nbsp;                    if (i != Config.shelfHeight - 1) {</b>
+<b class="nc">&nbsp;                        game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i + 1, selectedColumn);</b>
+<b class="nc">&nbsp;                        sendShelfAndTiles(ID);</b>
+&nbsp;                    }
+&nbsp;                    break;
+&nbsp;                }
+<b class="fc">&nbsp;                if (i == 0) {</b>
+<b class="fc">&nbsp;                    game.getCurrentPlayer().getShelf().insertTiles(tileToInsert, i, selectedColumn);</b>
+<b class="fc">&nbsp;                    sendShelfAndTiles(ID);</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            if (game.getCurrentPlayer().getTemporaryTiles().isEmpty()) {</b>
+<b class="fc">&nbsp;                deselectColumn();</b>
+<b class="fc">&nbsp;                game.getCurrentPlayer().getShelf().setSelectionPossible(true);</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    game.setChangedAndNotifyObservers(new FinishedInserting(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;An error occurred while notifying that the insertion is not possible: &quot; + e.getCause());</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (IndexOutOfBoundsException e) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                game.setChangedAndNotifyObservers(new ErrorInvalidTemporaryTile(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e2) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;An error occurred while sending an Invalid Temporary Tile Error&quot;+e2.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks the common goals to see if any of them can be redeemed by the current player.
+&nbsp;     If a common goal&#39;s requirements are met by the player&#39;s shelf and the goal has not been previously redeemed by the player,
+&nbsp;     the player earns points based on the number of times the goal has been redeemed, and the goal&#39;s redeemed count is decreased.
+&nbsp;     The player&#39;s points are updated accordingly, and the goal is marked as redeemed by the player.
+&nbsp;     */
+&nbsp;    public void checkCommonGoals(){
+<b class="fc">&nbsp;        for(int i=0; i&lt;Config.numberOfCommonGoals; i++){</b>
+<b class="fc">&nbsp;            if(this.getGame().getCommonGoals().get(i).checkRequirements(this.getGame().getCurrentPlayer().getShelf()) &amp;&amp;</b>
+<b class="nc">&nbsp;                    !this.getGame().getCurrentPlayer().isCommonGoalRedeemed(i)){</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    int earnedPoints = this.getGame().getCommonGoals().get(i).getRedeemedNumber() * 2;</b>
+<b class="nc">&nbsp;                    this.getGame().getCommonGoals().get(i).decreaseRedeemedNumber();</b>
+<b class="nc">&nbsp;                    this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + earnedPoints);</b>
+<b class="nc">&nbsp;                    this.getGame().getCurrentPlayer().setCommonGoalRedeemed(i,true);</b>
+<b class="nc">&nbsp;                }catch(MinimumRedeemedPointsException ignore){}</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sends the game results to the observers.
+&nbsp;     The updated game state, including the results, is serialized and sent to the observers.
+&nbsp;     A flag indicating the completion of the method is also sent to the observers.
+&nbsp;     Any network errors that occur during the process are handled and an error message is thrown.
+&nbsp;     */
+&nbsp;    public synchronized void sendResults() {
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new ResultsNotify(new SerializableGame(Config.broadcastID, getGame())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;A network error occurred while sending the results: &quot;+e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(Config.broadcastID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks the personal goals of each player and updates their points based on the redeemed tiles.
+&nbsp;     For each player, it compares their personal goal with the tiles on their shelf and counts the number of redeemed tiles.
+&nbsp;     Based on the number of redeemed tiles, the player&#39;s points are updated accordingly.
+&nbsp;     */
+&nbsp;    public void checkPersonalGoal(){
+<b class="fc">&nbsp;        for (Player player : game.getPlayers()) {</b>
+<b class="fc">&nbsp;            int numberRedeemed = 0;</b>
+<b class="fc">&nbsp;            TilesEnum[][] shelf = tileToTilesEnum(player.getShelf());</b>
+<b class="fc">&nbsp;            for (int i = 0; i &lt; Config.shelfHeight; i++) {</b>
+<b class="fc">&nbsp;                for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                    if (player.getPersonalGoal().getPersonalGoal()[i][j] == shelf[i][j] &amp;&amp;</b>
+<b class="fc">&nbsp;                            player.getPersonalGoal().getPersonalGoal()[i][j] != EMPTY)</b>
+<b class="nc">&nbsp;                        numberRedeemed++;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            switch (numberRedeemed) {</b>
+<b class="fc">&nbsp;                case 0 -&gt; player.setPoints(player.getPoints());</b>
+<b class="nc">&nbsp;                case 1 -&gt; player.setPoints(player.getPoints() + 1);</b>
+<b class="nc">&nbsp;                case 2 -&gt; player.setPoints(player.getPoints() + 2);</b>
+<b class="nc">&nbsp;                case 3 -&gt; player.setPoints(player.getPoints() + 4);</b>
+<b class="nc">&nbsp;                case 4 -&gt; player.setPoints(player.getPoints() + 6);</b>
+<b class="nc">&nbsp;                case 5 -&gt; player.setPoints(player.getPoints() + 9);</b>
+<b class="nc">&nbsp;                case 6 -&gt; player.setPoints(player.getPoints() + 12);</b>
+&nbsp;
+<b class="nc">&nbsp;                default -&gt; throw new IllegalArgumentException(&quot;Invalid tile value: &quot; + numberRedeemed);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Converts a Shelf object to a 2D array of TilesEnum.
+&nbsp;     Each element in the resulting array represents the tile at the corresponding position on the shelf.
+&nbsp;     @param shelf The Shelf object to be converted.
+&nbsp;     @return A 2D array of TilesEnum representing the tiles on the shelf.
+&nbsp;     */
+&nbsp;    private TilesEnum[][] tileToTilesEnum (Shelf shelf){
+<b class="fc">&nbsp;        TilesEnum[][] tmp = new TilesEnum[Config.shelfHeight][Config.shelfLength];</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; Config.shelfHeight; i++) {</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                tmp[i][j] = shelf.getTileShelf(i, j).getTile();</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return tmp;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks the endgame goal for each player.
+&nbsp;     Updates the player&#39;s points based on the completion of the endgame goal.
+&nbsp;     */
+&nbsp;    public void checkEndgameGoal(){
+&nbsp;        int dim;
+<b class="fc">&nbsp;        for (Player player : game.getPlayers()) {</b>
+<b class="fc">&nbsp;            ArrayList&lt;Point&gt; coordinates = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            boolean[][] matrix = new boolean[Config.shelfHeight][Config.shelfLength];</b>
+<b class="fc">&nbsp;            Shelf shelf = player.getShelf();</b>
+<b class="fc">&nbsp;            for (int i = Config.shelfHeight-1; i &gt; -1; i--) {</b>
+<b class="fc">&nbsp;                for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                    if (shelf.getTileShelf(i, j).getTile() != TilesEnum.EMPTY) {</b>
+<b class="nc">&nbsp;                        dim = 0;</b>
+<b class="nc">&nbsp;                        if (!matrix[i][j])</b>
+<b class="nc">&nbsp;                            dim = this.customShelfIterator(coordinates, shelf, matrix, shelf.getTileShelf(i, j).getTile(), i, j);</b>
+<b class="nc">&nbsp;                        if (dim == 3)</b>
+<b class="nc">&nbsp;                            player.setPoints(player.getPoints() + 2);</b>
+<b class="nc">&nbsp;                        else if (dim == 4)</b>
+<b class="nc">&nbsp;                            player.setPoints(player.getPoints() + 3);</b>
+<b class="nc">&nbsp;                        else if (dim == 5)</b>
+<b class="nc">&nbsp;                            player.setPoints(player.getPoints() + 5);</b>
+<b class="nc">&nbsp;                        else if (dim &gt; 5)</b>
+<b class="nc">&nbsp;                            player.setPoints(player.getPoints() + 8);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method that given a shelf position and type iterates over all the joint Tiles present, and returns the size of the found group
+&nbsp;     * @param coordinates is an array of coordinates
+&nbsp;     * @param shelf is the player&#39;s shelf
+&nbsp;     * @param matrix is an array of booleans to keep track of the shelf boxes that have already been navigated
+&nbsp;     * @param type is the Tile type of the group
+&nbsp;     * @param row is the current row in the shelf
+&nbsp;     * @param column is the current column in the shelf
+&nbsp;     * @return returns the size of the found group
+&nbsp;     */
+&nbsp;    private int customShelfIterator(ArrayList&lt;Point&gt; coordinates, Shelf shelf, boolean [][]matrix, TilesEnum type, int row , int column){
+&nbsp;        Point nextPoint;
+&nbsp;
+<b class="nc">&nbsp;        if(row-1 &gt; -1 &amp;&amp; !matrix[row-1][column] &amp;&amp; shelf.getTileShelf(row-1,column).getTile()==type &amp;&amp; !coordinates.contains(new Point(row-1,column)))</b>
+<b class="nc">&nbsp;            coordinates.add(new Point(row-1,column));</b>
+<b class="nc">&nbsp;        if(row+1 &lt; Config.shelfHeight &amp;&amp; !matrix[row+1][column] &amp;&amp; shelf.getTileShelf(row+1,column).getTile()==type &amp;&amp; !coordinates.contains(new Point(row+1,column)))</b>
+<b class="nc">&nbsp;            coordinates.add(new Point(row+1,column));</b>
+<b class="nc">&nbsp;        if(column-1 &gt; -1 &amp;&amp; !matrix[row][column-1] &amp;&amp; shelf.getTileShelf(row,column-1).getTile()==type &amp;&amp; !coordinates.contains(new Point(row,column-1)))</b>
+<b class="nc">&nbsp;            coordinates.add(new Point(row,column-1));</b>
+<b class="nc">&nbsp;        if(column+1 &lt; Config.shelfLength &amp;&amp; !matrix[row][column+1] &amp;&amp; shelf.getTileShelf(row,column + 1).getTile()==type &amp;&amp; !coordinates.contains(new Point(row,column+1)))</b>
+<b class="nc">&nbsp;            coordinates.add(new Point(row,column+1));</b>
+&nbsp;
+<b class="nc">&nbsp;        matrix[row][column]=true;</b>
+<b class="nc">&nbsp;        if(coordinates.size()!=0) {</b>
+<b class="nc">&nbsp;            nextPoint = coordinates.get(0);</b>
+<b class="nc">&nbsp;            coordinates.remove(0);</b>
+<b class="nc">&nbsp;            return 1 + customShelfIterator(coordinates, shelf, matrix, type, (int) nextPoint.getX(), (int) nextPoint.getY());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return 1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Ends the turn for the current player.
+&nbsp;     Checks common goals and updates player points accordingly.
+&nbsp;     Checks if the end game condition is met.
+&nbsp;     Clears the temporary tiles of the current player.
+&nbsp;     Refills the board if it is empty.
+&nbsp;     Sets the next active player as the current player.
+&nbsp;     If the current player is in the first position and the board is in the end game state, ends the game.
+&nbsp;     Notifies the next active player and broadcasts the updated game state.
+&nbsp;     Saves the game status.
+&nbsp;     @param ID The ID of the player ending the turn.
+&nbsp;     @param nickName The nickname of the player ending the turn.
+&nbsp;     */
+&nbsp;    public synchronized void endTurn(String ID, String nickName) {
+<b class="fc">&nbsp;        this.checkCommonGoals();</b>
+<b class="fc">&nbsp;        this.checkEndGame(ID, nickName);</b>
+<b class="fc">&nbsp;        getGame().getCurrentPlayer().clearTemporaryTiles();</b>
+<b class="fc">&nbsp;        if (getGame().getBoard().isBoardEmpty())</b>
+<b class="fc">&nbsp;            this.fillBoard();</b>
+&nbsp;        do {
+<b class="fc">&nbsp;            getGame().setCurrentPlayer(getGame().getNextPlayer());</b>
+<b class="fc">&nbsp;        }while(!getGame().getCurrentPlayer().getIsActive());</b>
+<b class="fc">&nbsp;        if (getGame().getCurrentPlayer().getPosition() == 0 &amp;&amp; getGame().getBoard().isEndGame()) {</b>
+<b class="nc">&nbsp;            this.endGame();</b>
+&nbsp;        }
+&nbsp;        else {
+&nbsp;            try {
+<b class="fc">&nbsp;                while (!game.getCurrentPlayer().getIsActive())</b>
+&nbsp;                {
+<b class="nc">&nbsp;                    dcEndTurn(ID, nickName);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));</b>
+<b class="fc">&nbsp;                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e){</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;An error occurred while notifying the next player: &quot;+e.getCause());</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+<b class="fc">&nbsp;        getSaveGameStatus().saveGame();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Pauses the execution for 10 seconds.
+&nbsp;     */
+&nbsp;    public static void waitFor10Seconds() {
+&nbsp;        try {
+<b class="nc">&nbsp;            TimeUnit.SECONDS.sleep(10);</b>
+<b class="nc">&nbsp;        } catch (InterruptedException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     Ends the turn for the current player in the game.
+&nbsp;     This method performs the following actions:
+&nbsp;     Checks for common goals.
+&nbsp;     Checks if the game should end based on the provided player ID and nickname.
+&nbsp;     Clears the temporary tiles of the current player.
+&nbsp;     Fills the board if it is empty.
+&nbsp;     Sets the next active player as the current player.
+&nbsp;     Ends the game if the current player&#39;s position is 0 and the board has reached the end game state.
+&nbsp;     Saves the game status.
+&nbsp;     @param ID the ID of the current player
+&nbsp;     @param nickName the nickname of the current player
+&nbsp;     */
+&nbsp;    private void dcEndTurn(String ID, String nickName) {
+<b class="nc">&nbsp;        this.checkCommonGoals();</b>
+<b class="nc">&nbsp;        this.checkEndGame(ID, nickName);</b>
+<b class="nc">&nbsp;        getGame().getCurrentPlayer().clearTemporaryTiles();</b>
+<b class="nc">&nbsp;        if (getGame().getBoard().isBoardEmpty())</b>
+<b class="nc">&nbsp;            this.fillBoard();</b>
+&nbsp;        do {
+<b class="nc">&nbsp;            getGame().setCurrentPlayer(getGame().getNextPlayer());</b>
+<b class="nc">&nbsp;        }while(!getGame().getCurrentPlayer().getIsActive());</b>
+<b class="nc">&nbsp;        if (getGame().getCurrentPlayer().getPosition() == 0 &amp;&amp; getGame().getBoard().isEndGame()) {</b>
+<b class="nc">&nbsp;            this.endGame();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        getSaveGameStatus().saveGame();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Ends the turn forcefully for the current player in the game.
+&nbsp;     This method performs the following actions:
+&nbsp;     Clears the temporary tiles of the current player.
+&nbsp;     Fills the board if it is empty.
+&nbsp;     Sets the next player as the current player.
+&nbsp;     Notifies the next player and updates the game state.
+&nbsp;     Saves the game status.
+&nbsp;     This method is synchronized to ensure thread safety.
+&nbsp;     */
+&nbsp;    public synchronized void endTurnForced() {
+<b class="fc">&nbsp;        getGame().getCurrentPlayer().clearTemporaryTiles();</b>
+<b class="fc">&nbsp;        if (getGame().getBoard().isBoardEmpty())</b>
+<b class="fc">&nbsp;            this.fillBoard();</b>
+<b class="fc">&nbsp;        getGame().setCurrentPlayer(getGame().getNextPlayer());</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID,getGame())));</b>
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID,getGame())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e){</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while notifying the next player: &quot;+e.getCause());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        getSaveGameStatus().saveGame();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks if the game should end based on the provided player ID and nickname.
+&nbsp;     This method performs the following actions:
+&nbsp;     Checks if the game has reached the end game state on the board.
+&nbsp;     If the current player&#39;s shelf is full, sets the end game flag to true, increments the player&#39;s points,
+&nbsp;     and notifies observers of the end game.
+&nbsp;     If the provided nickname has a position greater than 0, sends force ending notifications to players
+&nbsp;     with positions lower than the provided nickname&#39;s position.
+&nbsp;     Notifies observers of the returned flag.
+&nbsp;     @param ID the ID of the player
+&nbsp;     @param nickName the nickname of the player
+&nbsp;     */
+&nbsp;    public void checkEndGame(String ID, String nickName) {
+<b class="fc">&nbsp;        if(!this.getGame().getBoard().isEndGame()){</b>
+<b class="fc">&nbsp;            if(this.fullShelf(this.getGame().getCurrentPlayer().getShelf())){</b>
+<b class="fc">&nbsp;                this.getGame().getBoard().setEndGame(true);</b>
+<b class="fc">&nbsp;                this.getGame().getCurrentPlayer().setPoints(this.getGame().getCurrentPlayer().getPoints() + 1);</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    getGame().setChangedAndNotifyObservers(new EndgameNotify(new SerializableGame(Config.broadcastID, getGame())));</b>
+<b class="fc">&nbsp;                    if(getGame().getPositionByNick(nickName)&gt;0)</b>
+<b class="nc">&nbsp;                        for(int i = 0; i&lt;getGame().getPositionByNick(nickName); i++)</b>
+<b class="nc">&nbsp;                            getGame().setChangedAndNotifyObservers(new ForceEnding(new SerializableGame(getGame().getPlayers().get(i).getNickname())));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;An error occurred while updating the status: &quot; + e);</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Auxiliary method that returns true if the player shelf is full, false otherwise
+&nbsp;     * @param shelf is the player shelf
+&nbsp;     * @return true if the player shelf is true, false otherwise
+&nbsp;     */
+&nbsp;    private boolean fullShelf(Shelf shelf){
+<b class="fc">&nbsp;        for(int i=0; i&lt; Config.shelfHeight; i++)</b>
+<b class="fc">&nbsp;            for(int j=0; j&lt; Config.shelfLength; j++)</b>
+<b class="fc">&nbsp;                if(shelf.getTileShelf(i,j).getTile()==TilesEnum.EMPTY)</b>
+<b class="fc">&nbsp;                    return false;</b>
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     Ends the game.
+&nbsp;     This method performs the following actions:
+&nbsp;     Checks the personal goal.
+&nbsp;     Checks the endgame goal.
+&nbsp;     Deletes the save file.
+&nbsp;     */
+&nbsp;    public void endGame() {
+<b class="fc">&nbsp;        this.checkPersonalGoal();</b>
+<b class="fc">&nbsp;        this.checkEndgameGoal();</b>
+<b class="fc">&nbsp;        saveGameStatus.deleteSaveFile(&quot;src/main/java/org/projectsw/Util/save.txt&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     Sends a chat message within the specified scope.
+&nbsp;     This method performs the following actions:
+&nbsp;     Checks if the specified scope contains an invalid nickname.
+&nbsp;     If the nickname is valid, sends the chat message to observers.
+&nbsp;     If the nickname is invalid, sends an error message to observers.
+&nbsp;     Notifies observers of the returned flag.
+&nbsp;     @param scope the scope of the chat message
+&nbsp;     @param ID the ID of the player
+&nbsp;     */
+&nbsp;    public synchronized void sendChat(String scope, String ID) {
+<b class="fc">&nbsp;        if(invalidNickname(scope)) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                getGame().setChangedAndNotifyObservers(new SendChat(new SerializableGame(ID, getGame().getChat(), scope)));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;A network error occurred while sending the chat&quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }else{
+&nbsp;            try {
+<b class="fc">&nbsp;                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(ID, new Message(Config.error, Config.error, ConsoleColors.RED + &quot;The entered nickname is not in game...&quot; + ConsoleColors.RESET))));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;A network error occurred while sending the chat&quot; + e.getMessage());</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sends a chat message from the specified sender with the given content and scope.
+&nbsp;     This method performs the following actions:
+&nbsp;     Checks if the scope is an error scope. If so, sends an error message to observers.
+&nbsp;     Checks if the scope contains an invalid nickname. If so, sends an error message to observers.
+&nbsp;     Adds the chat message to the chat log.
+&nbsp;     Sends the chat message to observers.
+&nbsp;     @param sender the nickname of the sender
+&nbsp;     @param content the content of the chat message
+&nbsp;     @param scope the scope of the chat message
+&nbsp;     @param ID the ID of the player
+&nbsp;     */
+&nbsp;    public synchronized void sayInChat(String sender, String content, String scope, String ID) {
+<b class="fc">&nbsp;        if (scope.equals(Config.error)) {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(ID, new Message(sender, Config.error, ConsoleColors.RED + &quot;Incorrectly formatted message...&quot; + ConsoleColors.RESET))));</b>
+&nbsp;                return;
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;A network error occurred while sending the chat: &quot; + e.getMessage());</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        if (!invalidNickname(scope)) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(ID, new Message(sender, Config.error, ConsoleColors.RED + &quot;The entered nickname doesn&#39;t exist...&quot; + ConsoleColors.RESET))));</b>
+&nbsp;                return;
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;A network error occurred while sending the chat: &quot; + e.getMessage());</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        Message message = new Message(sender, scope, content);</b>
+<b class="fc">&nbsp;        getGame().getChat().addChatLog(message);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new ChatMessage(new SerializableGame(Config.broadcastID, message)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while sending the chat to the clients: &quot; + e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Removes an observer with the specified ID and number from the game.
+&nbsp;     This method performs the following actions:
+&nbsp;     Decrements the counter.
+&nbsp;     Notifies observers of the observer&#39;s removal.
+&nbsp;     Deletes the observer from the game.
+&nbsp;     Removes the observer from the clientObserverHashMap.
+&nbsp;     Removes the ID from the Clients_ID map.
+&nbsp;     Removes the ID from the ID_Nicks map.
+&nbsp;     @param id the ID of the observer
+&nbsp;     @param num the number of the observer
+&nbsp;     */
+&nbsp;    public synchronized void removeObserver(String id, int num) {
+<b class="fc">&nbsp;        counter--;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(id,num)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(id)));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(id)));</b>
+<b class="fc">&nbsp;        clientObserverHashMap.remove(getClients_ID().getKey(id));</b>
+<b class="fc">&nbsp;        getClients_ID().removeByValue(id);</b>
+<b class="fc">&nbsp;        getID_Nicks().removeByKey(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Performs an everlasting kill by notifying all observers of the kill event.
+&nbsp;     This method performs the following actions:
+&nbsp;     Notifies observers of the kill event with a broadcast ID and a dummy number.
+&nbsp;     */
+&nbsp;    public void everlastingKill() {
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new Kill(new SerializableGame(Config.broadcastID,0)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException ignored) {</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks if the nickname is a nickname of the players in game of equals everyone
+&nbsp;     @param nickname is the nickname to check
+&nbsp;     @return true if nickname is the nickname of a player in game or the broadcast string
+&nbsp;     */
+&nbsp;    private boolean invalidNickname(String nickname){
+<b class="fc">&nbsp;        if(nickname.equals(Config.everyone))</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="fc">&nbsp;        if(game.getPlayersNickname(getActivePlayers()).contains(nickname))</b>
+<b class="nc">&nbsp;            return true;</b>
+<b class="fc">&nbsp;        return !game.getPlayersNickname(getInactivePlayers()).contains(nickname) &amp;&amp; playerReconnect;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Retrieves a list of inactive players in the game.
+&nbsp;     @return an ArrayList of inactive players
+&nbsp;     */
+&nbsp;    private ArrayList&lt;Player&gt; getInactivePlayers() {
+<b class="fc">&nbsp;        ArrayList&lt;Player&gt; dcPlayer = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for(Player player : game.getPlayers()){</b>
+<b class="fc">&nbsp;            if(!player.getIsActive()){</b>
+<b class="fc">&nbsp;                dcPlayer.add(player);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return dcPlayer;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Retrieves a list of active players in the game.
+&nbsp;     @return an ArrayList of inactive players
+&nbsp;     */
+&nbsp;    private ArrayList&lt;Player&gt; getActivePlayers() {
+<b class="fc">&nbsp;        ArrayList&lt;Player&gt; activePlayer = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for(Player player : game.getPlayers()){</b>
+<b class="fc">&nbsp;            if(player.getIsActive()){</b>
+<b class="fc">&nbsp;                activePlayer.add(player);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return activePlayer;</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Fills the board if the board contains only tiles with no other adjacent tiles.
+&nbsp;     */
+&nbsp;    public void fillBoard(){
+<b class="fc">&nbsp;        if (!(isBoardValid())){</b>
+<b class="fc">&nbsp;            for(int i=0; i&lt; Config.boardHeight; i++){</b>
+<b class="fc">&nbsp;                for (int j=0; j&lt; Config.boardLength; j++) {</b>
+<b class="fc">&nbsp;                    if (game.getBoard().getBoard()[i][j].getTile()==EMPTY){</b>
+<b class="fc">&nbsp;                        game.getBoard().updateBoard(game.getBoard().getBag().pop(), i, j);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns false if the board contains only tiles with no other adjacent tiles, true otherwise.
+&nbsp;     * @return false if the board contains only tiles with no other adjacent tiles, true otherwise
+&nbsp;     */
+&nbsp;    private boolean isBoardValid(){
+<b class="fc">&nbsp;        for(int i=0; i&lt; Config.boardHeight; i++){</b>
+<b class="fc">&nbsp;            for (int j=0; j&lt; Config.boardLength; j++) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    if (!(isEmptyOrUnusedBoard(i, j)) &amp;&amp;</b>
+<b class="nc">&nbsp;                            (!(isEmptyOrUnusedBoard(i - 1, j)) ||</b>
+<b class="nc">&nbsp;                                    !(isEmptyOrUnusedBoard(i, j - 1)) ||</b>
+<b class="nc">&nbsp;                                    !(isEmptyOrUnusedBoard(i + 1, j)) ||</b>
+<b class="nc">&nbsp;                                    !(isEmptyOrUnusedBoard(i, j + 1))))</b>
+<b class="nc">&nbsp;                        return true;</b>
+<b class="fc">&nbsp;                } catch (IndexOutOfBoundsException ignore) {}</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if the selected tile is either EMPTY or UNUSED.
+&nbsp;     * @param x the x coordinate of the tile on the board
+&nbsp;     * @param y the y coordinate of the tile on the board
+&nbsp;     * @return true if the selected tile is either EMPTY or UNUSED, false otherwise
+&nbsp;     */
+&nbsp;    private boolean isEmptyOrUnusedBoard (int x, int y){
+<b class="fc">&nbsp;        return (game.getBoard().getBoard()[y][x].getTile() == EMPTY) ||</b>
+<b class="fc">&nbsp;                (game.getBoard().getBoard()[y][x].getTile() == UNUSED);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sets the game state and related properties from a saved game.
+&nbsp;     @param gameSave the saved game object
+&nbsp;     */
+&nbsp;    private void setGameFromSave(Game gameSave) {
+<b class="fc">&nbsp;        this.game.setGameState(gameSave.getGameState());</b>
+<b class="fc">&nbsp;        this.game.setNumberOfPlayers(gameSave.getNumberOfPlayers());</b>
+<b class="fc">&nbsp;        this.game.setFirstPlayer(gameSave.getFirstPlayer());</b>
+<b class="fc">&nbsp;        this.game.setCurrentPlayer(gameSave.getCurrentPlayer());</b>
+<b class="fc">&nbsp;        this.game.setPlayers(gameSave.getPlayers());</b>
+<b class="fc">&nbsp;        this.game.setBoard(gameSave.getBoard());</b>
+<b class="fc">&nbsp;        this.game.setCommonGoals(gameSave.getCommonGoals());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Initializes the game from a saved state.
+&nbsp;     This method performs the following actions:
+&nbsp;     Retrieves the saved game.
+&nbsp;     Sets the game state and related properties from the saved game.
+&nbsp;     Updates the necessary flags and variables.
+&nbsp;     Notifies observers of the option choice and the returned flag.
+&nbsp;     @param ID the ID of the player
+&nbsp;     */
+&nbsp;    public synchronized void initializeFromSave(String ID) {
+<b class="fc">&nbsp;        if(saveFileFound())</b>
+<b class="fc">&nbsp;            setGameFromSave(retrieveGame());</b>
+<b class="fc">&nbsp;        this.loadFromFile = true;</b>
+<b class="fc">&nbsp;        this.freeNamesUsedInLastGame = game.getPlayersNickname();</b>
+<b class="fc">&nbsp;        optionChooseSet(ID);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sends a request to load a previous game with the specified alphanumeric ID.
+&nbsp;     This method performs the following actions:
+&nbsp;     Notifies observers to ask for loading a previous game with the given ID.
+&nbsp;     @param alphanumericID the alphanumeric ID of the previous game
+&nbsp;     */
+&nbsp;    private void askLoadGame(String alphanumericID){
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new AskLoadGame(new SerializableGame(alphanumericID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Network error while asking to load a previous game: &quot; + e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Loads a game from a file with the specified ID and nickname.
+&nbsp;     This method performs the following actions:
+&nbsp;     If the ID matches the first client, clears the ID_Nicks map.
+&nbsp;     Checks if the nickname is in the list of free names used in the last game.
+&nbsp;     If it is, removes the nickname from the list, adds the ID-nickname mapping to the ID_Nicks map, and notifies observers of a successful nickname choice.
+&nbsp;     If it is not, sends an error message to the client and notifies observers of a returned flag.
+&nbsp;     If the ID does not match the first client:
+&nbsp;     Checks if the nickname is in the list of free names used in the last game.
+&nbsp;     If it is, removes the nickname from the list, adds the ID-nickname mapping to the ID_Nicks map, and notifies observers of a successful nickname choice.
+&nbsp;     If it is not, sends an error message to the client and notifies observers of a returned flag.
+&nbsp;     If the list of free names used in the last game is empty, starts the game from the loaded file.
+&nbsp;     @param ID the ID of the client
+&nbsp;     @param nickname the nickname chosen by the client
+&nbsp;     */
+&nbsp;    private void loadFromFile(String ID, String nickname) {
+<b class="fc">&nbsp;        if(ID.equals(firstClient)){</b>
+<b class="nc">&nbsp;            ID_Nicks.clear();</b>
+<b class="nc">&nbsp;            if(freeNamesUsedInLastGame.contains(nickname)){</b>
+<b class="nc">&nbsp;                freeNamesUsedInLastGame.remove(nickname);</b>
+<b class="nc">&nbsp;                ID_Nicks.put(ID, nickname);</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            } else {
+&nbsp;                try {
+<b class="nc">&nbsp;                    getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(ID, &quot;Nickname not in the last game!!!&quot;)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="fc">&nbsp;            if (freeNamesUsedInLastGame.contains(nickname)) {</b>
+<b class="nc">&nbsp;                freeNamesUsedInLastGame.remove(nickname);</b>
+<b class="nc">&nbsp;                ID_Nicks.put(ID, nickname);</b>
+&nbsp;                try {
+<b class="nc">&nbsp;                    getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            } else {
+&nbsp;                try {
+<b class="fc">&nbsp;                    getGame().setChangedAndNotifyObservers(new ErrorMessage(new SerializableGame(ID, &quot;Nickname not in the last game or already taken!!!&quot;)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        if(freeNamesUsedInLastGame.isEmpty())</b>
+<b class="nc">&nbsp;            startGameFromFile();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Initializes a player based on the provided input.
+&nbsp;     This method performs the following actions:
+&nbsp;     Checks if the client nickname is invalid. If it is, sends a wrong nickname message to observers and returns.
+&nbsp;     Sends an OK nickname message to observers.
+&nbsp;     If the client nickname is not already in use and the alphanumeric ID is not equal to the first client&#39;s ID, adds the ID-nickname mapping to the ID_Nicks map.
+&nbsp;     If it&#39;s not a player reconnect, calls the playerJoin() method.
+&nbsp;     If it&#39;s a player reconnect, sets the player&#39;s active status to true and notifies observers of the name colors and the next player&#39;s turn.
+&nbsp;     Resets the playerReconnect flag to false.
+&nbsp;     @param input the serializable input containing the client&#39;s nickname and alphanumeric ID
+&nbsp;     */
+&nbsp;    private void initializePlayer(SerializableInput input)  {
+<b class="fc">&nbsp;        if (invalidNickname(input.getClientNickname())) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(input.getAlphanumericID())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        if(!ID_Nicks.getAllValue().contains(input.getClientNickname()) &amp;&amp; !input.getAlphanumericID().equals(firstClient)){</b>
+<b class="fc">&nbsp;            ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(!playerReconnect)</b>
+<b class="fc">&nbsp;            playerJoin(input.getClientNickname(), input.getAlphanumericID());</b>
+<b class="fc">&nbsp;        if(playerReconnect){</b>
+<b class="nc">&nbsp;            getPlayerFromNickname(input.getClientNickname()).setIsActive(true);</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                game.setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));</b>
+<b class="nc">&nbsp;                game.setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e){</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;An error occurred while notifying the next player: &quot;+e.getCause());</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="fc">&nbsp;        this.playerReconnect = false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sets the active status of a player based on the client&#39;s choice.
+&nbsp;     @param client the client for which to set the active status
+&nbsp;     @param choice the choice indicating whether the player is active or not
+&nbsp;     */
+&nbsp;    public void setIsActiveFromClient(Client client, Boolean choice){
+<b class="fc">&nbsp;        getPlayerFromNickname(ID_Nicks.getValue(clients_ID.getValue(client))).setIsActive(choice);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Retrieves the nickname associated with a client.
+&nbsp;     @param client the client for which to retrieve the nickname
+&nbsp;     @return the nickname associated with the client
+&nbsp;     */
+&nbsp;    public String getNickFromClient(Client client) {
+<b class="fc">&nbsp;        return ID_Nicks.getValue(clients_ID.getValue(client));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Handles the process of assigning a nickname to a client.
+&nbsp;     If the client&#39;s alphanumeric ID matches the first client&#39;s ID:
+&nbsp;     If loading from a saved game, attempts to load the game with the provided nickname.
+&nbsp;     If not loading from a saved game, checks if the nickname is already taken. If not, initializes the player with the nickname.
+&nbsp;     If the client&#39;s alphanumeric ID does not match the first client&#39;s ID:
+&nbsp;     If not loading from a saved game and the first player is not yet assigned, checks if the nickname is already taken.
+&nbsp;     If not, assigns the nickname to the client.
+&nbsp;     If loading from a saved game, attempts to load the game with the provided nickname.
+&nbsp;     @param input the input containing the client&#39;s alphanumeric ID and nickname
+&nbsp;     */
+&nbsp;    public synchronized void takeNick(SerializableInput input) {
+<b class="fc">&nbsp;        if(input.getAlphanumericID().equals(firstClient)){</b>
+<b class="nc">&nbsp;            if(loadFromFile){</b>
+<b class="nc">&nbsp;                loadFromFile(input.getAlphanumericID(), input.getClientNickname());</b>
+&nbsp;            }else{
+<b class="nc">&nbsp;                if(ID_Nicks.getAllValue().contains(input.getClientNickname())){</b>
+&nbsp;                    try {
+<b class="nc">&nbsp;                        getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));</b>
+<b class="nc">&nbsp;                    } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                        throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                    }</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    initializePlayer(input);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }else{
+<b class="fc">&nbsp;            if(!loadFromFile) {</b>
+<b class="fc">&nbsp;                if (game.getFirstPlayer() == null) {</b>
+<b class="nc">&nbsp;                    if(!ID_Nicks.getAllValue().contains(input.getClientNickname())) {</b>
+<b class="nc">&nbsp;                        ID_Nicks.put(input.getAlphanumericID(), input.getClientNickname());</b>
+&nbsp;                        try {
+<b class="nc">&nbsp;                            getGame().setChangedAndNotifyObservers(new OkNickname(new SerializableGame(input.getAlphanumericID())));</b>
+<b class="nc">&nbsp;                        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                            throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                        }</b>
+&nbsp;                    } else {
+&nbsp;                        try {
+<b class="nc">&nbsp;                            getGame().setChangedAndNotifyObservers(new WrongNickname(new SerializableGame(input.getAlphanumericID())));</b>
+<b class="nc">&nbsp;                        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                            throw new RuntimeException(&quot;Network error while sending nickname error message: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;                        }</b>
+&nbsp;                    }
+&nbsp;                } else {
+<b class="fc">&nbsp;                    initializePlayer(input);</b>
+&nbsp;                }
+&nbsp;            }else{
+<b class="fc">&nbsp;                loadFromFile(input.getAlphanumericID(), input.getClientNickname());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sends a request to the clients to input the number of players in the game.
+&nbsp;     @param alphanumericID the alphanumeric ID of the client initiating the request
+&nbsp;     */
+&nbsp;    private void askNumOfPlayers(String alphanumericID){
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new AskNumberOfPlayers(new SerializableGame(alphanumericID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Network error while sending setting client flags: &quot;+e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Connects a client to the game.
+&nbsp;     @param alphanumericID the alphanumeric ID of the client
+&nbsp;     @throws RemoteException if a network error occurs during the connection process
+&nbsp;     @throws InterruptedException if the thread is interrupted while waiting for the connection
+&nbsp;     */
+&nbsp;    public synchronized void Connect(String alphanumericID) throws RemoteException, InterruptedException {
+<b class="fc">&nbsp;        if(getInactivePlayers().size() &gt; 0){</b>
+<b class="fc">&nbsp;            playerReconnect = true;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        counter++;</b>
+<b class="fc">&nbsp;        if (counter == 1) {</b>
+<b class="fc">&nbsp;            firstClient = alphanumericID;</b>
+<b class="fc">&nbsp;            if (saveFileFound())</b>
+<b class="fc">&nbsp;                askLoadGame(alphanumericID);</b>
+&nbsp;            else
+<b class="fc">&nbsp;                askNumOfPlayers(alphanumericID);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if((game.getNumberOfPlayers() != 0 &amp;&amp; counter&gt; game.getNumberOfPlayers()) || counter == 5){</b>
+<b class="nc">&nbsp;            removeObserver(alphanumericID, 0);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            if(saveFileFound()){</b>
+<b class="fc">&nbsp;                game.setChangedAndNotifyObservers((new GameFound(new SerializableGame(alphanumericID))));</b>
+&nbsp;            }
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new AckConnection(new SerializableGame(alphanumericID, optionChoosed)));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Starts the game from a saved state.
+&nbsp;     If all players from the previous game have reconnected and chosen their nicknames, the game is started.
+&nbsp;     The game state, including player colors, current player, and next player turn, is sent to the clients.
+&nbsp;     */
+&nbsp;    private void startGameFromFile(){
+<b class="nc">&nbsp;        if (freeNamesUsedInLastGame.isEmpty() &amp;&amp; loadFromFile) {</b>
+<b class="nc">&nbsp;            ArrayList&lt;String&gt; ids = new ArrayList&lt;&gt;(clients_ID.getAllValue());</b>
+<b class="nc">&nbsp;            for (String id : ids){</b>
+<b class="nc">&nbsp;                if(!ID_Nicks.getAllKey().contains(id)){</b>
+<b class="nc">&nbsp;                    removeObserver(id, 0);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                getGame().setChangedAndNotifyObservers(new SendNameColors(new SerializableGame(Config.broadcastID, randomColors())));</b>
+<b class="nc">&nbsp;                getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(Config.broadcastID, getGame())));</b>
+<b class="nc">&nbsp;                getGame().setChangedAndNotifyObservers(new NextPlayerTurn(new SerializableGame(Config.broadcastID, getGame())));</b>
+<b class="nc">&nbsp;                getGame().setChangedAndNotifyObservers(new LastPlayerNick(new SerializableGame(Config.broadcastID,getGame().getPlayers().get(getGame().getNumberOfPlayers()-1).getNickname())));</b>
+<b class="nc">&nbsp;            } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(&quot;An error occurred while setting the name colors: &quot; + e.getMessage());</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sets the number of players for the game and initializes the game state.
+&nbsp;     This method is called when the number of players is chosen by the first client.
+&nbsp;     The game is initialized with the specified number of players.
+&nbsp;     The option chosen flag is set to true, indicating that the number of players has been selected.
+&nbsp;     The game state is sent to the clients.
+&nbsp;     @param numberOfPlayers The number of players for the game.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void setNumberOfPlayers(int numberOfPlayers,String ID){
+<b class="fc">&nbsp;        loadFromFile=false;</b>
+<b class="fc">&nbsp;        getGame().initializeGame(numberOfPlayers);</b>
+<b class="fc">&nbsp;        optionChooseSet(ID);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void optionChooseSet(String ID) {
+<b class="fc">&nbsp;        optionChoosed = true;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new OptionChoosed(new SerializableGame(Config.broadcastID, loadFromFile)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Transfers the game board to the client identified by the specified ID.
+&nbsp;     This method sends the game board to the client and notifies the client that the board has been transferred.
+&nbsp;     If there is a network error during the process, the client observer is removed.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void boardTransfer(String ID) {
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new SendBoard(new SerializableGame(ID ,getGame())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(ID)));</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Transfers the game shelf to the client identified by the specified ID.
+&nbsp;     This method sends the game shelf to the client and notifies the client that the board has been transferred.
+&nbsp;     If there is a network error during the process, the client observer is removed.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void shelfTransfer(String clientNickname, String ID) {
+<b class="fc">&nbsp;        int pos = getGame().getPositionByNick(clientNickname);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new SendShelf(new SerializableGame(ID, getGame().getPlayers().get(pos).getNickname(), getGame().getPlayers().get(pos).getShelf())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            game.deleteObserver(clientObserverHashMap.get(getClients_ID().getKey(ID)));</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;       try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Transfers all the game shelves to the client identified by the specified ID.
+&nbsp;     This method sends the all game shelves to the client and notifies the client that the board has been transferred.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void shelfTransferAll(String ID) {
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new SendAllShelves(new SerializableGame(ID, game.getPlayers())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while transferring the board: &quot;+e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Transfers the game personal Goal to the client identified by the specified ID.
+&nbsp;     This method sends the game personal Goal to the client and notifies the client that the board has been transferred.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void personalGoalTransfer(String ID, String nickname) {
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new SendPersonalGoal(new SerializableGame(ID, getGame(), nickname)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while transferring the board: &quot;+e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Transfers the game temporary Tiles to the client identified by the specified ID.
+&nbsp;     This method sends the game temporary Tiles to the client and notifies the client that the board has been transferred.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void temporaryTilesTransfer(String ID) {
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new SendTemporaryTiles(new SerializableGame(ID, getGame())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;A network error occurred: &quot;+e.getCause());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Transfers the game common Goal to the client identified by the specified ID.
+&nbsp;     This method sends the game common Goal to the client and notifies the client that the board has been transferred.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void commonGoalTransfer(String ID) {
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new SendCommonGoals(new SerializableGame(ID, game)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while transferring the board: &quot;+e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Transfers the game current Player to the client identified by the specified ID.
+&nbsp;     This method sends the game current Player to the client and notifies the client that the board has been transferred.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void currentPlayerTransfer(String ID){
+&nbsp;        try {
+<b class="fc">&nbsp;            getGame().setChangedAndNotifyObservers(new SendCurrentPlayer(new SerializableGame(ID,getGame())));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;An error occurred while transferring the current player: &quot;+e.getCause());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            game.setChangedAndNotifyObservers(new ReturnedFlag(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;        } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Checks if any inactive player needs to reconnect.
+&nbsp;     For each player in the game, if the player is inactive, it sends a request to the client identified by the specified ID
+&nbsp;     to provide the nickname for reconnection. It also sets the playerReconnect flag to true.
+&nbsp;     @param ID The alphanumeric ID of the client.
+&nbsp;     */
+&nbsp;    public synchronized void reconnectionCheck(String ID){
+<b class="fc">&nbsp;        for(Player player : game.getPlayers()){</b>
+<b class="fc">&nbsp;            if(!player.getIsActive()){</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    game.setChangedAndNotifyObservers(new AskReconnectName(new SerializableGame(ID)));</b>
+<b class="nc">&nbsp;                } catch (RemoteException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;                }</b>
+<b class="fc">&nbsp;                playerReconnect = true;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Sets the isActive flag of the player with the specified nickname to false.
+&nbsp;     @param input The input containing the client nickname.
+&nbsp;     */
+&nbsp;    public synchronized void notActive(SerializableInput input){
+<b class="fc">&nbsp;        for(Player player : getGame().getPlayers()){</b>
+<b class="fc">&nbsp;            if(input.getClientNickname().equals(player.getNickname()))</b>
+<b class="fc">&nbsp;                player.setIsActive(false);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;
+&nbsp;     Generates random colors for each player in the game.
+&nbsp;     @return A HashMap containing player nicknames as keys and their corresponding random colors as values.
+&nbsp;     */
+&nbsp;    private HashMap&lt;String, String&gt; randomColors() {
+<b class="fc">&nbsp;        HashMap&lt;String, String&gt; colors = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        ArrayList&lt;Integer&gt; alreadyUsed = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; game.getPlayers().size(); i++) {</b>
+<b class="fc">&nbsp;            Random random = new Random();</b>
+<b class="fc">&nbsp;            int randomNumber = random.nextInt(8);</b>
+<b class="fc">&nbsp;            while (alreadyUsed.contains(randomNumber)) {</b>
+<b class="nc">&nbsp;                randomNumber = random.nextInt(8);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            alreadyUsed.add(randomNumber);</b>
+<b class="fc">&nbsp;            switch (randomNumber) {</b>
+<b class="nc">&nbsp;                case 0 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.RED);</b>
+<b class="fc">&nbsp;                case 1 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.GREEN);</b>
+<b class="fc">&nbsp;                case 2 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.YELLOW);</b>
+<b class="fc">&nbsp;                case 3 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.BLUE);</b>
+<b class="fc">&nbsp;                case 4 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.PURPLE);</b>
+<b class="fc">&nbsp;                case 5 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.CYAN);</b>
+<b class="fc">&nbsp;                case 6 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.ORANGE);</b>
+<b class="nc">&nbsp;                case 7 -&gt; colors.put(game.getPlayers().get(i).getNickname(), ConsoleColors.MAGENTA);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return colors;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

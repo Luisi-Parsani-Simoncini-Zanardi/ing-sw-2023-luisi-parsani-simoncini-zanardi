@@ -1,0 +1,217 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Square</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model.CommonGoal</a>
+</div>
+
+<h1>Coverage Summary for Class: Square (org.projectsw.Model.CommonGoal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Square</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (38/38)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model.CommonGoal;
+&nbsp;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.Model.Shelf;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;import java.awt.Point;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;/**
+&nbsp; * The Square class represents a game strategy where the goal is to have at least 2 separate 2x2 squares on the shelf
+&nbsp; * that contain tiles of the same type.
+&nbsp; */
+&nbsp;public class Square extends CommonGoalStrategy {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a new instance of the Square class using the unique code of the CommonGoal
+&nbsp;     * @param strategyCode is the unique code of the CommonGoal instance to be created
+&nbsp;     */
+&nbsp;    public Square(Integer strategyCode){
+<b class="fc">&nbsp;        super(strategyCode);</b>
+<b class="fc">&nbsp;        this.setDescription(&quot;&quot;&quot;</b>
+&nbsp;                Two groups each containing 4 tiles of
+&nbsp;                the same type in a 2x2 square. The tiles
+&nbsp;                of one square can be different from
+&nbsp;                those of the other square.&quot;&quot;&quot;);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks that there are at least 2 separate 2x2 squares with tiles of the same type,
+&nbsp;     * and that the tiles of the two squares are of the same type
+&nbsp;     * @param shelf the player shelf
+&nbsp;     * @return true in the shelf there are two separate squares of the same tiles
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean check(Shelf shelf) {
+&nbsp;
+<b class="fc">&nbsp;        ArrayList&lt;Point&gt; coordinates = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        ArrayList&lt;TilesEnum&gt; tilesEnums = new ArrayList&lt;&gt;(Arrays.asList(TilesEnum.values()));</b>
+&nbsp;
+<b class="fc">&nbsp;        for (TilesEnum tileType : tilesEnums) {</b>
+<b class="fc">&nbsp;            coordinates.clear();</b>
+<b class="fc">&nbsp;            for (int y = Config.shelfHeight-1; y &gt; 0; y--) {</b>
+<b class="fc">&nbsp;                for (int x = 0; x &lt; Config.shelfLength-1; x++) {</b>
+<b class="fc">&nbsp;                    if (isValidSquare(shelf, tileType, x, y)) {</b>
+<b class="fc">&nbsp;                        if (coordinates.isEmpty()) {</b>
+<b class="fc">&nbsp;                            insertCoords(coordinates, x, y);</b>
+&nbsp;                        } else {
+<b class="fc">&nbsp;                            if (notContainsCoords(coordinates, x, y)) {</b>
+<b class="fc">&nbsp;                                return true;</b>
+&nbsp;                            } else {
+<b class="fc">&nbsp;                                insertCoords(coordinates, x, y);</b>
+&nbsp;                            }
+&nbsp;                        }
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts the coordinates of the tiles of the square, as well as the tiles adjacent to the square&#39;s sides.
+&nbsp;     * @param coordinates the array in which insert the coordinates
+&nbsp;     * @param x the x coordinate of the upper left square of the square
+&nbsp;     * @param y the y coordinate of the upper left square of the square
+&nbsp;     */
+&nbsp;    private void insertCoords(ArrayList&lt;Point&gt; coordinates, int x, int y){
+<b class="fc">&nbsp;        coordinates.add(new Point(x, y));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x, y - 1));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x + 1, y));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x + 1, y - 1));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x, y+1));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x+1, y+1));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x+2, y));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x+2, y-1));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x, y-2));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x+1, y-2));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x-1, y));</b>
+<b class="fc">&nbsp;        coordinates.add(new Point(x-1, y-1));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the coordinates of the square are not in the array of invalid coordinates.
+&nbsp;     * @param coordinates the array of not valid coordinates
+&nbsp;     * @param x the x coordinate of the upper left square of the square
+&nbsp;     * @param y the y coordinate of the upper left square of the square
+&nbsp;     * @return false if the array contains the coordinates, true if not
+&nbsp;     */
+&nbsp;    private boolean notContainsCoords(ArrayList&lt;Point&gt; coordinates, int x, int y){
+<b class="fc">&nbsp;        return !coordinates.contains(new Point(x, y)) &amp;&amp;</b>
+<b class="fc">&nbsp;                !coordinates.contains(new Point(x, y - 1)) &amp;&amp;</b>
+<b class="fc">&nbsp;                !coordinates.contains(new Point(x + 1, y)) &amp;&amp;</b>
+<b class="fc">&nbsp;                !coordinates.contains(new Point(x + 1, y - 1));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks whether a pair of x, y coordinates in a shelf are the upper left corner of a valid square
+&nbsp;     * of a determined tile type.
+&nbsp;     * @param shelf the shelf in which the check is made
+&nbsp;     * @param tileType the type of the tile
+&nbsp;     * @param x the x coordinate of the upper left square of the square
+&nbsp;     * @param y the y coordinate of the upper left square of the square
+&nbsp;     * @return true if the square is valid, false if not
+&nbsp;     */
+&nbsp;    private boolean isValidSquare(Shelf shelf, TilesEnum tileType, int x, int y){
+<b class="fc">&nbsp;        return shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x).getTile() &amp;&amp;</b>
+<b class="fc">&nbsp;                shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y - 1, x + 1).getTile() &amp;&amp;</b>
+<b class="fc">&nbsp;                shelf.getTileShelf(y, x).getTile() == shelf.getTileShelf(y, x + 1).getTile() &amp;&amp;</b>
+<b class="fc">&nbsp;                shelf.getTileShelf(y, x).getTile() != TilesEnum.EMPTY &amp;&amp;</b>
+<b class="fc">&nbsp;                shelf.getTileShelf(y, x).getTile() != TilesEnum.UNUSED &amp;&amp;</b>
+<b class="fc">&nbsp;                shelf.getTileShelf(y, x).getTile() == tileType;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

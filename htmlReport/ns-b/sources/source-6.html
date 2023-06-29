@@ -1,0 +1,98 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Observer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Util</a>
+</div>
+
+<h1>Coverage Summary for Class: Observer (org.projectsw.Util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Observer</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Util;
+&nbsp;
+&nbsp;import java.rmi.RemoteException;
+&nbsp;
+&nbsp;/**
+&nbsp; * A class can implement the {@code Observer} interface when it
+&nbsp; * wants to be informed of changes in observable objects.
+&nbsp; *
+&nbsp; * @see     Observable
+&nbsp; *
+&nbsp; * @param &lt;SubjectType&gt; the type of the observable object
+&nbsp; *                     that this observer is observing
+&nbsp; * @param &lt;Event&gt; the enumeration of the event that this observer is observing
+&nbsp; *
+&nbsp; * @implNote
+&nbsp; * This class is a Generic Implementation of the deprecated {@link java.util.Observer}.
+&nbsp; */
+&nbsp;public interface Observer&lt;SubjectType extends Observable&lt;Event&gt;, Event&gt; {
+&nbsp;    /**
+&nbsp;     * This method is called whenever the observed object is changed. An
+&nbsp;     * application calls an {@code Observable} object&#39;s
+&nbsp;     * {@code notifyObservers} method to have all the object&#39;s
+&nbsp;     * observers notified of the change.
+&nbsp;     *
+&nbsp;     * @param   o     the observable object.
+&nbsp;     * @param   arg   an argument passed to the {@code notifyObservers}
+&nbsp;     *                 method.
+&nbsp;     */
+&nbsp;
+&nbsp;    void update(SubjectType o, Event arg) throws RemoteException;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

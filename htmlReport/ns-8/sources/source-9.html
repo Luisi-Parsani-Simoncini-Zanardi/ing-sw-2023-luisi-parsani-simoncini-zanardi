@@ -1,0 +1,545 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SerializableGame</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: SerializableGame (org.projectsw.Model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SerializableGame</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (233/233)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model;
+&nbsp;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import java.awt.*;
+&nbsp;import java.io.Serial;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashMap;
+&nbsp;
+&nbsp;/**
+&nbsp; * The class to serialize the game model
+&nbsp; */
+&nbsp;public class SerializableGame implements Serializable {
+&nbsp;    @Serial
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;    private final String alphanumericID;
+&nbsp;    private final Tile[][] gameBoard;
+&nbsp;    private final Tile[][] playerShelf;
+&nbsp;    private final String playerName;
+&nbsp;    private final Message message;
+&nbsp;    private final ArrayList&lt;Message&gt; chat;
+&nbsp;    private final String clientNickname;
+&nbsp;    private final Integer integer;
+&nbsp;    private final Boolean bool;
+&nbsp;    private final ArrayList&lt;Point&gt; selectablePoints;
+&nbsp;    private final ArrayList&lt;Point&gt; temporaryPoints;
+&nbsp;    private final ArrayList&lt;Tile&gt; temporaryTiles;
+&nbsp;    private final Tile[][] playerPersonalGoal;
+&nbsp;    private final HashMap&lt;String, Integer&gt; results;
+&nbsp;    private final HashMap&lt;String, String&gt; nameColors;
+&nbsp;    private final HashMap&lt;String, Tile[][]&gt; allShelves;
+&nbsp;    private final ArrayList&lt;String&gt; commonGoalDesc;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID and a game model.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param model The game model to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;public SerializableGame(String alphanumericID, Game model) {</b>
+<b class="fc">&nbsp;    this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;    this.gameBoard = model.getBoard().getBoard();</b>
+<b class="fc">&nbsp;    this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();</b>
+<b class="fc">&nbsp;    this.playerName = model.getCurrentPlayer().getNickname();</b>
+<b class="fc">&nbsp;    this.chat = model.getChat().getMessages();</b>
+<b class="fc">&nbsp;    this.clientNickname = null;</b>
+<b class="fc">&nbsp;    this.selectablePoints = model.getBoard().getSelectablePoints();</b>
+<b class="fc">&nbsp;    this.temporaryPoints = model.getBoard().getTemporaryPoints();</b>
+<b class="fc">&nbsp;    this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();</b>
+<b class="fc">&nbsp;    this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;    this.results = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    for (Player p : model.getPlayers()) {</b>
+<b class="fc">&nbsp;        this.results.put(p.getNickname(), p.getPoints());</b>
+<b class="fc">&nbsp;    }</b>
+<b class="fc">&nbsp;    this.nameColors = null;</b>
+<b class="fc">&nbsp;    this.allShelves = null;</b>
+<b class="fc">&nbsp;    this.commonGoalDesc = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    this.commonGoalDesc.add(model.getCommonGoals().get(0).getStrategy().getDescription());</b>
+<b class="fc">&nbsp;    this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());</b>
+<b class="fc">&nbsp;    this.message = null;</b>
+<b class="fc">&nbsp;    this.integer = null;</b>
+<b class="fc">&nbsp;    this.bool = null;</b>
+&nbsp;}
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID, a game model and clientNickname.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param model The game model to be serialized.
+&nbsp;     * @param clientNickname The clientNickname to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, Game model, String clientNickname) {</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard = model.getBoard().getBoard();</b>
+<b class="fc">&nbsp;        this.playerShelf = model.getCurrentPlayer().getShelf().getShelf();</b>
+<b class="fc">&nbsp;        this.playerName = model.getCurrentPlayer().getNickname();</b>
+<b class="fc">&nbsp;        this.chat = model.getChat().getMessages();</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = model.getBoard().getSelectablePoints();</b>
+<b class="fc">&nbsp;        this.temporaryPoints = model.getBoard().getTemporaryPoints();</b>
+<b class="fc">&nbsp;        this.temporaryTiles = model.getCurrentPlayer().getTemporaryTiles();</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = personalGoalToTile(model.getPlayers().get(model.getPositionByNick(clientNickname)).getPersonalGoal().getPersonalGoal());</b>
+<b class="fc">&nbsp;        this.results = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Player p : model.getPlayers()) {</b>
+<b class="fc">&nbsp;            this.results.put(p.getNickname(), p.getPoints());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.commonGoalDesc.add(model.getCommonGoals().get(0).getStrategy().getDescription());</b>
+<b class="fc">&nbsp;        this.commonGoalDesc.add(model.getCommonGoals().get(1).getStrategy().getDescription());</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID) {</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard = null;</b>
+<b class="fc">&nbsp;        this.playerShelf = null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID and string.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param string The string to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, String string){</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard = null;</b>
+<b class="fc">&nbsp;        this.playerShelf = null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = string;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID and message.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param message The message to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, Message message){</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard =  null;</b>
+<b class="fc">&nbsp;        this.playerShelf = null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = message;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID, a nickname and shelf.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param nickname The nickname to be serialized.
+&nbsp;     * @param shelf The shelf to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, String nickname, Shelf shelf){</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard =  null;</b>
+<b class="fc">&nbsp;        this.playerShelf = shelf.getShelf();</b>
+<b class="fc">&nbsp;        this.playerName = nickname;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID and players.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param players The players to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, ArrayList&lt;Player&gt; players){</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard =  null;</b>
+<b class="fc">&nbsp;        this.playerShelf = null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Player p : players)</b>
+&nbsp;        {
+<b class="fc">&nbsp;            this.allShelves.put(p.getNickname(), p.getShelf().getShelf());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID and num.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param num The num to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, int num){</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard =  null;</b>
+<b class="fc">&nbsp;        this.playerShelf = null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = num;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID and bool.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param bool The bool to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, boolean bool){</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard =  null;</b>
+<b class="fc">&nbsp;        this.playerShelf = null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = bool;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID and nameColors.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param nameColors The nameColors to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID, HashMap&lt;String, String&gt; nameColors){</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard =  null;</b>
+<b class="fc">&nbsp;        this.playerShelf = null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = null;</b>
+<b class="fc">&nbsp;        this.clientNickname = null;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = nameColors;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a SerializableGame object with an alphanumeric ID, a nickname and chat.
+&nbsp;     * @param alphanumericID The alphanumeric ID of the game.
+&nbsp;     * @param nickname The nickname to be serialized.
+&nbsp;     * @param chat The chat to be serialized.
+&nbsp;     */
+<b class="fc">&nbsp;    public SerializableGame(String alphanumericID,Chat chat, String nickname) {</b>
+<b class="fc">&nbsp;        this.alphanumericID = alphanumericID;</b>
+<b class="fc">&nbsp;        this.gameBoard = null;</b>
+<b class="fc">&nbsp;        this.playerShelf =null;</b>
+<b class="fc">&nbsp;        this.playerName = null;</b>
+<b class="fc">&nbsp;        this.chat = chat.getMessages();</b>
+<b class="fc">&nbsp;        this.clientNickname = nickname;</b>
+<b class="fc">&nbsp;        this.selectablePoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryPoints = null;</b>
+<b class="fc">&nbsp;        this.temporaryTiles = null;</b>
+<b class="fc">&nbsp;        this.playerPersonalGoal = null;</b>
+<b class="fc">&nbsp;        this.results = null;</b>
+<b class="fc">&nbsp;        this.nameColors = null;</b>
+<b class="fc">&nbsp;        this.allShelves = null;</b>
+<b class="fc">&nbsp;        this.commonGoalDesc = null;</b>
+<b class="fc">&nbsp;        this.message = null;</b>
+<b class="fc">&nbsp;        this.integer = null;</b>
+<b class="fc">&nbsp;        this.bool = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Converts a 2D array of TilesEnum representing a personal goal to a 2D array of Tile objects.
+&nbsp;     * @param personalGoal The 2D array of TilesEnum representing the personal goal.
+&nbsp;     * @return The converted 2D array of Tile objects.
+&nbsp;     */
+&nbsp;    private Tile[][] personalGoalToTile(TilesEnum[][] personalGoal) {
+<b class="fc">&nbsp;        Tile[][] goal = new Tile[Config.shelfHeight][Config.shelfLength];</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; Config.shelfHeight; i++) {</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                goal[i][j] = new Tile(personalGoal[i][j], 0);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return goal;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the alphanumeric ID of the SerializableGame.
+&nbsp;     * @return The alphanumeric ID.
+&nbsp;     */
+<b class="fc">&nbsp;    public String getAlphanumericID(){return this.alphanumericID;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the bool of the SerializableGame.
+&nbsp;     * @return The bool.
+&nbsp;     */
+<b class="fc">&nbsp;    public Boolean getBool(){return this.bool;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the integer of the SerializableGame.
+&nbsp;     * @return The integer.
+&nbsp;     */
+<b class="fc">&nbsp;    public Integer getInteger(){return this.integer;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the gameBoard of the SerializableGame.
+&nbsp;     * @return The gameBoard.
+&nbsp;     */
+<b class="fc">&nbsp;    public Tile[][] getGameBoard(){return this.gameBoard;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the playerShelf of the SerializableGame.
+&nbsp;     * @return The playerShelf.
+&nbsp;     */
+<b class="fc">&nbsp;    public Tile[][] getPlayerShelf(){return this.playerShelf;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the playerName of the SerializableGame.
+&nbsp;     * @return The playerName.
+&nbsp;     */
+<b class="fc">&nbsp;    public String getPlayerName(){return this.playerName;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the chat of the SerializableGame.
+&nbsp;     * @return The chat.
+&nbsp;     */
+<b class="fc">&nbsp;    public ArrayList&lt;Message&gt; getChat(){return this.chat;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the clientNickname of the SerializableGame.
+&nbsp;     * @return The clientNickname.
+&nbsp;     */
+<b class="fc">&nbsp;    public String getClientNickname(){return this.clientNickname;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the selectablePoints of the SerializableGame.
+&nbsp;     * @return The selectablePoints.
+&nbsp;     */
+<b class="fc">&nbsp;    public ArrayList&lt;Point&gt; getSelectablePoints() {return this.selectablePoints; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the temporaryPoints of the SerializableGame.
+&nbsp;     * @return The temporaryPoints.
+&nbsp;     */
+<b class="fc">&nbsp;    public ArrayList&lt;Point&gt; getTemporaryPoints() {return this.temporaryPoints; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the temporaryTiles of the SerializableGame.
+&nbsp;     * @return The temporaryTiles.
+&nbsp;     */
+<b class="fc">&nbsp;    public ArrayList&lt;Tile&gt; getTemporaryTiles() {return this.temporaryTiles; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the playerPersonalGoal of the SerializableGame.
+&nbsp;     * @return The playerPersonalGoal.
+&nbsp;     */
+<b class="fc">&nbsp;    public Tile[][] getPlayerPersonalGoal() {return this.playerPersonalGoal; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the results of the SerializableGame.
+&nbsp;     * @return The results.
+&nbsp;     */
+<b class="fc">&nbsp;    public HashMap&lt;String, Integer&gt; getResults() {return this.results;}</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the nameColors of the SerializableGame.
+&nbsp;     * @return The nameColors.
+&nbsp;     */
+<b class="fc">&nbsp;    public HashMap&lt;String, String&gt; getNameColors() {return this.nameColors; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the allShelves of the SerializableGame.
+&nbsp;     * @return The allShelves.
+&nbsp;     */
+<b class="fc">&nbsp;    public HashMap&lt;String, Tile[][]&gt; getAllShelves() {return this.allShelves; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the commonGoalDesc of the SerializableGame.
+&nbsp;     * @return The commonGoalDesc.
+&nbsp;     */
+<b class="fc">&nbsp;    public ArrayList&lt;String&gt; getCommonGoalDesc() {return this.commonGoalDesc; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the message of the SerializableGame.
+&nbsp;     * @return The message.
+&nbsp;     */
+<b class="fc">&nbsp;    public Message getMessage() {return this.message; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

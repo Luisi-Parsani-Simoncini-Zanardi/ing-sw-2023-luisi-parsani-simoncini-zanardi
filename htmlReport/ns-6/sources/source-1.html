@@ -1,0 +1,186 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ClientSkeleton</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Distributed.SocketMiddleware</a>
+</div>
+
+<h1>Coverage Summary for Class: ClientSkeleton (org.projectsw.Distributed.SocketMiddleware)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClientSkeleton</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Distributed.SocketMiddleware;
+&nbsp;
+&nbsp;import org.projectsw.Distributed.Client;
+&nbsp;import org.projectsw.Distributed.Messages.InputMessages.InputMessage;
+&nbsp;import org.projectsw.Distributed.Messages.ResponseMessages.ResponseMessage;
+&nbsp;import org.projectsw.Distributed.Server;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.ObjectInputStream;
+&nbsp;import java.io.ObjectOutputStream;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.net.Socket;
+&nbsp;import java.rmi.RemoteException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a client skeleton that acts as a remote proxy for a client.
+&nbsp; * Implements the Client interface and Serializable interface.
+&nbsp; */
+&nbsp;public class ClientSkeleton implements Client, Serializable {
+&nbsp;    private final ObjectOutputStream oos;
+&nbsp;    private final ObjectInputStream ois;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new ClientSkeleton object with the specified socket.
+&nbsp;     * @param socket the socket for communication with the client
+&nbsp;     * @throws RemoteException if a remote communication error occurs
+&nbsp;     */
+<b class="nc">&nbsp;    public ClientSkeleton(Socket socket) throws RemoteException{</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            this.oos = new ObjectOutputStream(socket.getOutputStream());</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            throw new RemoteException(&quot;An error while creating output stream: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            this.ois = new ObjectInputStream(socket.getInputStream());</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            throw new RemoteException(&quot;An error while creating input stream: &quot;+e.getMessage());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void ping() throws RemoteException {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sends a response message to the client.
+&nbsp;     * @param response the response message to send
+&nbsp;     * @throws RemoteException if a remote communication error occurs
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void update(ResponseMessage response) throws RemoteException {
+&nbsp;        try {
+<b class="nc">&nbsp;            oos.writeObject(response);</b>
+<b class="nc">&nbsp;            oos.flush();</b>
+<b class="nc">&nbsp;            oos.reset();</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            throw new RemoteException(&quot;An error while sending a response message: &quot;, e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void kill() throws RemoteException {
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Receives input from the client and updates the server with the input message.
+&nbsp;     * @param server the server object to update with the input message
+&nbsp;     * @throws RemoteException if a remote communication error occurs
+&nbsp;     */
+&nbsp;    public void receive(Server server) throws RemoteException{
+&nbsp;        InputMessage input;
+&nbsp;        try {
+<b class="nc">&nbsp;            input = (InputMessage) ois.readObject();</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            throw new RemoteException(&quot;An error while receiving choice from client: &quot;, e);</b>
+<b class="nc">&nbsp;        } catch (ClassNotFoundException e) {</b>
+<b class="nc">&nbsp;            throw new RemoteException(&quot;An error while deserializing choice from client: &quot;, e);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        server.update(this,input);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

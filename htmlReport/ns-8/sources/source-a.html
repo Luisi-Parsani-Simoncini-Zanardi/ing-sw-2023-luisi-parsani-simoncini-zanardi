@@ -1,0 +1,436 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Shelf</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: Shelf (org.projectsw.Model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Shelf</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84,8%
+  </span>
+  <span class="absValue">
+    (84/99)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Shelf$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85%
+  </span>
+  <span class="absValue">
+    (85/100)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model;
+&nbsp;
+&nbsp;import org.projectsw.Exceptions.UnselectableColumnException;
+&nbsp;import org.projectsw.Model.Enums.TilesEnum;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.View.ConsoleColors;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import static org.projectsw.Model.Enums.TilesEnum.EMPTY;
+&nbsp;
+&nbsp;/**
+&nbsp; * Class representing a shelf with a matrix of tiles, the shelf that every player is going to use.
+&nbsp; */
+&nbsp;
+&nbsp;public class Shelf {
+&nbsp;    private Tile[][] shelf;
+&nbsp;    private ArrayList&lt;Integer&gt; selectableColumns;
+&nbsp;    private Integer selectedColumn;
+&nbsp;    private boolean selectionPossible;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new empty shelf with 6 rows and 5 columns, setting as null all the other parameters.
+&nbsp;     */
+<b class="fc">&nbsp;    public Shelf() {</b>
+<b class="fc">&nbsp;        shelf = new Tile[Config.shelfHeight][Config.shelfLength];</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; Config.shelfHeight; i++) {</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                shelf[i][j] = new Tile(TilesEnum.EMPTY, 0);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        selectableColumns = null;</b>
+<b class="fc">&nbsp;        selectedColumn = null;</b>
+<b class="fc">&nbsp;        selectionPossible = true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a Shelf object with the specified parameters. Used for backdoor only
+&nbsp;     * @param b The parameter used to initialize the Shelf.
+&nbsp;     */
+&nbsp;    //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
+<b class="fc">&nbsp;    public Shelf(int b) {</b>
+<b class="fc">&nbsp;        shelf = new Tile[Config.shelfHeight][Config.shelfLength];</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; 5; i++) {</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                shelf[i][j] = new Tile(TilesEnum.CATS, 0);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        for (int i = 3; i &lt; Config.shelfHeight; i++) {</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; 4; j++) {</b>
+<b class="fc">&nbsp;                shelf[i][j] = new Tile(TilesEnum.CATS, 0);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        for (int i = 5; i &lt; Config.shelfHeight; i++) {</b>
+<b class="fc">&nbsp;            for (int j = 4; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                shelf[i][j] = new Tile(TilesEnum.EMPTY, 0);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        selectableColumns = null;</b>
+<b class="fc">&nbsp;        selectedColumn = null;</b>
+<b class="fc">&nbsp;        selectionPossible = true;</b>
+&nbsp;    }
+&nbsp;    //BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR BACKDOOR
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new shelf with the same contents as the given shelf.
+&nbsp;     *
+&nbsp;     * @param shelf the shelf to copy
+&nbsp;     */
+<b class="fc">&nbsp;    public Shelf(Shelf shelf) {</b>
+<b class="fc">&nbsp;        this.shelf = shelf.getShelf();</b>
+<b class="fc">&nbsp;        this.selectableColumns = shelf.getSelectableColumns();</b>
+<b class="fc">&nbsp;        this.selectedColumn = shelf.getSelectedColumn();</b>
+<b class="fc">&nbsp;        this.shelf = shelf.shelf;</b>
+<b class="fc">&nbsp;        this.selectionPossible = shelf.isSelectionPossible();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the matrix of tiles that the shelf holds.
+&nbsp;     *
+&nbsp;     * @return the matrix of tiles
+&nbsp;     */
+&nbsp;    public Tile[][] getShelf() {
+<b class="fc">&nbsp;        return shelf;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the selectable columns attribute.
+&nbsp;     *
+&nbsp;     * @return the arraylist of integers containing the indexes of selectable columns.
+&nbsp;     */
+&nbsp;    public ArrayList&lt;Integer&gt; getSelectableColumns() {
+<b class="fc">&nbsp;        return selectableColumns;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a specific tile of the shelf.
+&nbsp;     *
+&nbsp;     * @param row    coordinate for the row
+&nbsp;     * @param column coordinate for the column
+&nbsp;     * @return the tile at the coordinates row x column
+&nbsp;     * @throws IndexOutOfBoundsException if row or column exceed the shelf bounds (Config.shelfHeight or Config.shelfLength)
+&nbsp;     */
+&nbsp;    public Tile getTileShelf(int row, int column) throws IndexOutOfBoundsException {
+<b class="fc">&nbsp;        if (row &gt; Config.shelfHeight - 1 || column &gt; Config.shelfLength - 1) throw new IndexOutOfBoundsException();</b>
+<b class="fc">&nbsp;        return shelf[row][column];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Return the selected column attribute.
+&nbsp;     *
+&nbsp;     * @return the int corresponding to the selected column attribute.
+&nbsp;     */
+&nbsp;    public Integer getSelectedColumn() {
+<b class="fc">&nbsp;        return selectedColumn;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Return the selectionPossible attribute.
+&nbsp;     *
+&nbsp;     * @return the boolean corresponding to the selectionPossible attribute.
+&nbsp;     */
+&nbsp;    public boolean isSelectionPossible() {
+<b class="fc">&nbsp;        return selectionPossible;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the matrix of tiles for the shelf from the given shelf.
+&nbsp;     *
+&nbsp;     * @param shelf the shelf where the matrix of tiles is taken from
+&nbsp;     * @throws IllegalArgumentException if the parameter shelf hasn&#39;t the right dimensions (Config.shelfHeight or Config.shelfLength)
+&nbsp;     */
+&nbsp;    public void setShelf(Tile[][] shelf) throws IllegalArgumentException {
+<b class="fc">&nbsp;        if (shelf.length != Config.shelfHeight || shelf[0].length != Config.shelfLength)</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException();</b>
+<b class="fc">&nbsp;        this.shelf = shelf;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the selectable columns attribute.
+&nbsp;     *
+&nbsp;     * @param selectableColumns the arraylist of integers to ses as new array list of integers.
+&nbsp;     */
+&nbsp;    public void setSelectableColumns(ArrayList&lt;Integer&gt; selectableColumns) {
+<b class="fc">&nbsp;        this.selectableColumns = selectableColumns;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the selected column attribute.
+&nbsp;     *
+&nbsp;     * @param selectedColumn the int to set as new selected column attribute.
+&nbsp;     */
+&nbsp;    public void setSelectedColumn(Integer selectedColumn) throws UnselectableColumnException {
+<b class="fc">&nbsp;        if (getSelectableColumns().contains(selectedColumn))</b>
+<b class="fc">&nbsp;            this.selectedColumn = selectedColumn;</b>
+&nbsp;        else {
+<b class="nc">&nbsp;            throw new UnselectableColumnException();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the selection possible attribute.
+&nbsp;     *
+&nbsp;     * @param selectionPossible the boolean to set as new selection possible attribute.
+&nbsp;     */
+&nbsp;    public void setSelectionPossible(boolean selectionPossible) {
+<b class="fc">&nbsp;        this.selectionPossible = selectionPossible;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inserts a tile into the specified row and column of the shelf.
+&nbsp;     *
+&nbsp;     * @param tile   the tile to insert
+&nbsp;     * @param row    the row to insert the tile into
+&nbsp;     * @param column the column to insert the tile into
+&nbsp;     * @throws IndexOutOfBoundsException if the row or column is out of bounds (Config.shelfHeight or Config.shelfLength)
+&nbsp;     * @throws IllegalArgumentException  if row and column correspond to an EMPTY or an UNUSED tile
+&nbsp;     */
+&nbsp;    public void insertTiles(Tile tile, int row, int column) {
+<b class="fc">&nbsp;        if (row &gt; Config.shelfHeight - 1 || column &gt; Config.shelfLength - 1)</b>
+<b class="fc">&nbsp;            throw new IndexOutOfBoundsException(&quot;Out of bounds&quot;);</b>
+<b class="fc">&nbsp;        else if (tile.getTile().equals(TilesEnum.EMPTY) || tile.getTile().equals(TilesEnum.UNUSED))</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Trying to add a unused or empty tile to the shelf&quot;);</b>
+<b class="fc">&nbsp;        else shelf[row][column] = tile;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the selectable columns arrayList after checking the size of temporaryTiles arrayList of the player.
+&nbsp;     */
+&nbsp;    public void updateSelectableColumns(Player player) {
+<b class="fc">&nbsp;        ArrayList&lt;Integer&gt; selectableColumns = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;            int freeSpace = 0;</b>
+<b class="fc">&nbsp;            for (int i = Config.shelfHeight - 1; i &gt;= 0; i--) {</b>
+<b class="fc">&nbsp;                if (shelf[i][j].getTile().equals(EMPTY)) {</b>
+<b class="fc">&nbsp;                    freeSpace++;</b>
+&nbsp;                } else break;
+&nbsp;            }
+<b class="fc">&nbsp;            if (freeSpace &gt;= player.getTemporaryTiles().size() &amp;&amp; freeSpace &gt; 0) selectableColumns.add(j);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        this.selectableColumns = selectableColumns;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the maximum column space present in the shelf between 0 to Config.maximumTilesPickable.
+&nbsp;     *
+&nbsp;     * @return an int equal to the maximum column space.
+&nbsp;     */
+&nbsp;    public int maxFreeColumnSpace() {
+<b class="fc">&nbsp;        int maxFreeColumnSpace = 0;</b>
+<b class="fc">&nbsp;        for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;            int freeColumnSpace = 0;</b>
+<b class="fc">&nbsp;            for (int i = Config.shelfHeight - 1; i &gt; (Config.shelfHeight - 1) - Config.maximumTilesPickable; i--) {</b>
+<b class="fc">&nbsp;                if (!shelf[i][j].getTile().equals(EMPTY)) break;</b>
+<b class="fc">&nbsp;                freeColumnSpace++;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if (freeColumnSpace &gt; maxFreeColumnSpace) {</b>
+<b class="fc">&nbsp;                maxFreeColumnSpace = freeColumnSpace;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return maxFreeColumnSpace;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Clears the selectable columns arrayList.
+&nbsp;     */
+&nbsp;    public void cleanSelectableColumns() {
+<b class="fc">&nbsp;        selectableColumns.clear();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets as null the selectedColumn attribute.
+&nbsp;     */
+&nbsp;    public void cleanSelectedColumn() {
+<b class="fc">&nbsp;        selectedColumn = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prints the shelf.
+&nbsp;     */
+&nbsp;    public void printShelf() {
+<b class="fc">&nbsp;        String printedString = &quot;&quot;;</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; Config.shelfLength; i++) {</b>
+<b class="fc">&nbsp;            Integer integer = i + 1;</b>
+<b class="fc">&nbsp;            printedString = printedString + &quot;    &quot; + integer + &quot;     &quot;;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        System.out.println(printedString);</b>
+<b class="fc">&nbsp;        for (int i = Config.shelfHeight-1; i &gt;= 0 ; i--) {</b>
+<b class="fc">&nbsp;            printedString = &quot;&quot;;</b>
+<b class="fc">&nbsp;            for (int j = 0; j &lt; Config.shelfLength; j++) {</b>
+<b class="fc">&nbsp;                printedString = printedString + printPadding(true, i, j) + stringColor(i, j) + printPadding(false, i, j);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            System.out.println(printedString);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves the color representation of a tile at the specified position.
+&nbsp;     * @param i The row index of the tile.
+&nbsp;     * @param j The column index of the tile.
+&nbsp;     * @return The color representation of the tile.
+&nbsp;     */
+&nbsp;    private String stringColor(int i, int j) {
+<b class="fc">&nbsp;        String result = &quot;&quot;;</b>
+<b class="fc">&nbsp;        TilesEnum type = shelf[i][j].getTile();</b>
+<b class="fc">&nbsp;        switch (type) {</b>
+<b class="nc">&nbsp;            case CATS -&gt; result = result + ConsoleColors.CATS;</b>
+<b class="nc">&nbsp;            case TROPHIES -&gt; result = result + ConsoleColors.TROPHIES;</b>
+<b class="nc">&nbsp;            case BOOKS -&gt; result = result + ConsoleColors.BOOKS;</b>
+<b class="nc">&nbsp;            case FRAMES -&gt; result = result + ConsoleColors.FRAMES;</b>
+<b class="nc">&nbsp;            case GAMES -&gt; result = result + ConsoleColors.GAMES;</b>
+<b class="nc">&nbsp;            case PLANTS -&gt; result = result + ConsoleColors.PLANTS;</b>
+<b class="fc">&nbsp;            case EMPTY -&gt; result = &quot; -------- &quot;;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Generates padding spaces or dashes for printing alignment.
+&nbsp;     * @param left Indicates whether the padding is for the left side (true) or the right side (false).
+&nbsp;     * @param i    The row index of the tile.
+&nbsp;     * @param j    The column index of the tile.
+&nbsp;     * @return The generated padding spaces or dashes.
+&nbsp;     */
+&nbsp;    private String printPadding(boolean left, int i, int j) {
+<b class="fc">&nbsp;        float padding = 10;</b>
+<b class="fc">&nbsp;        String paddingSpaces = &quot;&quot;;</b>
+<b class="fc">&nbsp;        padding -= shelf[i][j].getTile().toString().length();</b>
+<b class="fc">&nbsp;        if (shelf[i][j].getTile() == EMPTY) return &quot;&quot;;</b>
+<b class="nc">&nbsp;        if (!left) {</b>
+<b class="nc">&nbsp;            for (int k = 0; k &lt; Math.floor(padding / 2); k++) {</b>
+<b class="nc">&nbsp;                if (k == Math.floor(padding / 2) - 1) paddingSpaces = paddingSpaces + &quot; &quot;;</b>
+<b class="nc">&nbsp;                else paddingSpaces = paddingSpaces + &quot;-&quot;;</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="nc">&nbsp;            for (int k = 0; k &lt; Math.ceil(padding / 2); k++) {</b>
+<b class="nc">&nbsp;                if (k == 0) paddingSpaces = paddingSpaces + &quot; &quot;;</b>
+<b class="nc">&nbsp;                else paddingSpaces = paddingSpaces + &quot;-&quot;;</b>
+&nbsp;
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;            return paddingSpaces;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

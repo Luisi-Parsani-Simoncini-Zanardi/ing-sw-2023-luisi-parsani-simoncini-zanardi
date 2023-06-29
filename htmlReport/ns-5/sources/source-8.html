@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ErrorInvalidTemporaryTile</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Distributed.Messages.ResponseMessages</a>
+</div>
+
+<h1>Coverage Summary for Class: ErrorInvalidTemporaryTile (org.projectsw.Distributed.Messages.ResponseMessages)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ErrorInvalidTemporaryTile</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Distributed.Messages.ResponseMessages;
+&nbsp;
+&nbsp;import org.projectsw.Model.SerializableGame;
+&nbsp;import org.projectsw.View.Enums.UITurnState;
+&nbsp;import org.projectsw.View.GraphicalUI.GuiManager;
+&nbsp;import org.projectsw.View.TextualUI;
+&nbsp;
+&nbsp;import java.io.Serial;
+&nbsp;import java.io.Serializable;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a response message indicating a temporary tiles error.
+&nbsp; * Extends the ResponseMessage class and implements the Serializable interface.
+&nbsp; */
+&nbsp;public class ErrorInvalidTemporaryTile extends ResponseMessage implements Serializable {
+&nbsp;    @Serial
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new ErrorInvalidTemporaryTile object with the specified SerializableGame.
+&nbsp;     * @param model the SerializableGame object representing the response message
+&nbsp;     */
+&nbsp;    public ErrorInvalidTemporaryTile(SerializableGame model) {
+<b class="nc">&nbsp;        super(model);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Executes the ErrorInvalidTemporaryTile message on the specified TextualUI.
+&nbsp;     * Sets the end state of the TextualUI to indicate that the UI is YOUR_TURN_INSERTION.
+&nbsp;     * @param tui the TextualUI on which to execute the action
+&nbsp;     */
+&nbsp;    public void execute(TextualUI tui){
+<b class="nc">&nbsp;        System.err.println(&quot;You don&#39;t have this tile. Try again...&quot;);</b>
+<b class="nc">&nbsp;        tui.setTurnState(UITurnState.YOUR_TURN_INSERTION);</b>
+&nbsp;    }
+<b class="nc">&nbsp;    public void execute(GuiManager gui){}</b>
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

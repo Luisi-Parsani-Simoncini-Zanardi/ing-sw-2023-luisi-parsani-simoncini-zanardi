@@ -1,0 +1,307 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Observable</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Util</a>
+</div>
+
+<h1>Coverage Summary for Class: Observable (org.projectsw.Util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Observable</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63,6%
+  </span>
+  <span class="absValue">
+    (7/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70,8%
+  </span>
+  <span class="absValue">
+    (17/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Util;
+&nbsp;
+&nbsp;import java.rmi.RemoteException;
+&nbsp;import java.util.Vector;
+&nbsp;
+&nbsp;/**
+&nbsp; * This class represents an observable object, or &quot;data&quot;
+&nbsp; * in the model-view paradigm. It can be subclassed to represent an
+&nbsp; * object that the application wants to have observed.
+&nbsp; * &lt;p&gt;
+&nbsp; * An observable object can have one or more observers. An observer
+&nbsp; * may be any object that implements interface {@code Observer}. After an
+&nbsp; * observable instance changes, an application calling the
+&nbsp; * {@code Observable}&#39;s {@code notifyObservers} method
+&nbsp; * causes all of its observers to be notified of the change by a call
+&nbsp; * to their {@code update} method.
+&nbsp; * &lt;p&gt;
+&nbsp; * The order in which notifications will be delivered is unspecified.
+&nbsp; * The default implementation provided in the Observable class will
+&nbsp; * notify Observers in the order in which they registered interest, but
+&nbsp; * subclasses may change this order, use no guaranteed order, deliver
+&nbsp; * notifications on separate threads, or may guarantee that their
+&nbsp; * subclass follows this order, as they choose.
+&nbsp; * &lt;p&gt;
+&nbsp; * Note that this notification mechanism has nothing to do with threads
+&nbsp; * and is completely separate from the {@code wait} and {@code notify}
+&nbsp; * mechanism of class {@code Object}.
+&nbsp; * &lt;p&gt;
+&nbsp; * When an observable object is newly created, its set of observers is
+&nbsp; * empty. Two observers are considered the same if and only if the
+&nbsp; * {@code equals} method returns true for them.
+&nbsp; *
+&nbsp; * @see     #notifyObservers()
+&nbsp; * @see     #notifyObservers(Event)
+&nbsp; * @see     Observer
+&nbsp; * @see     Observer#update(Observable, Event)
+&nbsp; *
+&nbsp; * @param &lt;Event&gt; the enumeration of the event that this observable is emitting
+&nbsp; *
+&nbsp; * @implNote
+&nbsp; * This class is a Generic Implementation of the deprecated {@link java.util.Observable}.
+&nbsp; */
+&nbsp;public class Observable&lt;Event&gt; {
+<b class="fc">&nbsp;    private boolean changed = false;</b>
+&nbsp;    private Vector&lt;Observer&lt;? extends Observable&lt;Event&gt;, Event&gt;&gt; obs;
+&nbsp;
+&nbsp;    /** Construct an Observable with zero Observers. */
+&nbsp;
+<b class="fc">&nbsp;    public Observable() {</b>
+<b class="fc">&nbsp;        obs = new Vector&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds an observer to the set of observers for this object, provided
+&nbsp;     * that it is not the same as some observer already in the set.
+&nbsp;     * The order in which notifications will be delivered to multiple
+&nbsp;     * observers is not specified. See the class comment.
+&nbsp;     *
+&nbsp;     * @param   o   an observer to be added.
+&nbsp;     * @throws NullPointerException   if the parameter o is null.
+&nbsp;     */
+&nbsp;    public synchronized void addObserver(Observer&lt;? extends Observable&lt;Event&gt;, Event&gt; o) {
+<b class="fc">&nbsp;        if (o == null)</b>
+<b class="nc">&nbsp;            throw new NullPointerException();</b>
+<b class="fc">&nbsp;        if (!obs.contains(o)) {</b>
+<b class="fc">&nbsp;            obs.addElement(o);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes an observer from the set of observers of this object.
+&nbsp;     * Passing {@code null} to this method will have no effect.
+&nbsp;     * @param   o   the observer to be deleted.
+&nbsp;     */
+&nbsp;    public synchronized void deleteObserver(Observer&lt;? extends Observable&lt;Event&gt;, Event&gt; o) {
+<b class="fc">&nbsp;        obs.removeElement(o);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * If this object has changed, as indicated by the
+&nbsp;     * {@code hasChanged} method, then notify all of its observers
+&nbsp;     * and then call the {@code clearChanged} method to
+&nbsp;     * indicate that this object has no longer changed.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Each observer has its {@code update} method called with two
+&nbsp;     * arguments: this observable object and {@code null}. In other
+&nbsp;     * words, this method is equivalent to:
+&nbsp;     * &lt;blockquote&gt;{@code
+&nbsp;     * notifyObservers(null)}&lt;/blockquote&gt;
+&nbsp;     *
+&nbsp;     * @see     #clearChanged()
+&nbsp;     * @see     #hasChanged()
+&nbsp;     * @see     Observer#update(Observable, Event)
+&nbsp;     */
+&nbsp;    public void notifyObservers() throws RemoteException{
+<b class="nc">&nbsp;        notifyObservers(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * If this object has changed, as indicated by the
+&nbsp;     * {@code hasChanged} method, then notify all of its observers
+&nbsp;     * and then call the {@code clearChanged} method to indicate
+&nbsp;     * that this object has no longer changed.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Each observer has its {@code update} method called with two
+&nbsp;     * arguments: this observable object and the {@code arg} argument.
+&nbsp;     *
+&nbsp;     * @param   arg   any object.
+&nbsp;     * @see     #clearChanged()
+&nbsp;     * @see     #hasChanged()
+&nbsp;     * @see     Observer#update(Observable, Event)
+&nbsp;     */
+&nbsp;    public void notifyObservers(Event arg) throws RemoteException {
+&nbsp;        /*
+&nbsp;         * a temporary array buffer, used as a snapshot of the state of
+&nbsp;         * current Observers.
+&nbsp;         */
+&nbsp;        Object[] arrLocal;
+&nbsp;
+<b class="fc">&nbsp;        synchronized (this) {</b>
+&nbsp;            /* We don&#39;t want the Observer doing callbacks into
+&nbsp;             * arbitrary code while holding its own Monitor.
+&nbsp;             * The code where we extract each Observable from
+&nbsp;             * the Vector and store the state of the Observer
+&nbsp;             * needs synchronization, but notifying observers
+&nbsp;             * does not (should not).  The worst result of any
+&nbsp;             * potential race-condition here is that:
+&nbsp;             * 1) a newly-added Observer will miss a
+&nbsp;             *   notification in progress
+&nbsp;             * 2) a recently unregistered Observer will be
+&nbsp;             *   wrongly notified when it doesn&#39;t care
+&nbsp;             */
+<b class="fc">&nbsp;            if (!changed)</b>
+<b class="nc">&nbsp;                return;</b>
+<b class="fc">&nbsp;            arrLocal = obs.toArray();</b>
+<b class="fc">&nbsp;            clearChanged();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        for (int i = arrLocal.length-1; i&gt;=0; i--)</b>
+<b class="nc">&nbsp;            ((Observer&lt;Observable&lt;Event&gt;, Event&gt;)arrLocal[i]).update(this, arg);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Clears the observer list so that this object no longer has any observers.
+&nbsp;     */
+&nbsp;    public synchronized void deleteObservers() {
+<b class="nc">&nbsp;        obs.removeAllElements();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Marks this {@code Observable} object as having been changed; the
+&nbsp;     * {@code hasChanged} method will now return {@code true}.
+&nbsp;     */
+&nbsp;    protected synchronized void setChanged() {
+<b class="fc">&nbsp;        changed = true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Indicates that this object has no longer changed, or that it has
+&nbsp;     * already notified all of its observers of its most recent change,
+&nbsp;     * so that the {@code hasChanged} method will now return {@code false}.
+&nbsp;     * This method is called automatically by the
+&nbsp;     * {@code notifyObservers} methods.
+&nbsp;     *
+&nbsp;     * @see     #notifyObservers(Event)
+&nbsp;     * @see     #notifyObservers(Event)
+&nbsp;     */
+&nbsp;    protected synchronized void clearChanged() {
+<b class="fc">&nbsp;        changed = false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Tests if this object has changed.
+&nbsp;     *
+&nbsp;     * @return  {@code true} if and only if the {@code setChanged}
+&nbsp;     *          method has been called more recently than the
+&nbsp;     *          {@code clearChanged} method on this object;
+&nbsp;     *          {@code false} otherwise.
+&nbsp;     * @see     #clearChanged()
+&nbsp;     * @see     #setChanged()
+&nbsp;     */
+&nbsp;    public synchronized boolean hasChanged() {
+<b class="nc">&nbsp;        return changed;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the number of observers of this {@code Observable} object.
+&nbsp;     *
+&nbsp;     * @return  the number of observers of this object.
+&nbsp;     */
+&nbsp;    public synchronized int countObservers() {
+<b class="nc">&nbsp;        return obs.size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the &quot;changed&quot; flag and notifies the observers with the specified event.
+&nbsp;     * @param arg The event object to be passed to the observers.
+&nbsp;     * @throws RemoteException if there is a communication-related issue during the notification process.
+&nbsp;     */
+&nbsp;    public void setChangedAndNotifyObservers(Event arg) throws RemoteException{
+<b class="fc">&nbsp;        setChanged();</b>
+<b class="fc">&nbsp;        notifyObservers(arg);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,143 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > AckConnection</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Distributed.Messages.ResponseMessages</a>
+</div>
+
+<h1>Coverage Summary for Class: AckConnection (org.projectsw.Distributed.Messages.ResponseMessages)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AckConnection</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Distributed.Messages.ResponseMessages;
+&nbsp;
+&nbsp;import org.projectsw.Model.SerializableGame;
+&nbsp;import org.projectsw.View.GraphicalUI.GuiManager;
+&nbsp;import org.projectsw.View.TextualUI;
+&nbsp;import java.io.Serial;
+&nbsp;import java.io.Serializable;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a response message indicating a connection response.
+&nbsp; * Extends the ResponseMessage class and implements the Serializable interface.
+&nbsp; */
+&nbsp;public class AckConnection extends ResponseMessage implements Serializable {
+&nbsp;    @Serial
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new AckConnection object with the specified SerializableGame.
+&nbsp;     * @param model the SerializableGame object representing the response message
+&nbsp;     */
+&nbsp;    public AckConnection(SerializableGame model) {
+<b class="fc">&nbsp;        super(model);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Executes the AckConnection message on the specified TextualUI.
+&nbsp;     * Sets the connection flag to false and updates the flag indicating if the model is still being chosen.
+&nbsp;     * @param tui the TextualUI on which to execute the message
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void execute(TextualUI tui){
+<b class="nc">&nbsp;        tui.setConnectFlag(false);</b>
+<b class="nc">&nbsp;        tui.setStillChoosing(!model.getBool());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void execute(GuiManager guiManager){
+<b class="nc">&nbsp;        guiManager.notifyResponse1();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SelectableBoard</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.View.GraphicalUI.GuiModel</a>
+</div>
+
+<h1>Coverage Summary for Class: SelectableBoard (org.projectsw.View.GraphicalUI.GuiModel)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SelectableBoard</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SelectableBoard$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/27)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.View.GraphicalUI.GuiModel;
+&nbsp;
+&nbsp;import org.projectsw.Model.Tile;
+&nbsp;import org.projectsw.Util.Config;
+&nbsp;import org.projectsw.View.GraphicalUI.GameMainFrame;
+&nbsp;import org.projectsw.View.GraphicalUI.GuiManager;
+&nbsp;import org.projectsw.View.GraphicalUI.MessagesGUI.*;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;import java.util.ArrayList;
+&nbsp;
+&nbsp;public class SelectableBoard extends JPanel {
+&nbsp;
+&nbsp;    GuiManager guiManager;
+&nbsp;    GameMainFrame gameMainFrame;
+&nbsp;    ArrayList&lt;Point&gt; temporaryPoints;
+&nbsp;    ArrayList&lt;Point&gt; selectablePoints;
+&nbsp;    Tile[][] gameBoard;
+&nbsp;
+&nbsp;    public SelectableBoard(Tile[][] gameBoard, ArrayList&lt;Point&gt; selectablePoints, ArrayList&lt;Point&gt; temporaryPoints, GuiManager guiManager, GameMainFrame gameMainFrame){
+<b class="nc">&nbsp;        super();</b>
+<b class="nc">&nbsp;        this.gameMainFrame = gameMainFrame;</b>
+<b class="nc">&nbsp;        this.guiManager = guiManager;</b>
+<b class="nc">&nbsp;        this.temporaryPoints = temporaryPoints;</b>
+<b class="nc">&nbsp;        this.selectablePoints = selectablePoints;</b>
+<b class="nc">&nbsp;        this.gameBoard = gameBoard;</b>
+<b class="nc">&nbsp;        setSize(200,200);</b>
+<b class="nc">&nbsp;        setLayout(new BorderLayout());</b>
+&nbsp;
+<b class="nc">&nbsp;        JPanel gridPanel = new JPanel();</b>
+<b class="nc">&nbsp;        gridPanel.setLayout(new GridLayout(9,9,3,3));</b>
+<b class="nc">&nbsp;        for(int i=0;i&lt;Config.boardHeight;i++) {</b>
+<b class="nc">&nbsp;            for(int j=0;j&lt;Config.boardLength;j++) {</b>
+<b class="nc">&nbsp;                Tile tile = gameBoard[i][j];</b>
+<b class="nc">&nbsp;                SelectableTile selectableTile = new SelectableTile(tile,new Point(i,j),selectablePoints,temporaryPoints);</b>
+<b class="nc">&nbsp;                gridPanel.add(selectableTile);</b>
+<b class="nc">&nbsp;                selectableTile.addActionListener(e -&gt; {</b>
+<b class="nc">&nbsp;                    if(e.getSource() instanceof SelectableTile selectedTile){</b>
+<b class="nc">&nbsp;                        switch (gameMainFrame.getTurnState()) {</b>
+&nbsp;                            case YOUR_TURN_SELECTION -&gt; {
+<b class="nc">&nbsp;                                guiManager.sendTileSelectionFromBoard(selectedTile.getPosition());</b>
+<b class="nc">&nbsp;                                gameMainFrame.setAppState(GameMainFrame.AppState.WAITING_APP);</b>
+<b class="nc">&nbsp;                            }</b>
+<b class="nc">&nbsp;                            case OPPONENT_TURN -&gt; new SelectionNoCurrentPlayerMessage();</b>
+&nbsp;                        }
+&nbsp;                    }
+&nbsp;                });
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        gridPanel.setPreferredSize(new Dimension(15,15));</b>
+<b class="nc">&nbsp;        add(gridPanel,BorderLayout.CENTER);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public ArrayList&lt;Point&gt; getTemporaryPoints() {
+<b class="nc">&nbsp;        return temporaryPoints;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public NoSelectableTile getLabelFromPoint(Point point) {
+<b class="nc">&nbsp;        return new NoSelectableTile(gameBoard[point.x][point.y]);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

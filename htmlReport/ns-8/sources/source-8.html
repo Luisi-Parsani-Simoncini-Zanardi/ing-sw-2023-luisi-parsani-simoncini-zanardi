@@ -1,0 +1,263 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SaveGameStatus</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Model</a>
+</div>
+
+<h1>Coverage Summary for Class: SaveGameStatus (org.projectsw.Model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SaveGameStatus</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96,4%
+  </span>
+  <span class="absValue">
+    (53/55)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Model;
+&nbsp;
+&nbsp;import com.google.gson.Gson;
+&nbsp;import com.google.gson.JsonElement;
+&nbsp;import org.projectsw.Model.Enums.GameState;
+&nbsp;
+&nbsp;import java.io.*;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;/**
+&nbsp; * This class represents a status for saving a game, including the game itself and the file path
+&nbsp; * where the game should be saved. It provides methods to serialize game data to JSON format and save
+&nbsp; * it to a file.
+&nbsp; */
+&nbsp;public class SaveGameStatus {
+&nbsp;    private final Game game; //The game object to be saved.
+&nbsp;    private final String filePath; //The file path where the game should be saved.
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new SaveGameStatus object with the specified game and filePath.
+&nbsp;     * @param game the game object to be saved
+&nbsp;     * @param filePath the file path where the game should be saved
+&nbsp;     */
+<b class="fc">&nbsp;    public SaveGameStatus(Game game, String filePath) {</b>
+<b class="fc">&nbsp;        this.game = game;</b>
+<b class="fc">&nbsp;        this.filePath = filePath;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Serializes the game class into a json string.
+&nbsp;     * @return json string
+&nbsp;     */
+&nbsp;    public String gameToJson() {
+<b class="fc">&nbsp;        Gson gson = new Gson();</b>
+<b class="fc">&nbsp;        return gson.toJson(game);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Saves the current game state to a file in JSON format.
+&nbsp;     * The game state is converted to a JSON string using the {@link #gameToJson()} method,
+&nbsp;     * and then written to the specified file path.
+&nbsp;     */
+&nbsp;    public void saveGame() {
+&nbsp;
+<b class="fc">&nbsp;        String json = gameToJson();</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            File file = new File(filePath);</b>
+<b class="fc">&nbsp;            FileWriter fw = new FileWriter(file);</b>
+<b class="fc">&nbsp;            BufferedWriter bw = new BufferedWriter(fw);</b>
+<b class="fc">&nbsp;            bw.write(json);</b>
+<b class="fc">&nbsp;            bw.close();</b>
+<b class="fc">&nbsp;            fw.close();</b>
+<b class="fc">&nbsp;            System.out.println(&quot;The string was written successfully on file.&quot;);</b>
+<b class="fc">&nbsp;        } catch (IOException e) {</b>
+<b class="fc">&nbsp;            System.out.println(&quot;Error while writing on file: &quot; + e.getMessage());</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a saved game state from the specified file path and returns it as a `Game` object.
+&nbsp;     * The game state is read from the file in JSON format and then converted back into a `Game` object using Gson.
+&nbsp;     * @param path the file path from which to retrieve the game state
+&nbsp;     * @return the retrieved `Game` object, or null if an error occurs during the retrieval process
+&nbsp;     */
+&nbsp;    public Game retrieveGame(String path) {
+&nbsp;
+<b class="fc">&nbsp;        try (BufferedReader br = new BufferedReader(new FileReader(path))) {</b>
+&nbsp;
+<b class="fc">&nbsp;            String json = br.lines().collect(Collectors.joining());</b>
+&nbsp;
+<b class="fc">&nbsp;            Gson gson = new Gson();</b>
+<b class="fc">&nbsp;            String substring = json.substring(json.indexOf(&quot;commonGoals&quot;) - 2);</b>
+<b class="fc">&nbsp;            String newJson = json.replace(substring, &quot;}&quot;);</b>
+<b class="fc">&nbsp;            char[] charArray = substring.toCharArray();</b>
+<b class="fc">&nbsp;            charArray[0] = &#39;{&#39;;</b>
+<b class="fc">&nbsp;            String commonGoalString = String.valueOf(charArray);</b>
+&nbsp;
+<b class="fc">&nbsp;            Game data = gson.fromJson(newJson, Game.class);</b>
+<b class="fc">&nbsp;            JsonElement commonGoalJson = gson.fromJson(commonGoalString, JsonElement.class);</b>
+&nbsp;
+<b class="fc">&nbsp;            int strategyCode1 = commonGoalJson.getAsJsonObject().get(&quot;commonGoals&quot;)</b>
+<b class="fc">&nbsp;                    .getAsJsonArray().get(0).getAsJsonObject().get(&quot;strategy&quot;).getAsJsonObject()</b>
+<b class="fc">&nbsp;                    .get(&quot;strategyCode&quot;).getAsInt();</b>
+<b class="fc">&nbsp;            int strategyCode2 = commonGoalJson.getAsJsonObject().get(&quot;commonGoals&quot;)</b>
+<b class="fc">&nbsp;                    .getAsJsonArray().get(1).getAsJsonObject().get(&quot;strategy&quot;).getAsJsonObject()</b>
+<b class="fc">&nbsp;                    .get(&quot;strategyCode&quot;).getAsInt();</b>
+<b class="fc">&nbsp;            int redeemedNumber1 = commonGoalJson.getAsJsonObject().get(&quot;commonGoals&quot;)</b>
+<b class="fc">&nbsp;                    .getAsJsonArray().get(0).getAsJsonObject().get(&quot;redeemedNumber&quot;).getAsInt();</b>
+<b class="fc">&nbsp;            int redeemedNumber2 = commonGoalJson.getAsJsonObject().get(&quot;commonGoals&quot;)</b>
+<b class="fc">&nbsp;                    .getAsJsonArray().get(1).getAsJsonObject().get(&quot;redeemedNumber&quot;).getAsInt();</b>
+&nbsp;
+<b class="fc">&nbsp;            data.setCommonGoals(data.commonGoalByIndex(new int[]{strategyCode1, strategyCode2}));</b>
+<b class="fc">&nbsp;            data.getCommonGoals().get(0).setRedeemedNumber(redeemedNumber1);</b>
+<b class="fc">&nbsp;            data.getCommonGoals().get(1).setRedeemedNumber(redeemedNumber2);</b>
+&nbsp;            /*for(Player player : data.getPlayers()){
+&nbsp;                player.setIsActive(false);
+&nbsp;            }
+&nbsp;            data.getCurrentPlayer().setIsActive(false);
+&nbsp;            data.getFirstPlayer().setIsActive(false);*/
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;            return data;</b>
+<b class="fc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a saved game state from the default file path and returns it as a `Game` object.
+&nbsp;     * The game state is read from the file in JSON format and then converted back into a `Game` object using Gson.
+&nbsp;     * @return the retrieved `Game` object, or null if an error occurs during the retrieval process
+&nbsp;     */
+&nbsp;    public Game retrieveGame() {
+<b class="fc">&nbsp;        return retrieveGame(filePath);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes the save file at the specified path.
+&nbsp;     * @param path the path of the save file to be deleted
+&nbsp;     */
+&nbsp;    public void deleteSaveFile(String path){
+<b class="fc">&nbsp;        File fileDaEliminare = new File(path);</b>
+<b class="fc">&nbsp;        fileDaEliminare.delete();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes the save file at the filePath.
+&nbsp;     */
+&nbsp;    public void deleteSaveFile(){
+<b class="fc">&nbsp;        File fileDaEliminare = new File(filePath);</b>
+<b class="fc">&nbsp;        if (fileDaEliminare.exists()) {</b>
+<b class="fc">&nbsp;            fileDaEliminare.delete();</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            System.out.println(&quot;Il file non esiste.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if a save file exists at the specified path.
+&nbsp;     * @param path the path of the save file to be checked
+&nbsp;     * @return true if the save file exists, false otherwise
+&nbsp;     */
+&nbsp;    public boolean checkExistingSaveFile(String path) {
+<b class="fc">&nbsp;        File file =new File(path);</b>
+<b class="fc">&nbsp;        if(file.exists())</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if a save file exists at the filePath.
+&nbsp;     * @return true if the save file exists, false otherwise
+&nbsp;     */
+&nbsp;    public boolean checkExistingSaveFile() {
+<b class="fc">&nbsp;        return checkExistingSaveFile(filePath);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

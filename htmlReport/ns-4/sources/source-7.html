@@ -1,0 +1,138 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > AskForPersonalGoal</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Distributed.Messages.InputMessages</a>
+</div>
+
+<h1>Coverage Summary for Class: AskForPersonalGoal (org.projectsw.Distributed.Messages.InputMessages)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AskForPersonalGoal</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Distributed.Messages.InputMessages;
+&nbsp;
+&nbsp;import org.projectsw.Controller.Engine;
+&nbsp;import org.projectsw.View.SerializableInput;
+&nbsp;
+&nbsp;import java.io.Serial;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.rmi.RemoteException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents an input message indicating a personal goal request.
+&nbsp; * Extends the InputMessage class and implements the Serializable interface.
+&nbsp; */
+&nbsp;public class AskForPersonalGoal extends InputMessage implements Serializable {
+&nbsp;    @Serial
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new AskForPersonalGoal object with the specified SerializableInput.
+&nbsp;     * @param input the SerializableInput object representing the input message
+&nbsp;     */
+&nbsp;    public AskForPersonalGoal(SerializableInput input) {
+<b class="nc">&nbsp;        super(input);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Executes the personalGoalTransfer method on the provided Engine object.
+&nbsp;     * @param engine the Engine object on which to perform the personal goal request
+&nbsp;     * @throws RemoteException if a remote communication error occurs
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void execute(Engine engine) throws RemoteException {
+<b class="nc">&nbsp;        engine.personalGoalTransfer(input.getAlphanumericID(),input.getClientNickname());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>

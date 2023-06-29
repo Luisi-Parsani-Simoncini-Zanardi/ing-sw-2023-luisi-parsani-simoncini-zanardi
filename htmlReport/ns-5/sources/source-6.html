@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EndgameNotify</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.projectsw.Distributed.Messages.ResponseMessages</a>
+</div>
+
+<h1>Coverage Summary for Class: EndgameNotify (org.projectsw.Distributed.Messages.ResponseMessages)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EndgameNotify</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.projectsw.Distributed.Messages.ResponseMessages;
+&nbsp;
+&nbsp;import org.projectsw.Model.SerializableGame;
+&nbsp;import org.projectsw.View.Enums.UIEndState;
+&nbsp;import org.projectsw.View.GraphicalUI.GuiManager;
+&nbsp;import org.projectsw.View.TextualUI;
+&nbsp;
+&nbsp;import java.io.Serial;
+&nbsp;import java.io.Serializable;
+&nbsp;
+&nbsp;/**
+&nbsp; * Represents a response message indicating an end game response notify.
+&nbsp; * Extends the ResponseMessage class and implements the Serializable interface.
+&nbsp; */
+&nbsp;public class EndgameNotify extends ResponseMessage implements Serializable {
+&nbsp;    @Serial
+&nbsp;    private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructs a new AckConnection object with the specified SerializableGame.
+&nbsp;     * @param model the EndgameNotify object representing the response message
+&nbsp;     */
+&nbsp;    public EndgameNotify(SerializableGame model) {
+<b class="fc">&nbsp;        super(model);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Executes the EndgameNotify message on the specified TextualUI.
+&nbsp;     * Sets the end state of the TextualUI to indicate that the UI is ENDING.
+&nbsp;     * @param tui the TextualUI on which to execute the action
+&nbsp;     */
+&nbsp;    public void execute(TextualUI tui){
+<b class="nc">&nbsp;        tui.setEndState(UIEndState.ENDING);</b>
+&nbsp;    }
+<b class="nc">&nbsp;    public void execute(GuiManager gui){}</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-29 08:52</div>
+</div>
+</body>
+</html>
