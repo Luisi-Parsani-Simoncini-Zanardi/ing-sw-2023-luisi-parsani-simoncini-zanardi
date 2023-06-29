@@ -1,0 +1,17 @@
+org.projectsw
+org.projectsw.Controller
+org.projectsw.Distributed
+org.projectsw.Distributed.Messages.InputMessages
+org.projectsw.Distributed.Messages.ResponseMessages
+org.projectsw.Distributed.SocketMiddleware
+org.projectsw.Exceptions
+org.projectsw.Model
+org.projectsw.Model.CommonGoal
+org.projectsw.Model.Enums
+org.projectsw.ModelTest
+org.projectsw.Util
+org.projectsw.View
+org.projectsw.View.Enums
+org.projectsw.View.GraphicalUI
+org.projectsw.View.GraphicalUI.GuiModel
+org.projectsw.View.GraphicalUI.MessagesGUI
