@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-06-29T14:55:40.735Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="FeIiCzTikkB9Jek0nY4n" version="21.5.1" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-29T15:06:54.763Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="ReYo-1xZUULpdpXZcjBA" version="21.5.1" type="github">
   <diagram name="Pagina-1" id="WcSLOMXtGoO5Kwd3MJ1G">
-    <mxGraphModel dx="4270" dy="4564" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="4832" dy="4880" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <object label="" Uses="" id="0">
           <mxCell />
@@ -1432,11 +1432,23 @@
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-54" value="+ addObserver(Observer&amp;lt;?&amp;gt;): void&lt;br&gt;+ deleteObserver(Observer&amp;lt;?&amp;gt;): void&lt;br&gt;+ notifyObservers(): void&lt;br&gt;+ notifyObservers(Event): void&lt;br&gt;+ deleteObservers(): void&lt;br&gt;# setChanged(): void&lt;br&gt;# clearChanged(): void&lt;br&gt;+ hasChanged(): boolean&lt;br&gt;+ countObservers(): int&lt;br&gt;setChangedAndNotifyObservers(Event): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-51">
           <mxGeometry y="78" width="250" height="152" as="geometry" />
         </mxCell>
-        <mxCell id="LTxgpxZo_bc8f6A4X1VT-63" value="&lt;b&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Observer&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=34;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-45">
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-63" value="&lt;b&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Observer&amp;lt;SubjectType, Event&amp;gt;&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=34;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-45">
           <mxGeometry x="605" y="56" width="205" height="60" as="geometry" />
         </mxCell>
         <mxCell id="LTxgpxZo_bc8f6A4X1VT-64" value="~ update(SubjectType, Event): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-63">
           <mxGeometry y="34" width="205" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-67" value="OneToOneHashMap&amp;lt;K, V&amp;gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-45">
+          <mxGeometry x="605" y="150" width="175" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-68" value="- forwardMap: Map&amp;lt;K, V&amp;gt;&amp;nbsp;&lt;br&gt;- reverseMap: Map&amp;lt;V, K&amp;gt;&lt;br&gt;- allKey: ArrayList&amp;lt;K&amp;gt;&lt;br&gt;- allValue: ArrayList&amp;lt;V&amp;gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-67">
+          <mxGeometry y="26" width="175" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-69" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-67">
+          <mxGeometry y="90" width="175" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="LTxgpxZo_bc8f6A4X1VT-70" value="+ put(K, V): void&lt;br&gt;+ removeByKey(K): void&lt;br&gt;+ removeByValue(V): void&lt;br&gt;+ clear(): void&lt;br&gt;+ getAllKey(): ArrayList&amp;lt;K&amp;gt;&lt;br&gt;+ getAllValue(): ArrayList&amp;lt;V&amp;gt;&lt;br&gt;+ getValue(K): V&lt;br&gt;+ getKey(V): K" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="LTxgpxZo_bc8f6A4X1VT-67">
+          <mxGeometry y="98" width="175" height="132" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
