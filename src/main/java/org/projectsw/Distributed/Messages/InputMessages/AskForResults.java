@@ -30,6 +30,6 @@ public class AskForResults extends InputMessage implements Serializable {
      */
     @Override
     public void execute(Engine engine) throws RemoteException {
-        engine.sendResults();
+        engine.sendResults(1);
     }
 }

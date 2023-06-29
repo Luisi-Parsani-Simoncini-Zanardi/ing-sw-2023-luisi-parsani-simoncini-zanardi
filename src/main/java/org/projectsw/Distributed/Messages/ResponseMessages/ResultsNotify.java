@@ -3,6 +3,7 @@ package org.projectsw.Distributed.Messages.ResponseMessages;
 import org.projectsw.Model.SerializableGame;
 import org.projectsw.View.ConsoleColors;
 import org.projectsw.View.GraphicalUI.GuiManager;
+import org.projectsw.View.GraphicalUI.ResultsFrame;
 import org.projectsw.View.TextualUI;
 
 import java.io.Serial;
@@ -66,6 +67,11 @@ public class ResultsNotify extends ResponseMessage implements Serializable {
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        gui.setResults(results);
+        if(model.getInteger() != 0) {
+            gui.setResults(results);
+        } else {
+        gui.getGameMainFrame().disposeFrame();
+        new ResultsFrame(results);
+        }
     }
 }
