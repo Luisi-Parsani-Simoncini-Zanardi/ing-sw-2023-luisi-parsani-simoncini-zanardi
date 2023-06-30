@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: org.projectsw.AppServer
+Class-Path: resources/
+
