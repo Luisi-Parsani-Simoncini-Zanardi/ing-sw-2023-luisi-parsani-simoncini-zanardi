@@ -6,8 +6,13 @@ import org.projectsw.Util.PathSolverGui;
 import org.projectsw.View.GraphicalUI.GameMainFrame;
 import org.projectsw.View.GraphicalUI.GuiManager;
 import org.projectsw.View.GraphicalUI.MessagesGUI.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /*
@@ -40,7 +45,17 @@ public class SelectableBoard extends JPanel {
         setSize(200,200);
         setLayout(new BorderLayout());
 
-        ImageIcon backgroundImage = new ImageIcon(PathSolverGui.boardPath());
+        InputStream inputStream = SelectableBoard.class.getResourceAsStream("/ImagesGui/Boards/Board.png");
+
+        BufferedImage image = null;
+
+        try {
+            image = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ImageIcon backgroundImage = new ImageIcon(image);
 
         // Crea il pannello con sfondo
         BackgroundPanel gridPanel = new BackgroundPanel(backgroundImage.getImage(), 1200, 600);
