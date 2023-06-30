@@ -4,8 +4,12 @@ import org.projectsw.Model.Tile;
 import org.projectsw.Util.Config;
 import org.projectsw.Util.PathSolverGui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 /*
  * This class represents the JPanel equivalent to the Shelf, with, at the bottom some buttons to select the column.
@@ -19,7 +23,17 @@ public class NoSelectableShelf extends JPanel {
     public NoSelectableShelf(Tile[][] shelf) {
         super();
 
-        ImageIcon backgroundImage = new ImageIcon(PathSolverGui.shelfPath());
+        InputStream inputStream = NoSelectableShelf.class.getResourceAsStream("/ImagesGui/Boards/Shelf.png");
+
+        BufferedImage image = null;
+
+        try {
+            image = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ImageIcon backgroundImage = new ImageIcon(image);
 
         // Crea il pannello con sfondo
         BackgroundPanel gridPanel = new BackgroundPanel(backgroundImage.getImage(), 1200, 600);
