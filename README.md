@@ -8,4 +8,17 @@ Aprire la CLI e spostarsi nella directory 'out/artifacts/server_jar' e digitare:
 -arg[1] fa riferimento al tipo di protocollo di comunicazione network che si vuole utilizzare: digitare 'socket' per utilizzare l'interfaccia socket o 'rmi' per utilizzare l'interfaccia 'rmi'<br>
 -arg[2] è l'ip del server. Per trovare l'ip desiderato bisogna aprire la CLI e digitare 'ipconfig' (su windows) o 'sudo hostname -I' (su linux) sul dispositivo server.
 
-NOTA: nel caso si stia usando windows è necessario aprire la CLI come amministratore per utilizzare il comando ipconfig
+##INFORMAZION SULLA CONSEGNA
+
+Abbiamo risocntrato delle gravi problematiche nella creazione del file .jar, stttovalutando l'operazione e credendo che questa venisse svolta da intellij senza intoppi. Abbiamo invece scoperto che i nostri due arefatti (client e server) avevano entrambi problemi con le risorse e non riuscivano, uno, a caricare correttamente le immagini e i file json dalle risorse, l'altro a salvare nelle risorse i progressi della partita (e implementare quindi la disconnessione del server).
+Nella versione caricata siamo purtroppo riusciti ad arginare parzialmente questi problemi, e gli eseguibili appaiono parzialmente funzionanti (riusciamo a recuperare le immagini ma non a salvare il file, non implementando quindi una funzionalità aggiuntiva).
+
+Dal punto di vista del codice sorgente però, se questo viene eseguito dall'ampiente di sviluppo, quindi IntelliJ, esso implementa perfettamente tutte le sue funzionalità, che sono quelle elencate successivamente:
+	Connessione Client-Server tramite RMI
+	Connessione Client-Sever tramite utilizzo di Socket
+	Chat
+	Persisteza lato server
+	Riconnessione dei client
+	Gui (che potrebbe essere decisamente migliorata, sia nel modo in cui esegue i refresh, sia completata con l'utilizzo di più immagini.
+
+Purtroppo in seguito agli ultimi e parzialmente vani tentativi di far funzionare i .jar abbiamo modificato il sorgente rendendo i JSon di configurazione delle classi contenenti delle stringhe e abbimamo modificato il modo per accedere alle risorse (il caricamento delle immagini appare più lento).
