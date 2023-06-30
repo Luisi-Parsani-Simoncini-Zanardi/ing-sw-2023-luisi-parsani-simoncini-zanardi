@@ -3,9 +3,14 @@ package org.projectsw.View.GraphicalUI.GuiModel;
 import org.projectsw.Model.Enums.TilesEnum;
 import org.projectsw.Model.Tile;
 import org.projectsw.Util.PathSolverGui;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /*
@@ -28,18 +33,31 @@ public class SelectableTile extends JButton {
     public SelectableTile(Tile tile, Point point, ArrayList<Point> selectablePoints, ArrayList<Point> temporaryPoints) {
         super();
         position = point;
-        ImageIcon icon = null;
+        String path;
         Border normalBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK);
         Border selectableBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GREEN);
         Border selectedBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.RED);
         switch (tile.getTile()) {
-            case CATS -> icon = new ImageIcon(PathSolverGui.cats(tile.getImageNumber()));
-            case GAMES -> icon = new ImageIcon(PathSolverGui.games(tile.getImageNumber()));
-            case FRAMES -> icon = new ImageIcon(PathSolverGui.frames(tile.getImageNumber()));
-            case PLANTS -> icon = new ImageIcon(PathSolverGui.plants(tile.getImageNumber()));
-            case TROPHIES -> icon = new ImageIcon(PathSolverGui.trophies(tile.getImageNumber()));
-            case BOOKS -> icon = new ImageIcon(PathSolverGui.books(tile.getImageNumber()));
+            case CATS -> path = "/ImagesGui/Tiles/Cats" + tile.getImageNumber() + ".png";
+            case GAMES -> path = "/ImagesGui/Tiles/Games" + tile.getImageNumber() + ".png";
+            case FRAMES -> path = "/ImagesGui/Tiles/Frames" + tile.getImageNumber() + ".png";
+            case PLANTS -> path = "/ImagesGui/Tiles/Plants" + tile.getImageNumber() + ".png";
+            case TROPHIES -> path = "/ImagesGui/Tiles/Trophies" + tile.getImageNumber() + ".png";
+            case BOOKS -> path = "/ImagesGui/Tiles/Books" + tile.getImageNumber() + ".png";
+            default -> path = "/ImagesGui/Tiles/Books0.png";
         }
+
+        InputStream inputStream = NoSelectableTile.class.getResourceAsStream(path);
+
+        BufferedImage image1 = null;
+
+        try {
+            image1 = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ImageIcon icon = new ImageIcon(image1);
 
         setContentAreaFilled(false);
         if(!tile.getTile().equals(TilesEnum.EMPTY) && !tile.getTile().equals(TilesEnum.UNUSED)){
