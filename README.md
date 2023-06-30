@@ -10,7 +10,7 @@ Aprire la CLI e spostarsi nella directory 'out/artifacts/server_jar' e digitare:
 
 INFORMAZION SULLA CONSEGNA
 
-Abbiamo risocntrato delle gravi problematiche nella creazione del file .jar, stttovalutando l'operazione e credendo che questa venisse svolta da intellij senza intoppi. Abbiamo invece scoperto che i nostri due arefatti (client e server) avevano entrambi problemi con le risorse e non riuscivano, uno, a caricare correttamente le immagini e i file json dalle risorse, l'altro a salvare nelle risorse i progressi della partita (e implementare quindi la disconnessione del server).
+Abbiamo risocntrato delle gravi problematiche nella creazione del file .jar, sottovalutando l'operazione e credendo che questa venisse svolta da intellij senza intoppi. Abbiamo invece scoperto che i nostri due arefatti (client e server) avevano entrambi problemi con le risorse e non riuscivano, uno, a caricare correttamente le immagini e i file json dalle risorse, l'altro a salvare nelle risorse i progressi della partita (e implementare quindi la disconnessione del server).
 Nella versione caricata siamo purtroppo riusciti ad arginare parzialmente questi problemi, e gli eseguibili appaiono parzialmente funzionanti (riusciamo a recuperare le immagini ma non a salvare il file, non implementando quindi una funzionalità aggiuntiva).
 
 Dal punto di vista del codice sorgente però, se questo viene eseguito dall'ampiente di sviluppo, quindi IntelliJ, esso implementa perfettamente tutte le sue funzionalità, che sono quelle elencate successivamente:
