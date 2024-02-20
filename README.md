@@ -1,7 +1,7 @@
 ### FUNZIONALITÀ:
 Sono state implementate le regole complete, sia TUI che GUI, e sia il protocollo RMI sia il protocollo socket. Le funzionalità aggiuntive implementate sono chat, resilienza alle disconnessioni e persistenza. Abbiamo inoltre tutta la documentazione richiesta dalle specifiche (UML fatti da noi e autogenerati, file html di javadoc e copertura dei test, peer reviw, documentazione sul funzionamento della comunicazione Client-Server)
 ### DOVE TROVARE I JAR:
-A causa della dimensione dei jar (oltre 25MB) gitub non ci ha permesso di caricarli direttamente nella repository, quindi questi possono essere scaricati ed utilizzati tramite il link presente dul file jar.txt in deliverables
+I jar possono essere scaricati ed utilizzati tramite il link presente dul file jar.txt in deliverables
 ### FUNZIONAMENTO AVVIO SERVER:
 Aprire la CLI e spostarsi nella directory 'out/artifacts/server_jar' e digitare:  java -jar softeng-gc44.jar<br>
 ### FUNZIONAMENTO AVVIO CLIENT:
