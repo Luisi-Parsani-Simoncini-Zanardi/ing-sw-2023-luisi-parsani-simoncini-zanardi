@@ -1,5 +1,7 @@
 ### FUNZIONALITÀ:
-Sono state implementate le regole complete, sia TUI che GUI, e sia il protocollo RMI sia il protocollo socket. Le funzionalità aggiuntive implementate sono chat, resilienza alle disconnessioni e persistenza. Abbiamo inoltre tutta la documentazione richiesta dalle specifiche (UML fatti da noi e autogenerati, file html di javadoc e copertura dei test, peer reviw, documentazione sul funzionamento della comunicazione Client-Server)
+Sono state implementate le regole complete del gioco My Shelfie. 
+Inoltre, il programma dispone sia di TUI che di GUI; può utilizzare sia il protocollo RMI, sia il protocollo socket in base alle scelte di avvio, gestendo la comunicazione tra i due. Le funzionalità aggiuntive implementate sono:
+la chat di gioco, la persistenza e la resilienza alle disconnessioni. Abbiamo inoltre tutta la documentazione richiesta dalle specifiche (UML fatti da noi e autogenerati, file html di javadoc e copertura dei test, peer reviw (svolta da un'altro gruppo di studenti), documentazione sul funzionamento della comunicazione Client-Server)
 ### DOVE TROVARE I JAR:
 I jar possono essere scaricati ed utilizzati tramite il link presente dul file jar.txt in deliverables
 ### FUNZIONAMENTO AVVIO SERVER:
